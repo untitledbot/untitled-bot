@@ -23,5 +23,6 @@ jobs:
           release_name: Release ${{ github.ref }}
           body: |
             This is an automated release.
+            It should be buildable with Maven.
           draft: false
           prerelease: false
