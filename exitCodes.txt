@@ -1,0 +1,6 @@
+0 - Exited due to the "exit" command (normal shutdown).
+1 - Could not login to Discord (LoginException thrown by JDA).
+2 - Instant break parameter.
+3 - Logging test, you should never see this.
+4 - Generic critical error exit code.
+5 - No command line arguments provided.
