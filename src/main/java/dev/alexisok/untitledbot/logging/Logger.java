@@ -62,7 +62,6 @@ public class Logger {
 	 * 
 	 * Output a track trace followed by the message.
 	 * 
-	 * 
 	 * @param message the message to send to the console.
 	 * @param status the status code to exit with (ignored if shutdown is false)
 	 *               Set to 4 for a generic exit code, otherwise
