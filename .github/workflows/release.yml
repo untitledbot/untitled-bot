@@ -29,8 +29,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.buildnumber.outputs.build_number }}
-          release_name: Release ${{ steps.buildnumber.outputs.build_number }}
+          tag_name: v0.0.1-${{ steps.buildnumber.outputs.build_number }}
+          release_name: Release 0.0.1-${{ steps.buildnumber.outputs.build_number }}
           draft: false
           prerelease: true # official releases will be done by humans.
       - name: Upload Release Asset
