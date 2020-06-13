@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 
+import java.util.Objects;
+
 public class UserDataTest {
 	
 	//I'll be using my own Discord ID for this.
@@ -19,11 +21,8 @@ public class UserDataTest {
 	@Test
 	public void testSetData() {
 		Logger.log("Data directory: " + Main.DATA_PATH);
-		UserData.setKey(ID, "test", "value");
 		UserData.setKey(ID, "test2", "value2");
-		if(!UserData.getKey(ID, "test2").equals("value2"))
-			throw new RuntimeException();
-		if(!UserData.getKey(ID, "test").equals("value"))
+		if(!Objects.equals(UserData.getKey(ID, "test2"), "value2"))
 			throw new RuntimeException();
 	}
 	

@@ -3,10 +3,7 @@ package dev.alexisok.untitledbot.data;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.logging.Logger;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -37,7 +34,10 @@ public class UserData {
 		Properties p = new Properties();
 		try {
 			p.load(new FileReader(Main.DATA_PATH + ID + ".properties"));
-			return p.getProperty(key, null);
+			if(p.containsKey(key))
+				return p.getProperty(key);
+			else
+				return null;
 		} catch (IOException e) {
 			e.printStackTrace();
 			//to be caught and reported to the end user over Discord.
@@ -62,6 +62,7 @@ public class UserData {
 		try {
 			p.load(new FileReader(Main.DATA_PATH + ID + ".properties"));
 			p.setProperty(key, value);
+			p.store(new FileOutputStream(Main.DATA_PATH + ID + ".properties"), null);
 		} catch (IOException e) {
 			e.printStackTrace();
 			//to be caught and reported to the end user over Discord.
