@@ -39,7 +39,7 @@ public class Logger {
 	 * @param message the message to send to the console.
 	 */
 	public static void critical(String message) {
-		
+		critical(message, 4, true);
 	}
 	
 	/**
