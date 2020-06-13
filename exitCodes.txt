@@ -4,3 +4,4 @@
 3 - Logging test, you should never see this.
 4 - Generic critical error exit code.
 5 - No command line arguments provided.
+6 -
