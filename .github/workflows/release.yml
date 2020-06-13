@@ -22,6 +22,7 @@ jobs:
       - name: Build Project
         run: |
           mvn clean compile assembly:single
+          echo `${steps.buildnumber.outputs.build_number}`
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
