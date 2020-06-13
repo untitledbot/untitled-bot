@@ -39,6 +39,7 @@ public class UserData {
 			p.load(new FileReader(Main.DATA_PATH + ID + ".properties"));
 			return p.getProperty(key, null);
 		} catch (IOException e) {
+			e.printStackTrace();
 			//to be caught and reported to the end user over Discord.
 			throw new UserDataCouldNotBeObtainedException();
 		}
@@ -62,6 +63,7 @@ public class UserData {
 			p.load(new FileReader(Main.DATA_PATH + ID + ".properties"));
 			p.setProperty(key, value);
 		} catch (IOException e) {
+			e.printStackTrace();
 			//to be caught and reported to the end user over Discord.
 			throw new UserDataCouldNotBeObtainedException();
 		}
@@ -89,7 +91,9 @@ public class UserData {
 			//A file with the name does not exist, this was already checked.
 			new File(Main.DATA_PATH + ID + ".properties").createNewFile();
 		} catch (IOException e) {
+			Logger.critical("Could not create a data directory!", -1, false);
 			//to be caught and reported to the end user over Discord.
+			e.printStackTrace();
 			throw new UserDataFileCouldNotBeCreatedException();
 		}
 	}
