@@ -14,7 +14,7 @@ jobs:
           java-version: 11
       - name: Generate build number
         id: buildnumber
-        uses: AlexIsOK/build-number@v3 # using my own fork to work better for what I need
+        uses: AlexIsOK/build-number@v4 # using my own fork to work better for what I need
         with:
           token: ${{secrets.github_token}}
           version: v0.0.1 # this way only the repository owner can upgrade to a new version
