@@ -86,8 +86,8 @@ public class UserData {
 	 */
 	@SuppressWarnings("ResultOfMethodCallIgnored")
 	private static void createUserProfile(String ID) {
-		Logger.log("Creating a user profile for user ID <" + ID + ">");
-		
+		Logger.log("Creating a user profile for user <@" + ID + ">");
+		Logger.log("User was created " + (Long.parseLong(ID) >> 22) + 1420070400000L);
 		try {
 			//A file with the name does not exist, this was already checked.
 			new File(Main.DATA_PATH + ID + ".properties").createNewFile();
