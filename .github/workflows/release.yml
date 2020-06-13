@@ -1,4 +1,9 @@
 # https://github.com/einaregilsson/build-number
+
+on:
+  push:
+    branches: [ master ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
