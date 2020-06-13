@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate build number
-        uses: einaregilsson/build-number@v2
+        uses: AlexIsOK/build-number@v2 # using my own fork to work better for what I need
         with:
           token: ${{secrets.github_token}}
       - name: Print new build number
