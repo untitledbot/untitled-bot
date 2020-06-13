@@ -25,6 +25,7 @@
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
             <version>4.0.0_39</version>
+                 <!--Version 4.0.0_39 because I don't know the newer versions.-->
         </dependency>
         <dependency>
             <groupId>junit</groupId>
