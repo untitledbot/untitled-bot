@@ -1,0 +1,9 @@
+The licenses in this directory references programs or code that are under
+licenses that state that a copy of the license must be distributed alongside
+the distributed program.
+
+I'm not sure if I need to do this since the program I used was an action,
+though it is best to provide credit regardless.
+
+"build-number" and the license from that come from
+https://github.com/einaregilsson/build-number
