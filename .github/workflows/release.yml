@@ -1,6 +1,6 @@
 on:
   push:
-    # Sequence of patterns matched against refs/tags 
+    # Sequence of patterns matched against refs/tags
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
@@ -23,7 +23,5 @@ jobs:
           release_name: Release ${{ github.ref }}
           body: |
             This is an automated release.
-            You can build it with `mvn -B package --file pom.xml`
           draft: false
-          #true for pre-release.  Normal releases will be done by a human.
-          prerelease: true
+          prerelease: false
