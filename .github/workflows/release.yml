@@ -13,6 +13,7 @@ jobs:
         with:
           java-version: 11
       - name: Generate build number
+        id: buildnumber
         uses: AlexIsOK/build-number@v3 # using my own fork to work better for what I need
         with:
           token: ${{secrets.github_token}}
@@ -22,7 +23,6 @@ jobs:
       - name: Build Project
         run: |
           mvn clean compile assembly:single
-          echo `${steps.buildnumber.outputs.build_number}`
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
