@@ -47,6 +47,14 @@ public class Main {
 			
 			if (!DATA_PATH1.endsWith("/")) DATA_PATH1 += "/";
 			
+			//TODO make this work for NTFS as well.
+			//right now, this only matches against *nix filesystem allowed
+			//characters, but some users may be running this on Windows 10.
+			//This will "work" for NT, but doesn't ensure that the file
+			//names are correct, I need a way of determining the host OS.
+			if(!DATA_PATH1.matches("(/?[^\0/])+|/"))
+				throw new IOException();
+			
 		} catch (IOException ignored) {
 			DATA_PATH1 = "./data/"; //default
 		}

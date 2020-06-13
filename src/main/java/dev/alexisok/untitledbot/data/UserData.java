@@ -4,6 +4,10 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.logging.Logger;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * 
@@ -20,8 +24,47 @@ import java.io.File;
  */
 public class UserData {
 	
-	public static void getKey(String ID, String key) {
-		
+	/**
+	 * Get a specific KEY of a user.
+	 * 
+	 * @param ID the user's Discord ID snowflake
+	 * @param key the KEY.
+	 * @return the content of the key for the given user.  Returns {@code null} if the key cannot be found.
+	 * @throws UserDataCouldNotBeObtainedException if there is an exception getting the user's data.
+	 */
+	public static String getKey(String ID, String key) throws UserDataCouldNotBeObtainedException {
+		checkUserExists(ID);
+		Properties p = new Properties();
+		try {
+			p.load(new FileReader(Main.DATA_PATH + ID + ".properties"));
+			return p.getProperty(key, null);
+		} catch (IOException e) {
+			//to be caught and reported to the end user over Discord.
+			throw new UserDataCouldNotBeObtainedException();
+		}
+	}
+	
+	/**
+	 * Set a specific KEY of a user.
+	 * 
+	 * To remove a key, specify a blank or {@code null} value.
+	 * 
+	 * @param ID the Discord ID snowflake of a user.
+	 * @param key the KEY to get.
+	 * @param value the value to set.
+	 *              Can be either blank or {@code null} to
+	 *              unset a key.
+	 */
+	public static void setKey(String ID, String key, String value) {
+		checkUserExists(ID);
+		Properties p = new Properties();
+		try {
+			p.load(new FileReader(Main.DATA_PATH + ID + ".properties"));
+			p.setProperty(key, value);
+		} catch (IOException e) {
+			//to be caught and reported to the end user over Discord.
+			throw new UserDataCouldNotBeObtainedException();
+		}
 	}
 	
 	/**
@@ -34,8 +77,21 @@ public class UserData {
 			createUserProfile(ID);
 	}
 	
+	/**
+	 * Create a user profile.  Should only be called by {@link UserData#checkUserExists(String)}.
+	 * @param ID the Discord ID snowflake of the user.
+	 */
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	private static void createUserProfile(String ID) {
 		Logger.log("Creating a user profile for user ID <" + ID + ">");
+		
+		try {
+			//A file with the name does not exist, this was already checked.
+			new File(Main.DATA_PATH + ID + ".properties").createNewFile();
+		} catch (IOException e) {
+			//to be caught and reported to the end user over Discord.
+			throw new UserDataFileCouldNotBeCreatedException();
+		}
 	}
 	
 }
