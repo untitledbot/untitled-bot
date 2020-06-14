@@ -10,8 +10,6 @@ import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Properties;
 
@@ -30,6 +28,7 @@ public class Main {
 	
 	public static final String VERSION = "0.0.1";
 	public static final String DATA_PATH;
+	public static final String DEFAULT_PREFIX;
 	
 	public static boolean checkForUpdates = true;
 	
@@ -37,6 +36,7 @@ public class Main {
 	
 	
 	static {
+		String DEFAULT_PREFIX1;
 		//temp for final string
 		String DATA_PATH1;
 		
@@ -45,17 +45,22 @@ public class Main {
 			Properties p = new Properties();
 			p.load(new FileInputStream(new File("bot.properties")));
 			
-			DATA_PATH1 = p.getProperty("DataPath");
-			
+			DATA_PATH1 = p.getProperty("dataPath");
+			DEFAULT_PREFIX1 = p.getProperty("prefix");
 			if (!DATA_PATH1.endsWith("/")) DATA_PATH1 += "/";
+			if(DEFAULT_PREFIX1.equals(""))
+				DEFAULT_PREFIX1 = "%";
 			
-		} catch (IOException ignored) {
+		} catch (IOException e) {
+			e.printStackTrace();
 			DATA_PATH1 = "./usrdata/"; //default
+			DEFAULT_PREFIX1 = "%";
 		}
 		//create the directory if it doesn't
 		//already exist.
 		//noinspection ResultOfMethodCallIgnored
 		new File(DATA_PATH1).mkdirs();
+		DEFAULT_PREFIX = DEFAULT_PREFIX1;
 		DATA_PATH = DATA_PATH1;
 	}
 	
