@@ -10,7 +10,7 @@ import java.util.HashMap;
  */
 public class CommandRegistrar {
 	
-	private static final HashMap<String, Command> registrar = new HashMap<>();
+	private static final HashMap<String, Command> REGISTRAR = new HashMap<>();
 	
 	/**
 	 * Register a command.
@@ -22,13 +22,13 @@ public class CommandRegistrar {
 	 * @throws RuntimeException if the command does not match the regex.
 	 */
 	public static void register(String commandName, Command command) throws CommandAlreadyRegisteredException {
-		if(registrar.containsKey(commandName))
+		if(REGISTRAR.containsKey(commandName))
 			throw new CommandAlreadyRegisteredException();
 		
 		if(!commandName.matches("^[a-z0-9_-]*$"))
 			throw new RuntimeException("Command does not match regex!");
 		
-		registrar.put(commandName, command);
+		REGISTRAR.put(commandName, command);
 	}
 	
 }

@@ -21,6 +21,6 @@ public interface Command {
 	 *                to get information from the user
 	 *                (such as their Discord snowflake ID)
 	 */
-	void onCommand(String[] args, Message message);
+	String onCommand(String[] args, Message message);
 	
 }

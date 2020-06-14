@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot;
 
+import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.logging.Logger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -34,7 +35,7 @@ public class Main {
 	public static boolean checkForUpdates = true;
 	
 	private static boolean onlyStats = false;
-	
+	private static boolean noCoreCommands = false;
 	
 	static {
 		//temp for final string
@@ -63,6 +64,7 @@ public class Main {
 	 * 
 	 * Arguments (NOT case sensitive):
 	 *      --IKnowWhatImDoingIDontWantToUpgrade - skip upgrade checks.
+	 *      --IKnowWhatImDoingDontRegisterCoreCommands - do not register core commands.
 	 *      --Stats - prints statistics about the bot and then exits.
 	 *      --Version - print the version and then exit.
 	 *      --Help - display help.
@@ -89,6 +91,9 @@ public class Main {
 		Runtime.getRuntime().gc();
 		
 		checkArgs(argsToSend);
+		
+		if(!noCoreCommands)
+			CoreCommands.registerCoreCommands();
 		
 		try {
 			JDA a = new JDABuilder((String) token).setDisabledCacheFlags(
@@ -124,6 +129,8 @@ public class Main {
 					Logger.critical("Instant break: activated!", 2);
 				case "--version":
 					System.out.println("untitled-bot version " + VERSION); System.exit(0);
+				case "--iknowwhatimdoingdontregistercorecommands":
+					noCoreCommands = true; break;
 			}
 		}
 	}
