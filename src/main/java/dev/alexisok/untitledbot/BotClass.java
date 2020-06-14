@@ -7,5 +7,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
  * @since 0.0.1
  */
 public class BotClass extends ListenerAdapter {
-	
+	BotClass() {
+		
+	}
 }

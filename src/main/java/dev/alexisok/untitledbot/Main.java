@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Properties;
 
@@ -49,7 +50,7 @@ public class Main {
 			if (!DATA_PATH1.endsWith("/")) DATA_PATH1 += "/";
 			
 		} catch (IOException ignored) {
-			DATA_PATH1 = "./data/"; //default
+			DATA_PATH1 = "./usrdata/"; //default
 		}
 		//create the directory if it doesn't
 		//already exist.
@@ -63,7 +64,8 @@ public class Main {
 	 * Arguments (NOT case sensitive):
 	 *      --IKnowWhatImDoingIDontWantToUpgrade - skip upgrade checks.
 	 *      --Stats - prints statistics about the bot and then exits.
-	 *      --Version
+	 *      --Version - print the version and then exit.
+	 *      --Help - display help.
 	 * 
 	 * @param args command line arguments, first one is for the token, any
 	 *             other arguments not listed in this methods JavaDoc will
@@ -73,16 +75,27 @@ public class Main {
 		
 		Logger.log("Starting untitled bot " + VERSION + ".");
 		
-		if (args.length > 0) Logger.log("Checking arguments...");
+		if(args.length > 0)  Logger.log("Checking arguments...");
 		else                 Logger.critical("No arguments, exiting...", 5);
 		
-		checkArgs(args);
+		//Don't want the token in a String!
+		CharSequence token = args[0];
+		
+		String[] argsToSend = new String[args.length]; //not one less!
+		
+		System.arraycopy(args, 1, argsToSend, 1, args.length - 1);
+		
+		args = null;
+		Runtime.getRuntime().gc();
+		
+		checkArgs(argsToSend);
 		
 		try {
-			JDA a = new JDABuilder(args[0]).setDisabledCacheFlags(
+			JDA a = new JDABuilder((String) token).setDisabledCacheFlags(
 					EnumSet.of(CacheFlag.EMOTE)
 			).build();
-		} catch (LoginException e) {
+			a.addEventListener(new BotClass());
+		} catch(LoginException e) {
 			e.printStackTrace();
 			Logger.critical("Could not login to Discord!", 1);
 		}
@@ -109,6 +122,8 @@ public class Main {
 					onlyStats = true; break;
 				case "--instantbreak":
 					Logger.critical("Instant break: activated!", 2);
+				case "--version":
+					System.out.println("untitled-bot version " + VERSION); System.exit(0);
 			}
 		}
 	}
