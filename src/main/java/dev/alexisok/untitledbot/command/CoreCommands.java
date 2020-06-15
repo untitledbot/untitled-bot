@@ -10,7 +10,10 @@ public class CoreCommands {
 	 * Register all core commands.
 	 */
 	public static void registerCoreCommands() {
-		CommandRegistrar.register("help", ((args, message) -> Manual.getHelpPages(Integer.parseInt(args[0]))));
+		CommandRegistrar.register("help", ((args, message) -> Manual.getHelpPages(args[1])));
+		CommandRegistrar.register("stats", (((args, message) -> {
+			
+		})));
 	}
 	
 }
