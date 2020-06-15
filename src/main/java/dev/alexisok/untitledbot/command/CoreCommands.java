@@ -12,7 +12,7 @@ public class CoreCommands {
 	public static void registerCoreCommands() {
 		CommandRegistrar.register("help", ((args, message) -> Manual.getHelpPages(args[1])));
 		CommandRegistrar.register("stats", (((args, message) -> {
-			
+			return "";
 		})));
 	}
 	
