@@ -14,6 +14,13 @@ public class CommandRegistrar {
 	private static final HashMap<String, Command> REGISTRAR = new HashMap<>();
 	
 	/**
+	 * @return the size of the registrar.
+	 */
+	static int registrarSize() {
+		return REGISTRAR.size();
+	}
+	
+	/**
 	 * Register a command.
 	 * @param commandName the name of the command.  Must match "^[a-z0-9_-]*$" (alphanumerical
 	 *                    lowercase only plus underscores and hyphens).   
