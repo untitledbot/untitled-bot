@@ -86,7 +86,7 @@ public class Main {
 		else                 Logger.critical("No arguments, exiting...", 5);
 		
 		//Don't want the token in a String!
-		CharSequence token = args[0];
+		String token = args[0];
 		
 		String[] argsToSend = new String[args.length]; //not one less!
 		
@@ -101,7 +101,7 @@ public class Main {
 			CoreCommands.registerCoreCommands();
 		
 		try {
-			JDA a = new JDABuilder((String) token).setDisabledCacheFlags(
+			JDA a = new JDABuilder(token).setDisabledCacheFlags(
 					EnumSet.of(CacheFlag.EMOTE)
 			).build();
 			a.addEventListener(new BotClass());
