@@ -1,28 +1,16 @@
 package dev.alexisok.untitledbot.command;
 
-<<<<<<< HEAD
-=======
 import net.dv8tion.jda.api.entities.Message;
 
 import java.util.HashMap;
 
->>>>>>> 82fb7c4b5c9a7267a0af98aa4e5d65d3bb285c27
 /**
  * @author AlexIsOK
  * @since 0.0.1
  */
 public class CommandRegistrar {
 	
-<<<<<<< HEAD
-	/**
-	 * Register a command to be used by the 
-	 * @param commandName
-	 * @param command
-	 */
-	public static void register(String commandName, Command command) {
-		
-=======
-	private static final HashMap<String, Command> registrar = new HashMap<>();
+	private static final HashMap<String, Command> REGISTRAR = new HashMap<>();
 	
 	/**
 	 * Register a command.
@@ -34,14 +22,13 @@ public class CommandRegistrar {
 	 * @throws RuntimeException if the command does not match the regex.
 	 */
 	public static void register(String commandName, Command command) throws CommandAlreadyRegisteredException {
-		if(registrar.containsKey(commandName))
+		if(REGISTRAR.containsKey(commandName))
 			throw new CommandAlreadyRegisteredException();
 		
 		if(!commandName.matches("^[a-z0-9_-]*$"))
 			throw new RuntimeException("Command does not match regex!");
 		
-		registrar.put(commandName, command);
->>>>>>> 82fb7c4b5c9a7267a0af98aa4e5d65d3bb285c27
+		REGISTRAR.put(commandName, command);
 	}
 	
 }
