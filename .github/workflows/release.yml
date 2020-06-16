@@ -3,7 +3,7 @@
 on:
   push:
     branches: [ master ]
-
+#
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,17 +12,17 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Generate build number
-        id: buildnumber
-        uses: AlexIsOK/build-number@v4 # using my own fork to work better for what I need
-        with:
-          token: ${{secrets.github_token}}
-          version: v0.0.1 # this way only the repository owner can upgrade to a new version
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Build Project
         run: |
           mvn clean compile assembly:single
+      - name: Generate build number
+          id: buildnumber
+          uses: AlexIsOK/build-number@v4 # using my own fork to work better for what I need
+          with:
+            token: ${{secrets.github_token}}
+            version: v0.0.1 # this way only the repository owner can upgrade to a new version
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -44,4 +44,8 @@ jobs:
           asset_name: untitled-bot.jar
           asset_content_type: application/jar-archive
         # Or, if you're on Windows: echo "Build number is ${env:BUILD_NUMBER}"
+      - name: Maven deploy
+        id: mvndep
+        run: |
+          mvn deploy -Dregistry=https://maven.pkg.github.com/AlexIsOK -Dtoken=${{ secrets.GITHUB_TOKEN }}
         
