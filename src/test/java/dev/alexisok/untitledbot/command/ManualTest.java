@@ -16,7 +16,7 @@ public class ManualTest {
 		Manual.setHelpPage("3", "help3");
 		Manual.setHelpPage("4", "help4");
 		
-		Logger.log(Manual.getHelpPages(1));
+		Logger.log(Manual.getHelpPages("1"));
 	}
 	
 }

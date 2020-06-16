@@ -29,7 +29,7 @@ public class CommandRegistrar {
 	 * @throws CommandAlreadyRegisteredException if the command already exists.
 	 * @throws RuntimeException if the command does not match the regex.
 	 */
-	public static void register(@NotNull String commandName, @NotNull Command command) throws CommandAlreadyRegisteredException {
+	public static void register(@NotNull String commandName, @NotNull String permission, @NotNull Command command) throws CommandAlreadyRegisteredException {
 		
 		if(REGISTRAR.containsKey(commandName))
 			throw new CommandAlreadyRegisteredException();
