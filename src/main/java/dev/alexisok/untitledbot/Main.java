@@ -36,6 +36,8 @@ public class Main {
 	private static boolean onlyStats = false;
 	private static boolean noCoreCommands = false;
 	
+	public static JDA jda;
+	
 	static {
 		String DEFAULT_PREFIX1;
 		//temp for final string
@@ -85,26 +87,19 @@ public class Main {
 		if(args.length > 0)  Logger.log("Checking arguments...");
 		else                 Logger.critical("No arguments, exiting...", 5);
 		
-		//Don't want the token in a String!
 		String token = args[0];
 		
-		String[] argsToSend = new String[args.length]; //not one less!
-		
-		System.arraycopy(args, 1, argsToSend, 1, args.length - 1);
-		
-		args = null;
-		Runtime.getRuntime().gc();
-		
-		checkArgs(argsToSend);
+		checkArgs(args);
 		
 		if(!noCoreCommands)
 			CoreCommands.registerCoreCommands();
 		
 		try {
-			JDA a = new JDABuilder(token).setDisabledCacheFlags(
+			//add JDA discord things
+			jda = new JDABuilder(token).setDisabledCacheFlags(
 					EnumSet.of(CacheFlag.EMOTE)
 			).build();
-			a.addEventListener(new BotClass());
+			jda.addEventListener(new BotClass());
 		} catch(LoginException e) {
 			e.printStackTrace();
 			Logger.critical("Could not login to Discord!", 1);
