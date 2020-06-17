@@ -17,6 +17,8 @@ public class ManualTest {
 		Manual.setHelpPage("4", "help4");
 		
 		Logger.log(Manual.getHelpPages("1"));
+		if(!Manual.getHelpPages("1").equals("help1"))
+			throw new RuntimeException("SetPage5 Error 1");
 	}
 	
 }
