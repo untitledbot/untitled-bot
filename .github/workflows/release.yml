@@ -44,8 +44,3 @@ jobs:
           asset_name: untitled-bot.jar
           asset_content_type: application/jar-archive
         # Or, if you're on Windows: echo "Build number is ${env:BUILD_NUMBER}"
-      - name: Maven deploy
-        id: mvndep
-        run: |
-          mvn deploy -Dregistry=https://maven.pkg.github.com/AlexIsOK -Dtoken=${{ secrets.GITHUB_TOKEN }}
-        
