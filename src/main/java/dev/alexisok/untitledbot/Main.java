@@ -46,7 +46,7 @@ public class Main {
 		try {
 			
 			Properties p = new Properties();
-			p.load(new FileInputStream(new File("bot.properties")));
+			p.load(new FileInputStream(new File("./bot.properties")));
 			
 			DATA_PATH1 = p.getProperty("dataPath");
 			DEFAULT_PREFIX1 = p.getProperty("prefix");

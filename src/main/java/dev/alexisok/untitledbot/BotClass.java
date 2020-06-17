@@ -34,13 +34,20 @@ public class BotClass extends ListenerAdapter {
 	@Override
 	public final void onMessageReceived(@Nonnull MessageReceivedEvent event) {
 		//TODO rich embed
-		if(!event.getMessage().getContentRaw().startsWith(Main.DEFAULT_PREFIX))
+		
+		//if the message does not start with the prefix or the message is only the prefix
+		if(!event.getMessage().getContentRaw().startsWith(Main.DEFAULT_PREFIX) || event.getMessage().getContentRaw().equals(Main.DEFAULT_PREFIX))
 			return;
-		String message = event.getMessage().getContentRaw().replaceFirst(Main.DEFAULT_PREFIX, "");
+		
+		//remove the prefix
+		String message = event.getMessage().getContentRaw().substring(Main.DEFAULT_PREFIX.length());
+		//args...
 		String[] args = message.split(" ");
-		//noinspection ResultOfMethodCallIgnored
-		event.getChannel().sendMessage(Objects.requireNonNull(
-				CommandRegistrar.runCommand(args[0], args, event.getMessage())));
+		
+		//execute a command and return the message it provides
+		event   .getChannel()
+				.sendMessage(Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage())))
+				.queue();
 	}
 	
 	@Override public final void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {}
