@@ -16,7 +16,14 @@ public class CoreCommands {
 			try {
 				return Manual.getHelpPages(args[1]);
 			} catch(ArrayIndexOutOfBoundsException ignored) {
-				return "Usage: `help <command>`";
+				return "Usage: `man <command>`";
+			}
+		}));
+		CommandRegistrar.register("man", "core.help", ((args, message) -> {
+			try {
+				return Manual.getHelpPages(args[1]);
+			} catch(ArrayIndexOutOfBoundsException ignored) {
+				return "Usage: `man <command>`";
 			}
 		}));
 		CommandRegistrar.register("status", "core.stats", (((args, message) -> {
@@ -29,6 +36,12 @@ public class CoreCommands {
 			
 			return returnString;
 		})));
+	}
+	
+	private static void registerHelp() {
+		Manual.setHelpPage("help", "Get help with a specific command.  Usage: `man <command>`.");
+		Manual.setHelpPage("man", "Get help with a specific command.  Usage: `man <command>`.");
+		Manual.setHelpPage("status", "Get the status of the bot and JVM.");
 	}
 	
 }

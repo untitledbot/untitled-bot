@@ -3,7 +3,7 @@
 2  - Instant break parameter.
 3  - Logging test, you should never see this.
 4  - Generic critical error exit code.
-5  - No command line arguments provided.
+DEPRECATED: 5  - No command line arguments provided.
 6  - Plugin error (generic).
 7  - Plugin has malformed configuration.
 8  - Plugin is outdated.

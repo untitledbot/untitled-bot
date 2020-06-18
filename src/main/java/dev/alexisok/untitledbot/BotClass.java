@@ -52,4 +52,12 @@ public class BotClass extends ListenerAdapter {
 	
 	@Override public final void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {}
 	@Override public final void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent event) {}
+	
+	public static void sendMessageGuild(String ID, String message) {
+		Objects.requireNonNull(Main.jda.getTextChannelById(ID)).sendMessage(message).queue();
+	}
+	
+	public static void sendMessagePrivate(String ID, String message) {
+		Objects.requireNonNull(Main.jda.getPrivateChannelById(ID)).sendMessage(message).queue();
+	}
 }

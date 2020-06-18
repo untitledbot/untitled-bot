@@ -26,11 +26,11 @@ public class CommandRegistrar {
 	
 	/**
 	 * Register a command.
-	 * @param commandName the name of the command.  Must match "^[a-z0-9_-]*$" (alphanumerical
+	 * @param commandName the name of the command.  Must match {@code ^[a-z0-9_-]*$} (alphanumerical
 	 *                    lowercase only plus underscores and hyphens).   
 	 * @param permission the permission the command uses.  Permissions are used for members
 	 *                   or groups of members, they can only use the command if they have
-	 *                   the needed permission.  Must match "^[a-z.]*" convention is to start
+	 *                   the needed permission.  Must match {@code ^[a-z]([a-z][.]?)+[a-z]$} convention is to start
 	 *                   the permission with your plugin name, period, then the command (example:
 	 *                   {@code coolplugin.command} or {@code coolplugin.category.command}.
 	 *                   Do not have the permission end or start with a period.  Numbers and
@@ -48,7 +48,7 @@ public class CommandRegistrar {
 		
 		if(!commandName.matches("^[a-z0-9_-]*$"))
 			throw new RuntimeException("Command does not match regex!");
-		if(!permission.matches("^[^.]([a-z][.]?)+[^.]$")) //this took too long to make...
+		if(!permission.matches("^[a-z]([a-z][.]?)+[a-z]$")) //this took too long to make...
 			throw new RuntimeException("Command permission odes not match regex!");
 		
 		REGISTRAR.put(commandName, command);

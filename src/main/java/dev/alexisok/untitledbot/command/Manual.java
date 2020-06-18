@@ -23,7 +23,7 @@ public class Manual {
 	public static @NotNull String getHelpPages(String page) {
 		if(!MAN_PAGES.containsKey(page))
 			return "No such page exists!";
-		return MAN_PAGES.get(page);
+		return "Help for " + page + ":\n" + MAN_PAGES.get(page) + "\n";
 	}
 	
 	/**

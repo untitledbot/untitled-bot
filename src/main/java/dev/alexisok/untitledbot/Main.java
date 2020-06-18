@@ -8,11 +8,12 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Properties;
+import java.util.Scanner;
 
 /**
  * 
@@ -28,6 +29,7 @@ import java.util.Properties;
 public class Main {
 	
 	public static final String VERSION = "0.0.1";
+	public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
 	public static final String DATA_PATH;
 	public static final String DEFAULT_PREFIX;
 	
@@ -46,18 +48,28 @@ public class Main {
 		try {
 			
 			Properties p = new Properties();
-			p.load(new FileInputStream(new File("./bot.properties")));
-			
+			try {
+				p.load(new FileInputStream(new File(CONFIG_PATH + "/bot.properties")));
+			} catch (FileNotFoundException ignored) {
+				PrintWriter pw = new PrintWriter(CONFIG_PATH + "/bot.properties");
+				pw.println("#data path for user data\n" +
+						           "dataPath=./usrdata/\n" +
+						           "#prefix for the bot, default is %\n" +
+						           "prefix=>\n");
+				Logger.log("Config has been loaded, please make sure to reload the program after modifying it.");
+				pw.close();
+				throw new IOException(); //break into the last IOException catch block
+			}
 			DATA_PATH1 = p.getProperty("dataPath");
 			DEFAULT_PREFIX1 = p.getProperty("prefix");
 			if (!DATA_PATH1.endsWith("/")) DATA_PATH1 += "/";
 			if(DEFAULT_PREFIX1.equals(""))
-				DEFAULT_PREFIX1 = "%";
+				DEFAULT_PREFIX1 = ">";
 			
 		} catch (IOException e) {
 			e.printStackTrace();
-			DATA_PATH1 = "./usrdata/"; //default
-			DEFAULT_PREFIX1 = "%";
+			DATA_PATH1 = CONFIG_PATH + "/usrdata/"; //default
+			DEFAULT_PREFIX1 = ">";
 		}
 		//create the directory if it doesn't
 		//already exist.
@@ -85,11 +97,20 @@ public class Main {
 		Logger.log("Starting untitled bot " + VERSION + ".");
 		
 		if(args.length > 0)  Logger.log("Checking arguments...");
-		else                 Logger.critical("No arguments, exiting...", 5);
-		
-		String token = args[0];
 		
 		checkArgs(args);
+		String token;
+		try {
+			token = args[0];
+		} catch(ArrayIndexOutOfBoundsException ignored) {
+			System.out.println("Please input your token (CTRL + V or CTRL + SHIFT + V on some terminals):");
+			try {
+				token = Arrays.toString(System.console().readPassword());
+			} catch(NullPointerException ignored2) {
+				System.out.println("WARN: defaulting to plaintext input!");
+				token = new Scanner(System.in).nextLine();
+			}
+		}
 		
 		if(!noCoreCommands)
 			CoreCommands.registerCoreCommands();
