@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * @author AlexIsOK
@@ -66,6 +67,62 @@ public class CommandRegistrar {
 		if(!REGISTRAR.containsKey(commandName))
 			return null;
 		return REGISTRAR.get(commandName).onCommand(args, m);
+	}
+	
+	/**
+	 * 
+	 * @param command the command to check
+	 * @return true if the command is registered, false otherwise.
+	 */
+	public static boolean hasCommand(String command) {
+		return REGISTRAR.containsKey(command);
+	}
+	
+	/**
+	 * Get the permission node of a command.
+	 * @param command the command
+	 * @return the permission node, {@code null} if it is not registered.
+	 */
+	public static @Nullable String getCommandPermissionNode(String command) {
+		if(!hasCommand(command))
+			return null;
+		return PERMS_REGISTRAR.get(command);
+	}
+	
+	
+	/**
+	 * Register one or more aliases for a command.  When the alias is
+	 * run, the actual command will be called instead.
+	 *
+	 * Aliases are put in the registrar as actual commands and act
+	 * as actual commands, though they only call the command they are
+	 * aliasing for.
+	 *
+	 * Alias will inherit the same permission node from the command
+	 * it is aliasing.  You can easily register an alias manual page
+	 * using
+	 *
+	 * @param command the command name.
+	 * @param aliases the aliases to give the command.
+	 */
+	public static void registerAlias(@NotNull String command, @NotNull String... aliases) {
+		for(String alias : aliases) {
+			register(alias, (PERMS_REGISTRAR.get(command)),
+					((args, message) -> CommandRegistrar.runCommand(alias, args, message)));
+		}
+	}
+	
+	/**
+	 * Copy a manual page from a command.  This does not need to be an
+	 * alias but it is the intended usage of this method.
+	 * 
+	 * @param originalCommand the command to copy off of
+	 * @param aliases the alias command
+	 */
+	public static void registerAliasManual(@NotNull String originalCommand, @NotNull String...aliases) {
+		for(String alias : aliases) {
+			Manual.setHelpPage();
+		}
 	}
 	
 }

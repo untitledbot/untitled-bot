@@ -1,6 +1,7 @@
 package dev.alexisok.untitledbot.command;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,12 +19,22 @@ public class Manual {
 	/**
 	 * Get a specific help page.
 	 * @param page the page.
-	 * @return the help page specified.
+	 * @return the help page specified or {@code null} if no such page exists.
 	 */
-	public static @NotNull String getHelpPages(String page) {
-		if(!MAN_PAGES.containsKey(page))
-			return "No such page exists!";
-		return "Help for " + page + ":\n" + MAN_PAGES.get(page) + "\n";
+	public static @Nullable String getHelpPages(String page) {
+		return MAN_PAGES.containsKey(page)
+				       ? "Help for " + page + ":\n" + MAN_PAGES.get(page) + "\n"
+				       : null;
+	}
+	
+	/**
+	 * Get a help page directly without any extra content.
+	 * 
+	 * @param page the page.
+	 * @return the help page specified or {@code null} if no such page exists.
+	 */
+	public static String getHelpPagesRaw(String page) {
+		return MAN_PAGES.getOrDefault(page, null);
 	}
 	
 	/**
