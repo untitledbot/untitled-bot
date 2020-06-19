@@ -2,6 +2,7 @@ package dev.alexisok.untitledbot.data;
 
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.logging.Logger;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.Properties;
@@ -29,7 +30,7 @@ public class UserData {
 	 * @return the content of the key for the given user.  Returns {@code null} if the key cannot be found.
 	 * @throws UserDataCouldNotBeObtainedException if there is an exception getting the user's data.
 	 */
-	public static String getKey(String ID, String key) throws UserDataCouldNotBeObtainedException {
+	public static @Nullable String getKey(String ID, String key) throws UserDataCouldNotBeObtainedException {
 		checkUserExists(ID);
 		Properties p = new Properties();
 		try {
@@ -75,7 +76,7 @@ public class UserData {
 	 * if one does not exist.  Does not return a boolean or anything
 	 * for that matter.
 	 */
-	private static void checkUserExists(String ID) {
+	public static void checkUserExists(String ID) {
 		if(!new File(Main.DATA_PATH + ID + ".properties").exists())
 			createUserProfile(ID);
 	}
