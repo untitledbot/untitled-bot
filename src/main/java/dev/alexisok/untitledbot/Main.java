@@ -51,13 +51,12 @@ public class Main {
 			try {
 				p.load(new FileInputStream(new File(CONFIG_PATH + "/bot.properties")));
 			} catch (FileNotFoundException ignored) {
-				PrintWriter pw = new PrintWriter(CONFIG_PATH + "/bot.properties");
-				pw.println("#data path for user data\n" +
-						           "dataPath=./usrdata/\n" +
-						           "#prefix for the bot, default is %\n" +
-						           "prefix=>\n");
-				Logger.log("Config has been loaded, please make sure to reload the program after modifying it.");
-				pw.close();
+				Properties p2 = new Properties();
+				p.setProperty("configVersion", "0.0.1");
+				p.setProperty("dataPath", "./usrdata/");
+				p.setProperty("prefix", ">");
+				p.store(new FileOutputStream(CONFIG_PATH + "/bot.properties"), null);
+				
 				throw new IOException(); //break into the last IOException catch block
 			}
 			DATA_PATH1 = p.getProperty("dataPath");
