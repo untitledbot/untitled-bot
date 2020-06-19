@@ -121,7 +121,7 @@ public class CommandRegistrar {
 	 */
 	public static void registerAliasManual(@NotNull String originalCommand, @NotNull String...aliases) {
 		for(String alias : aliases) {
-			Manual.setHelpPage();
+			Manual.setHelpPage(alias, Manual.getHelpPagesRaw(originalCommand));
 		}
 	}
 	
