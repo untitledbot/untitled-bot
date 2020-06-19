@@ -120,7 +120,8 @@ public class Main {
 					EnumSet.of(CacheFlag.EMOTE)
 			).build();
 			jda.addEventListener(new BotClass());
-		} catch(LoginException e) {
+			jda.awaitReady();
+		} catch(LoginException | InterruptedException e) {
 			e.printStackTrace();
 			Logger.critical("Could not login to Discord!", 1);
 		}

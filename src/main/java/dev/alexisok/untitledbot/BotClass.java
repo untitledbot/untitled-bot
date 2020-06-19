@@ -53,10 +53,20 @@ public class BotClass extends ListenerAdapter {
 	@Override public final void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {}
 	@Override public final void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent event) {}
 	
+	/**
+	 * Send a message to a specific guild channel
+	 * @param ID the ID of the guild channel
+	 * @param message the message
+	 */
 	public static void sendMessageGuild(String ID, String message) {
 		Objects.requireNonNull(Main.jda.getTextChannelById(ID)).sendMessage(message).queue();
 	}
 	
+	/**
+	 * Send a message to a specific user
+	 * @param ID the user ID
+	 * @param message the message
+	 */
 	public static void sendMessagePrivate(String ID, String message) {
 		Objects.requireNonNull(Main.jda.getPrivateChannelById(ID)).sendMessage(message).queue();
 	}
