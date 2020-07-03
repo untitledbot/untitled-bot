@@ -12,7 +12,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public interface Command {
 	
 	/**
-	 * Executes when the command is run.
+	 * Executes when the command is run.  Return {@code null} if
+	 * you do not wish for the bot to respond to the command.
 	 * 
 	 * @param args arguments for the command.
 	 *             The first argument is always the name of

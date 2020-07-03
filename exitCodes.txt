@@ -8,4 +8,6 @@ DEPRECATED: 5  - No command line arguments provided.
 7  - Plugin has malformed configuration.
 8  - Plugin is outdated.
 9  - Plugin crashed.
-10 - Plugin requested shutdown.
+10 - Plugin requested unexpected shutdown.
+11 - Plugin loader already loaded.
+12 - Plugin loader could not find plugin list file.

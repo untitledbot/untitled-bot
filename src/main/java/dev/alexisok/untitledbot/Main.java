@@ -9,11 +9,14 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Properties;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -80,12 +83,12 @@ public class Main {
 	
 	/**
 	 * 
-	 * Arguments (NOT case sensitive):
-	 *      --IKnowWhatImDoingIDontWantToUpgrade - skip upgrade checks.
-	 *      --IKnowWhatImDoingDontRegisterCoreCommands - do not register core commands.
-	 *      --Stats - prints statistics about the bot and then exits.
-	 *      --Version - print the version and then exit.
-	 *      --Help - display help.
+	 * Arguments (NOT case sensitive):<br>
+	 *      --IKnowWhatImDoingIDontWantToUpgrade - skip upgrade checks.<br>
+	 *      --IKnowWhatImDoingDontRegisterCoreCommands - do not register core commands.<br>
+	 *      --Stats - prints statistics about the bot and then exits.<br>
+	 *      --Version - print the version and then exit.<br>
+	 *      --Help - display help.<br>
 	 * 
 	 * @param args command line arguments, first one is for the token, any
 	 *             other arguments not listed in this methods JavaDoc will
@@ -124,6 +127,25 @@ public class Main {
 		} catch(LoginException | InterruptedException e) {
 			e.printStackTrace();
 			Logger.critical("Could not login to Discord!", 1);
+		}
+	}
+	
+	/**
+	 * Check for upgrades.
+	 * This will be skipped if the no-upgrade flag is used.
+	 */
+	private static void checkForUpgrades() {
+		if(!checkForUpdates)
+			return;
+		
+		final String UPDATE_URL = "https://api.github.com/repos/alexisok/untitled-bot/tags";
+		
+		String fullString;
+		//TODO check for updates
+		try(BufferedReader r = new BufferedReader(new InputStreamReader(new URL(UPDATE_URL).openStream()))) {
+			fullString = r.lines().collect(Collectors.joining());
+		} catch(IOException ignored) {
+			Logger.critical("There was an error checking for updates!", 0, false);
 		}
 	}
 	
