@@ -20,6 +20,7 @@ public class CoreCommands {
 	 * Register all core commands.
 	 */
 	public static void registerCoreCommands() {
+		Logger.log("Registering core commands.");
 		CommandRegistrar.register("help", "core.help", ((args, message) -> {
 			try {
 				return Manual.getHelpPages(args[1]);
@@ -50,7 +51,7 @@ public class CoreCommands {
 			}
 			return "Usage: `shutdown [code]`";
 		});
-		
+		Logger.log("Core commands have been registered.");
 	}
 	
 	/**
@@ -65,7 +66,9 @@ public class CoreCommands {
 	}
 	
 	public static void registerModules() {
+		Logger.log("Registering modules.");
 		new EightBall().onRegister();
 		new AtSomeone().onRegister();
+		Logger.log("Modules have been registered.");
 	}
 }

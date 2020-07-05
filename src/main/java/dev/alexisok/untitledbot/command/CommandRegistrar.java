@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 /**
  * @author AlexIsOK
@@ -60,7 +59,7 @@ public class CommandRegistrar {
 	 * Run a command.  This can be invoked by plugins
 	 * so there can be more creative plugins.
 	 * 
-	 * @param commandName the name of the command to execute
+	 * @param commandName the name of the command to execute.
 	 * @return the return String.  Returns {@code null} if the command was not found.
 	 */
 	public static @Nullable String runCommand(String commandName, String[] args, Message m) {
@@ -107,8 +106,9 @@ public class CommandRegistrar {
 	 */
 	public static void registerAlias(@NotNull String command, @NotNull String... aliases) {
 		for(String alias : aliases) {
-			register(alias, (PERMS_REGISTRAR.get(command)),
-					((args, message) -> CommandRegistrar.runCommand(alias, args, message)));
+//			register(alias, (PERMS_REGISTRAR.get(command)),
+//					((args, message) -> CommandRegistrar.runCommand(alias, args, message)));
+			register(alias, PERMS_REGISTRAR.get(command), REGISTRAR.get(command));
 		}
 	}
 	

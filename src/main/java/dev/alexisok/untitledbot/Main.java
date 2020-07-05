@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.logging.Logger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
@@ -103,7 +104,6 @@ public class Main {
 		String token;
 		try {
 			token = args[0];
-			System.out.println(args[0]);
 		} catch(ArrayIndexOutOfBoundsException ignored) {
 			System.out.println("Please input your token (CTRL + V or CTRL + SHIFT + V on some terminals):");
 			try {
@@ -178,6 +178,18 @@ public class Main {
 					noModules = true; break;
 			}
 		}
+	}
+	
+	/**
+	 * Return the resulting properties location of a specific user
+	 * given their user ID and guild ID.
+	 * @param userID the discord snowflake of the user.
+	 * @param guildID the discord snowflake of the guild.
+	 * @return the parsed properties location.
+	 */
+	@Contract(pure = true)
+	public static @NotNull String parsePropertiesLocation(String userID, String guildID) {
+		return Main.DATA_PATH + guildID + "/" + userID + ".properties";
 	}
 	
 }

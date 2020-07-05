@@ -23,9 +23,7 @@ public class Manual {
 	 */
 	public static @Nullable String getHelpPages(String page) {
 		return MAN_PAGES.containsKey(page)
-				       ? "Help for " + page + ":\n" + MAN_PAGES.get(page) + "\n" + (getCommandPermissionNode(page) == null
-						                                                                    ? ""
-						                                                                    : "Permission node: " + getCommandPermissionNode(page))
+				       ? "Help for " + page + ":\n" + MAN_PAGES.get(page) + "\n" + getCommandPermissionNode(page)
 				       : null;
 	}
 	

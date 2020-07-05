@@ -36,12 +36,12 @@ public class Vault {
      * @param dataValue the data that will be stored under the key.
      */
     public static void storeUserDataLocal(String userID, String guildID, String dataKey, String dataValue) {
-        checkUserExists(userID);
+        checkUserExists(userID, guildID);
         Properties p = new Properties();
         try {
-            p.load(new FileReader(Main.DATA_PATH + userID + ".properties"));
+            p.load(new FileReader(Main.parsePropertiesLocation(userID, guildID)));
             p.setProperty(dataKey, dataValue);
-            p.store(new FileOutputStream(Main.DATA_PATH + guildID + "/" + userID + ".properties"), null);
+            p.store(new FileOutputStream(Main.parsePropertiesLocation(userID, guildID)), null);
         } catch (IOException e) {
             e.printStackTrace();
             //to be caught and reported to the end user over Discord.
