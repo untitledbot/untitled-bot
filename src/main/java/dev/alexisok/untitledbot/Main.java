@@ -4,16 +4,13 @@ import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.logging.Logger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -40,6 +37,8 @@ public class Main {
 	
 	private static boolean onlyStats = false;
 	private static boolean noCoreCommands = false;
+	private static boolean noModules = false;
+	
 	
 	public static JDA jda;
 	
@@ -54,7 +53,6 @@ public class Main {
 			try {
 				p.load(new FileInputStream(new File(CONFIG_PATH + "/bot.properties")));
 			} catch (FileNotFoundException ignored) {
-				Properties p2 = new Properties();
 				p.setProperty("configVersion", "0.0.1");
 				p.setProperty("dataPath", "./usrdata/");
 				p.setProperty("prefix", ">");
@@ -86,6 +84,7 @@ public class Main {
 	 * Arguments (NOT case sensitive):<br>
 	 *      --IKnowWhatImDoingIDontWantToUpgrade - skip upgrade checks.<br>
 	 *      --IKnowWhatImDoingDontRegisterCoreCommands - do not register core commands.<br>
+	 *      --IKnowWhatImDoingDontRegisterAnyModules - do not register modules.<br>
 	 *      --Stats - prints statistics about the bot and then exits.<br>
 	 *      --Version - print the version and then exit.<br>
 	 *      --Help - display help.<br>
@@ -100,10 +99,11 @@ public class Main {
 		
 		if(args.length > 0)  Logger.log("Checking arguments...");
 		
-		checkArgs(args);
+		checkArgs(args.clone());
 		String token;
 		try {
 			token = args[0];
+			System.out.println(args[0]);
 		} catch(ArrayIndexOutOfBoundsException ignored) {
 			System.out.println("Please input your token (CTRL + V or CTRL + SHIFT + V on some terminals):");
 			try {
@@ -116,12 +116,12 @@ public class Main {
 		
 		if(!noCoreCommands)
 			CoreCommands.registerCoreCommands();
+		if(!noModules)
+			CoreCommands.registerModules();
 		
 		try {
 			//add JDA discord things
-			jda = new JDABuilder(token).setDisabledCacheFlags(
-					EnumSet.of(CacheFlag.EMOTE)
-			).build();
+			jda = new JDABuilder(token).build();
 			jda.addEventListener(new BotClass());
 			jda.awaitReady();
 		} catch(LoginException | InterruptedException e) {
@@ -174,6 +174,8 @@ public class Main {
 					System.out.println("untitled-bot version " + VERSION); System.exit(0);
 				case "--iknowwhatimdoingdontregistercorecommands":
 					noCoreCommands = true; break;
+				case "--iknowwhatimdoingdontregisteranymodules":
+					noModules = true; break;
 			}
 		}
 	}

@@ -45,9 +45,12 @@ public class BotClass extends ListenerAdapter {
 		String[] args = message.split(" ");
 		
 		//execute a command and return the message it provides
-		event   .getChannel()
-				.sendMessage(Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage())))
-				.queue();
+		try {
+			event.getChannel()
+					.sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
+					.queue();
+		} catch(NullPointerException ignored){} //this returns null if the command does not exist.
+		//needs to be caught to avoid flooding logs.
 	}
 	
 	@Override public final void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {}

@@ -2,6 +2,9 @@ package dev.alexisok.untitledbot.command;
 
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
+import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
+import dev.alexisok.untitledbot.plugin.UBPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -61,4 +64,8 @@ public class CoreCommands {
 		CommandRegistrar.registerAliasManual("help", "man", "halp");
 	}
 	
+	public static void registerModules() {
+		new EightBall().onRegister();
+		new AtSomeone().onRegister();
+	}
 }

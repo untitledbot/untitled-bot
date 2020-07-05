@@ -37,7 +37,7 @@ public class EightBall extends UBPlugin implements Command {
     @Override
     public void onRegister() {
         //in a real plugin, you would not use module as the first word.
-        CommandRegistrar.register("8ball", "module.example.8ball", new EightBall());
+        CommandRegistrar.register("8ball", "module.example.eightball", new EightBall());
     }
     
     @Override
