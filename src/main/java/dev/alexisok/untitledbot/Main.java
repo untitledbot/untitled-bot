@@ -107,7 +107,7 @@ public class Main {
 			try {
 				token = Arrays.toString(System.console().readPassword());
 			} catch(NullPointerException ignored2) {
-				System.out.println("WARN: defaulting to plaintext input!");
+				System.out.println("WARNING: defaulting to plaintext input!");
 				token = new Scanner(System.in).nextLine();
 			}
 		}
