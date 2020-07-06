@@ -36,7 +36,6 @@ public class Main {
 	
 	public static boolean checkForUpdates = true;
 	
-	private static boolean onlyStats = false;
 	private static boolean noCoreCommands = false;
 	private static boolean noModules = false;
 	
@@ -86,7 +85,6 @@ public class Main {
 	 *      --IKnowWhatImDoingIDontWantToUpgrade - skip upgrade checks.<br>
 	 *      --IKnowWhatImDoingDontRegisterCoreCommands - do not register core commands.<br>
 	 *      --IKnowWhatImDoingDontRegisterAnyModules - do not register modules.<br>
-	 *      --Stats - prints statistics about the bot and then exits.<br>
 	 *      --Version - print the version and then exit.<br>
 	 *      --Help - display help.<br>
 	 * 
@@ -109,7 +107,7 @@ public class Main {
 			try {
 				token = Arrays.toString(System.console().readPassword());
 			} catch(NullPointerException ignored2) {
-				System.out.println("WARN: defaulting to plaintext input!");
+				System.out.println("WARNING: defaulting to plaintext input!");
 				token = new Scanner(System.in).nextLine();
 			}
 		}
@@ -166,8 +164,6 @@ public class Main {
 			switch(s) {
 				case "--iknowwhatimdoingidontwanttoupgrade": //don't check for upgrades
 					checkForUpdates = false; break;
-				case "--stats": //only print stats
-					onlyStats = true; break;
 				case "--instantbreak":
 					Logger.critical("Instant break: activated!", 2);
 				case "--version":

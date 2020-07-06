@@ -51,6 +51,11 @@ public class CoreCommands {
 			}
 			return "Usage: `shutdown [code]`";
 		});
+		CommandRegistrar.register("permission", "core.permission", ((args, message) -> {
+			if(message.getAuthor().isBot())
+				return "Bot users are not allowed to execute this command.";
+			if(message.getGuild().getRoles()) //FIXME
+		}));
 		Logger.log("Core commands have been registered.");
 	}
 	
