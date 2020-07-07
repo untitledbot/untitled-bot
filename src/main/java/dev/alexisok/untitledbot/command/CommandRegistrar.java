@@ -34,7 +34,10 @@ public class CommandRegistrar {
 	 *                   the permission with your plugin name, period, then the command (example:
 	 *                   {@code coolplugin.command} or {@code coolplugin.category.command}.
 	 *                   Do not have the permission end or start with a period.  Numbers and
-	 *                   capital letters do not match.
+	 *                   capital letters do not match.<br>
+	 *                   <br>
+	 *                   Special cases: you can pass "admin" as the string name to require the user to
+	 *                   require the user to have administrator or a role with administrator.
 	 * @param command the {@link Command} to use.  {@link Command#onCommand(String[], Message)}
 	 *                will be executed when the command is called.
 	 * @throws CommandAlreadyRegisteredException if the command already exists.
@@ -48,7 +51,7 @@ public class CommandRegistrar {
 		
 		if(!commandName.matches("^[a-z0-9_-]*$"))
 			throw new RuntimeException("Command does not match regex!");
-		if(!permission.matches("^[a-z]([a-z][.]?)+[a-z]$")) //this took too long to make...
+		if(!permission.matches("^[a-z]([a-z][.]?)+[a-z]$") && !permission.equals("admin")) //this took too long to make...
 			throw new RuntimeException("Command permission does not match regex!");
 		
 		REGISTRAR.put(commandName, command);
