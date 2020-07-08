@@ -5,6 +5,8 @@ import dev.alexisok.untitledbot.logging.Logger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -140,7 +142,20 @@ public class Main {
 	 */
 	private static void preStartChecks() {
 		for(Guild g : jda.getGuilds()) {
-			if(new File())
+			File fg = new File(Main.DATA_PATH + g.getId());
+			if(!fg.exists())
+				fg.mkdir();
+			for(Member m : g.getMembers()) {
+				if(m.getUser().isBot())
+					continue;
+				File fu = new File(Main.parsePropertiesLocation(m.getId(), g.getId()));
+				try {
+					if (!fu.exists())
+						fu.createNewFile();
+				} catch(IOException ignored) {
+					Logger.critical("Could not create a data file " + fu.getPath() + "!", -1, false);
+				}
+			}
 		}
 	}
 	
@@ -195,12 +210,13 @@ public class Main {
 	/**
 	 * Return the resulting properties location of a specific user
 	 * given their user ID and guild ID.
-	 * @param userID the discord snowflake of the user.
+	 * @param userID the discord snowflake of the user.  Can be {@code null} for global config.
 	 * @param guildID the discord snowflake of the guild.
 	 * @return the parsed properties location.
 	 */
 	@Contract(pure = true)
-	public static @NotNull String parsePropertiesLocation(String userID, String guildID) {
+	public static @NotNull String parsePropertiesLocation(String userID, @NotNull String guildID) {
+		if (userID == null) return DATA_PATH + guildID + ".properties";
 		return DATA_PATH + guildID + "/" + userID + ".properties";
 	}
 	

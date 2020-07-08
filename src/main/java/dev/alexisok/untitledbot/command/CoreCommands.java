@@ -4,9 +4,9 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
-import dev.alexisok.untitledbot.plugin.UBPlugin;
+import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.Permission;
-import org.jetbrains.annotations.NotNull;
+import net.dv8tion.jda.api.entities.Member;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -42,7 +42,9 @@ public class CoreCommands {
 			
 			return returnString;
 		})));
-		CommandRegistrar.register("shutdown", "core.shutdown", (args, message) -> {
+		
+		//shutdown the bot.  use screen or pm2 if you want it to restart.
+		CommandRegistrar.register("shutdown", "owner", (args, message) -> {
 			try {
 				Logger.log("shutting down...\nThank you for using untitled-bot!");
 				Logger.log("Exit caused by message " + Arrays.toString(args) + " by user ID " + message.getAuthor().getId());
@@ -54,23 +56,69 @@ public class CoreCommands {
 			}
 			return "Usage: `shutdown [code]`";
 		});
-		CommandRegistrar.register("permission", "admin", ((args, message) -> {
+		
+		//the permissions command is very important.  It can be skipped for more security,
+		//but you won't be able to modify commands.
+		//Usage: `setperms <user ID|user @|role ID|role @|guild> <permission> <true|false|1|0>`
+		CommandRegistrar.register("setperms", "admin", ((args, message) -> {
+			//pre command checks
 			if(message.getAuthor().isBot())
 				return "Bot users are not allowed to execute this command.";
 			if(!Objects.requireNonNull(message.getMember()).hasPermission(Permission.ADMINISTRATOR))
 				return "You must be an administrator on the server to execute this command.";
-			if(args.length <= 4)
-				return "Usage: `setperms <user|role|guild> <[user ID|user @|role ID|role @|everyone]> <permission> <true|false|1|0>`";
-			if(args[1].equalsIgnoreCase("user") || args[1].equalsIgnoreCase("role")) {
-				if(message.getMentionedMembers().size() == 1) {
+			try {
+				//make sure that the permission is valid.
+				if (!args[2].matches("^[a-z]([a-z][.]?)+[a-z]$"))
+					return "Please enter a valid command permission.";
+				if (message.getMentionedMembers().size() == 1) {
+					Member mentionedMember = message.getMentionedMembers().get(0);
+					String permission = args[2];
+					boolean allow;
+					if (args[3].equals("1")) allow = true;
+					else if (args[3].equals("0")) allow = false;
+					allow = args[3].equalsIgnoreCase("true");
 					
-				} else if(args[2].matches("^[0-9]+$")) {
+					Vault.storeUserDataLocal(
+							mentionedMember.getId(),
+							message.getGuild().getId(),
+							permission,
+							allow ? "true" : "false"
+					);
+					return "Permissions updated.";
+				} else if (args[2].matches("^[0-9]+$")) {
+					String memberID = args[1];
+					String permission = args[2];
+					boolean allow;
+					if (args[3].equals("1")) allow = true;
+					else if (args[3].equals("0")) allow = false;
+					allow = args[3].equalsIgnoreCase("true");
 					
+					Vault.storeUserDataLocal(
+							memberID,
+							message.getGuild().getId(),
+							permission,
+							allow ? "true" : "false"
+					);
+					return "Permissions updated.";
+				} else if (args[1].equals("guild")) {
+					String permission = args[3];
+					boolean allow;
+					if (args[3].equals("1")) allow = true;
+					else if (args[3].equals("0")) allow = false;
+					allow = args[3].equalsIgnoreCase("true");
+					
+					Vault.storeUserDataLocal(
+							null,
+							message.getGuild().getId(),
+							permission,
+							allow ? "true" : "false"
+					);
+					return "Permissions updated.";
+				} else {
+					return "Usage: `setperms **<user ID|user @|role ID|role @|guild>** <permission> <true|false|1|0>`";
 				}
-			} else if(args[1].equalsIgnoreCase("guild")) {
-				
-			} else {
-				return "Usage: `setperms **<user|role|guild>** <[user ID|user @|role ID|role @|everyone]> <permission> <true|false|1|0>`";
+			} catch(ArrayIndexOutOfBoundsException ignored) {
+				return "Usage: `setperms <user ID|user @|role ID|role @|guild> <permission> <true|false|1|0>`";
 			}
 		}));
 		Logger.log("Core commands have been registered.");

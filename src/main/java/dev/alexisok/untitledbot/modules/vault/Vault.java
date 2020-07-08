@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.vault;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -12,6 +13,10 @@ import java.util.Properties;
 import static dev.alexisok.untitledbot.data.UserData.checkUserExists;
 
 /**
+ * Note: this is a STATIC module, but it is the only static module.
+ * It translates into I made this in the wrong package and I have all
+ * of the JavaDoc pointing to this as a module, so I might as well
+ * keep it here.<br>
  * 
  * This is a module (built-in plugin) for handling storage things.
  * Plugins should use this module for things like economy handling.
@@ -30,12 +35,14 @@ public class Vault {
      * Store local user data.  Local data is user data that is stored under a guild,
      * and should only be accessed if the request originated in the same guild.
      * 
-     * @param userID the ID of the user.
+     * @param userID the ID of the user.  Can be {@code null} for global config.
      * @param guildID the ID of the guild (server).
      * @param dataKey the key of the data to store.
      * @param dataValue the data that will be stored under the key.
+     * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
-    public static void storeUserDataLocal(String userID, String guildID, String dataKey, String dataValue) {
+    public static void storeUserDataLocal(String userID, @NotNull String guildID, @NotNull String dataKey, @NotNull String dataValue)
+            throws UserDataCouldNotBeObtainedException {
         checkUserExists(userID, guildID);
         Properties p = new Properties();
         try {
