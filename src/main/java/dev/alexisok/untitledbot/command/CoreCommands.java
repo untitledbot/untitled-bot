@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
+import net.dv8tion.jda.api.Permission;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -17,7 +18,8 @@ import java.util.Objects;
 public class CoreCommands {
 	
 	/**
-	 * Register all core commands.
+	 * Register all core commands.  This does not need to be private
+	 * because commands can only be registered once.
 	 */
 	public static void registerCoreCommands() {
 		Logger.log("Registering core commands.");
@@ -51,10 +53,13 @@ public class CoreCommands {
 			}
 			return "Usage: `shutdown [code]`";
 		});
-		CommandRegistrar.register("permission", "core.permission", ((args, message) -> {
+		CommandRegistrar.register("permission", "admin", ((args, message) -> {
 			if(message.getAuthor().isBot())
 				return "Bot users are not allowed to execute this command.";
-			if(message.getGuild().getRoles()) //FIXME
+			if(!Objects.requireNonNull(message.getMember()).hasPermission(Permission.ADMINISTRATOR))
+				return "You must be an administrator on the server to execute this command.";
+			if(args.length <= 2)
+				return "Usage: `setperms <user|role|guild> <[user ID|user @|role ID|role @|everyone]> <permission> <true|false|1|0>`";
 		}));
 		Logger.log("Core commands have been registered.");
 	}

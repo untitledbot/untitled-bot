@@ -1,10 +1,19 @@
 package dev.alexisok.untitledbot.command;
 
+import dev.alexisok.untitledbot.Main;
+import dev.alexisok.untitledbot.data.UserData;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Role;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Objects;
+import java.util.Properties;
 
 /**
  * @author AlexIsOK
@@ -66,8 +75,45 @@ public class CommandRegistrar {
 	 * @return the return String.  Returns {@code null} if the command was not found.
 	 */
 	public static @Nullable String runCommand(String commandName, String[] args, Message m) {
+		
+		//return null if the command does not exist.
 		if(!REGISTRAR.containsKey(commandName))
 			return null;
+		
+		//if the user is a superuser, execute the command without checking the permission node.
+		if(Objects.requireNonNull(m.getMember()).hasPermission(Permission.ADMINISTRATOR))
+			return REGISTRAR.get(commandName).onCommand(args, m);
+		
+		Properties userProps = new Properties();
+		String permissionNode = getCommandPermissionNode(commandName);
+		
+		UserData.checkUserExists(m.getAuthor().getId(), m.getGuild().getId());
+		
+		try {
+			userProps.load(new FileInputStream(Main.parsePropertiesLocation(m.getAuthor().getId(), m.getGuild().getId())));
+			
+			if(!userProps.containsKey(permissionNode) || !userProps.getProperty(permissionNode).equals("true"))
+				return "You do not have permission to execute this command.\nIf this is an error, please have an" +
+						       " administrator on the server execute `setperms user " + m.getAuthor().getId() + "" +
+						       " " + getCommandPermissionNode(commandName) + " true`";
+		} catch(IOException e) {
+			e.printStackTrace();
+			return "There was an IOException while obtaining your data.  Please report this.";
+		}
+		
+		//since roles have snowflakes as well, they can be treated as users here.
+		try {
+			for(Role a : m.getMember().getRoles()) {
+				Properties roleProperties = new Properties();
+				roleProperties.load(new FileInputStream(Main.parsePropertiesLocation(a.getId(), a.getGuild().getId())));
+				if(roleProperties.containsKey(permissionNode) && roleProperties.getProperty(permissionNode).equals("true"))
+					return REGISTRAR.get(commandName).onCommand(args, m);
+				
+			}
+		} catch(IOException ignored) {
+			
+		}
+		
 		return REGISTRAR.get(commandName).onCommand(args, m);
 	}
 	
