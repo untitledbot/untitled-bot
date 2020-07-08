@@ -25,7 +25,8 @@ public class CoreCommands {
 		Logger.log("Registering core commands.");
 		CommandRegistrar.register("help", "core.help", ((args, message) -> {
 			try {
-				return Manual.getHelpPages(args[1]);
+				String returnString = Manual.getHelpPages(args[1]);
+				return returnString == null ? "Could not find the help page, did you make a typo?" : returnString;
 			} catch(ArrayIndexOutOfBoundsException ignored) {
 				return "Usage: `man <command>`";
 			}
@@ -58,10 +59,22 @@ public class CoreCommands {
 				return "Bot users are not allowed to execute this command.";
 			if(!Objects.requireNonNull(message.getMember()).hasPermission(Permission.ADMINISTRATOR))
 				return "You must be an administrator on the server to execute this command.";
-			if(args.length <= 2)
+			if(args.length <= 4)
 				return "Usage: `setperms <user|role|guild> <[user ID|user @|role ID|role @|everyone]> <permission> <true|false|1|0>`";
+			if(args[1].equalsIgnoreCase("user") || args[1].equalsIgnoreCase("role")) {
+				if(message.getMentionedMembers().size() == 1) {
+					
+				} else if(args[2].matches("^[0-9]+$")) {
+					
+				}
+			} else if(args[1].equalsIgnoreCase("guild")) {
+				
+			} else {
+				return "Usage: `setperms **<user|role|guild>** <[user ID|user @|role ID|role @|everyone]> <permission> <true|false|1|0>`";
+			}
 		}));
 		Logger.log("Core commands have been registered.");
+		registerHelp();
 	}
 	
 	/**
