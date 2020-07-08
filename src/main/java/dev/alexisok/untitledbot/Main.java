@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.logging.Logger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -112,11 +113,6 @@ public class Main {
 			}
 		}
 		
-		if(!noCoreCommands)
-			CoreCommands.registerCoreCommands();
-		if(!noModules)
-			CoreCommands.registerModules();
-		
 		try {
 			//add JDA discord things
 			jda = new JDABuilder(token).build();
@@ -125,6 +121,26 @@ public class Main {
 		} catch(LoginException | InterruptedException e) {
 			e.printStackTrace();
 			Logger.critical("Could not login to Discord!", 1);
+		}
+		
+		preStartChecks();
+		
+		if(!noCoreCommands)
+			CoreCommands.registerCoreCommands();
+		if(!noModules)
+			CoreCommands.registerModules();
+		
+	}
+	
+	/**
+	 * Do startup checks, most of these are to fill in missing
+	 * guild directories to make sure that there won't be any errors later on.
+	 * These checks are done before the commands and plugins are registered and
+	 * after the bot is logged in to discord.
+	 */
+	private static void preStartChecks() {
+		for(Guild g : jda.getGuilds()) {
+			if(new File())
 		}
 	}
 	
@@ -185,7 +201,7 @@ public class Main {
 	 */
 	@Contract(pure = true)
 	public static @NotNull String parsePropertiesLocation(String userID, String guildID) {
-		return Main.DATA_PATH + guildID + "/" + userID + ".properties";
+		return DATA_PATH + guildID + "/" + userID + ".properties";
 	}
 	
 }
