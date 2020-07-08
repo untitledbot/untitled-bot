@@ -59,7 +59,7 @@ public class CoreCommands {
 		
 		//the permissions command is very important.  It can be skipped for more security,
 		//but you won't be able to modify commands.
-		//Usage: `setperms <user ID|user @|role ID|role @|guild> <permission> <true|false|1|0>`
+		//Usage: `setperms <user ID|user @|role ID|role @|guild> <permission> <true|false>`
 		CommandRegistrar.register("setperms", "admin", ((args, message) -> {
 			//pre command checks
 			if(message.getAuthor().isBot())
@@ -73,10 +73,7 @@ public class CoreCommands {
 				if (message.getMentionedMembers().size() == 1) {
 					Member mentionedMember = message.getMentionedMembers().get(0);
 					String permission = args[2];
-					boolean allow;
-					if (args[3].equals("1")) allow = true;
-					else if (args[3].equals("0")) allow = false;
-					allow = args[3].equalsIgnoreCase("true");
+					boolean allow = args[3].equalsIgnoreCase("true");
 					
 					Vault.storeUserDataLocal(
 							mentionedMember.getId(),
@@ -85,13 +82,10 @@ public class CoreCommands {
 							allow ? "true" : "false"
 					);
 					return "Permissions updated.";
-				} else if (args[2].matches("^[0-9]+$")) {
+				} else if (args[1].matches("^[0-9]+$")) {
 					String memberID = args[1];
 					String permission = args[2];
-					boolean allow;
-					if (args[3].equals("1")) allow = true;
-					else if (args[3].equals("0")) allow = false;
-					allow = args[3].equalsIgnoreCase("true");
+					boolean allow = args[3].equalsIgnoreCase("true");
 					
 					Vault.storeUserDataLocal(
 							memberID,
@@ -101,11 +95,8 @@ public class CoreCommands {
 					);
 					return "Permissions updated.";
 				} else if (args[1].equals("guild")) {
-					String permission = args[3];
-					boolean allow;
-					if (args[3].equals("1")) allow = true;
-					else if (args[3].equals("0")) allow = false;
-					allow = args[3].equalsIgnoreCase("true");
+					String permission = args[2];
+					boolean allow = args[3].equalsIgnoreCase("true");
 					
 					Vault.storeUserDataLocal(
 							null,
@@ -132,8 +123,12 @@ public class CoreCommands {
 		Manual.setHelpPage("help", "Get help with a specific command.  Usage: `man <command>`.");
 		Manual.setHelpPage("status", "Get the status of the bot and JVM.");
 		Manual.setHelpPage("shutdown", "Shutdown the bot.  Usage: `shutdown [code]` where code is the optional exit code.");
+		Manual.setHelpPage("setperms", "Set the permissions of a user, role, or the entire guild.  Usage: " +
+				                               "`setperms <user ID|user @|role ID|role @|guild> <permission> <true|false>`");
+		CommandRegistrar.registerAlias("setperms", "permissions", "perms", "perm", "pr");
 		CommandRegistrar.registerAliasManual("shutdown", "stop", "exit");
 		CommandRegistrar.registerAliasManual("help", "man", "halp");
+		CommandRegistrar.registerAliasManual("setperms", "permissions", "perms", "perm", "pr");
 	}
 	
 	public static void registerModules() {

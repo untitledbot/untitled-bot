@@ -85,17 +85,19 @@ public class CommandRegistrar {
 			return REGISTRAR.get(commandName).onCommand(args, m);
 		
 		Properties userProps = new Properties();
+		Properties guildProps = new Properties();
 		String permissionNode = getCommandPermissionNode(commandName);
 		
 		UserData.checkUserExists(m.getAuthor().getId(), m.getGuild().getId());
 		
 		try {
-			userProps.load(new FileInputStream(Main.parsePropertiesLocation(m.getAuthor().getId(), m.getGuild().getId())));
 			
-			if(!userProps.containsKey(permissionNode) || !userProps.getProperty(permissionNode).equals("true"))
-				return "You do not have permission to execute this command.\nIf this is an error, please have an" +
-						       " administrator on the server execute `setperms user " + m.getAuthor().getId() + "" +
-						       " " + getCommandPermissionNode(commandName) + " true`";
+			//check user permissions and guild permissions at the same time.
+			//TODO cache this or something to make it faster...
+			guildProps.load(new FileInputStream(Main.DATA_PATH + m.getGuild().getId() + ".properties"));
+			userProps.load(new FileInputStream(Main.parsePropertiesLocation(m.getAuthor().getId(), m.getGuild().getId())));
+			if(userProps.getProperty(permissionNode).equalsIgnoreCase("true") || guildProps.getProperty(permissionNode).equalsIgnoreCase("true"))
+				return REGISTRAR.get(commandName).onCommand(args, m);
 		} catch(IOException e) {
 			e.printStackTrace();
 			return "There was an IOException while obtaining your data.  Please report this.";
@@ -106,15 +108,15 @@ public class CommandRegistrar {
 			for(Role a : m.getMember().getRoles()) {
 				Properties roleProperties = new Properties();
 				roleProperties.load(new FileInputStream(Main.parsePropertiesLocation(a.getId(), a.getGuild().getId())));
-				if(roleProperties.containsKey(permissionNode) && roleProperties.getProperty(permissionNode).equals("true"))
+				if(roleProperties.getProperty(permissionNode).equals("true"))
 					return REGISTRAR.get(commandName).onCommand(args, m);
 				
 			}
-		} catch(IOException ignored) {
-			
-		}
+		} catch(IOException ignored) {}
 		
-		return REGISTRAR.get(commandName).onCommand(args, m);
+		return "You do not have permission to execute this command.\nIf this is an error, please have an" +
+				       " administrator on the server execute `setperms <@" + m.getAuthor().getId() + ">" +
+				       " " + getCommandPermissionNode(commandName) + " true`";
 	}
 	
 	/**

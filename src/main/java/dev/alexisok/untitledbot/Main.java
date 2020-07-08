@@ -4,9 +4,11 @@ import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.logging.Logger;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -117,7 +119,10 @@ public class Main {
 		
 		try {
 			//add JDA discord things
-			jda = new JDABuilder(token).build();
+			jda = new JDABuilder(token)
+					      .setActivity(Activity.playing("alexisok.dev/untitled-bot"))
+						  .disableCache(CacheFlag.ACTIVITY)
+					      .build();
 			jda.addEventListener(new BotClass());
 			jda.awaitReady();
 		} catch(LoginException | InterruptedException e) {
@@ -141,6 +146,7 @@ public class Main {
 	 * after the bot is logged in to discord.
 	 */
 	private static void preStartChecks() {
+		
 		for(Guild g : jda.getGuilds()) {
 			File fg = new File(Main.DATA_PATH + g.getId());
 			if(!fg.exists())
