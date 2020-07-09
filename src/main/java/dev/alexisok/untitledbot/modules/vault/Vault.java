@@ -32,8 +32,7 @@ import static dev.alexisok.untitledbot.data.UserData.checkUserExists;
 public class Vault {
 
     /**
-     * Store local user data.  Local data is user data that is stored under a guild,
-     * and should only be accessed if the request originated in the same guild.
+     * Store user data in the correct directory.
      * 
      * @param userID the ID of the user.  Can be {@code null} for global config.
      * @param guildID the ID of the guild (server).
@@ -52,6 +51,29 @@ public class Vault {
         } catch (IOException e) {
             e.printStackTrace();
             //to be caught and reported to the end user over Discord.
+            throw new UserDataCouldNotBeObtainedException();
+        }
+    }
+    
+    /**
+     * Get the data of a user or guild.
+     * 
+     * @param userID the user ID, pass {@code null} for guild only.
+     * @param guildID the guild ID.
+     * @param dataKey the key to use to get the data.
+     * @return the user's data, or {@code null} if it was not found.
+     * @see Properties#getProperty(String)
+     * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
+     */
+    public static String getUserDataLocal(String userID, @NotNull String guildID, @NotNull String dataKey)
+            throws UserDataCouldNotBeObtainedException{
+        checkUserExists(userID, guildID);
+        Properties p = new Properties();
+        try {
+            p.load(new FileReader(Main.parsePropertiesLocation(userID, guildID)));
+            return p.getProperty(dataKey);
+        } catch(IOException e) {
+            e.printStackTrace();
             throw new UserDataCouldNotBeObtainedException();
         }
     }
