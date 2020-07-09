@@ -120,7 +120,7 @@ public class Main {
 		try {
 			//add JDA discord things
 			jda = new JDABuilder(token)
-					      .setActivity(Activity.playing("alexisok.dev/untitled-bot"))
+					      .setActivity(Activity.playing("alexisok.dev/ub"))
 						  .disableCache(CacheFlag.ACTIVITY)
 					      .build();
 			jda.addEventListener(new BotClass());
