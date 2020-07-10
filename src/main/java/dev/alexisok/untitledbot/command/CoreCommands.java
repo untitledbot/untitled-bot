@@ -23,12 +23,15 @@ public class CoreCommands {
 	 */
 	public static void registerCoreCommands() {
 		Logger.log("Registering core commands.");
+		
+		//help command
 		CommandRegistrar.register("help", "core.help", ((args, message) -> {
 			try {
 				String returnString = Manual.getHelpPages(args[1]);
 				return returnString == null ? "Could not find the help page, did you make a typo?" : returnString;
 			} catch(ArrayIndexOutOfBoundsException ignored) {
-				return "Usage: `man <command>`";
+				return "For help on commands, visit https://alexisok.dev/untitled-bot/commands.\nFor help with specific " +
+						       "commands, do `help [command]`";
 			}
 		}));
 		CommandRegistrar.registerAlias("help", "man", "halp");
@@ -112,6 +115,7 @@ public class CoreCommands {
 				return "Usage: `setperms <user ID|user @|role ID|role @|guild> <permission> <true|false|1|0>`";
 			}
 		}));
+		CommandRegistrar.registerAlias("setperms", "permissions", "perms", "perm", "pr");
 		Logger.log("Core commands have been registered.");
 		registerHelp();
 	}
@@ -125,7 +129,6 @@ public class CoreCommands {
 		Manual.setHelpPage("shutdown", "Shutdown the bot.  Usage: `shutdown [code]` where code is the optional exit code.");
 		Manual.setHelpPage("setperms", "Set the permissions of a user, role, or the entire guild.  Usage: " +
 				                               "`setperms <user ID|user @|role ID|role @|guild> <permission> <true|false>`");
-		CommandRegistrar.registerAlias("setperms", "permissions", "perms", "perm", "pr");
 		CommandRegistrar.registerAliasManual("shutdown", "stop", "exit");
 		CommandRegistrar.registerAliasManual("help", "man", "halp");
 		CommandRegistrar.registerAliasManual("setperms", "permissions", "perms", "perm", "pr");

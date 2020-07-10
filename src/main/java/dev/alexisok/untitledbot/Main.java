@@ -2,6 +2,7 @@ package dev.alexisok.untitledbot;
 
 import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.plugin.PluginLoader;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -97,7 +98,7 @@ public class Main {
 	 *             other arguments not listed in this methods JavaDoc will
 	 *             be ignored.
 	 */
-	public static void main(@NotNull String[] args) {
+	public static void main(@NotNull String[] args) throws ClassNotFoundException {
 		
 		Logger.log("Starting untitled bot " + VERSION + ".");
 		
@@ -105,6 +106,11 @@ public class Main {
 		
 		checkArgs(args.clone());
 		String token;
+		
+//		Logger.log("Loading plugins...");
+//		PluginLoader.loadPlugins();
+//		Logger.log("Plugin loading done.");
+		
 		try {
 			token = args[0];
 		} catch(ArrayIndexOutOfBoundsException ignored) {
@@ -118,9 +124,10 @@ public class Main {
 		}
 		
 		try {
+			
 			//add JDA discord things
 			jda = new JDABuilder(token)
-					      .setActivity(Activity.playing("alexisok.dev/ub"))
+					      .setActivity(Activity.playing(">help"))
 						  .disableCache(CacheFlag.ACTIVITY)
 					      .build();
 			jda.addEventListener(new BotClass());

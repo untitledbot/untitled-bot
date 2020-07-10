@@ -1,41 +1,25 @@
 package dev.alexisok.untitledbot.plugin;
 
-import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.xeustechnologies.jcl.JarClassLoader;
 
 import java.io.*;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 
 /**
+ * 
+ * loads all of the plugins needed.
+ * 
  * @author AlexIsOK
  * @since 0.0.1
  */
 public class PluginLoader {
     
     private static boolean hasLoaded = false;
-    
-    private static final ArrayList<String> PLUGIN_CLASSES = new ArrayList<>();
-    
-    //load all plugin main classes
-    static {
-        try(BufferedReader b = new BufferedReader(new FileReader("pluginClasses.txt"))) {
-            String currentLine;
-            while((currentLine = b.readLine()) != null)
-                PLUGIN_CLASSES.add(currentLine);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Logger.critical("Could not find the pluginClasses.txt file!  Read the GitHub wiki page on this " +
-                                    "repository for more information.", 12, true);
-        }
-    }
     
     /**
      * Load ALL the plugins.  This should NOT be run more than once.
@@ -52,9 +36,32 @@ public class PluginLoader {
         hasLoaded = true;
     }
     
+    /**
+     * Load all class files to a JAR.
+     * @param f the file.
+     */
     private static void loadJAR(@NotNull File f) {
-        JarClassLoader jcl = new JarClassLoader();
-        jcl.add(f);
+        //i have to admit i couldn't find this anywhere so i just kind of made this
+        //from eight different sites including the javadoc.  this took WAY too long to make.
+        try {
+            JarEntry je;
+            JarInputStream jarStream = new JarInputStream(new FileInputStream(f));
+            while(null != (je = jarStream.getNextJarEntry())) {
+                if(!je.getName().endsWith(".class"))
+                    continue;
+                String name = je.getName().replaceAll("/", "\\.").replace(".class", "");
+                Logger.log("Loading " + name + " into memory from " + f.getName());
+                ClassLoader.getSystemClassLoader().setClassAssertionStatus(name, true);
+                ClassLoader.getSystemClassLoader().loadClass(name);
+                
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            Logger.critical("There was an error loading the JAR file " + f.getName() +
+                                    "!\nYou may want to report this to the plugin author.",
+                    0,
+                    false);
+        }
     }
     
 }
