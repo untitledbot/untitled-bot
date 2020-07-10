@@ -19,14 +19,20 @@ You can join the untitled-bot discord server [here](https://alexisok.dev/ub/disc
 
 ### Self hosting
 Pre-compiled binaries are available [here](https://github.com/AlexIsOK/untitled-bot/releases/latest) \
-You can compile the source code as follows:
+Or you can compile the source code as follows:
 ```shell
-# clone the repository
+# clone the repository and cd
 git clone https://github.com/alexisok/untitled-bot
+cd untitled-bot/
 
 # (optional) checkout the beta or bleeding edge branch
-git checkout TODO INSERT BRANCH NAME HERE
+git checkout edge
+git checkout beta
 
 # compile from the source (requires Maven and Java 11+)
 mvn clean compile assembly:single
+
+# run the bot
+cd target/
+java -jar untitledbot-jar-with-dependencies.jar TOKEN
 ```
