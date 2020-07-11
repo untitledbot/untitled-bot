@@ -98,7 +98,7 @@ public class Main {
 	 *             other arguments not listed in this methods JavaDoc will
 	 *             be ignored.
 	 */
-	public static void main(@NotNull String[] args) throws ClassNotFoundException {
+	public static void main(@NotNull String[] args) {
 		
 		Logger.log("Starting untitled bot " + VERSION + ".");
 		

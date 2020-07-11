@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
+import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -118,6 +119,18 @@ public class CoreCommands {
 		CommandRegistrar.registerAlias("setperms", "permissions", "perms", "perm", "pr");
 		Logger.log("Core commands have been registered.");
 		registerHelp();
+		setDefaults();
+	}
+	
+	private static void setDefaults() {
+		CommandRegistrar.setDefaultPermissionForNode("help", true);
+		CommandRegistrar.setDefaultPermissionForNode("man", true);
+		CommandRegistrar.setDefaultPermissionForNode("halp", true);
+		CommandRegistrar.setDefaultPermissionForNode("rank", true);
+		CommandRegistrar.setDefaultPermissionForNode("help", true);
+		CommandRegistrar.setDefaultPermissionForNode("help", true);
+		CommandRegistrar.setDefaultPermissionForNode("help", true);
+		CommandRegistrar.setDefaultPermissionForNode("help", true);
 	}
 	
 	/**
@@ -138,6 +151,7 @@ public class CoreCommands {
 		Logger.log("Registering modules.");
 		new EightBall().onRegister();
 		new AtSomeone().onRegister();
+		new Ranks().onRegister();
 		Logger.log("Modules have been registered.");
 	}
 }

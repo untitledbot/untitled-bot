@@ -5,12 +5,14 @@ import dev.alexisok.untitledbot.data.UserData;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Properties;
@@ -25,6 +27,12 @@ public class CommandRegistrar {
 	
 	//commandName, permission
 	private static final HashMap<String, String> PERMS_REGISTRAR = new HashMap<>();
+	
+	//default permissions
+	private static final HashMap<String, Boolean> GLOBAL_NODES = new HashMap<>();
+	
+	//the hook registrar.
+	private static final ArrayList<MessageHook> HOOK_REGISTRAR = new ArrayList<>();
 	
 	/**
 	 * @return the size of the registrar.
@@ -60,7 +68,7 @@ public class CommandRegistrar {
 		
 		if(!commandName.matches("^[a-z0-9_-]*$"))
 			throw new RuntimeException("Command does not match regex!");
-		if(!permission.matches("^[a-z]([a-z][.]?)+[a-z]$") && !permission.equals("admin")) //this took too long to make...
+		if(!permission.matches("^[a-z]([a-z][.]?)+[a-z]$") && !permission.equals("admin") && !permission.equals("owner")) //this took too long to make...
 			throw new RuntimeException("Command permission does not match regex!");
 		
 		REGISTRAR.put(commandName, command);
@@ -79,6 +87,11 @@ public class CommandRegistrar {
 		//return null if the command does not exist.
 		if(!REGISTRAR.containsKey(commandName))
 			return null;
+		
+		//if the command is a global command
+		if(GLOBAL_NODES.containsKey(getCommandPermissionNode(commandName)) &&
+				   GLOBAL_NODES.get(getCommandPermissionNode(commandName)))
+			return REGISTRAR.get(commandName).onCommand(args, m);
 		
 		//if the user is a superuser, execute the command without checking the permission node.
 		if(Objects.requireNonNull(m.getMember()).hasPermission(Permission.ADMINISTRATOR))
@@ -156,11 +169,8 @@ public class CommandRegistrar {
 	 * @param aliases the aliases to give the command.
 	 */
 	public static void registerAlias(@NotNull String command, @NotNull String... aliases) {
-		for(String alias : aliases) {
-//			register(alias, (PERMS_REGISTRAR.get(command)),
-//					((args, message) -> CommandRegistrar.runCommand(alias, args, message)));
+		for(String alias : aliases)
 			register(alias, PERMS_REGISTRAR.get(command), REGISTRAR.get(command));
-		}
 	}
 	
 	/**
@@ -171,9 +181,48 @@ public class CommandRegistrar {
 	 * @param aliases the alias command
 	 */
 	public static void registerAliasManual(@NotNull String originalCommand, @NotNull String...aliases) {
-		for(String alias : aliases) {
+		for(String alias : aliases)
 			Manual.setHelpPage(alias, Manual.getHelpPagesRaw(originalCommand));
-		}
 	}
 	
+	/**
+	 * Run the generic listener hooks.
+	 * @param event the event to be passed to the hooks.
+	 * @see MessageHook
+	 * @see dev.alexisok.untitledbot.modules.rank.Ranks
+	 */
+	public static void runGenericListeners(GenericEvent event) {
+		for(MessageHook mh : HOOK_REGISTRAR)
+			mh.onAnyEvent(event);
+	}
+	
+	/**
+	 * Run the message listener hooks.
+	 * @param event the event to be passed to the hooks.
+	 * @see MessageHook
+	 * @see dev.alexisok.untitledbot.modules.rank.Ranks
+	 */
+	public static void runMessageHooks(MessageReceivedEvent event) {
+		for(MessageHook mh : HOOK_REGISTRAR)
+			mh.onAnyEvent(event);
+	}
+	
+	/**
+	 * Add a {@link MessageHook} to this class.
+	 * @param mh the hook to be added.
+	 */
+	public static void registerHook(MessageHook mh) {
+		HOOK_REGISTRAR.add(mh);
+	}
+	
+	
+	/**
+	 * Set a default permission for ALL users for a specific permission node.
+	 * You do not have to be the owner of the node to run this command.  Use with caution.
+	 * @param node the node to modify
+	 * @param permission the permission
+	 */
+	public static void setDefaultPermissionForNode(String node, boolean permission) {
+		GLOBAL_NODES.put(node, permission);
+	}
 }

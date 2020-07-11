@@ -1,7 +1,9 @@
 package dev.alexisok.untitledbot;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.logging.Logger;
+import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.UpdateEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -22,6 +24,7 @@ import java.util.Objects;
  * @since 0.0.1
  */
 public class BotClass extends ListenerAdapter {
+	
 	/**
 	 * Only allow package-private instances of this class.
 	 */
@@ -34,6 +37,8 @@ public class BotClass extends ListenerAdapter {
 	@Override
 	public final void onMessageReceived(@Nonnull MessageReceivedEvent event) {
 		//TODO rich embed
+		
+		CommandRegistrar.runGenericListeners(event);
 		
 		//if the message does not start with the prefix or the message is only the prefix
 		if(!event.getMessage().getContentRaw().startsWith(Main.DEFAULT_PREFIX) || event.getMessage().getContentRaw().equals(Main.DEFAULT_PREFIX))
@@ -55,6 +60,11 @@ public class BotClass extends ListenerAdapter {
 	
 	@Override public final void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {}
 	@Override public final void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent event) {}
+	
+	@Override
+	public void onGenericEvent(@Nonnull GenericEvent event) {
+		CommandRegistrar.runGenericListeners(event);
+	}
 	
 	/**
 	 * Send a message to a specific guild channel

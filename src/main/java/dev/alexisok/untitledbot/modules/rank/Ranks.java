@@ -1,0 +1,102 @@
+package dev.alexisok.untitledbot.modules.rank;
+
+import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.command.MessageHook;
+import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.plugin.UBPlugin;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.ThreadLocalRandom;
+
+/**
+ * @author AlexIsOK
+ * @since 0.0.1
+ */
+public class Ranks extends UBPlugin implements MessageHook {
+    
+    //0th element is level one
+    private static final long[] XP_REQUIRED_FOR_LEVEL_UP = new long[]
+                                                                   {10, 20, 50, 100, 150, 250, 400, 500, 700, 900, 1000,
+                                                                   1250, 1500, 2000, 2500, 3000, 3500, 4000, 5000, 6000,
+                                                                   7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000,
+                                                                   15000, 16000, 17000, 18000, 19000, 20000, 25000, 30000,
+                                                                   35000, 40000, 45000, 50000, 55000, 60000, 65000, 70000,
+                                                                   80000, 90000, 100000, 150000, 200000, 400000, 800000,
+                                                                   1000000, 2000000, 3000000, 5000000, 8000000, 10000000};
+    
+    @Override
+    public void onStartup() {
+        super.onStartup();
+    }
+    
+    @Override
+    public void onRegister() {
+        CommandRegistrar.register("rank", "core.ranks", this);
+    }
+    
+    @Override
+    public String onCommand(String[] args, @NotNull Message message) {
+        if(!message.isFromGuild())
+            return "You must run this in a guild!";
+        
+        String xp;
+        String lv;
+        
+        try {
+            User target = message.getMentionedMembers().get(0).getUser();
+            xp = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks.xp");
+            lv = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks.level");
+        } catch(Exception ignored) {
+            xp = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks.xp");
+            lv = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks.level");
+        }
+        
+        
+        
+        if (lv == null || xp == null) return "Looks like the level or XP is null..... this is awkward.....";
+        
+        return "Rank stats:\n" +
+                       "Level: " + lv + "\n" +
+                       "Exp:   " + xp + "\n";
+    }
+    
+    @Override
+    public void onMessage(MessageReceivedEvent mre) {
+        Message m = mre.getMessage();
+        if(!m.isFromGuild() || m.getAuthor().isBot())
+            return;
+        
+        //get the xp and level of the user
+        long currentXP = Long.parseLong(Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks.xp"));
+        int currentLv = Integer.parseInt(Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks.level"));
+        
+        if(currentLv >= XP_REQUIRED_FOR_LEVEL_UP.length - 1)
+            return;
+        
+        long randAdd = ThreadLocalRandom.current().nextLong(2, 6);
+        
+        currentXP += randAdd;
+        
+        //check level up
+        if(currentXP >= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1]) {
+            currentXP -= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1];
+            currentLv++;
+            
+            mre
+                    .getChannel()
+                    .sendMessage("Congrats <@" + m.getAuthor().getId() + ">!  You are now level " + currentLv + "!!!")
+                    .queue();
+        }
+    
+        Vault.storeUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks.xp", String.valueOf(currentXP));
+        Vault.storeUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks.level", String.valueOf(currentLv));
+    }
+    
+    //unused
+    @Override
+    public void onAnyEvent(GenericEvent e) {}
+}
