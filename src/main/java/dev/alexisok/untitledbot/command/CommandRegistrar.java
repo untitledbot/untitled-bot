@@ -102,6 +102,7 @@ public class CommandRegistrar {
 		String permissionNode = getCommandPermissionNode(commandName);
 		
 		UserData.checkUserExists(m.getAuthor().getId(), m.getGuild().getId());
+		UserData.checkUserExists(null, m.getGuild().getId());
 		
 		try {
 			
@@ -204,7 +205,7 @@ public class CommandRegistrar {
 	 */
 	public static void runMessageHooks(MessageReceivedEvent event) {
 		for(MessageHook mh : HOOK_REGISTRAR)
-			mh.onAnyEvent(event);
+			mh.onMessage(event);
 	}
 	
 	/**

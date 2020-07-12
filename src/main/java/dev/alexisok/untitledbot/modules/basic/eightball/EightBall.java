@@ -43,7 +43,7 @@ public class EightBall extends UBPlugin implements Command {
     
     @Override
     public String onCommand(String[] args, @NotNull Message message) {
-        if(message.getAuthor().isBot())
+        if(message.getAuthor().isBot() || args.length == 1)
             return null;
         int a = ThreadLocalRandom.current().nextInt(0, 20);
         return RESPONSES[a];

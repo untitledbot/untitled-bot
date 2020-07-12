@@ -38,7 +38,7 @@ public class BotClass extends ListenerAdapter {
 	public final void onMessageReceived(@Nonnull MessageReceivedEvent event) {
 		//TODO rich embed
 		
-		CommandRegistrar.runGenericListeners(event);
+		CommandRegistrar.runMessageHooks(event);
 		
 		//if the message does not start with the prefix or the message is only the prefix
 		if(!event.getMessage().getContentRaw().startsWith(Main.DEFAULT_PREFIX) || event.getMessage().getContentRaw().equals(Main.DEFAULT_PREFIX))
@@ -46,6 +46,11 @@ public class BotClass extends ListenerAdapter {
 		
 		//remove the prefix
 		String message = event.getMessage().getContentRaw().substring(Main.DEFAULT_PREFIX.length());
+		
+		//replace all "  " with " "
+		while(message.contains("  "))
+			message = message.replaceAll(" {2}", " ");
+		
 		//args...
 		String[] args = message.split(" ");
 		

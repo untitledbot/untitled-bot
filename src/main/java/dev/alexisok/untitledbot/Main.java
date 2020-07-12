@@ -1,26 +1,23 @@
 package dev.alexisok.untitledbot;
 
 import dev.alexisok.untitledbot.command.CoreCommands;
+import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
-import dev.alexisok.untitledbot.plugin.PluginLoader;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 /**
  * 
@@ -39,8 +36,6 @@ public class Main {
 	public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
 	public static final String DATA_PATH;
 	public static final String DEFAULT_PREFIX;
-	
-	public static boolean checkForUpdates = true;
 	
 	private static boolean noCoreCommands = false;
 	private static boolean noModules = false;
@@ -88,23 +83,23 @@ public class Main {
 	/**
 	 * 
 	 * Arguments (NOT case sensitive):<br>
-	 *      --IKnowWhatImDoingIDontWantToUpgrade - skip upgrade checks.<br>
 	 *      --IKnowWhatImDoingDontRegisterCoreCommands - do not register core commands.<br>
 	 *      --IKnowWhatImDoingDontRegisterAnyModules - do not register modules.<br>
 	 *      --Version - print the version and then exit.<br>
 	 *      --Help - display help.<br>
+	 *      --
 	 * 
 	 * @param args command line arguments, first one is for the token, any
 	 *             other arguments not listed in this methods JavaDoc will
 	 *             be ignored.
 	 */
+	@SuppressWarnings("deprecation")
 	public static void main(@NotNull String[] args) {
+		
+		checkArgs(args.clone());
 		
 		Logger.log("Starting untitled bot " + VERSION + ".");
 		
-		if(args.length > 0)  Logger.log("Checking arguments...");
-		
-		checkArgs(args.clone());
 		String token;
 		
 //		Logger.log("Loading plugins...");
@@ -126,6 +121,8 @@ public class Main {
 		try {
 			
 			//add JDA discord things
+			//this is deprecated but using the new version causes
+			//errors that prevent this from compiling.
 			jda = new JDABuilder(token)
 					      .setActivity(Activity.playing(">help"))
 						  .disableCache(CacheFlag.ACTIVITY)
@@ -152,42 +149,21 @@ public class Main {
 	 * These checks are done before the commands and plugins are registered and
 	 * after the bot is logged in to discord.
 	 */
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	private static void preStartChecks() {
 		
 		for(Guild g : jda.getGuilds()) {
 			File fg = new File(Main.DATA_PATH + g.getId());
 			if(!fg.exists())
 				fg.mkdir();
+			
+			//do not simply make a new file, that could cause issues
+			UserData.checkUserExists(null, g.getId());
 			for(Member m : g.getMembers()) {
 				if(m.getUser().isBot())
 					continue;
-				File fu = new File(Main.parsePropertiesLocation(m.getId(), g.getId()));
-				try {
-					if (!fu.exists())
-						fu.createNewFile();
-				} catch(IOException ignored) {
-					Logger.critical("Could not create a data file " + fu.getPath() + "!", -1, false);
-				}
+				UserData.checkUserExists(m.getId(), g.getId());
 			}
-		}
-	}
-	
-	/**
-	 * Check for upgrades.
-	 * This will be skipped if the no-upgrade flag is used.
-	 */
-	private static void checkForUpgrades() {
-		if(!checkForUpdates)
-			return;
-		
-		final String UPDATE_URL = "https://api.github.com/repos/alexisok/untitled-bot/tags";
-		
-		String fullString;
-		//TODO check for updates
-		try(BufferedReader r = new BufferedReader(new InputStreamReader(new URL(UPDATE_URL).openStream()))) {
-			fullString = r.lines().collect(Collectors.joining());
-		} catch(IOException ignored) {
-			Logger.critical("There was an error checking for updates!", 0, false);
 		}
 	}
 	
@@ -206,12 +182,10 @@ public class Main {
 		
 		for(String s : args) {
 			switch(s) {
-				case "--iknowwhatimdoingidontwanttoupgrade": //don't check for upgrades
-					checkForUpdates = false; break;
 				case "--instantbreak":
 					Logger.critical("Instant break: activated!", 2);
 				case "--version":
-					System.out.println("untitled-bot version " + VERSION); System.exit(0);
+					System.out.println(VERSION); System.exit(0);
 				case "--iknowwhatimdoingdontregistercorecommands":
 					noCoreCommands = true; break;
 				case "--iknowwhatimdoingdontregisteranymodules":

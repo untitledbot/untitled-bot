@@ -123,14 +123,10 @@ public class CoreCommands {
 	}
 	
 	private static void setDefaults() {
-		CommandRegistrar.setDefaultPermissionForNode("help", true);
-		CommandRegistrar.setDefaultPermissionForNode("man", true);
-		CommandRegistrar.setDefaultPermissionForNode("halp", true);
-		CommandRegistrar.setDefaultPermissionForNode("rank", true);
-		CommandRegistrar.setDefaultPermissionForNode("help", true);
-		CommandRegistrar.setDefaultPermissionForNode("help", true);
-		CommandRegistrar.setDefaultPermissionForNode("help", true);
-		CommandRegistrar.setDefaultPermissionForNode("help", true);
+		CommandRegistrar.setDefaultPermissionForNode("core.help", true);
+		CommandRegistrar.setDefaultPermissionForNode("core.ranks", true);
+		CommandRegistrar.setDefaultPermissionForNode("core.stats", true);
+		CommandRegistrar.setDefaultPermissionForNode("module.example.eightball", true);
 	}
 	
 	/**

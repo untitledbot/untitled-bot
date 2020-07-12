@@ -35,7 +35,10 @@ public class Ranks extends UBPlugin implements MessageHook {
     
     @Override
     public void onRegister() {
+        CommandRegistrar.registerHook(this);
         CommandRegistrar.register("rank", "core.ranks", this);
+        Vault.addDefault("ranks-xp", "0");
+        Vault.addDefault("ranks-level", "1");
     }
     
     @Override
@@ -48,11 +51,11 @@ public class Ranks extends UBPlugin implements MessageHook {
         
         try {
             User target = message.getMentionedMembers().get(0).getUser();
-            xp = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks.xp");
-            lv = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks.level");
+            xp = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-xp");
+            lv = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-level");
         } catch(Exception ignored) {
-            xp = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks.xp");
-            lv = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks.level");
+            xp = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks-xp");
+            lv = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks-level");
         }
         
         
@@ -61,18 +64,29 @@ public class Ranks extends UBPlugin implements MessageHook {
         
         return "Rank stats:\n" +
                        "Level: " + lv + "\n" +
-                       "Exp:   " + xp + "\n";
+                       "Exp:   " + xp + "/" + XP_REQUIRED_FOR_LEVEL_UP[Integer.parseInt(lv) - 1] + "\n";
     }
     
     @Override
     public void onMessage(MessageReceivedEvent mre) {
+        if(!mre.isFromGuild())
+            return;
         Message m = mre.getMessage();
         if(!m.isFromGuild() || m.getAuthor().isBot())
             return;
         
         //get the xp and level of the user
-        long currentXP = Long.parseLong(Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks.xp"));
-        int currentLv = Integer.parseInt(Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks.level"));
+        
+        String xpstr = Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks-xp");
+        String lvstr = Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks-level");
+    
+        if (lvstr == null || xpstr == null) {
+            xpstr = "0";
+            lvstr = "1";
+        }
+        
+        long currentXP = Long.parseLong(xpstr);
+        int currentLv = Integer.parseInt(lvstr);
         
         if(currentLv >= XP_REQUIRED_FOR_LEVEL_UP.length - 1)
             return;
@@ -92,8 +106,8 @@ public class Ranks extends UBPlugin implements MessageHook {
                     .queue();
         }
     
-        Vault.storeUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks.xp", String.valueOf(currentXP));
-        Vault.storeUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks.level", String.valueOf(currentLv));
+        Vault.storeUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks-xp", String.valueOf(currentXP));
+        Vault.storeUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks-level", String.valueOf(currentLv));
     }
     
     //unused

@@ -1,12 +1,11 @@
 package dev.alexisok.untitledbot.data;
 
 import dev.alexisok.untitledbot.Main;
-import dev.alexisok.untitledbot.annotation.ToBeRemoved;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.vault.Vault;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.util.Properties;
 
 /**
  * 
@@ -32,19 +31,7 @@ public class UserData {
 	 * @throws UserDataCouldNotBeObtainedException if there is an exception getting the user's data.
 	 */
 	public static @Nullable String getKey(String userID, String guildID, String key) throws UserDataCouldNotBeObtainedException {
-		checkUserExists(userID);
-		Properties p = new Properties();
-		try {
-			p.load(new FileReader(Main.parsePropertiesLocation(userID, guildID)));
-			if(p.containsKey(key))
-				return p.getProperty(key);
-			else
-				return null;
-		} catch (IOException e) {
-			e.printStackTrace();
-			//to be caught and reported to the end user over Discord.
-			throw new UserDataCouldNotBeObtainedException();
-		}
+		return Vault.getUserDataLocal(userID, guildID, key);
 	}
 	
 	/**
@@ -59,17 +46,7 @@ public class UserData {
 	 *              unset a key.
 	 */
 	public static void setKey(String userID, String guildID, String key, String value) {
-		checkUserExists(userID);
-		Properties p = new Properties();
-		try {
-			p.load(new FileReader(Main.parsePropertiesLocation(userID, guildID)));
-			p.setProperty(key, value);
-			p.store(new FileOutputStream(Main.parsePropertiesLocation(userID, guildID)), null);
-		} catch (IOException e) {
-			e.printStackTrace();
-			//to be caught and reported to the end user over Discord.
-			throw new UserDataCouldNotBeObtainedException();
-		}
+		Vault.storeUserDataLocal(userID, guildID, key, value);
 	}
 	
 	/**
@@ -94,37 +71,18 @@ public class UserData {
 		Logger.log("Creating a user profile for user <@" + userID + "> in " + guildID);
 		try {
 			//A file with the name does not exist, this was already checked.
-			new File(Main.parsePropertiesLocation(userID, guildID)).createNewFile();
+			
+			if(!new File(Main.parsePropertiesLocation(userID, guildID)).exists()) {
+				try(PrintWriter pw = new PrintWriter(Main.parsePropertiesLocation(userID, guildID))) {
+					pw.println("# this file was created by createUserProfile(String, String)");
+				}
+			}
 		} catch (IOException e) {
-			Logger.critical("Could not create a data directory!", -1, false);
+			Logger.critical("Could not create a data!  " + userID + ", " + guildID + ".", -1, false);
 			//to be caught and reported to the end user over Discord.
 			e.printStackTrace();
 			throw new UserDataFileCouldNotBeCreatedException();
 		}
-	}
-	
-	/**
-	 * This is now deprecated, as guild IDs will be used instead.
-	 * @deprecated
-	 * @see UserData#checkUserExists(String, String) 
-	 * @param ID the user ID
-	 */
-	@Deprecated(since="0.0.1")
-	@ToBeRemoved("2.0.0")
-	public static void checkUserExists(String ID) {
-		throw new RuntimeException();
-	}
-	
-	/**
-	 * Create a user profile.  Should only be called by {@link UserData#checkUserExists(String)}.
-	 * @see UserData#createUserProfile(String, String) 
-	 * @param ID the Discord ID snowflake of the user.
-	 */
-	@ToBeRemoved("2.0.0")
-	@Deprecated(since="0.0.1")
-	@SuppressWarnings("ResultOfMethodCallIgnored")
-	private static void createUserProfile(String ID) {
-		throw new RuntimeException();
 	}
 	
 }
