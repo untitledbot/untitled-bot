@@ -47,7 +47,7 @@ public class AtSomeone extends UBPlugin {
     @Override
     public String onCommand(String[] args, @NotNull Message message) {
         //obtained from https://www.lennyfaces.net/magic/
-        String lennyA = "￡( ͡° ͜ʖ ͡°)/☆*。;+，AT SOMEONE HAS BEEN CAST\nWHO SHALL RECEIVE THY INCANTATION?\nWHY, YES, IT IS <@";
+        String lennyA = "\uFFE1( \u0361\u00B0 \u035C\u0296 \u0361\u00B0)/\u2606*\u3002;+\uFF0CAT SOMEONE HAS BEEN CAST\nWHO SHALL RECEIVE THY INCANTATION?\nWHY, YES, IT IS <@";
         Member randomMember = message.getGuild().getMembers().get(ThreadLocalRandom.current().nextInt(0, message.getGuild().getMembers().size()));
         lennyA += String.format("%s> OF COURSE!", randomMember.getId());
         return lennyA;
