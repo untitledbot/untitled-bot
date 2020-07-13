@@ -38,6 +38,8 @@ public class Main {
 	public static final String DEFAULT_PREFIX;
 	public static final String OWNER_ID;
 	
+	public static final boolean DEBUG;
+	
 	private static boolean noCoreCommands = false;
 	private static boolean noModules = false;
 	
@@ -49,7 +51,7 @@ public class Main {
 		//temp for final string
 		String DATA_PATH1;
 		String OWNER_ID1;
-		
+		boolean DEBUG1;
 		try {
 			
 			Properties p = new Properties();
@@ -67,6 +69,7 @@ public class Main {
 			DATA_PATH1 = p.getProperty("dataPath");
 			DEFAULT_PREFIX1 = p.getProperty("prefix");
 			OWNER_ID1 = p.getProperty("ownerId");
+			DEBUG1 = Boolean.parseBoolean(p.getProperty("debugMode"));
 			if (!DATA_PATH1.endsWith("/")) DATA_PATH1 += "/";
 			if(DEFAULT_PREFIX1.equals(""))
 				DEFAULT_PREFIX1 = ">";
@@ -76,6 +79,7 @@ public class Main {
 			DATA_PATH1 = CONFIG_PATH + "/usrdata/"; //default
 			DEFAULT_PREFIX1 = ">";
 			OWNER_ID1 = "0";
+			DEBUG1 = false;
 		}
 		//create the directory if it doesn't
 		//already exist.
@@ -84,6 +88,7 @@ public class Main {
 		DEFAULT_PREFIX = DEFAULT_PREFIX1;
 		DATA_PATH = DATA_PATH1;
 		OWNER_ID = OWNER_ID1;
+		DEBUG = DEBUG1;
 	}
 	
 	/**

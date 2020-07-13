@@ -2,6 +2,7 @@ package dev.alexisok.untitledbot.command;
 
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.data.UserData;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -92,6 +93,10 @@ public class CommandRegistrar {
 	 */
 	public static @Nullable MessageEmbed runCommand(String commandName, String[] args, @NotNull Message m) {
 		
+		String permissionNode = getCommandPermissionNode(commandName);
+		
+		Logger.debug("Getting permission node " + permissionNode);
+		
 		//return null if the command does not exist.
 		if(!REGISTRAR.containsKey(commandName))
 			return null;
@@ -100,16 +105,17 @@ public class CommandRegistrar {
 		if(m.getAuthor().getId().equals(Main.OWNER_ID))
 			return REGISTRAR.get(commandName).onCommand(args, m);
 		
+		//if the user is a superuser, execute the command without checking the permission node.
+		if(Objects.requireNonNull(m.getMember()).hasPermission(Permission.ADMINISTRATOR))
+			return REGISTRAR.get(commandName).onCommand(args, m);
+		
 		//if the command is a global command
 		if(GLOBAL_NODES.containsKey(getCommandPermissionNode(commandName)) &&
 				   GLOBAL_NODES.get(getCommandPermissionNode(commandName)))
 			return REGISTRAR.get(commandName).onCommand(args, m);
 		
-		//if the user is a superuser, execute the command without checking the permission node.
-		if(Objects.requireNonNull(m.getMember()).hasPermission(Permission.ADMINISTRATOR))
-			return REGISTRAR.get(commandName).onCommand(args, m);
+		Logger.debug("Permission " + permissionNode + " is not global");
 		
-		String permissionNode = getCommandPermissionNode(commandName);
 		
 		UserData.checkUserExists(m.getAuthor().getId(), m.getGuild().getId());
 		UserData.checkUserExists(null, m.getGuild().getId());
@@ -117,20 +123,37 @@ public class CommandRegistrar {
 		EmbedBuilder eb = new EmbedBuilder();
 		EmbedDefaults.setEmbedDefaults(eb, m);
 		
-		//check user permissions and guild permissions at the same time.
-		//this could be made faster.
-		String userHas = Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), permissionNode);
-		String guildHas = Vault.getUserDataLocal(null, m.getGuild().getId(), permissionNode);
-		if(userHas.equalsIgnoreCase("true") || guildHas.equalsIgnoreCase("true"))
-			return REGISTRAR.get(commandName).onCommand(args, m);
+		try {
+			//check user permissions and guild permissions at the same time.
+			//this could be made faster.
+			@SuppressWarnings("ConstantConditions")
+			String userHas = Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), permissionNode);
+			
+			Logger.debug("Checking the permission node of user and guild...");
+			
+			if (userHas.equalsIgnoreCase("true"))
+				return REGISTRAR.get(commandName).onCommand(args, m);
+			
+			String guildHas = Vault.getUserDataLocal(null, m.getGuild().getId(), permissionNode);
+			
+			if (guildHas.equalsIgnoreCase("true"))
+				return REGISTRAR.get(commandName).onCommand(args, m);
+		} catch(NullPointerException ignored) {
+			//may produce npe if the permission node does not exist.
+		}
+		Logger.debug("Checking the permission node of role...");
 		
 		//since roles have snowflakes as well, they can be treated as users here.
 		for(Role a : m.getMember().getRoles()) {
-			String roleProperties = Vault.getUserDataLocal(a.getId(), a.getGuild().getId(), permissionNode);
-			if(roleProperties.equals("true"))
-				return REGISTRAR.get(commandName).onCommand(args, m);
-			
+			try {
+				UserData.checkUserExists(a.getId(), m.getGuild().getId());
+				String roleProperties = Vault.getUserDataLocal(a.getId(), a.getGuild().getId(), permissionNode);
+				if (roleProperties.equals("true"))
+					return REGISTRAR.get(commandName).onCommand(args, m);
+			} catch(NullPointerException ignored) {}
 		}
+		
+		Logger.debug("User does not have permission");
 		
 		eb.setColor(Color.RED);
 		eb.addField("untitled-bot",

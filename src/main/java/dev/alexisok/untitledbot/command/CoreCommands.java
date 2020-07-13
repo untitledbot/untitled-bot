@@ -9,6 +9,9 @@ import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -83,7 +86,7 @@ public final class CoreCommands {
 		});
 		
 		//the permissions command is very important.  It can be skipped for more security,
-		//but you won't be able to modify commands.
+		//but you won't be able to modify command permissions.
 		//Usage: `setperms <user ID|user @|role ID|role @|guild> <permission> <true|false>`
 		CommandRegistrar.register("setperms", "admin", ((args, message) -> {
 			EmbedBuilder eb = new EmbedBuilder();
@@ -120,20 +123,12 @@ public final class CoreCommands {
 					eb.setColor(Color.GREEN);
 					eb.addField("Permissions", "Permissions updated.", false);
 					return eb.build();
+				} else if(message.getMentionedRoles().size() == 1) {
+					String ID = message.getMentionedRoles().get(0).getId();
+					return getMessageEmbed(args, message, eb, ID);
 				} else if (args[1].matches("^[0-9]+$")) {
 					String memberID = args[1];
-					String permission = args[2];
-					boolean allow = args[3].equalsIgnoreCase("true");
-					
-					Vault.storeUserDataLocal(
-							memberID,
-							message.getGuild().getId(),
-							permission,
-							allow ? "true" : "false"
-					);
-					eb.setColor(Color.GREEN);
-					eb.addField("Permissions", "Permissions updated.", false);
-					return eb.build();
+					return getMessageEmbed(args, message, eb, memberID);
 				} else if (args[1].equals("guild")) {
 					String permission = args[2];
 					boolean allow = args[3].equalsIgnoreCase("true");
@@ -162,6 +157,8 @@ public final class CoreCommands {
 				return eb.build();
 			}
 		}));
+		
+		//invite command
 		CommandRegistrar.register("invite", "core.invite", (args, message) -> {
 			EmbedBuilder eb = new EmbedBuilder();
 			EmbedDefaults.setEmbedDefaults(eb, message);
@@ -195,10 +192,41 @@ public final class CoreCommands {
 			eb.addField("", returnString, false);
 			return eb.build();
 		});
+		CommandRegistrar.register("test", "test.test.a", (args, message) -> {
+			EmbedBuilder eb = new EmbedBuilder();
+			EmbedDefaults.setEmbedDefaults(eb, message);
+			eb.setColor(Color.CYAN);
+			eb.addField("title", "works i think", false);
+			return eb.build();
+		});
 		CommandRegistrar.registerAlias("setperms", "permissions", "perms", "perm", "pr");
 		Logger.log("Core commands have been registered.");
 		registerHelp();
 		setDefaults();
+	}
+	
+	/**
+	 * Get the message embed thing that does stuff.
+	 * @param args the arguments for the command
+	 * @param message the message itself
+	 * @param eb the embed builder
+	 * @param ID the ID of the user or role
+	 * @return the new embed thing
+	 */
+	@NotNull
+	private static MessageEmbed getMessageEmbed(String @NotNull [] args, @NotNull Message message, @NotNull EmbedBuilder eb, String ID) {
+		String permission = args[2];
+		boolean allow = args[3].equalsIgnoreCase("true");
+		
+		Vault.storeUserDataLocal(
+				ID,
+				message.getGuild().getId(),
+				permission,
+				allow ? "true" : "false"
+		);
+		eb.setColor(Color.GREEN);
+		eb.addField("Permissions", "Permissions updated.", false);
+		return eb.build();
 	}
 	
 	/**
