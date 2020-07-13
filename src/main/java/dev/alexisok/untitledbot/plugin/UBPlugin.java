@@ -1,7 +1,6 @@
 package dev.alexisok.untitledbot.plugin;
 
 import dev.alexisok.untitledbot.command.Command;
-import net.dv8tion.jda.api.entities.Message;
 
 /**
  * untitled-bot plugin.  Plugins and modules must be a subclass

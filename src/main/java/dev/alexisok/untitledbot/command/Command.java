@@ -1,7 +1,6 @@
 package dev.alexisok.untitledbot.command;
 
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  * A command for use in {@link CommandRegistrar}

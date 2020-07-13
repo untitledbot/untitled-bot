@@ -1,17 +1,13 @@
 package dev.alexisok.untitledbot;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
-import dev.alexisok.untitledbot.command.CoreCommands;
-import dev.alexisok.untitledbot.logging.Logger;
 import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.UpdateEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
 import java.util.Objects;
 
 /**

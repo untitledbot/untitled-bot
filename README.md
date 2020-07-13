@@ -7,14 +7,14 @@ has a lot of room for customization and
 <div style="text-align: center;"><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.</div>
 
 ### Features
-* Custom permission nodes for users, roles, and the entire guild.
+* Custom permission nodes for users, roles, and the entire guild (adapted from the Unix permission system).
 * Level/rank module.
 * Per guild permissions.
 
 ### Upcoming features
 * Plugin support
 * Web UI
-* RPG module
+* (M)MORPG module (Massive Multiplayer Online Role Playing Game, though probably not that massive).
 * Music player
 
 ### Discord server
@@ -24,6 +24,10 @@ You can join the untitled-bot discord server [here](https://alexisok.dev/ub/disc
 Pre-compiled binaries are available [here](https://github.com/AlexIsOK/untitled-bot/releases/latest) \
 or, you can compile the source code as follows:
 ```console
+# download the requirements
+# if you're not using a debian-based distro, figure it out yourself
+apt install openjdk-11-jdk maven
+
 # clone the repository and cd
 git clone https://github.com/alexisok/untitled-bot
 cd untitled-bot/

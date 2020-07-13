@@ -2,10 +2,8 @@ package dev.alexisok.untitledbot.plugin;
 
 import dev.alexisok.untitledbot.logging.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.xeustechnologies.jcl.JarClassLoader;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;

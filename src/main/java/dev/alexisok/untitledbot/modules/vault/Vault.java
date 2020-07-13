@@ -3,12 +3,12 @@ package dev.alexisok.untitledbot.modules.vault;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
@@ -33,6 +33,15 @@ import java.util.Properties;
 public class Vault {
     
     private static final HashMap<String, String> DEFAULT_DATA = new HashMap<>();
+    
+    /**
+     * Get a new {@link HashMap} that has the same data as the default data.
+     * @return the {@link HashMap}.
+     */
+    @Contract(" -> new")
+    public static @NotNull HashMap<String, String> getDefaultData() {
+        return new HashMap<>(DEFAULT_DATA);
+    }
     
     /**
      * Set the default data for something.  Used when a new user file is created.

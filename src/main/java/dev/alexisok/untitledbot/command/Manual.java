@@ -3,7 +3,7 @@ package dev.alexisok.untitledbot.command;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import static dev.alexisok.untitledbot.command.CommandRegistrar.*;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 
 /**
