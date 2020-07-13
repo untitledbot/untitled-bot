@@ -9,13 +9,13 @@ has a lot of room for customization and
 ### Features
 * Custom permission nodes for users, roles, and the entire guild.
 * Level/rank module.
-* Music player (play music from YouTube).
 * Per guild permissions.
 
 ### Upcoming features
 * Plugin support
 * Web UI
 * RPG module
+* Music player
 
 ### Discord server
 You can join the untitled-bot discord server [here](https://alexisok.dev/ub/discord)
