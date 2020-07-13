@@ -2,10 +2,14 @@ package dev.alexisok.untitledbot.modules.basic.eightball;
 
 import dev.alexisok.untitledbot.command.Command;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -42,10 +46,24 @@ public class EightBall extends UBPlugin implements Command {
     }
     
     @Override
-    public String onCommand(String[] args, @NotNull Message message) {
+    public MessageEmbed onCommand(String[] args, @NotNull Message message) {
+        
+        EmbedBuilder eb = new EmbedBuilder();
+        EmbedDefaults.setEmbedDefaults(eb, message);
+        
         if(message.getAuthor().isBot() || args.length == 1)
             return null;
         int a = ThreadLocalRandom.current().nextInt(0, 20);
-        return RESPONSES[a];
+        Color returnColor = Color.BLACK;
+        if(RESPONSES[a].contains(":red_circle:"))
+            returnColor = Color.RED;
+        else if(RESPONSES[a].contains(":yellow_circle:"))
+            returnColor = Color.YELLOW;
+        else if(RESPONSES[a].contains(":green_circle:"))
+            returnColor = Color.GREEN;
+        
+        eb.setColor(returnColor);
+        eb.addField("8Ball", RESPONSES[a], false);
+        return eb.build();
     }
 }

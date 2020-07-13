@@ -32,8 +32,6 @@ public class BotClass extends ListenerAdapter {
 	 */
 	@Override
 	public final void onMessageReceived(@Nonnull MessageReceivedEvent event) {
-		//TODO rich embed
-		
 		CommandRegistrar.runMessageHooks(event);
 		
 		//if the message does not start with the prefix or the message is only the prefix

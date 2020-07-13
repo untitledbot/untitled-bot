@@ -2,14 +2,18 @@ package dev.alexisok.untitledbot.command;
 
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.data.UserData;
+import dev.alexisok.untitledbot.modules.vault.Vault;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,10 +83,12 @@ public class CommandRegistrar {
 	 * Run a command.  This can be invoked by plugins
 	 * so there can be more creative plugins.
 	 * 
+	 * This is also the part that checks the permissions of the user.
+	 * 
 	 * @param commandName the name of the command to execute.
 	 * @return the return String.  Returns {@code null} if the command was not found.
 	 */
-	public static @Nullable String runCommand(String commandName, String[] args, @NotNull Message m) {
+	public static @Nullable MessageEmbed runCommand(String commandName, String[] args, @NotNull Message m) {
 		
 		//return null if the command does not exist.
 		if(!REGISTRAR.containsKey(commandName))
@@ -101,40 +107,36 @@ public class CommandRegistrar {
 		if(Objects.requireNonNull(m.getMember()).hasPermission(Permission.ADMINISTRATOR))
 			return REGISTRAR.get(commandName).onCommand(args, m);
 		
-		Properties userProps = new Properties();
-		Properties guildProps = new Properties();
 		String permissionNode = getCommandPermissionNode(commandName);
 		
 		UserData.checkUserExists(m.getAuthor().getId(), m.getGuild().getId());
 		UserData.checkUserExists(null, m.getGuild().getId());
 		
-		try {
-			
-			//check user permissions and guild permissions at the same time.
-			//this could be made faster.
-			guildProps.load(new FileInputStream(Main.DATA_PATH + m.getGuild().getId() + ".properties"));
-			userProps.load(new FileInputStream(Main.parsePropertiesLocation(m.getAuthor().getId(), m.getGuild().getId())));
-			if(userProps.getProperty(permissionNode).equalsIgnoreCase("true") || guildProps.getProperty(permissionNode).equalsIgnoreCase("true"))
-				return REGISTRAR.get(commandName).onCommand(args, m);
-		} catch(IOException e) {
-			e.printStackTrace();
-			return "There was an IOException while obtaining your data.  Please report this.";
-		}
+		EmbedBuilder eb = new EmbedBuilder();
+		EmbedDefaults.setEmbedDefaults(eb, m);
+		
+		//check user permissions and guild permissions at the same time.
+		//this could be made faster.
+		String userHas = Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), permissionNode);
+		String guildHas = Vault.getUserDataLocal(null, m.getGuild().getId(), permissionNode);
+		if(userHas.equalsIgnoreCase("true") || guildHas.equalsIgnoreCase("true"))
+			return REGISTRAR.get(commandName).onCommand(args, m);
 		
 		//since roles have snowflakes as well, they can be treated as users here.
-		try {
-			for(Role a : m.getMember().getRoles()) {
-				Properties roleProperties = new Properties();
-				roleProperties.load(new FileInputStream(Main.parsePropertiesLocation(a.getId(), a.getGuild().getId())));
-				if(roleProperties.getProperty(permissionNode).equals("true"))
-					return REGISTRAR.get(commandName).onCommand(args, m);
-				
-			}
-		} catch(IOException ignored) {}
+		for(Role a : m.getMember().getRoles()) {
+			String roleProperties = Vault.getUserDataLocal(a.getId(), a.getGuild().getId(), permissionNode);
+			if(roleProperties.equals("true"))
+				return REGISTRAR.get(commandName).onCommand(args, m);
+			
+		}
 		
-		return "You do not have permission to execute this command.\nIf this is an error, please have an" +
-				       " administrator on the server execute `setperms <@" + m.getAuthor().getId() + ">" +
-				       " " + getCommandPermissionNode(commandName) + " true`";
+		eb.setColor(Color.RED);
+		eb.addField("untitled-bot",
+				"You do not have permission to execute this command.\nIf this is an error, please have an" +
+						" administrator on the server execute `setperms <@" + m.getAuthor().getId() + ">" +
+						" " + getCommandPermissionNode(commandName) + " true`",
+				false);
+		return eb.build();
 	}
 	
 	/**

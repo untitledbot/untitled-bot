@@ -1,15 +1,20 @@
 package dev.alexisok.untitledbot.modules.rank;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.command.EmbedDefaults;
+import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.command.MessageHook;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -37,22 +42,33 @@ public class Ranks extends UBPlugin implements MessageHook {
     public void onRegister() {
         CommandRegistrar.registerHook(this);
         CommandRegistrar.register("rank", "core.ranks", this);
+        Manual.setHelpPage("rank", "Get your (or another user's) rank.\nUsage: `rank [user @ | user ID]`");
         Vault.addDefault("ranks-xp", "0");
         Vault.addDefault("ranks-level", "1");
     }
     
     @Override
-    public String onCommand(String[] args, @NotNull Message message) {
-        if(!message.isFromGuild())
-            return "You must run this in a guild!";
+    public MessageEmbed onCommand(String[] args, @NotNull Message message) {
+        
+        EmbedBuilder eb = new EmbedBuilder();
+        EmbedDefaults.setEmbedDefaults(eb, message);
+        
+        if(!message.isFromGuild()) {
+            eb.setColor(Color.RED);
+            eb.addField("Error", "You must run this in a guild!", false);
+            return eb.build();
+        }
         
         String xp;
         String lv;
+        
+        boolean other = false;
         
         try {
             User target = message.getMentionedMembers().get(0).getUser();
             xp = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-xp");
             lv = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-level");
+            other = true;
         } catch(Exception ignored) {
             xp = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks-xp");
             lv = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks-level");
@@ -60,11 +76,36 @@ public class Ranks extends UBPlugin implements MessageHook {
         
         
         
-        if (lv == null || xp == null) return "Looks like the level or XP is null..... this is awkward.....";
-        
-        return "Rank stats:\n" +
-                       "Level: " + lv + "\n" +
-                       "Exp:   " + xp + "/" + XP_REQUIRED_FOR_LEVEL_UP[Integer.parseInt(lv) - 1] + "\n";
+        if (lv == null || xp == null) {
+            eb.setColor(Color.RED);
+            eb.addField("Error", "Looks like the level or XP is null..... this is awkward.....", false);
+            return eb.build();
+        }
+    
+        eb.setColor(Color.GREEN);
+        if(!other) {
+            try {
+                eb.addField("Ranking",
+                        "Your rank:\n" +
+                                "Level: " + lv + "\n" +
+                                "Exp:   " + xp + "/" + XP_REQUIRED_FOR_LEVEL_UP[Integer.parseInt(lv) - 1] + "\n",
+                        false);
+            } catch(ArrayIndexOutOfBoundsException ignored) {
+                //THIS SHOULD ONLY BE CAUGHT IF THE USER IS THE HIGHEST LEVEL
+                eb.addField("Ranking",
+                        "Your rank:\n" +
+                                "Level: " + lv + "\n" +
+                                "Exp:   " + xp + "\n",
+                        false);
+            }
+        } else {
+            eb.addField("Ranking",
+                    "Stats for this user:\n" + 
+                            "Level: " + lv + "\n" + 
+                            "Exp:   " + xp + "/" + XP_REQUIRED_FOR_LEVEL_UP[Integer.parseInt(lv) - 1] + "\n",
+                    false);
+        }
+        return eb.build();
     }
     
     @Override
