@@ -82,11 +82,15 @@ public class CommandRegistrar {
 	 * @param commandName the name of the command to execute.
 	 * @return the return String.  Returns {@code null} if the command was not found.
 	 */
-	public static @Nullable String runCommand(String commandName, String[] args, Message m) {
+	public static @Nullable String runCommand(String commandName, String[] args, @NotNull Message m) {
 		
 		//return null if the command does not exist.
 		if(!REGISTRAR.containsKey(commandName))
 			return null;
+		
+		//owner is a global super user and can access any commands on any servers
+		if(m.getAuthor().getId().equals(Main.OWNER_ID))
+			return REGISTRAR.get(commandName).onCommand(args, m);
 		
 		//if the command is a global command
 		if(GLOBAL_NODES.containsKey(getCommandPermissionNode(commandName)) &&

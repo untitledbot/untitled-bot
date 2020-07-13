@@ -36,6 +36,7 @@ public class Main {
 	public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
 	public static final String DATA_PATH;
 	public static final String DEFAULT_PREFIX;
+	public static final String OWNER_ID;
 	
 	private static boolean noCoreCommands = false;
 	private static boolean noModules = false;
@@ -47,6 +48,7 @@ public class Main {
 		String DEFAULT_PREFIX1;
 		//temp for final string
 		String DATA_PATH1;
+		String OWNER_ID1;
 		
 		try {
 			
@@ -63,6 +65,7 @@ public class Main {
 			}
 			DATA_PATH1 = p.getProperty("dataPath");
 			DEFAULT_PREFIX1 = p.getProperty("prefix");
+			OWNER_ID1 = p.getProperty("ownerId");
 			if (!DATA_PATH1.endsWith("/")) DATA_PATH1 += "/";
 			if(DEFAULT_PREFIX1.equals(""))
 				DEFAULT_PREFIX1 = ">";
@@ -71,6 +74,7 @@ public class Main {
 			e.printStackTrace();
 			DATA_PATH1 = CONFIG_PATH + "/usrdata/"; //default
 			DEFAULT_PREFIX1 = ">";
+			OWNER_ID1 = "0";
 		}
 		//create the directory if it doesn't
 		//already exist.
@@ -78,6 +82,7 @@ public class Main {
 		new File(DATA_PATH1).mkdirs();
 		DEFAULT_PREFIX = DEFAULT_PREFIX1;
 		DATA_PATH = DATA_PATH1;
+		OWNER_ID = OWNER_ID1;
 	}
 	
 	/**
@@ -202,7 +207,11 @@ public class Main {
 	
 	/**
 	 * Return the resulting properties location of a specific user
-	 * given their user ID and guild ID.
+	 * given their user ID and guild ID.  Having a bunch of other things relying on this
+	 * is good as it is much easier to change it.  If you are getting the properties locaation
+	 * of the user, then go through here.
+	 * 
+	 * 
 	 * @param userID the discord snowflake of the user.  Can be {@code null} for global config.
 	 * @param guildID the discord snowflake of the guild.
 	 * @return the parsed properties location.
