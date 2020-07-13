@@ -185,11 +185,17 @@ public class Main {
 				case "--instantbreak":
 					Logger.critical("Instant break: activated!", 2);
 				case "--version":
-					System.out.println(VERSION); System.exit(0);
+					System.out.println(VERSION);
+					System.exit(0);
 				case "--iknowwhatimdoingdontregistercorecommands":
-					noCoreCommands = true; break;
+					noCoreCommands = true;
+					break;
 				case "--iknowwhatimdoingdontregisteranymodules":
-					noModules = true; break;
+					noModules = true;
+					break;
+				default:
+					Logger.log("Unrecognized argument " + s + ", skipping...");
+					break;
 			}
 		}
 	}

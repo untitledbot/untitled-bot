@@ -107,7 +107,7 @@ public class CommandRegistrar {
 		try {
 			
 			//check user permissions and guild permissions at the same time.
-			//TODO cache this or something to make it faster...
+			//this could be made faster.
 			guildProps.load(new FileInputStream(Main.DATA_PATH + m.getGuild().getId() + ".properties"));
 			userProps.load(new FileInputStream(Main.parsePropertiesLocation(m.getAuthor().getId(), m.getGuild().getId())));
 			if(userProps.getProperty(permissionNode).equalsIgnoreCase("true") || guildProps.getProperty(permissionNode).equalsIgnoreCase("true"))
