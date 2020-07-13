@@ -7,13 +7,8 @@
 
 - [ ] The pull request contributes to the bot in a helpful manner.
 - [ ] The pull request follows the same license as the original.
-
-#### These are required.
-##### Make sure you know what you're doing before checking these.  Create an issue if you need help to understand this.
-
+- [ ] If there was code sampled from other sites, the licenses allows the code to be sampled and appropriate attributions were made.
 <!-- THIS IS FOR PROTECTION.  PLEASE TRY TO UNDERSTAND.  YOUR PULL REQUEST WILL BE DENIED IF YOU DO NOT AGREE.-->
-- [ ] The person(s) who committed to this code did not sample code from other places (e.g., StackOverflow) that are under licenses that require attribution or credit (or ones with no license).
-- [ ] The person(s) who committed to this code allow the owner and collaborators to make final changes (e.g. change the license) without contacting the original author.
 
 #### Why are you contributing?
 
@@ -21,7 +16,7 @@
 - [ ] There was a bug that needed fixing.
 - [ ] Simplifying or improving upon existing code.
 - [ ] New features (described below).
-- [ ] Other (describe below).
+- [ ] Other (described below).
 <hr>
 
 #### Description of pull request.

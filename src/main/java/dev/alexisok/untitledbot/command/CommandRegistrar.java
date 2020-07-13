@@ -39,6 +39,8 @@ public class CommandRegistrar {
 	private static final ArrayList<MessageHook> HOOK_REGISTRAR = new ArrayList<>();
 	
 	/**
+	 * ...this used to be used for something...
+	 * 
 	 * @return the size of the registrar.
 	 */
 	static int registrarSize() {

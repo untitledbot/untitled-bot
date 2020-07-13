@@ -162,16 +162,54 @@ public final class CoreCommands {
 				return eb.build();
 			}
 		}));
+		CommandRegistrar.register("invite", "core.invite", (args, message) -> {
+			EmbedBuilder eb = new EmbedBuilder();
+			EmbedDefaults.setEmbedDefaults(eb, message);
+			
+			eb.setColor(Color.GREEN);
+			
+			//with the unique id, it should work for all three bots.
+			eb.addField("Invite link",
+					"You can invite the bot to the server using the invite link " +
+							"https://discord.com/oauth2/authorize?client_id=" +
+							Main.jda.getSelfUser().getId() + "" +
+							"&scope=bot&permissions=2146958839\n\nYou can find the invite links for the other versions " +
+							"of the bot in the Discord server: https://discord.gg/TVvKkad",
+					false);
+			
+			return eb.build();
+		});
+		CommandRegistrar.register("about", "core.about", (args, message) -> {
+			EmbedBuilder eb = new EmbedBuilder();
+			EmbedDefaults.setEmbedDefaults(eb, message);
+			
+			String returnString = "Hello!  I am a bot made by AlexIsOK!  I do many things (you can see the full list with" +
+					                      " the 'help' command) and I am constantly improving as well!  If you have any suggestions" +
+					                      " or bugs to report, you can do so at https://github.com/alexisok/untitled-bot/issues\n" +
+					                      "\n" +
+					                      "For help with the bot, read the documentation, or if you're really confused you can" +
+					                      " join the Discord server using the 'invite' command, it's not a very big community" +
+					                      " as of now, but it would be great to have more people involved!";
+			
+			eb.setColor(Color.GREEN);
+			eb.addField("", returnString, false);
+			return eb.build();
+		});
 		CommandRegistrar.registerAlias("setperms", "permissions", "perms", "perm", "pr");
 		Logger.log("Core commands have been registered.");
 		registerHelp();
 		setDefaults();
 	}
 	
+	/**
+	 * Set default permission nodes.
+	 */
 	private static void setDefaults() {
 		CommandRegistrar.setDefaultPermissionForNode("core.help", true);
 		CommandRegistrar.setDefaultPermissionForNode("core.ranks", true);
 		CommandRegistrar.setDefaultPermissionForNode("core.stats", true);
+		CommandRegistrar.setDefaultPermissionForNode("core.invite", true);
+		CommandRegistrar.setDefaultPermissionForNode("core.about", true);
 		CommandRegistrar.setDefaultPermissionForNode("module.example.eightball", true);
 	}
 	
@@ -184,6 +222,12 @@ public final class CoreCommands {
 		Manual.setHelpPage("shutdown", "Shutdown the bot.\nUsage: `shutdown [code]` where code is the optional exit code.");
 		Manual.setHelpPage("setperms", "Set the permissions of a user, role, or the entire guild.\nUsage: " +
 				                               "setperms <user ID|user @|role ID|role @|guild> <permission> <true|false>");
+		Manual.setHelpPage("invite", "Get the invite link for the bot.");
+		Manual.setHelpPage("about", "much knowledge");
+		Manual.setHelpPage("rank", "Get the current level and XP of a user.\nUsage: " +
+				                           "rank [user @ | user ID]\n" +
+				                           "leave argument blank for your own stats.");
+		
 		CommandRegistrar.registerAliasManual("shutdown", "stop", "exit");
 		CommandRegistrar.registerAliasManual("help", "man", "halp");
 		CommandRegistrar.registerAliasManual("setperms", "permissions", "perms", "perm", "pr");

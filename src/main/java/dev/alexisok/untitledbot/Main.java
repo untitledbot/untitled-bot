@@ -59,6 +59,7 @@ public class Main {
 				p.setProperty("configVersion", "0.0.1");
 				p.setProperty("dataPath", "./usrdata/");
 				p.setProperty("prefix", ">");
+				p.setProperty("ownerId", "000000000000000000");
 				p.store(new FileOutputStream(CONFIG_PATH + "/bot.properties"), null);
 				
 				throw new IOException(); //break into the last IOException catch block
