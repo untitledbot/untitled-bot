@@ -4,7 +4,9 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
+import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
+import dev.alexisok.untitledbot.modules.rpg.RPGManager;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -45,7 +47,7 @@ public final class CoreCommands {
 			} catch(ArrayIndexOutOfBoundsException ignored) {
 				eb.setColor(Color.GREEN);
 				eb.addField("Help pages",
-						"For help on commands, visit https://alexisok.dev/untitled-bot/commands.\nFor help with specific " + 
+						"For a list of commands, visit https://github.com/alexisok/untitled-bot/wiki\nFor help with specific " + 
 								"commands, do `help [command]`",
 						false);
 				return eb.build();
@@ -145,14 +147,14 @@ public final class CoreCommands {
 				} else {
 					eb.setColor(Color.RED);
 					eb.addField("Permissions",
-							"Usage: `setperms **<user ID|user @|role ID|role @|guild>** <permission> <true|false|1|0>`",
+							"Usage: `setperms **<user ID|user @|role ID|role @|guild>** <permission> <true|false>`",
 							false);
 					return eb.build();
 				}
 			} catch(ArrayIndexOutOfBoundsException ignored) {
 				eb.setColor(Color.RED);
 				eb.addField("Permissions",
-						"Usage: `setperms <user ID|user @|role ID|role @|guild> <permission> <true|false|1|0>`",
+						"Usage: `setperms <user ID|user @|role ID|role @|guild> <permission> <true|false>`",
 						false);
 				return eb.build();
 			}
@@ -266,6 +268,8 @@ public final class CoreCommands {
 		new EightBall().onRegister();
 		new AtSomeone().onRegister();
 		new Ranks().onRegister();
+		new RPGManager().onRegister();
+		new ModHook().onRegister();
 		Logger.log("Modules have been registered.");
 	}
 }
