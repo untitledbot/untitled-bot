@@ -5,7 +5,7 @@ has a lot of room for customization and
 (soon) plugin development.
 
 ![Java CI with Maven (UBUNTU)](https://github.com/AlexIsOK/untitled-bot/workflows/Java%20CI%20with%20Maven%20(UBUNTU)/badge.svg)
-
+![discord-server](https://alexisok.dev/ub/discord.html)
 <br><br><br>
 <div style="text-align: center;"><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.</div>
 
@@ -35,9 +35,8 @@ apt install openjdk-11-jdk maven
 git clone https://github.com/alexisok/untitled-bot
 cd untitled-bot/
 
-# (optional) checkout the beta or bleeding edge branch
+# (optional) checkout the beta branch for the latest features
 git checkout edge
-git checkout beta
 
 # compile from the source (requires Maven and Java 11+)
 mvn clean compile assembly:single
@@ -50,4 +49,4 @@ java -jar untitledbot-jar-with-dependencies.jar "TOKEN"
 I recommend using [pm2](https://github.com/Unitech/pm2) or screen
 if you are self hosting the bot.
 
-<img src="https://alexisok.dev/untitled-bot/botslist.png" alt="botlist">
+<img src="https://media.discordapp.net/attachments/730129087535906896/732704490242965605/botslistNEW.png" alt="botlist">

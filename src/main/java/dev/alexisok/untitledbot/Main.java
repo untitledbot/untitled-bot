@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot;
 import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -35,10 +36,16 @@ public class Main {
 	public static final String VERSION = "0.0.1";
 	public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
 	public static final String DATA_PATH;
-	public static final String DEFAULT_PREFIX;
+	public static final String PREFIX;
 	public static final String OWNER_ID;
 	
 	public static final boolean DEBUG;
+	
+	//bot status
+	private static final String[] MESSAGE_OF_THE_DAY = {
+			"Playing with time", "Playing with magic", "Doing nothing at all", "ta\u0358st\u0360e\u0335 t\u0489\u0335\u0360h\u034F\u035De\u0337 S\u036C\u0357\u0352\u0305\u0362\u0322\u034D\u0354\u0330\u0347\u0318\u0325\u0332\u0332\u0339\u033B\u0324\u0330U\u0346\u0311\u030D\u0357\u033E\u0350\u0366\u030A\u030F\u0310\u036D\u0346\u0309\u0366\u036A\u0346\u033F\u0313\u0364\u0321\u035F\u031B\u031B\u0358\u031C\u0330\u0331\u0318\u0345\u0323\u033C\u0349\u0318N\u0302\u0342\u030E\u0306\u0302\u0342\u0344\u0311\u0358\u0337\u0361\u0338\u0318\u0319\u032E\u032F\u0345\u0319\u0359\u0329\u0324\u0353",
+		    "Watching your every move", "Drinking Java", "insert motd here"
+	};
 	
 	private static boolean noCoreCommands = false;
 	private static boolean noModules = false;
@@ -85,7 +92,7 @@ public class Main {
 		//already exist.
 		//noinspection ResultOfMethodCallIgnored
 		new File(DATA_PATH1).mkdirs();
-		DEFAULT_PREFIX = DEFAULT_PREFIX1;
+		PREFIX = DEFAULT_PREFIX1;
 		DATA_PATH = DATA_PATH1;
 		OWNER_ID = OWNER_ID1;
 		DEBUG = DEBUG1;
@@ -135,10 +142,11 @@ public class Main {
 			//this is deprecated but using the new version causes
 			//errors that prevent this from compiling.
 			jda = new JDABuilder(token)
-					      .setActivity(Activity.playing(">help"))
+//					      .setActivity(Activity.of(Activity.ActivityType.CUSTOM_STATUS,"with time"))
 						  .disableCache(CacheFlag.ACTIVITY)
 					      .build();
 			jda.addEventListener(new BotClass());
+			jda.addEventListener(new ModHook());
 			jda.awaitReady();
 		} catch(LoginException | InterruptedException e) {
 			e.printStackTrace();

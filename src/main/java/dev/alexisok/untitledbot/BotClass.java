@@ -1,6 +1,7 @@
 package dev.alexisok.untitledbot;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -34,12 +35,26 @@ public class BotClass extends ListenerAdapter {
 	public final void onMessageReceived(@Nonnull MessageReceivedEvent event) {
 		CommandRegistrar.runMessageHooks(event);
 		
-		//if the message does not start with the prefix or the message is only the prefix
-		if(!event.getMessage().getContentRaw().startsWith(Main.DEFAULT_PREFIX) || event.getMessage().getContentRaw().equals(Main.DEFAULT_PREFIX))
-			return;
+		//get the prefix of the guild
+		String prefix = Vault.getUserDataLocal(null, event.getGuild().getId(), "guild.prefix");
 		
-		//remove the prefix
-		String message = event.getMessage().getContentRaw().substring(Main.DEFAULT_PREFIX.length());
+		String message = event.getMessage().getContentRaw();
+		
+		//if the first mention is the bot
+		if(event.getMessage().getMentionedUsers().size() != 0 && event.getMessage().getMentionedMembers().get(0).getId().equals(Main.jda.getSelfUser().getId()))
+			message = message.substring(message.indexOf(" ") + 1);
+		else if(prefix == null || prefix.equals("")) {
+			//if the message does not start with the prefix or the message is only the prefix
+			if(!event.getMessage().getContentRaw().startsWith(Main.PREFIX) || event.getMessage().getContentRaw().equals(Main.PREFIX))
+				return;
+			
+			message = message.substring(Main.PREFIX.length());
+		} else {
+			if(!event.getMessage().getContentRaw().startsWith(prefix) || event.getMessage().getContentRaw().equals(prefix))
+				return;
+			
+			message = message.substring(prefix.length());
+		}
 		
 		//replace all "  " with " "
 		while(message.contains("  "))

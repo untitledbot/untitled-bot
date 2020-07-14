@@ -47,7 +47,7 @@ public final class AddRemoveLogTypes extends UBPlugin implements Command {
                 
                 //add existing log types
                 for(String s : stuffs) {
-                    lt.add(LogTypes.valueOf(s));
+                    lt.add(LogTypes.valueOf(s.toUpperCase()));
                 }
             } catch(NullPointerException | IllegalArgumentException ignored) {}
             
@@ -107,7 +107,7 @@ public final class AddRemoveLogTypes extends UBPlugin implements Command {
                 try {
                     if(s.equals("remove-log"))
                         continue;
-                    lt.remove(LogTypes.valueOf(s));
+                    lt.remove(LogTypes.valueOf(s.toUpperCase()));
                 } catch(EnumConstantNotPresentException ignored) {
                     Logger.debug("Caught " + s + " as an ignored enum.");
                 } catch(IllegalArgumentException ignored) {

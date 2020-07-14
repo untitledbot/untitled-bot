@@ -201,6 +201,33 @@ public final class CoreCommands {
 			eb.addField("title", "works i think", false);
 			return eb.build();
 		});
+		CommandRegistrar.register("set-prefix", "admin", (args, message) -> {
+			EmbedBuilder eb = new EmbedBuilder();
+			EmbedDefaults.setEmbedDefaults(eb, message);
+			
+			if(args.length == 1) {
+				eb.setColor(Color.RED);
+				eb.addField("Prefix", "Usage: set-prefix <prefix>", false);
+				
+				return eb.build();
+			}
+			
+			String prefix = args[1];
+			
+			if(prefix.length() > 3 || prefix.length() < 1) {
+				eb.setColor(Color.RED);
+				eb.addField("Prefix", "Prefix must be one to three characters in length.", false);
+				
+				return eb.build();
+			}
+			
+			Vault.storeUserDataLocal(null, message.getGuild().getId(), "guild.prefix", prefix);
+			
+			eb.setColor(Color.GREEN);
+			eb.addField("Prefix", "Prefix changed to " + prefix + ", however mentioning the bot will work as well.", false);
+			
+			return eb.build();
+		});
 		CommandRegistrar.registerAlias("setperms", "permissions", "perms", "perm", "pr");
 		Logger.log("Core commands have been registered.");
 		registerHelp();
@@ -269,7 +296,7 @@ public final class CoreCommands {
 		new AtSomeone().onRegister();
 		new Ranks().onRegister();
 		new RPGManager().onRegister();
-		new ModHook().onRegister();
+//		new ModHook().onRegister();
 		Logger.log("Modules have been registered.");
 	}
 }

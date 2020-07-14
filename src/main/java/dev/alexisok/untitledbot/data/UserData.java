@@ -6,6 +6,8 @@ import dev.alexisok.untitledbot.modules.vault.Vault;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * 
@@ -70,8 +72,10 @@ public class UserData {
 	private static void createUserProfile(String userID, String guildID) {
 		Logger.log("Creating a user profile for user <@" + userID + "> in " + guildID);
 		try {
-			//A file with the name does not exist, this was already checked.
+			//create the guild directory if it does not exist
+			Files.createDirectories(Paths.get(Main.parsePropertiesLocation(null, guildID).replace(".properties", "")));
 			
+			//A file with the name does not exist, this was already checked.
 			if(!new File(Main.parsePropertiesLocation(userID, guildID)).exists()) {
 				try(PrintWriter pw = new PrintWriter(Main.parsePropertiesLocation(userID, guildID))) {
 					pw.println("# this file was created by createUserProfile(String, String)");
