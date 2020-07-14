@@ -86,14 +86,14 @@ public class Ranks extends UBPlugin implements MessageHook {
         if(!other) {
             try {
                 eb.addField("Ranking",
-                        "Your rank:\n" +
+                        "\n" +
                                 "Level: " + lv + "\n" +
                                 "Exp:   " + xp + "/" + XP_REQUIRED_FOR_LEVEL_UP[Integer.parseInt(lv) - 1] + "\n",
                         false);
             } catch(ArrayIndexOutOfBoundsException ignored) {
                 //THIS SHOULD ONLY BE CAUGHT IF THE USER IS THE HIGHEST LEVEL
                 eb.addField("Ranking",
-                        "Your rank:\n" +
+                        "\n" +
                                 "Level: " + lv + "\n" +
                                 "Exp:   " + xp + "\n",
                         false);

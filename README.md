@@ -21,7 +21,7 @@ has a lot of room for customization and
 * Music player
 
 ### Discord server
-You can join the untitled-bot discord server [here](https://alexisok.dev/ub/discord)
+You can join the untitled-bot discord server [here](https://alexisok.dev/ub/discord.html)
 
 ### Self hosting
 Pre-compiled binaries are available [here](https://github.com/AlexIsOK/untitled-bot/releases/latest) \

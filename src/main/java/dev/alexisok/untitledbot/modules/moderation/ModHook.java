@@ -1,10 +1,8 @@
 package dev.alexisok.untitledbot.modules.moderation;
 
-import dev.alexisok.untitledbot.command.Command;
-import dev.alexisok.untitledbot.command.CommandRegistrar;
-import dev.alexisok.untitledbot.command.Manual;
-import dev.alexisok.untitledbot.command.MessageHook;
+import dev.alexisok.untitledbot.command.*;
 import dev.alexisok.untitledbot.modules.moderation.logging.AddRemoveLogTypes;
+import dev.alexisok.untitledbot.modules.moderation.logging.GetLogTypes;
 import dev.alexisok.untitledbot.modules.moderation.logging.SetLogChannel;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.entities.Message;
@@ -38,6 +36,8 @@ public final class ModHook extends UBPlugin implements Command, MessageHook {
         CommandRegistrar.register("log-channel", "admin", new SetLogChannel());
         CommandRegistrar.register("add-log", "admin", new AddRemoveLogTypes());
         CommandRegistrar.register("remove-log", "admin", new AddRemoveLogTypes());
+        //this is not admin because moderators might want their users to be able to see what they log.
+        CommandRegistrar.register("get-log", "logging.get", new GetLogTypes());
         
         Manual.setHelpPage("log-channel",
                 "Move the logging channel to a specific channel.\n" +
@@ -55,5 +55,7 @@ public final class ModHook extends UBPlugin implements Command, MessageHook {
                         "Usage: remove-log <type>\n" +
                         "To add a log, use the add-log command.\n" +
                         "A list of all logs available is on the wiki https://github.com/alexisok/untitled-bot/wiki");
+        Manual.setHelpPage("get-log", "Get the logging types for this guild.\n" +
+                                              "Usage: get-log\n");
     }
 }

@@ -25,13 +25,20 @@ public class SetLogChannel extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
+        if(args.length == 1) {
+            eb.setColor(Color.RED);
+            eb.addField("Logging", "Usage: log-channel <text channel # | null>", false);
+            
+            return eb.build();
+        }
+        
         if(message.getMentionedChannels().size() == 0 && !args[1].equals("null")) {
-            eb.addField("Logging", "Usage: log-channel <text channel #>", false);
+            eb.addField("Logging", "Usage: log-channel <text channel # | null>", false);
             eb.setColor(Color.RED);
             return eb.build();
         }
         
-        if(args[1].equals("null")) {
+        if(!args[1].equals("null")) {
             TextChannel tc = message.getMentionedChannels().get(0);
     
             if (tc.isNSFW())

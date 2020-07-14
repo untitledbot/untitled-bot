@@ -1,0 +1,50 @@
+package dev.alexisok.untitledbot.modules.moderation.logging;
+
+import dev.alexisok.untitledbot.command.Command;
+import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.command.EmbedDefaults;
+import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.plugin.UBPlugin;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.awt.*;
+
+/**
+ * Return a list of current log types to the user.
+ *
+ * @see AddRemoveLogTypes
+ * @see SetLogChannel
+ * @see dev.alexisok.untitledbot.modules.moderation.ModHook
+ * @see LogTypes
+ * @author AlexIsOK
+ * @since 0.0.1
+ */
+public final class GetLogTypes extends UBPlugin implements Command {
+    
+    @Override
+    public @NotNull MessageEmbed onCommand(String[] args, Message message) {
+        //args will be ignored...
+    
+        EmbedBuilder eb = new EmbedBuilder();
+        EmbedDefaults.setEmbedDefaults(eb, message);
+        
+        String s = Vault.getUserDataLocal(null, message.getGuild().getId(), "log.policies");
+    
+        if(s == null) {
+            eb.addField("Logging", "The returned policy is null, which probably means this server doesn't log anything.", false);
+            eb.setColor(Color.YELLOW);
+            
+            return eb.build();
+        }
+        
+        eb.setColor(Color.GREEN);
+        eb.addField("Logging", "Current policies for this guild:\n" + s.replace(",", ", "), false);
+        
+        return eb.build();
+    }
+}
