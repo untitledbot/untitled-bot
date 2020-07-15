@@ -159,11 +159,20 @@ public class CommandRegistrar {
 		Logger.debug("User does not have permission");
 		
 		eb.setColor(Color.RED);
+		
+		if(permissionNode.equals("admin")) {
+			eb.addField("untitled-bot", "This command requires the administrator permission on Discord.", false);
+			return eb.build();
+		} else if(permissionNode.equals("owner")) {
+			eb.addField("untitled-bot", "Only the bot owner can use this command.", false);
+			return eb.build();
+		}
+		
 		eb.addField("untitled-bot",
 				"You do not have permission to execute this command.\nIf this is an error, please have an" +
 						" administrator on the server execute `setperms <@" + m.getAuthor().getId() + ">" +
 						" " + getCommandPermissionNode(commandName) + " true`",
-				false);
+					false);
 		return eb.build();
 	}
 	

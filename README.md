@@ -2,7 +2,7 @@
 
 untitled-bot is a multi-purpose bot that
 has a lot of room for customization and
-(soon) plugin development.
+(soon) plugin development.  You can self host it as well.
 
 ![Java CI with Maven (UBUNTU)](https://github.com/AlexIsOK/untitled-bot/workflows/Java%20CI%20with%20Maven%20(UBUNTU)/badge.svg)
 
@@ -16,13 +16,15 @@ has a lot of room for customization and
 * Custom permission nodes for users, roles, and the entire guild (adapted from the Unix permission system).
 * Level/rank module.
 * Per guild permissions.
-* Message sender (send messages to a user when they join the server).
+* Logging
+
 ---
 ### Upcoming features
 * Plugin support
 * Web UI
 * (M)MORPG module (Massive Multiplayer Online Role Playing Game, though probably not that massive).
 * Music player
+* Message sender (send messages to a user when they join the server).
 ---
 ### Discord server
 You can join the untitled-bot discord server [here](https://alexisok.dev/ub/discord.html).
