@@ -1,7 +1,8 @@
 package dev.alexisok.untitledbot.command;
 
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A command for use in {@link CommandRegistrar}
@@ -23,6 +24,7 @@ public interface Command {
 	 *                to get information from the user
 	 *                (such as their Discord snowflake ID)
 	 */
-	String onCommand(String[] args, Message message);
+	@Nullable
+	MessageEmbed onCommand(String[] args, Message message);
 	
 }

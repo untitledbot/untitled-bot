@@ -3,14 +3,15 @@ package dev.alexisok.untitledbot.modules.vault;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Properties;
-
-import static dev.alexisok.untitledbot.data.UserData.checkUserExists;
 
 /**
  * Note: this is a STATIC module, but it is the only static module.
@@ -30,7 +31,27 @@ import static dev.alexisok.untitledbot.data.UserData.checkUserExists;
  * @since 0.0.1
  */
 public class Vault {
-
+    
+    private static final HashMap<String, String> DEFAULT_DATA = new HashMap<>();
+    
+    /**
+     * Get a new {@link HashMap} that has the same data as the default data.
+     * @return the {@link HashMap}.
+     */
+    @Contract(" -> new")
+    public static @NotNull HashMap<String, String> getDefaultData() {
+        return new HashMap<>(DEFAULT_DATA);
+    }
+    
+    /**
+     * Set the default data for something.  Used when a new user file is created.
+     * @param key the key.
+     * @param data the data.
+     */
+    public static void addDefault(String key, String data) {
+        DEFAULT_DATA.put(key, data);
+    }
+    
     /**
      * Store user data in the correct directory.
      * 
@@ -42,12 +63,12 @@ public class Vault {
      */
     public static void storeUserDataLocal(String userID, @NotNull String guildID, @NotNull String dataKey, @NotNull String dataValue)
             throws UserDataCouldNotBeObtainedException {
-        checkUserExists(userID, guildID);
+        UserData.checkUserExists(userID, guildID);
         Properties p = new Properties();
         try {
             p.load(new FileReader(Main.parsePropertiesLocation(userID, guildID)));
             p.setProperty(dataKey, dataValue);
-            p.store(new FileOutputStream(Main.parsePropertiesLocation(userID, guildID)), null);
+            p.store(new FileOutputStream(Main.parsePropertiesLocation(userID, guildID)), new Date().toString());
         } catch (IOException e) {
             e.printStackTrace();
             //to be caught and reported to the end user over Discord.
@@ -67,7 +88,7 @@ public class Vault {
      */
     public static String getUserDataLocal(String userID, @NotNull String guildID, @NotNull String dataKey)
             throws UserDataCouldNotBeObtainedException{
-        checkUserExists(userID, guildID);
+        UserData.checkUserExists(userID, guildID);
         Properties p = new Properties();
         try {
             p.load(new FileReader(Main.parsePropertiesLocation(userID, guildID)));

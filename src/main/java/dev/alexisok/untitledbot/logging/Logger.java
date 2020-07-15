@@ -1,5 +1,7 @@
 package dev.alexisok.untitledbot.logging;
 
+import dev.alexisok.untitledbot.Main;
+
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,6 +31,20 @@ public class Logger {
 	 */
 	public static void log(String message) {
 		output.println("[" + df.format(new Date()) + "] - " + message);
+	}
+	
+	/**
+	 * Debug.  The debug option in the config file must be
+	 * enabled for this to activate.
+	 * 
+	 * Output: [ISO8601 TIME] - MESSAGE
+	 * 
+	 * @see Logger#log(String)
+	 * @param message the message.
+	 */
+	public static void debug(String message) {
+		if(Main.DEBUG)
+			output.println("[" + df.format(new Date()) + "] - " + message);
 	}
 	
 	/**

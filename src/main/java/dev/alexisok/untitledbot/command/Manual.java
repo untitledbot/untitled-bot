@@ -3,7 +3,7 @@ package dev.alexisok.untitledbot.command;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import static dev.alexisok.untitledbot.command.CommandRegistrar.*;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 
 /**
@@ -23,8 +23,11 @@ public class Manual {
 	 */
 	public static @Nullable String getHelpPages(String page) {
 		return MAN_PAGES.containsKey(page)
-				       ? "Help for " + page + ":\n" + MAN_PAGES.get(page) + "\n" + getCommandPermissionNode(page)
-				       : null;
+				       ? "Help for " + page + ":\n```\n" + MAN_PAGES.get(page) + "\n```\nPermission node: "
+						         + getCommandPermissionNode(page)
+				       : getCommandPermissionNode(page) != null ?
+						         "There doesn't seem to be any help pages available for this command!\nPermission node: "
+								         + getCommandPermissionNode(page) : null;
 	}
 	
 	/**

@@ -2,10 +2,8 @@ package dev.alexisok.untitledbot.plugin;
 
 import dev.alexisok.untitledbot.logging.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.xeustechnologies.jcl.JarClassLoader;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -51,11 +49,10 @@ public class PluginLoader {
                     continue;
                 String name = je.getName().replaceAll("/", "\\.").replace(".class", "");
                 Logger.log("Loading " + name + " into memory from " + f.getName());
-                ClassLoader.getSystemClassLoader().setClassAssertionStatus(name, true);
-                ClassLoader.getSystemClassLoader().loadClass(name);
-                
+                ClassPathUpdater.add(je.getName());
+                Logger.log("Loaded " + name + ".");
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             Logger.critical("There was an error loading the JAR file " + f.getName() +
                                     "!\nYou may want to report this to the plugin author.",

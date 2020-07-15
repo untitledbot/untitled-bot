@@ -22,15 +22,15 @@ jobs:
         uses: AlexIsOK/build-number@v4 # using my own fork to work better for what I need
         with:
           token: ${{secrets.github_token}}
-          version: v0.0.1 # this way only the repository owner can upgrade to a new version
+          version: v1.0.1 # this way only the repository owner can upgrade to a new version
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v0.0.1-${{ steps.buildnumber.outputs.build_number }}
-          release_name: Release 0.0.1-${{ steps.buildnumber.outputs.build_number }}
+          tag_name: v1.0.1-${{ steps.buildnumber.outputs.build_number }}
+          release_name: Release 1.0.1-${{ steps.buildnumber.outputs.build_number }}
           draft: false
           prerelease: true # official releases will be done by humans.
       - name: Upload Release Asset
@@ -39,7 +39,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: ./target/untitledbot-jar-with-dependencies.jar
           asset_name: untitled-bot.jar
           asset_content_type: application/jar-archive

@@ -2,18 +2,22 @@ package dev.alexisok.untitledbot.command;
 
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.data.UserData;
+import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.vault.Vault;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.Properties;
 
 /**
  * @author AlexIsOK
@@ -26,7 +30,15 @@ public class CommandRegistrar {
 	//commandName, permission
 	private static final HashMap<String, String> PERMS_REGISTRAR = new HashMap<>();
 	
+	//default permissions
+	private static final HashMap<String, Boolean> GLOBAL_NODES = new HashMap<>();
+	
+	//the hook registrar.
+	private static final ArrayList<MessageHook> HOOK_REGISTRAR = new ArrayList<>();
+	
 	/**
+	 * ...this used to be used for something...
+	 * 
 	 * @return the size of the registrar.
 	 */
 	static int registrarSize() {
@@ -60,7 +72,7 @@ public class CommandRegistrar {
 		
 		if(!commandName.matches("^[a-z0-9_-]*$"))
 			throw new RuntimeException("Command does not match regex!");
-		if(!permission.matches("^[a-z]([a-z][.]?)+[a-z]$") && !permission.equals("admin")) //this took too long to make...
+		if(!permission.matches("^[a-z]([a-z][.]?)+[a-z]$") && !permission.equals("admin") && !permission.equals("owner")) //this took too long to make...
 			throw new RuntimeException("Command permission does not match regex!");
 		
 		REGISTRAR.put(commandName, command);
@@ -71,52 +83,97 @@ public class CommandRegistrar {
 	 * Run a command.  This can be invoked by plugins
 	 * so there can be more creative plugins.
 	 * 
+	 * This is also the part that checks the permissions of the user.
+	 * 
 	 * @param commandName the name of the command to execute.
 	 * @return the return String.  Returns {@code null} if the command was not found.
 	 */
-	public static @Nullable String runCommand(String commandName, String[] args, Message m) {
+	public static @Nullable MessageEmbed runCommand(String commandName, String[] args, @NotNull Message m) {
+		
+		String permissionNode = getCommandPermissionNode(commandName);
+		
+		Logger.debug("Getting permission node " + permissionNode);
 		
 		//return null if the command does not exist.
 		if(!REGISTRAR.containsKey(commandName))
 			return null;
 		
+		//owner is a global super user and can access any commands on any servers
+		if(m.getAuthor().getId().equals(Main.OWNER_ID))
+			return REGISTRAR.get(commandName).onCommand(args, m);
+		
 		//if the user is a superuser, execute the command without checking the permission node.
 		if(Objects.requireNonNull(m.getMember()).hasPermission(Permission.ADMINISTRATOR))
 			return REGISTRAR.get(commandName).onCommand(args, m);
 		
-		Properties userProps = new Properties();
-		Properties guildProps = new Properties();
-		String permissionNode = getCommandPermissionNode(commandName);
+		//if the command is a global command
+		if(GLOBAL_NODES.containsKey(getCommandPermissionNode(commandName)) &&
+				   GLOBAL_NODES.get(getCommandPermissionNode(commandName)))
+			return REGISTRAR.get(commandName).onCommand(args, m);
+		
+		Logger.debug("Permission " + permissionNode + " is not global");
+		
 		
 		UserData.checkUserExists(m.getAuthor().getId(), m.getGuild().getId());
+		UserData.checkUserExists(null, m.getGuild().getId());
+		
+		EmbedBuilder eb = new EmbedBuilder();
+		EmbedDefaults.setEmbedDefaults(eb, m);
 		
 		try {
-			
 			//check user permissions and guild permissions at the same time.
-			//TODO cache this or something to make it faster...
-			guildProps.load(new FileInputStream(Main.DATA_PATH + m.getGuild().getId() + ".properties"));
-			userProps.load(new FileInputStream(Main.parsePropertiesLocation(m.getAuthor().getId(), m.getGuild().getId())));
-			if(userProps.getProperty(permissionNode).equalsIgnoreCase("true") || guildProps.getProperty(permissionNode).equalsIgnoreCase("true"))
+			//this could be made faster.
+			@SuppressWarnings("ConstantConditions")
+			String userHas = Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), permissionNode);
+			
+			Logger.debug("Checking the permission node of user...");
+			
+			if (userHas.equalsIgnoreCase("true"))
 				return REGISTRAR.get(commandName).onCommand(args, m);
-		} catch(IOException e) {
-			e.printStackTrace();
-			return "There was an IOException while obtaining your data.  Please report this.";
+			
+		} catch(NullPointerException ignored) {
+			//may produce npe if the permission node does not exist.
 		}
 		
-		//since roles have snowflakes as well, they can be treated as users here.
 		try {
-			for(Role a : m.getMember().getRoles()) {
-				Properties roleProperties = new Properties();
-				roleProperties.load(new FileInputStream(Main.parsePropertiesLocation(a.getId(), a.getGuild().getId())));
-				if(roleProperties.getProperty(permissionNode).equals("true"))
-					return REGISTRAR.get(commandName).onCommand(args, m);
-				
-			}
-		} catch(IOException ignored) {}
+			String guildHas = Vault.getUserDataLocal(null, m.getGuild().getId(), permissionNode);
+			
+			Logger.debug("Guild node: " + guildHas);
+			
+			if (guildHas.equalsIgnoreCase("true"))
+				return REGISTRAR.get(commandName).onCommand(args, m);
+		} catch(NullPointerException ignored){}
 		
-		return "You do not have permission to execute this command.\nIf this is an error, please have an" +
-				       " administrator on the server execute `setperms <@" + m.getAuthor().getId() + ">" +
-				       " " + getCommandPermissionNode(commandName) + " true`";
+		Logger.debug("Checking the permission node of role...");
+		
+		//since roles have snowflakes as well, they can be treated as users here.
+		for(Role a : m.getMember().getRoles()) {
+			try {
+				UserData.checkUserExists(a.getId(), m.getGuild().getId());
+				String roleProperties = Vault.getUserDataLocal(a.getId(), a.getGuild().getId(), permissionNode);
+				if (roleProperties.equals("true"))
+					return REGISTRAR.get(commandName).onCommand(args, m);
+			} catch(NullPointerException ignored) {}
+		}
+		
+		Logger.debug("User does not have permission");
+		
+		eb.setColor(Color.RED);
+		
+		if(permissionNode.equals("admin")) {
+			eb.addField("untitled-bot", "This command requires the administrator permission on Discord.", false);
+			return eb.build();
+		} else if(permissionNode.equals("owner")) {
+			eb.addField("untitled-bot", "Only the bot owner can use this command.", false);
+			return eb.build();
+		}
+		
+		eb.addField("untitled-bot",
+				"You do not have permission to execute this command.\nIf this is an error, please have an" +
+						" administrator on the server execute `setperms <@" + m.getAuthor().getId() + ">" +
+						" " + getCommandPermissionNode(commandName) + " true`",
+					false);
+		return eb.build();
 	}
 	
 	/**
@@ -156,11 +213,8 @@ public class CommandRegistrar {
 	 * @param aliases the aliases to give the command.
 	 */
 	public static void registerAlias(@NotNull String command, @NotNull String... aliases) {
-		for(String alias : aliases) {
-//			register(alias, (PERMS_REGISTRAR.get(command)),
-//					((args, message) -> CommandRegistrar.runCommand(alias, args, message)));
+		for(String alias : aliases)
 			register(alias, PERMS_REGISTRAR.get(command), REGISTRAR.get(command));
-		}
 	}
 	
 	/**
@@ -171,9 +225,48 @@ public class CommandRegistrar {
 	 * @param aliases the alias command
 	 */
 	public static void registerAliasManual(@NotNull String originalCommand, @NotNull String...aliases) {
-		for(String alias : aliases) {
+		for(String alias : aliases)
 			Manual.setHelpPage(alias, Manual.getHelpPagesRaw(originalCommand));
-		}
 	}
 	
+	/**
+	 * Run the generic listener hooks.
+	 * @param event the event to be passed to the hooks.
+	 * @see MessageHook
+	 * @see dev.alexisok.untitledbot.modules.rank.Ranks
+	 */
+	public static void runGenericListeners(GenericEvent event) {
+		for(MessageHook mh : HOOK_REGISTRAR)
+			mh.onAnyEvent(event);
+	}
+	
+	/**
+	 * Run the message listener hooks.
+	 * @param event the event to be passed to the hooks.
+	 * @see MessageHook
+	 * @see dev.alexisok.untitledbot.modules.rank.Ranks
+	 */
+	public static void runMessageHooks(MessageReceivedEvent event) {
+		for(MessageHook mh : HOOK_REGISTRAR)
+			mh.onMessage(event);
+	}
+	
+	/**
+	 * Add a {@link MessageHook} to this class.
+	 * @param mh the hook to be added.
+	 */
+	public static void registerHook(MessageHook mh) {
+		HOOK_REGISTRAR.add(mh);
+	}
+	
+	
+	/**
+	 * Set a default permission for ALL users for a specific permission node.
+	 * You do not have to be the owner of the node to run this command.  Use with caution.
+	 * @param node the node to modify
+	 * @param permission the permission
+	 */
+	public static void setDefaultPermissionForNode(String node, boolean permission) {
+		GLOBAL_NODES.put(node, permission);
+	}
 }
