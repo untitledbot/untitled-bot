@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot;
 import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.cron.Sender;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -145,8 +146,9 @@ public class Main {
 //					      .setActivity(Activity.of(Activity.ActivityType.CUSTOM_STATUS,"with time"))
 						  .disableCache(CacheFlag.ACTIVITY)
 					      .build();
-			jda.addEventListener(new BotClass());
-			jda.addEventListener(new ModHook());
+			jda.addEventListener(new BotClass()); //main bot class
+			jda.addEventListener(new ModHook());  //logging module
+			jda.addEventListener(new Sender());   //event message sender module
 			jda.awaitReady();
 		} catch(LoginException | InterruptedException e) {
 			e.printStackTrace();

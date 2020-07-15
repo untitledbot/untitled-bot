@@ -126,18 +126,24 @@ public class CommandRegistrar {
 			@SuppressWarnings("ConstantConditions")
 			String userHas = Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), permissionNode);
 			
-			Logger.debug("Checking the permission node of user and guild...");
+			Logger.debug("Checking the permission node of user...");
 			
 			if (userHas.equalsIgnoreCase("true"))
 				return REGISTRAR.get(commandName).onCommand(args, m);
 			
-			String guildHas = Vault.getUserDataLocal(null, m.getGuild().getId(), permissionNode);
-			
-			if (guildHas.equalsIgnoreCase("true"))
-				return REGISTRAR.get(commandName).onCommand(args, m);
 		} catch(NullPointerException ignored) {
 			//may produce npe if the permission node does not exist.
 		}
+		
+		try {
+			String guildHas = Vault.getUserDataLocal(null, m.getGuild().getId(), permissionNode);
+			
+			Logger.debug("Guild node: " + guildHas);
+			
+			if (guildHas.equalsIgnoreCase("true"))
+				return REGISTRAR.get(commandName).onCommand(args, m);
+		} catch(NullPointerException ignored){}
+		
 		Logger.debug("Checking the permission node of role...");
 		
 		//since roles have snowflakes as well, they can be treated as users here.

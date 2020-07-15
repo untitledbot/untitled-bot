@@ -16,6 +16,7 @@ has a lot of room for customization and
 * Custom permission nodes for users, roles, and the entire guild (adapted from the Unix permission system).
 * Level/rank module.
 * Per guild permissions.
+* Message sender (send messages to a user when they join the server).
 ---
 ### Upcoming features
 * Plugin support

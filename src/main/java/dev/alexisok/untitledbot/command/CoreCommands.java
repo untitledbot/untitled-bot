@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
+import dev.alexisok.untitledbot.modules.basic.ship.Ship;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rpg.RPGManager;
@@ -284,7 +285,8 @@ public final class CoreCommands {
 		Manual.setHelpPage("rank", "Get the current level and XP of a user.\nUsage: " +
 				                           "rank [user @ | user ID]\n" +
 				                           "leave argument blank for your own stats.");
-		
+		Manual.setHelpPage("set-prefix", "Set the prefix for the bot.\n" +
+				                                 "Usage: `set-prefix <prefix>`");
 		CommandRegistrar.registerAliasManual("shutdown", "stop", "exit");
 		CommandRegistrar.registerAliasManual("help", "man", "halp");
 		CommandRegistrar.registerAliasManual("setperms", "permissions", "perms", "perm", "pr");
@@ -297,6 +299,7 @@ public final class CoreCommands {
 		new Ranks().onRegister();
 		new RPGManager().onRegister();
 //		new ModHook().onRegister();
+		new Ship().onRegister();
 		Logger.log("Modules have been registered.");
 	}
 }
