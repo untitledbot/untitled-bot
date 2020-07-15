@@ -5,26 +5,31 @@ has a lot of room for customization and
 (soon) plugin development.
 
 ![Java CI with Maven (UBUNTU)](https://github.com/AlexIsOK/untitled-bot/workflows/Java%20CI%20with%20Maven%20(UBUNTU)/badge.svg)
-![discord-server](https://alexisok.dev/ub/discord.html)
-<br><br><br>
+
+---
+
 <div style="text-align: center;"><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.</div>
+
+---
 
 ### Features
 * Custom permission nodes for users, roles, and the entire guild (adapted from the Unix permission system).
 * Level/rank module.
 * Per guild permissions.
-
+---
 ### Upcoming features
 * Plugin support
 * Web UI
 * (M)MORPG module (Massive Multiplayer Online Role Playing Game, though probably not that massive).
 * Music player
-
+---
 ### Discord server
-You can join the untitled-bot discord server [here](https://alexisok.dev/ub/discord.html)
+You can join the untitled-bot discord server [here](https://alexisok.dev/ub/discord.html).
 
+---
 ### Self hosting
-Pre-compiled binaries are available [here](https://github.com/AlexIsOK/untitled-bot/releases/latest) \
+NOTE: Binaries for Windows have not been tested, it might not work at all!\
+Pre-compiled binaries are available [here](https://github.com/AlexIsOK/untitled-bot/releases/latest). \
 or, you can compile the source code as follows:
 ```console
 # download the requirements

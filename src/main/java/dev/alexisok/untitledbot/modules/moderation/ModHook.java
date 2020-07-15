@@ -4,6 +4,8 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.modules.moderation.logging.*;
+import dev.alexisok.untitledbot.modules.moderation.modcommands.Ban;
+import dev.alexisok.untitledbot.modules.moderation.modcommands.Pardon;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -55,6 +57,7 @@ public final class ModHook extends ListenerAdapter {
                         "A list of all logs available is on the wiki https://github.com/alexisok/untitled-bot/wiki");
         Manual.setHelpPage("get-log", "Get the logging types for this guild.\n" +
                                               "Usage: get-log\n");
+        
     }
     
     /**
