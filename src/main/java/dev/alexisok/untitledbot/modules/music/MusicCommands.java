@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 public class MusicCommands {
     
     public static void registerMusicCommands() {
-        CommandRegistrar.register("play", "core.music.play");
+        CommandRegistrar.register("play", "core.music.play", new Play());
     }
     
 }
