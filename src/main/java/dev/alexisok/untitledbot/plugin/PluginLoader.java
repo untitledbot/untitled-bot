@@ -1,64 +1,47 @@
 package dev.alexisok.untitledbot.plugin;
 
 import dev.alexisok.untitledbot.logging.Logger;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
-import java.util.Arrays;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * 
  * loads all of the plugins needed.
  * 
  * @author AlexIsOK
- * @since 0.0.1
+ * @since 1.0.1
  */
 public class PluginLoader {
     
-    private static boolean hasLoaded = false;
+    public static final transient String PLUGIN_DIRECTORY = "./plugins/";
+    public static final transient String PLUGIN_INFORMATION = "./plugin-info.txt";
     
-    /**
-     * Load ALL the plugins.  This should NOT be run more than once.
-     */
     public static void loadPlugins() {
-        if(hasLoaded)
-            Logger.critical("PLUGIN LOADER HAS ALREADY BEEN CALLED.  THIS IS A PROBLEM!", 11, true);
-        hasLoaded = true;
-        Arrays.stream(new File("./plugins/")
-                .listFiles())
-                .filter(f -> !f.isDirectory())
-                .filter(f -> f.getName().endsWith(".jar"))
-                .forEachOrdered(PluginLoader::loadJAR);
-        hasLoaded = true;
-    }
-    
-    /**
-     * Load all class files to a JAR.
-     * @param f the file.
-     */
-    private static void loadJAR(@NotNull File f) {
-        //i have to admit i couldn't find this anywhere so i just kind of made this
-        //from eight different sites including the javadoc.  this took WAY too long to make.
-        try {
-            JarEntry je;
-            JarInputStream jarStream = new JarInputStream(new FileInputStream(f));
-            while(null != (je = jarStream.getNextJarEntry())) {
-                if(!je.getName().endsWith(".class"))
-                    continue;
-                String name = je.getName().replaceAll("/", "\\.").replace(".class", "");
-                Logger.log("Loading " + name + " into memory from " + f.getName());
-                ClassPathUpdater.add(je.getName());
-                Logger.log("Loaded " + name + ".");
+        try(BufferedReader br = new BufferedReader(new FileReader(new File(PLUGIN_INFORMATION)))) {
+            ArrayList<String> pluginMainClasses = new ArrayList<>();
+            
+            String line;
+            while((line = br.readLine()) != null) {
+                pluginMainClasses.add(line);
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            Logger.critical("There was an error loading the JAR file " + f.getName() +
-                                    "!\nYou may want to report this to the plugin author.",
-                    0,
-                    false);
         }
     }
+    
+    private static void loadClassesToRegistrar(ArrayList<String> classes) {
+        
+        for(String s : classes) {
+            try {
+                ((UBPlugin) Class.forName(s).newInstance()).onRegister();
+            } catch(ClassNotFoundException | InstantiationException | IllegalAccessException ignored) {
+                Logger.critical("Error loading " + s + " as a plugin, is there a typo in the plugin-info.txt file?", 0, false);
+            }
+        }
+    } 
     
 }

@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.cron.Sender;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
+import dev.alexisok.untitledbot.plugin.PluginLoader;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -34,7 +35,7 @@ import java.util.Scanner;
  */
 public class Main {
 	
-	public static final String VERSION = "0.0.1";
+	public static final String VERSION = "1.0.1";
 	public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
 	public static final String DATA_PATH;
 	public static final String PREFIX;
@@ -121,9 +122,9 @@ public class Main {
 		
 		String token;
 		
-//		Logger.log("Loading plugins...");
-//		PluginLoader.loadPlugins();
-//		Logger.log("Plugin loading done.");
+		Logger.log("Loading plugins...");
+		PluginLoader.loadPlugins();
+		Logger.log("Plugin loading done.");
 		
 		try {
 			token = args[0];
