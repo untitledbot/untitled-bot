@@ -28,6 +28,8 @@ public class PluginLoader {
             while((line = br.readLine()) != null) {
                 pluginMainClasses.add(line);
             }
+            
+            loadClassesToRegistrar(pluginMainClasses);
         } catch (IOException e) {
             e.printStackTrace();
         }
