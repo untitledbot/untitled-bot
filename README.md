@@ -8,10 +8,6 @@ has a lot of room for customization and
 
 ---
 
-<div style="text-align: center;"><a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.</div>
-
----
-
 ### Features
 * Custom permission nodes for users, roles, and the entire guild (adapted from the Unix permission system).
 * Level/rank module.
