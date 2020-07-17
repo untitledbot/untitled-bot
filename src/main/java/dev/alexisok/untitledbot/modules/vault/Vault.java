@@ -61,7 +61,7 @@ public class Vault {
      * @param dataValue the data that will be stored under the key.
      * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
-    public static void storeUserDataLocal(String userID, @NotNull String guildID, @NotNull String dataKey, @NotNull String dataValue)
+    public static void storeUserDataLocal(String userID, String guildID, @NotNull String dataKey, @NotNull String dataValue)
             throws UserDataCouldNotBeObtainedException {
         UserData.checkUserExists(userID, guildID);
         Properties p = new Properties();

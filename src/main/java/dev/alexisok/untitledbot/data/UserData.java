@@ -73,7 +73,8 @@ public class UserData {
 		Logger.log("Creating a user profile for user <@" + userID + "> in " + guildID);
 		try {
 			//create the guild directory if it does not exist
-			Files.createDirectories(Paths.get(Main.parsePropertiesLocation(null, guildID).replace(".properties", "")));
+			if(guildID != null)
+				Files.createDirectories(Paths.get(Main.parsePropertiesLocation(null, guildID).replace(".properties", "")));
 			
 			//A file with the name does not exist, this was already checked.
 			if(!new File(Main.parsePropertiesLocation(userID, guildID)).exists()) {
