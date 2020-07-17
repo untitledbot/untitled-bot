@@ -1,64 +1,64 @@
 package dev.alexisok.untitledbot.plugin;
 
+import dev.alexisok.untitledbot.command.Command;
 import dev.alexisok.untitledbot.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
+import java.lang.instrument.Instrumentation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
 
 /**
  * 
  * loads all of the plugins needed.
  * 
  * @author AlexIsOK
- * @since 0.0.1
+ * @since 1.0.1
  */
 public class PluginLoader {
     
-    private static boolean hasLoaded = false;
+    public static final transient String PLUGIN_DIRECTORY = "./plugins/";
+    public static final transient String PLUGIN_INFORMATION = "./plugin-info.txt";
     
-    /**
-     * Load ALL the plugins.  This should NOT be run more than once.
-     */
     public static void loadPlugins() {
-        if(hasLoaded)
-            Logger.critical("PLUGIN LOADER HAS ALREADY BEEN CALLED.  THIS IS A PROBLEM!", 11, true);
-        hasLoaded = true;
-        Arrays.stream(new File("./plugins/")
-                .listFiles())
-                .filter(f -> !f.isDirectory())
-                .filter(f -> f.getName().endsWith(".jar"))
-                .forEachOrdered(PluginLoader::loadJAR);
-        hasLoaded = true;
+        try(BufferedReader br = new BufferedReader(new FileReader((PLUGIN_INFORMATION)))) {
+            ArrayList<String> pluginMainClasses = new ArrayList<>();
+            
+            String line;
+            while((line = br.readLine()) != null) {
+                if(line.equals(""))
+                    continue;
+                Logger.log("Trying to load " + line + " as a plugin.");
+                pluginMainClasses.add(line);
+            }
+            
+            loadClassesToRegistrar(pluginMainClasses);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
     }
     
-    /**
-     * Load all class files to a JAR.
-     * @param f the file.
-     */
-    private static void loadJAR(@NotNull File f) {
-        //i have to admit i couldn't find this anywhere so i just kind of made this
-        //from eight different sites including the javadoc.  this took WAY too long to make.
-        try {
-            JarEntry je;
-            JarInputStream jarStream = new JarInputStream(new FileInputStream(f));
-            while(null != (je = jarStream.getNextJarEntry())) {
-                if(!je.getName().endsWith(".class"))
-                    continue;
-                String name = je.getName().replaceAll("/", "\\.").replace(".class", "");
-                Logger.log("Loading " + name + " into memory from " + f.getName());
-                ClassPathUpdater.add(je.getName());
-                Logger.log("Loaded " + name + ".");
+    private static void loadClassesToRegistrar(@NotNull ArrayList<String> classes) {
+        for(String s : classes) {
+            try {
+                Logger.log("Loading " + s + " as an untitled-bot plugin.");
+                type(s).onRegister();
+            } catch(ClassNotFoundException e) {
+                e.printStackTrace();
+                Logger.critical("Error loading package " + s + " as a plugin, is there a typo in the plugin-info.txt file?", 0, false);
+            } catch(Throwable t) {
+                t.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Logger.critical("There was an error loading the JAR file " + f.getName() +
-                                    "!\nYou may want to report this to the plugin author.",
-                    0,
-                    false);
         }
+    }
+    
+    private static <E extends UBPlugin> E type(String packName) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        ClassLoader.getSystemClassLoader().loadClass(packName).newInstance();
+        return (E) Class.forName(packName).newInstance();
     }
     
 }

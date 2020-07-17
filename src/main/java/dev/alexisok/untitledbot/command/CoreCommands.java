@@ -63,7 +63,6 @@ public final class CoreCommands {
 			returnString += "Available memory: " + Runtime.getRuntime().freeMemory() + "\n";
 			returnString += "Total memory: " + Runtime.getRuntime().totalMemory() + "\n";
 			returnString += "Processors: " + Runtime.getRuntime().availableProcessors() + "\n";
-			returnString += "Java version: " + Runtime.version() + "\n";
 			
 			eb.setColor(Color.GREEN);
 			eb.addField("Status", returnString, false);

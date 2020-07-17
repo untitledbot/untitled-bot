@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.cron.Sender;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
+import dev.alexisok.untitledbot.plugin.PluginLoader;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -34,7 +35,7 @@ import java.util.Scanner;
  */
 public class Main {
 	
-	public static final String VERSION = "0.0.1";
+	public static final String VERSION = "1.0.1";
 	public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
 	public static final String DATA_PATH;
 	public static final String PREFIX;
@@ -114,16 +115,17 @@ public class Main {
 	 */
 	@SuppressWarnings("deprecation")
 	public static void main(@NotNull String[] args) {
-		
+	    
 		checkArgs(args.clone());
 		
 		Logger.log("Starting untitled bot " + VERSION + ".");
+		Logger.log("Starting in location " + System.getProperty("user.dir"));
 		
 		String token;
 		
-//		Logger.log("Loading plugins...");
-//		PluginLoader.loadPlugins();
-//		Logger.log("Plugin loading done.");
+		Logger.log("Loading plugins...");
+		PluginLoader.loadPlugins();
+		Logger.log("Plugin loading done.");
 		
 		try {
 			token = args[0];
@@ -214,9 +216,6 @@ public class Main {
 				case "--iknowwhatimdoingdontregisteranymodules":
 					noModules = true;
 					break;
-				default:
-					Logger.log("Unrecognized argument " + s + ", skipping...");
-					break;
 			}
 		}
 	}
@@ -229,12 +228,15 @@ public class Main {
 	 * 
 	 * 
 	 * @param userID the discord snowflake of the user.  Can be {@code null} for global config.
-	 * @param guildID the discord snowflake of the guild.
+	 * @param guildID the discord snowflake of the guild.  Can be {@code null} for user config.
 	 * @return the parsed properties location.
 	 */
 	@Contract(pure = true)
-	public static @NotNull String parsePropertiesLocation(String userID, @NotNull String guildID) {
-		if (userID == null) return DATA_PATH + guildID + ".properties";
+	public static @NotNull String parsePropertiesLocation(String userID, String guildID) {
+		if(userID == null && guildID == null)
+			return DATA_PATH;
+		if(userID == null) return DATA_PATH + guildID + ".properties";
+		if(guildID == null) return DATA_PATH + userID + ".properties";
 		return DATA_PATH + guildID + "/" + userID + ".properties";
 	}
 	
