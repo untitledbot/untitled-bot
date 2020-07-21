@@ -44,6 +44,8 @@ public class Ranks extends UBPlugin implements MessageHook {
         CommandRegistrar.registerHook(this);
         CommandRegistrar.register("rank", "core.ranks", this);
         CommandRegistrar.register("rank-total", "core.ranks", new Total());
+        CommandRegistrar.register("rank-top", "core.ranks", new Top());
+        Manual.setHelpPage("rank-top", "Get the top user ranks for the guild.");
         Manual.setHelpPage("rank", "Get your (or another user's) rank.\nUsage: `rank [user @ | user ID]`");
         Manual.setHelpPage("rank-total", "Get the total amount of experience of yourself or another user.\n" +
                                                  "Usage: rank-total [user @]");

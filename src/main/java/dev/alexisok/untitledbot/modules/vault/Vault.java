@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
@@ -24,15 +25,14 @@ import java.util.Properties;
  * It can also be used for other things, so feel free to be
  * creative with this.
  * 
- * {@link UserData} can be used for these things as well, but it
- * only supports storing data for users directly.
- * 
  * @author AlexIsOK
  * @since 0.0.1
  */
 public class Vault {
     
     private static final HashMap<String, String> DEFAULT_DATA = new HashMap<>();
+    
+    private static volatile ArrayList<VaultOperation> OPERATIONS = new ArrayList<>();
     
     /**
      * Get a new {@link HashMap} that has the same data as the default data.
@@ -96,7 +96,7 @@ public class Vault {
         } catch(IOException e) {
             e.printStackTrace();
             throw new UserDataCouldNotBeObtainedException();
-        }
+        } //TODO lock this until the data thing is 0
     }
     
 }

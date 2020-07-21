@@ -98,6 +98,9 @@ public class CommandRegistrar {
 		if(!REGISTRAR.containsKey(commandName))
 			return null;
 		
+		if(permissionNode.equals("owner") && !m.getAuthor().getId().equals(Main.OWNER_ID))
+			return null;
+			
 		//owner is a global super user and can access any commands on any servers
 		if(m.getAuthor().getId().equals(Main.OWNER_ID))
 			return REGISTRAR.get(commandName).onCommand(args, m);
@@ -170,7 +173,7 @@ public class CommandRegistrar {
 		
 		eb.addField("untitled-bot",
 				"You do not have permission to execute this command.\nIf this is an error, please have an" +
-						" administrator on the server execute `setperms <@" + m.getAuthor().getId() + ">" +
+						" administrator on the server execute `setperms guild" +
 						" " + getCommandPermissionNode(commandName) + " true`",
 					false);
 		return eb.build();
