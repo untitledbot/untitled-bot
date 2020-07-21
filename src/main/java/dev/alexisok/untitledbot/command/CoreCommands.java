@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
 import dev.alexisok.untitledbot.modules.basic.ship.Ship;
+import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rpg.RPGManager;
@@ -268,6 +269,7 @@ public final class CoreCommands {
 		CommandRegistrar.setDefaultPermissionForNode("core.invite", true);
 		CommandRegistrar.setDefaultPermissionForNode("core.about", true);
 		CommandRegistrar.setDefaultPermissionForNode("module.example.eightball", true);
+		CommandRegistrar.setDefaultPermissionForNode("fun.twenty", true);
 	}
 	
 	/**
@@ -298,6 +300,7 @@ public final class CoreCommands {
 		new Ranks().onRegister();
 		new RPGManager().onRegister();
 //		new ModHook().onRegister();
+		new TwentyDice().onRegister();
 		new Ship().onRegister();
 		Logger.log("Modules have been registered.");
 	}

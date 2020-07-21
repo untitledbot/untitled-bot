@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.events.*;
 import net.dv8tion.jda.api.events.guild.member.*;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.events.guild.voice.*;
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.role.*;
 import net.dv8tion.jda.api.events.role.update.*;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -327,6 +328,40 @@ public final class ModHook extends ListenerAdapter {
                                       "User: <@" + e.getMember().getId() + ">\n" +
                                       "Channel: " + e.getChannelLeft().getName(), false);
         eb.setColor(Color.GREEN);
+        lc(guildID).sendMessage(eb.build()).queue();
+    }
+    
+    @Override
+    public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent e) {
+        String guildID = e.getGuild().getId();
+        
+        if(!ch(guildID, LogTypes.GUILD_MEMBER_JOIN))
+            return;
+        
+        EmbedBuilder eb = new EmbedBuilder();
+        df(eb);
+        
+        eb.addField("Logger", "User joined guild.\n" +
+                                      "User: <@" + e.getUser().getId() + ">\n", false);
+        
+        eb.setColor(Color.GREEN);
+        lc(guildID).sendMessage(eb.build()).queue();
+    }
+    
+    @Override
+    public void onGuildMemberRemove(@Nonnull GuildMemberRemoveEvent e) {
+        String guildID = e.getGuild().getId();
+        
+        if(!ch(guildID, LogTypes.GUILD_MEMBER_LEAVE))
+            return;
+        
+        EmbedBuilder eb = new EmbedBuilder();
+        df(eb);
+        
+        eb.addField("Logger", "User left guild.\n" +
+                                      "User: <@" + e.getUser().getId() + ">", false);
+        
+        eb.setColor(Color.RED);
         lc(guildID).sendMessage(eb.build()).queue();
     }
     

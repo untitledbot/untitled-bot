@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.rank;
 
+import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
@@ -42,7 +43,12 @@ public class Ranks extends UBPlugin implements MessageHook {
     public void onRegister() {
         CommandRegistrar.registerHook(this);
         CommandRegistrar.register("rank", "core.ranks", this);
+        CommandRegistrar.register("rank-total", "core.ranks", new Total());
+        CommandRegistrar.register("rank-top", "core.ranks", new Top());
+        Manual.setHelpPage("rank-top", "Get the top user ranks for the guild.");
         Manual.setHelpPage("rank", "Get your (or another user's) rank.\nUsage: `rank [user @ | user ID]`");
+        Manual.setHelpPage("rank-total", "Get the total amount of experience of yourself or another user.\n" +
+                                                 "Usage: rank-total [user @]");
         Vault.addDefault("ranks-xp", "0");
         Vault.addDefault("ranks-level", "1");
     }
@@ -65,7 +71,8 @@ public class Ranks extends UBPlugin implements MessageHook {
         boolean other = false;
         
         try {
-            User target = message.getMentionedMembers().get(0).getUser();
+            int s = message.getMentionedMembers().size();
+            User target = s == 1 ? message.getMentionedMembers().get(0).getUser() : Main.jda.getUserById(args[1]);
             xp = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-xp");
             lv = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-level");
             other = true;
@@ -154,4 +161,32 @@ public class Ranks extends UBPlugin implements MessageHook {
     //unused
     @Override
     public void onAnyEvent(GenericEvent e) {}
+    
+    /**
+     * Get the total XP a user has from all of their levels.
+     * @param user the user ID
+     * @param guild the guild ID
+     * @return the total amount of xp, or {@code 0} if there is none (xp or lv is null).
+     */
+    protected static long totalXPFromAllLevels(String user, String guild) {
+        long returnLong = 0L;
+    
+        String xpS = Vault.getUserDataLocal(user, guild, "ranks-xp");
+        String lvS = Vault.getUserDataLocal(user, guild, "ranks-level");
+    
+        if (lvS == null || xpS == null) return returnLong;
+        
+        long xp = Long.parseLong(xpS);
+        int lv = Integer.parseInt(lvS);
+        
+        returnLong += xp;
+        
+        if(lv == 0) return returnLong;
+        
+        for(int i = 0; i < lv; i++) {
+            returnLong += XP_REQUIRED_FOR_LEVEL_UP[i];
+        }
+        
+        return returnLong;
+    }
 }
