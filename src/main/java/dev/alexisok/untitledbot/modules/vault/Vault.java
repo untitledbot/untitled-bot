@@ -86,7 +86,7 @@ public class Vault {
      * @see Properties#getProperty(String)
      * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
-    public static String getUserDataLocal(String userID, @NotNull String guildID, @NotNull String dataKey)
+    public static String getUserDataLocal(String userID, String guildID, @NotNull String dataKey)
             throws UserDataCouldNotBeObtainedException{
         UserData.checkUserExists(userID, guildID);
         Properties p = new Properties();

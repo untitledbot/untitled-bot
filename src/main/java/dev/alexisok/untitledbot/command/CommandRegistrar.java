@@ -36,6 +36,8 @@ public class CommandRegistrar {
 	//the hook registrar.
 	private static final ArrayList<MessageHook> HOOK_REGISTRAR = new ArrayList<>();
 	
+	private static long commandsSent = 0L;
+	
 	/**
 	 * ...this used to be used for something...
 	 * 
@@ -43,6 +45,13 @@ public class CommandRegistrar {
 	 */
 	static int registrarSize() {
 		return REGISTRAR.size();
+	}
+	
+	/**
+	 * @return the amount of commands sent through this bot.
+	 */
+	public static long getTotalCommands() {
+		return commandsSent;
 	}
 	
 	/**
@@ -89,6 +98,8 @@ public class CommandRegistrar {
 	 * @return the return String.  Returns {@code null} if the command was not found.
 	 */
 	public static @Nullable MessageEmbed runCommand(String commandName, String[] args, @NotNull Message m) {
+		
+		commandsSent++;
 		
 		String permissionNode = getCommandPermissionNode(commandName);
 		

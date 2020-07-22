@@ -1,12 +1,13 @@
 package dev.alexisok.untitledbot.command;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
+import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
 import dev.alexisok.untitledbot.modules.basic.ship.Ship;
 import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
-import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rpg.RPGManager;
 import dev.alexisok.untitledbot.modules.vault.Vault;
@@ -18,6 +19,9 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.lang.management.ManagementFactory;
+import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -59,34 +63,33 @@ public final class CoreCommands {
 		CommandRegistrar.register("status", "core.stats", (((args, message) -> {
 			EmbedBuilder eb = new EmbedBuilder();
 			EmbedDefaults.setEmbedDefaults(eb, message);
-			String returnString = "";
-			returnString += "JDA status: " + Main.jda.getStatus() + "\n";
-			returnString += "Available memory: " + Runtime.getRuntime().freeMemory() + "\n";
-			returnString += "Total memory: " + Runtime.getRuntime().totalMemory() + "\n";
-			returnString += "Processors: " + Runtime.getRuntime().availableProcessors() + "\n";
+			String returnString = "```";
+			returnString += "          Version: " + Main.VERSION + "\n";
+			returnString += "       JDA status: " + Main.jda.getStatus() + "\n";
+			returnString += " Available memory: " + Runtime.getRuntime().freeMemory() / 1024 / 1024 + " MB\n";
+			returnString += "     Total memory: " + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " MB\n";
+			returnString += "       Processors: " + Runtime.getRuntime().availableProcessors() + "\n";
+			returnString += "           Uptime: " + ManagementFactory.getRuntimeMXBean().getUptime() + " ms\n";
+			returnString += "  Commands issued: " + CommandRegistrar.getTotalCommands() + "\n";
+			returnString += "   Total messages: " + BotClass.getMessagesSentTotal() + "\n";
+			returnString += "           Guilds: " + Main.jda.getGuilds().size() + "\n";
+			returnString += "            Roles: " + Main.jda.getRoles().size() + "\n";
+			returnString += "            Users: " + Main.jda.getUsers().size() + "\n";
+			returnString += "    Text channels: " + Main.jda.getTextChannels().size() + "\n";
+			returnString += "   Voice channels: " + Main.jda.getVoiceChannels().size() + "\n";
+			returnString += "       Categories: " + Main.jda.getCategories().size() + "\n";
+			returnString += "           Emotes: " + Main.jda.getEmotes().size() + "\n";
+			returnString += "    Shard current: " + message.getJDA().getShardInfo().getShardId() + "\n";
+			returnString += "      Shard total: " + Main.jda.getShardInfo().getShardTotal() + "\n";
+			returnString += "          Plugins: " + CommandRegistrar.registrarSize() + "\n";
+			
+			returnString += "```";
 			
 			eb.setColor(Color.GREEN);
-			eb.addField("Status", returnString, false);
+			eb.addField("Status", returnString, true);
 			return eb.build();
 		})));
 		
-		//shutdown the bot.  use screen or pm2 if you want it to restart.
-		CommandRegistrar.register("shutdown", "owner", (args, message) -> {
-			EmbedBuilder eb = new EmbedBuilder();
-			EmbedDefaults.setEmbedDefaults(eb, message);
-			try {
-				Logger.log("shutting down...\nThank you for using untitled-bot!");
-				Logger.log("Exit caused by message " + Arrays.toString(args) + " by user ID " + message.getAuthor().getId());
-				System.exit(Integer.parseInt(args[1]));
-			} catch(ArrayIndexOutOfBoundsException ignored) {
-				Logger.log("shutting down...\nThank you for using untitled-bot!");
-				Logger.log("Exit caused by message " + Arrays.toString(args) + " by user ID " + message.getAuthor().getId());
-				System.exit(0);
-			}
-			eb.setColor(Color.RED);
-			eb.addField("SHUTDOWN", "Usage: `shutdown [code]`", false);
-			return eb.build();
-		});
 		
 		//the permissions command is very important.  It can be skipped for more security,
 		//but you won't be able to modify command permissions.
@@ -299,9 +302,9 @@ public final class CoreCommands {
 		new AtSomeone().onRegister();
 		new Ranks().onRegister();
 		new RPGManager().onRegister();
-//		new ModHook().onRegister();
 		new TwentyDice().onRegister();
 		new Ship().onRegister();
+		new GetUserData().onRegister();
 		Logger.log("Modules have been registered.");
 	}
 }

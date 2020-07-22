@@ -49,6 +49,8 @@ public class Ranks extends UBPlugin implements MessageHook {
         Manual.setHelpPage("rank", "Get your (or another user's) rank.\nUsage: `rank [user @ | user ID]`");
         Manual.setHelpPage("rank-total", "Get the total amount of experience of yourself or another user.\n" +
                                                  "Usage: rank-total [user @]");
+        CommandRegistrar.registerAlias("rank-top", "ranktop", "leaderboard", "top", "ranklist");
+        CommandRegistrar.registerAliasManual("rank-top", "ranktop", "leaderboard", "top", "ranklist");
         Vault.addDefault("ranks-xp", "0");
         Vault.addDefault("ranks-level", "1");
     }
