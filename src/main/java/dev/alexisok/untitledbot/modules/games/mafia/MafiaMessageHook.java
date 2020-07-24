@@ -6,5 +6,5 @@ package dev.alexisok.untitledbot.modules.games.mafia;
  * @author AlexIsOK
  * @since 1.3
  */
-public class MafiaMessageHook {
+public final class MafiaMessageHook {
 }

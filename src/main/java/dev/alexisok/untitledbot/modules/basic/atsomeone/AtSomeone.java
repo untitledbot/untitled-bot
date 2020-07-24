@@ -26,7 +26,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @since 0.0.1
  */
 @Finished(since="0.0.1")
-public class AtSomeone extends UBPlugin {
+public final class AtSomeone extends UBPlugin {
     
     @Override
     public void onRegister() {

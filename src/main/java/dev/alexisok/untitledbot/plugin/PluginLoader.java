@@ -24,7 +24,7 @@ import java.util.ArrayList;
  * @author AlexIsOK
  * @since 1.0.1
  */
-public class PluginLoader {
+public final class PluginLoader {
     
     public static final String PLUGIN_DIRECTORY = "plugins/";
     

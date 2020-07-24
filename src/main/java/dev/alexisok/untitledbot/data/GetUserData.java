@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.File;
@@ -18,14 +18,15 @@ import java.util.concurrent.Callable;
 
 /**
  * Allow users to get their data.
+ * All data is returned to users in a direct message.
  * 
  * @author AlexIsOK
  * @since 1.3
  */
-public class GetUserData extends UBPlugin {
+public final class GetUserData extends UBPlugin {
     
     @Override
-    public @Nullable MessageEmbed onCommand(String[] args, Message message) {
+    public @NotNull MessageEmbed onCommand(String[] args, Message message) {
     
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
@@ -46,12 +47,14 @@ public class GetUserData extends UBPlugin {
             for(Guild g : Main.jda.getGuilds()) {
                 if(new File(Main.parsePropertiesLocation(userID, g.getId())).exists()) {
                     message.getAuthor().openPrivateChannel().queue((channel) -> channel.sendFile(new File(Main.parsePropertiesLocation(userID, g.getId())),
-                            "" + g.getName() + ".txt").queue());
+                            g.getId() + " " + g.getName() + ".txt").queue());
                 }
             }
     
             if(new File(Main.parsePropertiesLocation(userID, null)).exists()) {
-                message.getAuthor().openPrivateChannel().queue((channel) -> channel.sendFile(new File(Main.parsePropertiesLocation(userID, null))).queue());
+                message.getAuthor().openPrivateChannel().queue((channel) -> channel.sendFile(
+                        new File(Main.parsePropertiesLocation(userID, null)), "globalData.txt"
+                ).queue());
             }
             
             setRateLimiter(userID);

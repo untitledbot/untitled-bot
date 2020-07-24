@@ -19,7 +19,7 @@ import static java.lang.annotation.ElementType.*;
 @Documented
 @Inherited
 @Retention(RetentionPolicy.SOURCE)
-@Target({CONSTRUCTOR, FIELD, METHOD, ANNOTATION_TYPE})
+@Target({CONSTRUCTOR, FIELD, METHOD, ANNOTATION_TYPE, TYPE})
 public @interface ToBeRemoved {
     String value() default "Next major release.";
 }

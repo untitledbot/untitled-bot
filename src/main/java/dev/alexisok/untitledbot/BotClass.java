@@ -20,7 +20,7 @@ import java.util.Objects;
  * @author AlexIsOK
  * @since 0.0.1
  */
-public class BotClass extends ListenerAdapter {
+public final class BotClass extends ListenerAdapter {
 	
 	/**
 	 * Only allow package-private instances of this class.

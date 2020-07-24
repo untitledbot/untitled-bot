@@ -19,10 +19,12 @@ import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
+ * This plugin implements ranks.  it handles most things ranks.
+ * 
  * @author AlexIsOK
  * @since 0.0.1
  */
-public class Ranks extends UBPlugin implements MessageHook {
+public final class Ranks extends UBPlugin implements MessageHook {
     
     //0th element is level one
     private static final long[] XP_REQUIRED_FOR_LEVEL_UP = new long[]

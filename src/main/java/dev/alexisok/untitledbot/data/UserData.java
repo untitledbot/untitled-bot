@@ -22,7 +22,7 @@ import java.nio.file.Paths;
  * @author AlexIsOK
  * @since 0.0.1
  */
-public class UserData {
+public final class UserData {
 	
 	/**
 	 * Get a specific KEY of a user.

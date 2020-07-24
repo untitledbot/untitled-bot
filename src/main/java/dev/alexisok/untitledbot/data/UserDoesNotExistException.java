@@ -7,7 +7,7 @@ package dev.alexisok.untitledbot.data;
  * @author AlexIsOK
  * @since 0.0.1
  */
-public class UserDoesNotExistException extends RuntimeException{
+public final class UserDoesNotExistException extends RuntimeException{
 	public UserDoesNotExistException(String s){
 		super(s);
 	}

@@ -14,7 +14,7 @@ import javax.annotation.Nonnull;
  * @author AlexIsOK
  * @since 1.0.0
  */
-public class Sender extends ListenerAdapter {
+public final class Sender extends ListenerAdapter {
     
     @Override
     public void onGuildMemberRemove(@Nonnull GuildMemberRemoveEvent e) {

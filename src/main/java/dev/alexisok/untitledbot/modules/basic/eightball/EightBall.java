@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author AlexIsOK
  * @since 0.0.1
  */
-public class EightBall extends UBPlugin implements Command {
+public final class EightBall extends UBPlugin implements Command {
     
     private static final String[] RESPONSES = {
             ":green_circle: It is certain.", ":green_circle: It is decidedly so.", ":green_circle: Without a doubt",
@@ -43,6 +43,7 @@ public class EightBall extends UBPlugin implements Command {
         //in a real plugin, you would not use module as the first word.
         CommandRegistrar.register("8ball", "module.example.eightball", new EightBall());
         CommandRegistrar.registerAlias("8ball", "8");
+        CommandRegistrar.setDefaultPermissionForNode("module.example.eightball", true);
     }
     
     @Override

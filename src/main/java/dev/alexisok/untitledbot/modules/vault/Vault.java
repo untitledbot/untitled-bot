@@ -28,7 +28,7 @@ import java.util.Properties;
  * @author AlexIsOK
  * @since 0.0.1
  */
-public class Vault {
+public final class Vault {
     
     private static final HashMap<String, String> DEFAULT_DATA = new HashMap<>();
     

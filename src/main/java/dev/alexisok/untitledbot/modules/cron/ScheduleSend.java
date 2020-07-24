@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
  * @author AlexIsOK
  * @since 1.0.0
  */
-public class ScheduleSend extends UBPlugin {
+public final class ScheduleSend extends UBPlugin {
     
     @Override
     public @Nullable MessageEmbed onCommand(String[] args, Message message) {
