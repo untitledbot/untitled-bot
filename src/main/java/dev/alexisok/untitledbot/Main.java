@@ -34,7 +34,7 @@ import java.util.*;
  */
 public final class Main {
 	
-	public static final String VERSION = "1.3.2";
+	public static final String VERSION = "1.3.3";
 	public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
 	public static final String DATA_PATH;
 	public static final String PREFIX;
@@ -254,7 +254,7 @@ public final class Main {
 				Main.jda.getPresence().setPresence(
 						OnlineStatus.ONLINE,
 						Activity.of(Activity.ActivityType.DEFAULT,
-								MESSAGE_OF_THE_DAY[Calendar.getInstance().get(Calendar.DAY_OF_WEEK)]));
+								MESSAGE_OF_THE_DAY[Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1]));
 			}
 		};
 		
