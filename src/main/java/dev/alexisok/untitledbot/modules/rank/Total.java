@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -16,10 +17,10 @@ import org.jetbrains.annotations.Nullable;
  * @author AlexIsOK
  * @since 1.3
  */
-public class Total extends UBPlugin {
+public final class Total extends UBPlugin {
     
     @Override
-    public @Nullable MessageEmbed onCommand(String[] args, Message message) {
+    public @NotNull MessageEmbed onCommand(String[] args, Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         

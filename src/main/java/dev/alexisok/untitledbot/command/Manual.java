@@ -9,10 +9,12 @@ import java.util.HashMap;
 /**
  * Help pages for use with the "help" command.
  * 
+ * To set the alias manuals, use {@link CommandRegistrar#registerAliasManual(String, String...)}
+ * 
  * @author AlexIsOK
  * @since 0.0.1
  */
-public class Manual {
+public final class Manual {
 	
 	private static final HashMap<String, String> MAN_PAGES = new HashMap<>();
 	

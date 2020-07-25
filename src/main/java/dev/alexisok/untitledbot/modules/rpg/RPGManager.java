@@ -19,7 +19,7 @@ import java.awt.*;
  * @author AlexIsOK
  * @since 1.0.0
  */
-public class RPGManager extends UBPlugin implements Command {
+public final class RPGManager extends UBPlugin implements Command {
     
     public void onRegister() {
         Vault.addDefault("rpg-xp", "0");

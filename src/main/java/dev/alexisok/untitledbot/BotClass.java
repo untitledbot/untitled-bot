@@ -20,12 +20,18 @@ import java.util.Objects;
  * @author AlexIsOK
  * @since 0.0.1
  */
-public class BotClass extends ListenerAdapter {
+public final class BotClass extends ListenerAdapter {
 	
 	/**
 	 * Only allow package-private instances of this class.
 	 */
 	BotClass() {}
+	
+	private static long messagesSentTotal = 0L;
+	
+	public static long getMessagesSentTotal() {
+		return messagesSentTotal;
+	}
 	
 	/**
 	 * This is messy...
@@ -33,7 +39,13 @@ public class BotClass extends ListenerAdapter {
 	 */
 	@Override
 	public final void onMessageReceived(@Nonnull MessageReceivedEvent event) {
+		
+		messagesSentTotal++;
+		
 		CommandRegistrar.runMessageHooks(event);
+		
+		if(!event.isFromGuild())
+			return;
 		
 		//get the prefix of the guild
 		String prefix = Vault.getUserDataLocal(null, event.getGuild().getId(), "guild.prefix");
@@ -80,21 +92,4 @@ public class BotClass extends ListenerAdapter {
 		CommandRegistrar.runGenericListeners(event);
 	}
 	
-	/**
-	 * Send a message to a specific guild channel
-	 * @param ID the ID of the guild channel
-	 * @param message the message
-	 */
-	public static void sendMessageGuild(String ID, String message) {
-		Objects.requireNonNull(Main.jda.getTextChannelById(ID)).sendMessage(message).queue();
-	}
-	
-	/**
-	 * Send a message to a specific user
-	 * @param ID the user ID
-	 * @param message the message
-	 */
-	public static void sendMessagePrivate(String ID, String message) {
-		Objects.requireNonNull(Main.jda.getPrivateChannelById(ID)).sendMessage(message).queue();
-	}
 }

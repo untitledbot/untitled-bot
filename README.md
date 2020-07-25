@@ -33,14 +33,15 @@ or, you can compile the source code as follows:
 ```console
 # download the requirements
 # if you're not using a debian-based distro, figure it out yourself
-apt install openjdk-11-jdk maven
+apt install openjdk-8-jdk maven
 
 # clone the repository and cd
 git clone https://github.com/alexisok/untitled-bot
 cd untitled-bot/
 
-# compile from the source (requires Maven and Java 11+)
+# compile from the source (requires Maven and Java 8)
 mvn clean compile assembly:single
+
 
 # run the bot
 cd target/
@@ -49,5 +50,3 @@ java -jar untitledbot-jar-with-dependencies.jar "TOKEN"
 
 I recommend using [pm2](https://github.com/Unitech/pm2) or screen
 if you are self hosting the bot.
-
-<img src="https://media.discordapp.net/attachments/730129087535906896/732704490242965605/botslistNEW.png" alt="botlist">

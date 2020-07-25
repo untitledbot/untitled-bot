@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * @author AlexIsOK
  * @since 1.3
  */
-public class Top extends UBPlugin {
+public final class Top extends UBPlugin {
     
     private static final long TIME_BETWEEN_COMMAND_IN_SECONDS = 300; //300 seconds is 5 minutes
     

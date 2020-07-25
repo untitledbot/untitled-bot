@@ -7,11 +7,12 @@ import org.jetbrains.annotations.NotNull;
 /**
  * 
  * Set the defaults for embeds.
+ * All plugins should use this for their embeds.
  * 
  * @author AlexIsOK
  * @since 0.0.1
  */
-public class EmbedDefaults {
+public final class EmbedDefaults {
     
     /**
      * Set the defaults for an embed.  DO NOT PASS A CLONE OF THE OBJECT, this method

@@ -3,6 +3,11 @@ package dev.alexisok.untitledbot.plugin;
 import dev.alexisok.untitledbot.command.Command;
 import dev.alexisok.untitledbot.logging.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.xeustechnologies.jcl.JarClassLoader;
+import org.xeustechnologies.jcl.JclObjectFactory;
+import org.xeustechnologies.jcl.context.DefaultContextLoader;
+import org.xeustechnologies.jcl.proxy.CglibProxyProvider;
+import org.xeustechnologies.jcl.proxy.ProxyProviderFactory;
 
 import java.io.*;
 import java.lang.instrument.Instrumentation;
@@ -19,46 +24,22 @@ import java.util.ArrayList;
  * @author AlexIsOK
  * @since 1.0.1
  */
-public class PluginLoader {
+public final class PluginLoader {
     
-    public static final transient String PLUGIN_DIRECTORY = "./plugins/";
-    public static final transient String PLUGIN_INFORMATION = "./plugin-info.txt";
+    public static final String PLUGIN_DIRECTORY = "plugins/";
     
     public static void loadPlugins() {
-        try(BufferedReader br = new BufferedReader(new FileReader((PLUGIN_INFORMATION)))) {
-            ArrayList<String> pluginMainClasses = new ArrayList<>();
-            
-            String line;
-            while((line = br.readLine()) != null) {
-                if(line.equals(""))
-                    continue;
-                Logger.log("Trying to load " + line + " as a plugin.");
-                pluginMainClasses.add(line);
-            }
-            
-            loadClassesToRegistrar(pluginMainClasses);
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    private static void loadClassesToRegistrar(@NotNull ArrayList<String> classes) {
-        for(String s : classes) {
-            try {
-                Logger.log("Loading " + s + " as an untitled-bot plugin.");
-                type(s).onRegister();
-            } catch(ClassNotFoundException e) {
-                e.printStackTrace();
-                Logger.critical("Error loading package " + s + " as a plugin, is there a typo in the plugin-info.txt file?", 0, false);
-            } catch(Throwable t) {
-                t.printStackTrace();
-            }
-        }
-    }
-    
-    private static <E extends UBPlugin> E type(String packName) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        ClassLoader.getSystemClassLoader().loadClass(packName).newInstance();
-        return (E) Class.forName(packName).newInstance();
+        if(true)
+            return;
+        JarClassLoader jcl = new JarClassLoader();
+        jcl.add(PLUGIN_DIRECTORY);
+
+        ProxyProviderFactory.setDefaultProxyProvider(new CglibProxyProvider());
+
+        JclObjectFactory factory = JclObjectFactory.getInstance(true);
+        
+        UBPlugin plugin = (UBPlugin) factory.create(jcl, "dev.alexisok.untitledbot.plugin.UBPlugin");
+        plugin.onRegister();
     }
     
 }

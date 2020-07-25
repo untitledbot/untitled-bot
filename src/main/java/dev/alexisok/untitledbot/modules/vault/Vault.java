@@ -28,7 +28,7 @@ import java.util.Properties;
  * @author AlexIsOK
  * @since 0.0.1
  */
-public class Vault {
+public final class Vault {
     
     private static final HashMap<String, String> DEFAULT_DATA = new HashMap<>();
     
@@ -86,7 +86,7 @@ public class Vault {
      * @see Properties#getProperty(String)
      * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
-    public static String getUserDataLocal(String userID, @NotNull String guildID, @NotNull String dataKey)
+    public static String getUserDataLocal(String userID, String guildID, @NotNull String dataKey)
             throws UserDataCouldNotBeObtainedException{
         UserData.checkUserExists(userID, guildID);
         Properties p = new Properties();

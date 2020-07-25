@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
@@ -18,10 +19,10 @@ import java.awt.*;
  * @author AlexIsOK
  * @since 0.0.1
  */
-public class SetLogChannel extends UBPlugin {
+public final class SetLogChannel extends UBPlugin {
     
     @Override
-    public @Nullable MessageEmbed onCommand(String[] args, Message message) {
+    public @NotNull MessageEmbed onCommand(String[] args, Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         

@@ -12,7 +12,7 @@ import java.util.Date;
  * @author AlexIsOK
  * @since 0.0.1
  */
-public class Logger {
+public final class Logger {
 	
 	//example: 2020-06-12@15:41:21
 	private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'@'HH:mm:ss");

@@ -19,10 +19,12 @@ import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
+ * This plugin implements ranks.  it handles most things ranks.
+ * 
  * @author AlexIsOK
  * @since 0.0.1
  */
-public class Ranks extends UBPlugin implements MessageHook {
+public final class Ranks extends UBPlugin implements MessageHook {
     
     //0th element is level one
     private static final long[] XP_REQUIRED_FOR_LEVEL_UP = new long[]
@@ -49,6 +51,8 @@ public class Ranks extends UBPlugin implements MessageHook {
         Manual.setHelpPage("rank", "Get your (or another user's) rank.\nUsage: `rank [user @ | user ID]`");
         Manual.setHelpPage("rank-total", "Get the total amount of experience of yourself or another user.\n" +
                                                  "Usage: rank-total [user @]");
+        CommandRegistrar.registerAlias("rank-top", "ranktop", "leaderboard", "top", "ranklist");
+        CommandRegistrar.registerAliasManual("rank-top", "ranktop", "leaderboard", "top", "ranklist");
         Vault.addDefault("ranks-xp", "0");
         Vault.addDefault("ranks-level", "1");
     }

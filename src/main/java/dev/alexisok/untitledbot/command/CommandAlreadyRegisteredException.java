@@ -6,5 +6,6 @@ package dev.alexisok.untitledbot.command;
  * @author AlexIsOK
  * @since 0.0.1
  */
-public class CommandAlreadyRegisteredException extends RuntimeException {
+public final class CommandAlreadyRegisteredException extends RuntimeException {
+    public CommandAlreadyRegisteredException() {}
 }

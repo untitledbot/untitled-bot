@@ -19,7 +19,7 @@ import java.awt.*;
  * @author AlexIsOK
  * @since 1.0.1
  */
-public class Play extends UBPlugin {
+public final class Play extends UBPlugin {
     
     /**
      * Adapted from https://stackoverflow.com/a/6904504

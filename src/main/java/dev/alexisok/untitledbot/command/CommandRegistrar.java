@@ -20,6 +20,24 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
+ * This is where all commands are registered.  To register the command, you must do the following:
+ * 
+ * <ul>
+ *     <li>
+ *         Run {@link CommandRegistrar#register(String, String, Command)} to register the command.
+ *     </li>
+ *     <li>
+ *         (optional but encouraged) Add the help page: {@link Manual#setHelpPage(String, String)}
+ *     </li>
+ *     <li>
+ *         (optional) Add aliases for the command: {@link CommandRegistrar#registerAlias(String, String...)}<br>
+ *         (optional) Copy the manual pages for the aliases: {@link CommandRegistrar#registerAliasManual(String, String...)}
+ *     </li>
+ * </ul>
+ * 
+ * Commands must have a permission node.  The permission nodes must follow a regex of {@code ^[a-z]([a-z][.]?)+[a-z]$},
+ * and the command names (what the user types in on Discord) must match {@code ^[a-z0-9_-]*$}.
+ * 
  * @author AlexIsOK
  * @since 0.0.1
  */
@@ -36,13 +54,22 @@ public class CommandRegistrar {
 	//the hook registrar.
 	private static final ArrayList<MessageHook> HOOK_REGISTRAR = new ArrayList<>();
 	
+	private static long commandsSent = 0L;
+	
 	/**
 	 * ...this used to be used for something...
 	 * 
 	 * @return the size of the registrar.
 	 */
-	static int registrarSize() {
+	public static int registrarSize() {
 		return REGISTRAR.size();
+	}
+	
+	/**
+	 * @return the amount of commands sent through this bot.
+	 */
+	public static long getTotalCommands() {
+		return commandsSent;
 	}
 	
 	/**
@@ -90,6 +117,8 @@ public class CommandRegistrar {
 	 */
 	public static @Nullable MessageEmbed runCommand(String commandName, String[] args, @NotNull Message m) {
 		
+		commandsSent++;
+		
 		String permissionNode = getCommandPermissionNode(commandName);
 		
 		Logger.debug("Getting permission node " + permissionNode);
@@ -98,6 +127,7 @@ public class CommandRegistrar {
 		if(!REGISTRAR.containsKey(commandName))
 			return null;
 		
+		//noinspection ConstantConditions
 		if(permissionNode.equals("owner") && !m.getAuthor().getId().equals(Main.OWNER_ID))
 			return null;
 			
@@ -126,7 +156,6 @@ public class CommandRegistrar {
 		try {
 			//check user permissions and guild permissions at the same time.
 			//this could be made faster.
-			@SuppressWarnings("ConstantConditions")
 			String userHas = Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), permissionNode);
 			
 			Logger.debug("Checking the permission node of user...");
