@@ -39,11 +39,9 @@ apt install openjdk-8-jdk maven
 git clone https://github.com/alexisok/untitled-bot
 cd untitled-bot/
 
-# (optional) checkout the beta branch for the latest features
-git checkout beta
-
 # compile from the source (requires Maven and Java 8)
 mvn clean compile assembly:single
+
 
 # run the bot
 cd target/
