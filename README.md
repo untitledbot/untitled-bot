@@ -39,10 +39,12 @@ apt install openjdk-8-jdk maven git
 git clone https://github.com/alexisok/untitled-bot
 cd untitled-bot/
 
-# compile from the source (requires Maven and Java 8)
+# compile from the source
 mvn clean compile assembly:single
 
 # run the bot (the name of the file may be different)
+
+# run the bot
 cd target/
 java -jar untitledbot.jar "TOKEN"
 ```
