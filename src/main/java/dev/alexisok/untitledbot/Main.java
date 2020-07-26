@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot;
 import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.basic.economy.EconomyHook;
 import dev.alexisok.untitledbot.modules.cron.Sender;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import dev.alexisok.untitledbot.plugin.PluginLoader;
@@ -34,7 +35,7 @@ import java.util.*;
  */
 public final class Main {
 	
-	public static final String VERSION = "1.3.3";
+	public static final String VERSION = "1.3.4";
 	public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
 	public static final String DATA_PATH;
 	public static final String PREFIX;
@@ -48,10 +49,6 @@ public final class Main {
 			"with jda",
 		    "a game i guess", "with Java", "insert motd 7 here"
 	};
-	
-	private static boolean noCoreCommands = false;
-	private static boolean noModules = false;
-	
 	
 	public static JDA jda;
 	
@@ -104,11 +101,7 @@ public final class Main {
 	/**
 	 * 
 	 * Arguments (NOT case sensitive):<br>
-	 *      --IKnowWhatImDoingDontRegisterCoreCommands - do not register core commands.<br>
-	 *      --IKnowWhatImDoingDontRegisterAnyModules - do not register modules.<br>
-	 *      --Version - print the version and then exit.<br>
-	 *      --Help - display help.<br>
-	 *      --
+	 *      --version - print the version and then exit.<br>
 	 * 
 	 * @param args command line arguments, first one is for the token, any
 	 *             other arguments not listed in this methods JavaDoc will
@@ -161,10 +154,8 @@ public final class Main {
 		
 		preStartChecks();
 		
-		if(!noCoreCommands)
-			CoreCommands.registerCoreCommands();
-		if(!noModules)
-			CoreCommands.registerModules();
+		CoreCommands.registerCoreCommands();
+		CoreCommands.registerModules();
 		
 	}
 	
@@ -206,18 +197,9 @@ public final class Main {
 		}
 		
 		for(String s : args) {
-			switch(s) {
-				case "--instantbreak":
-					Logger.critical("Instant break: activated!", 2);
-				case "--version":
-					System.out.println(VERSION);
-					System.exit(0);
-				case "--iknowwhatimdoingdontregistercorecommands":
-					noCoreCommands = true;
-					break;
-				case "--iknowwhatimdoingdontregisteranymodules":
-					noModules = true;
-					break;
+			if ("--version".equals(s)) {
+				System.out.println("v" + VERSION);
+				System.exit(0);
 			}
 		}
 	}

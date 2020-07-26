@@ -4,15 +4,15 @@ untitled-bot is a multi-purpose bot that
 has a lot of room for customization and
 (soon) plugin development.  You can self host it as well.
 
-![Java CI with Maven (UBUNTU)](https://github.com/AlexIsOK/untitled-bot/workflows/Java%20CI%20with%20Maven%20(UBUNTU)/badge.svg)
-
+![Build](https://github.com/AlexIsOK/untitled-bot/workflows/Java%20CI%20with%20Maven%20(UBUNTU)/badge.svg)
+![Version](https://img.shields.io/badge/version-1.3-blue)
 ---
 
 ### Features
 * Custom permission nodes for users, roles, and the entire guild (adapted from the Unix permission system).
 * Level/rank module.
-* Per guild permissions.
 * Logging
+* <a href="#commands">Many other commands.</a>
 
 ---
 ### Upcoming features
@@ -33,22 +33,73 @@ or, you can compile the source code as follows:
 ```console
 # download the requirements
 # if you're not using a debian-based distro, figure it out yourself
-apt install openjdk-8-jdk maven
+apt install openjdk-8-jdk maven git
 
 # clone the repository and cd
 git clone https://github.com/alexisok/untitled-bot
 cd untitled-bot/
 
-# (optional) checkout the beta branch for the latest features
-git checkout beta
-
 # compile from the source (requires Maven and Java 8)
 mvn clean compile assembly:single
 
-# run the bot
+# run the bot (the name of the file may be different)
 cd target/
-java -jar untitledbot-jar-with-dependencies.jar "TOKEN"
+java -jar untitledbot.jar "TOKEN"
 ```
 
 I recommend using [pm2](https://github.com/Unitech/pm2) or screen
 if you are self hosting the bot.
+
+### Privacy
+(before anything, you can request your data from the bot by joining the official server and using the `data` command).\
+As someone who wants privacy, I respect your right to it as well.  This is a list of everything the bot keeps on users:\
+
+```diff
+@@ it will keep @@
++ Your Discord Snowflake (public ID)
++ Any data that goes through the bot (balance, xp, level, etc)
++ Shared guilds with the bot
++ A list of all server members by ID in the guild
+
+@@ it will NOT @@
+- Cache messages
+- Log messages
+- Save presence history
+- Read you a bedtime story
+
+@@ this information could be logged to log channels if the server admins set it up @@
++ Nickname updates
++ Role updates
++ Voice channel join/leave/switch
++ Server role changes
++ Member join/leave guild
+@@ the above logs will NOT be saved on my end @@
+```
+
+### Commands
+<a id="commands"></a>
+
+`[optional argument] <required argument> <[conditionally required]>`
+
+##### Ranking
+`rank [user @]` - get the rank of yourself or another user.\
+`leaderboard` - get the highest ranking users in the server.\
+`rank-total [user @]` - get the total amount of xp of yourself or another user.
+
+##### Utilities
+`help [command]` - get help for a command.\
+`prefix <prefix 1 to 3 chars>` - set the prefix for the server (mentioning the bot works as well).\
+`status` - get the status of the bot.
+
+##### Moderation
+`log-channel <text channel #>` - set the logging channel.\
+`add-log` - add a log type to the log channel.\
+`remove-log` - remove a log type from the log channel.\
+`get-log` - get the log types the guild has in use.
+
+##### Fun
+`someone` - mention a random user (does NOT ping them).\
+`brainfuck` - run [Brainf***](https://en.wikipedia.org/wiki/Brainfuck) code.\
+`8ball <question>` - simulate an 8 ball.\
+`ship <user A> <user B>` - ship two different server members.\
+`20` - roll a 20 sided die.
