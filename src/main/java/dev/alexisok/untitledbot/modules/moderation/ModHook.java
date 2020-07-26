@@ -62,14 +62,6 @@ public final class ModHook extends ListenerAdapter {
     }
     
     /**
-     * Set defaults
-     * @param eb the embed builder.
-     */
-    private static void df(@NotNull EmbedBuilder eb) {
-        eb.setTitle("untitled-bot");
-    }
-    
-    /**
      * Check if the guild allows this type of logging
      * 
      * @param guildID the guild id
@@ -117,9 +109,9 @@ public final class ModHook extends ListenerAdapter {
             return;
         
         EmbedBuilder eb = new EmbedBuilder();
-        df(eb);
         
         eb.addField("Logger", "User nickname changed.\n" +
+                                      "User: <@" + e.getMember().getId() + ">\n\n" +
                                       "Old nickname: " + e.getOldNickname() + "\n" +
                                       "New nickname: " + e.getNewNickname() + "\n", false);
         eb.setColor(Color.YELLOW);
@@ -135,7 +127,6 @@ public final class ModHook extends ListenerAdapter {
             return;
         
         EmbedBuilder eb = new EmbedBuilder();
-        df(eb);
         
         String[] roleIDs = new String[e.getRoles().size()];
         
@@ -158,14 +149,13 @@ public final class ModHook extends ListenerAdapter {
             return;
     
         EmbedBuilder eb = new EmbedBuilder();
-        df(eb);
     
         String[] roleIDs = new String[e.getRoles().size()];
     
         for(int i = 0; i < e.getRoles().size(); i++)
             roleIDs[i] = "<@&" + e.getRoles().get(i).getId() + ">";
     
-        eb.addField("Logger", "User roles added.\n" +
+        eb.addField("Logger", "User roles removed.\n" +
                                       "Applied to user <@" + e.getMember().getId() + ">\n" +
                                       "Roles removed:\n" +
                                       Arrays.toString(roleIDs), false);
@@ -181,7 +171,6 @@ public final class ModHook extends ListenerAdapter {
             return;
         
         EmbedBuilder eb = new EmbedBuilder();
-        df(eb);
         
         String roleCreated = e.getRole().getId();
         
@@ -199,7 +188,6 @@ public final class ModHook extends ListenerAdapter {
             return;
     
         EmbedBuilder eb = new EmbedBuilder();
-        df(eb);
     
         String roleCreated = e.getRole().getId();
     
@@ -217,7 +205,6 @@ public final class ModHook extends ListenerAdapter {
             return;
         
         EmbedBuilder eb = new EmbedBuilder();
-        df(eb);
         
         eb.addField("Logger", "Guild role updated.\n" +
                            "Role: <@&" + e.getRole().getId() + ">\n" +
@@ -235,7 +222,6 @@ public final class ModHook extends ListenerAdapter {
             return;
     
         EmbedBuilder eb = new EmbedBuilder();
-        df(eb);
     
         eb.addField("Logger", "Guild role updated.\n" +
                                       "Role: <@&" + e.getRole().getId() + ">\n" +
@@ -253,7 +239,6 @@ public final class ModHook extends ListenerAdapter {
             return;
         
         EmbedBuilder eb = new EmbedBuilder();
-        df(eb);
         
         String[] oldValues = new String[e.getOldPermissions().size()];
         String[] newValues = new String[e.getNewPermissions().size()];
@@ -287,7 +272,6 @@ public final class ModHook extends ListenerAdapter {
             return;
         
         EmbedBuilder eb = new EmbedBuilder();
-        df(eb);
         
         eb.addField("Logger", "User joined voice channel.\n" +
                                       "User: <@" + e.getMember().getId() + ">\n" +
@@ -304,7 +288,6 @@ public final class ModHook extends ListenerAdapter {
             return;
     
         EmbedBuilder eb = new EmbedBuilder();
-        df(eb);
     
         eb.addField("Logger", "User moved channels.\n" +
                                       "User: <@" + e.getMember().getId() + ">\n" +
@@ -322,7 +305,6 @@ public final class ModHook extends ListenerAdapter {
             return;
     
         EmbedBuilder eb = new EmbedBuilder();
-        df(eb);
     
         eb.addField("Logger", "User left voice channel.\n" +
                                       "User: <@" + e.getMember().getId() + ">\n" +
@@ -339,7 +321,6 @@ public final class ModHook extends ListenerAdapter {
             return;
         
         EmbedBuilder eb = new EmbedBuilder();
-        df(eb);
         
         eb.addField("Logger", "User joined guild.\n" +
                                       "User: <@" + e.getUser().getId() + ">\n", false);
@@ -356,7 +337,6 @@ public final class ModHook extends ListenerAdapter {
             return;
         
         EmbedBuilder eb = new EmbedBuilder();
-        df(eb);
         
         eb.addField("Logger", "User left guild.\n" +
                                       "User: <@" + e.getUser().getId() + ">", false);

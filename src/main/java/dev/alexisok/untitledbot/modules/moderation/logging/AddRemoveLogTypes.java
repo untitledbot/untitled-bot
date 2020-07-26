@@ -40,8 +40,6 @@ public final class AddRemoveLogTypes extends UBPlugin implements Command {
             
             ArrayList<LogTypes> lt = new ArrayList<>();
             
-            Logger.debug("Adding existing log types.");
-            
             try {
                 String[] stuffs = Vault.getUserDataLocal(null, message.getGuild().getId(), "log.policies").split(LOG_SEPARATOR);
                 
@@ -50,8 +48,6 @@ public final class AddRemoveLogTypes extends UBPlugin implements Command {
                     lt.add(LogTypes.valueOf(s.toUpperCase()));
                 }
             } catch(NullPointerException | IllegalArgumentException ignored) {}
-            
-            Logger.debug("Adding new log types.");
             
             int unknownBreak = 0;
             final int maxBreak = 2;
@@ -141,7 +137,7 @@ public final class AddRemoveLogTypes extends UBPlugin implements Command {
                 Arrays.toString(store)
                         .replace("[", "")
                         .replace("]", "")
-                        .replace(" ", ""));
+                        .replace(" ", "")); //this is horrible please send help
         
         eb.setColor(Color.GREEN);
         eb.addField("Logging", "Logging policies updated.", false);

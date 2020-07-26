@@ -4,12 +4,14 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
+import dev.alexisok.untitledbot.modules.basic.brainfreak.BrainFreak;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
 import dev.alexisok.untitledbot.modules.basic.help.Help;
 import dev.alexisok.untitledbot.modules.basic.perms.Permissions;
 import dev.alexisok.untitledbot.modules.basic.prefix.Prefix;
 import dev.alexisok.untitledbot.modules.basic.ship.Ship;
 import dev.alexisok.untitledbot.modules.basic.status.Status;
+import dev.alexisok.untitledbot.modules.basic.timestamp.TimeStamp;
 import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rpg.RPGManager;
@@ -37,6 +39,13 @@ public final class CoreCommands {
 		new Status().onRegister();
 		new Permissions().onRegister();
 		
+		//this is a test.  delete this. TODO
+		CommandRegistrar.register("stall", "owner", (args, message) -> {
+			
+			new java.util.Scanner(System.in).next();
+			return null;
+		});
+		
 		//invite command
 		CommandRegistrar.register("invite", "core.invite", (args, message) -> {
 			EmbedBuilder eb = new EmbedBuilder();
@@ -44,7 +53,6 @@ public final class CoreCommands {
 			
 			eb.setColor(Color.GREEN);
 			
-			//with the unique id, it should work for all three bots.
 			eb.addField("Invite link",
 					"You can invite the bot to the server using the invite link " +
 							"https://discord.com/oauth2/authorize?client_id=" +
@@ -109,7 +117,7 @@ public final class CoreCommands {
 		Manual.setHelpPage("invite", "Get the invite link for the bot.");
 		Manual.setHelpPage("about", "much knowledge");
 		Manual.setHelpPage("rank", "Get the current level and XP of a user.\nUsage: " +
-				                           "rank [user @ | user ID]\n" +
+				                           "rank [user @]\n" +
 				                           "leave argument blank for your own stats.");
 	}
 	
@@ -122,6 +130,8 @@ public final class CoreCommands {
 		new TwentyDice().onRegister();
 		new Ship().onRegister();
 		new GetUserData().onRegister();
+		new BrainFreak().onRegister();
+		new TimeStamp().onRegister();
 		Logger.log("Modules have been registered.");
 	}
 }

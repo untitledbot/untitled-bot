@@ -21,8 +21,7 @@ public final class EmbedDefaults {
      * @param m the message received from the command.
      */
     public static void setEmbedDefaults(@NotNull EmbedBuilder eb, @NotNull Message m) {
-        eb.setAuthor(m.getAuthor().getName(), m.getAuthor().getAvatarUrl(), m.getAuthor().getAvatarUrl());
-        eb.setTitle("untitled-bot");
+        eb.setFooter("\n\n\n" + m.getAuthor().getName(), m.getAuthor().getAvatarUrl());
     }
     
 }

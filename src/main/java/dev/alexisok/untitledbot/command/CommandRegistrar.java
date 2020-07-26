@@ -295,10 +295,15 @@ public class CommandRegistrar {
 	/**
 	 * Set a default permission for ALL users for a specific permission node.
 	 * You do not have to be the owner of the node to run this command.  Use with caution.
+	 * 
+	 * The nodes "owner" and "admin" will be discarded.
+	 * 
 	 * @param node the node to modify
 	 * @param permission the permission
 	 */
 	public static void setDefaultPermissionForNode(String node, boolean permission) {
+		if(node.equalsIgnoreCase("owner") || node.equalsIgnoreCase("admin"))
+			return;
 		GLOBAL_NODES.put(node, permission);
 	}
 }
