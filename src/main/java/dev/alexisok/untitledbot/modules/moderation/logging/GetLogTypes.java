@@ -1,16 +1,13 @@
 package dev.alexisok.untitledbot.modules.moderation.logging;
 
 import dev.alexisok.untitledbot.command.Command;
-import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
-import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
@@ -43,7 +40,13 @@ public final class GetLogTypes extends UBPlugin implements Command {
         }
         
         eb.setColor(Color.GREEN);
-        eb.addField("Logging", "Current policies for this guild:\n" + s.replace(",", ", ").toLowerCase(), false);
+        eb.addField(
+                "Logging",
+                "Current policies for this guild:\n" + s
+                                                              .replace(",", ", ")
+                                                              .replace("_", " ")
+                                                              .toLowerCase(),
+                false);
         
         return eb.build();
     }

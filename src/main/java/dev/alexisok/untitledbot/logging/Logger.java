@@ -30,6 +30,7 @@ public final class Logger {
 	 * @param message the message to output.
 	 */
 	public static void log(String message) {
+		if(message == null) return;
 		output.println("[" + df.format(new Date()) + "] - " + message);
 	}
 	
@@ -43,6 +44,7 @@ public final class Logger {
 	 * @param message the message.
 	 */
 	public static void debug(String message) {
+		if(message == null) return;
 		if(Main.DEBUG)
 			output.println("[" + df.format(new Date()) + "] - " + message);
 	}

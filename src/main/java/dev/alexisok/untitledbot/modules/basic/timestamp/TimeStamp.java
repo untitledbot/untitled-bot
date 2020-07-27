@@ -45,6 +45,7 @@ public class TimeStamp extends UBPlugin {
         }
         
         eb.addField("", new Date(time).toString(), false);
+        eb.setFooter("Formula: `(snowflake / 4194304) + 1420070400000` to get milliseconds since Jan. 1st, 1970 00:00");
         
         return eb.build();
     }
