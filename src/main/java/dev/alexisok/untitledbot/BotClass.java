@@ -1,11 +1,13 @@
 package dev.alexisok.untitledbot;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
@@ -80,7 +82,11 @@ public final class BotClass extends ListenerAdapter {
 			event.getChannel()
 					.sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
 					.queue();
-		} catch(NullPointerException ignored){} //this returns null if the command does not exist.
+		} catch(NullPointerException ignored) { //this returns null if the command does not exist.
+		} catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
+			Logger.debug("Could not send a message to a channel.");
+		}
+		
 		//needs to be caught to avoid flooding logs.
 	}
 	

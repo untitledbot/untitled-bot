@@ -6,7 +6,7 @@
 
     <groupId>dev.alexisok</groupId>
     <artifactId>untitled-bot</artifactId>
-    <version>1.3.2</version>
+    <version>1.3</version>
     <packaging>jar</packaging>
     <name>untitled-bot</name>
     

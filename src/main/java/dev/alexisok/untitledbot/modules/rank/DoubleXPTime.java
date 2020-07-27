@@ -25,7 +25,7 @@ public class DoubleXPTime {
     
     private static boolean doubleXpTime = false;
     
-    protected static int amount = 1;
+    protected static int boostAmount = 1;
     
     /**
      * Installs the broadcaster.
@@ -48,28 +48,34 @@ public class DoubleXPTime {
         doubleXpTime = true;
         EmbedBuilder eb = new EmbedBuilder();
         
-        amount = ThreadLocalRandom.current().nextInt(2, 8);
+        boostAmount = ThreadLocalRandom.current().nextInt(2, 8);
         
         eb.setTitle("untitled-bot");
-        eb.addField("XP BOOST TIME", String.format("For the next hour, XP per message will be multiplied by %d!", amount), false);
-    
+        eb.addField("XP BOOST TIME", String.format("For the next hour, XP per message will be multiplied by %d!", boostAmount), false);
+        eb.setFooter(DISABLE_MESSAGE);
+        
         new Timer().schedule(
                 new TimerTask() {
                     @Override
                     public void run() {
                         doubleXpTime = false;
-                        amount = 1;
+                        boostAmount = 1;
+                        Logger.log("XP boost over!");
                     }
                 }, 3600000
-        );
+        ); //3600000 for hour
         
         for(Guild g : Main.jda.getGuilds()) {
             try {
+                
+                //filter out guilds that have oped-out
                 String shouldBroadcast = Vault.getUserDataLocal(null, g.getId(), "ranks-broadcast.boost");
                 if(shouldBroadcast != null) {
                     if(shouldBroadcast.equalsIgnoreCase("false"))
                         continue;
                 }
+                
+                //look for a bot channel
                 boolean found = false;
                 for(TextChannel tc : g.getTextChannels()) {
                     if (tc.canTalk() && tc.getName().contains("bot")) {
@@ -78,7 +84,8 @@ public class DoubleXPTime {
                         break;
                     }
                 }
-    
+                
+                //generic channel
                 if (!found) {
                     if (g.getDefaultChannel().canTalk())
                         g.getDefaultChannel().sendMessage(eb.build()).queue();

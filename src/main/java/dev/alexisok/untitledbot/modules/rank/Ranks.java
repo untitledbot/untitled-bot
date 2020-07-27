@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -64,6 +65,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         DoubleXPTime.installer();
     }
     
+    @SuppressWarnings("DuplicatedCode")
     @Override
     public MessageEmbed onCommand(String[] args, @NotNull Message message) {
         
@@ -91,8 +93,26 @@ public final class Ranks extends UBPlugin implements MessageHook {
             xp = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks-xp");
             lv = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks-level");
         }
+    
         
-        
+    
+        if(lv == null || xp == null) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                int size = message.getMentionedMembers().size();
+                User target = size == 1 ? message.getMentionedMembers().get(0).getUser() : Main.jda.getUserById(args[1]);
+                xp = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-xp");
+                lv = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-level");
+                other = true;
+            } catch(Exception ignored) {
+                xp = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks-xp");
+                lv = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks-level");
+            }
+        }
         
         if (lv == null || xp == null) {
             eb.setColor(Color.RED);
@@ -150,7 +170,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         if(currentLv >= XP_REQUIRED_FOR_LEVEL_UP.length - 1)
             return;
         
-        long randAdd = ThreadLocalRandom.current().nextLong(1 * DoubleXPTime.amount, 4 * DoubleXPTime.amount);
+        long randAdd = ThreadLocalRandom.current().nextLong(1 * DoubleXPTime.boostAmount, 4 * DoubleXPTime.boostAmount);
         
         currentXP += randAdd;
         
@@ -158,11 +178,18 @@ public final class Ranks extends UBPlugin implements MessageHook {
         if(currentXP >= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1]) {
             currentXP -= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1];
             currentLv++;
-            
-            mre
-                    .getChannel()
-                    .sendMessage("Congrats <@" + m.getAuthor().getId() + ">!  You are now level " + currentLv + "!!!")
-                    .queue();
+            try {
+                mre
+                        .getChannel()
+                        .sendMessage("Congrats <@" + m.getAuthor().getId() + ">!  You are now level " + currentLv + "!!!")
+                        .queue();
+            } catch(InsufficientPermissionException ignored) {
+                int finalCurrentLv = currentLv;
+                mre.getAuthor().openPrivateChannel().queue((channel) -> {
+                                    channel.sendMessage("Congrats <@" + m.getAuthor().getId() + ">!  You are now level " + finalCurrentLv + "!!!").queue();
+                                });
+                
+            }
         }
     
         Vault.storeUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks-xp", String.valueOf(currentXP));
