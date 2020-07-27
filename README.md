@@ -42,8 +42,6 @@ cd untitled-bot/
 mvn clean compile assembly:single
 
 # run the bot (the name of the file may be different)
-
-# run the bot
 cd target/
 java -jar untitledbot.jar "TOKEN"
 ```
