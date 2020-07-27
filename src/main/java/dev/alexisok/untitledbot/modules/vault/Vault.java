@@ -7,6 +7,7 @@ import dev.alexisok.untitledbot.logging.Logger;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -35,6 +36,9 @@ public final class Vault {
     
     private static boolean running = false;
     
+    /**
+     * Nested class for the operations to finish up.
+     */
     public static class OperationHook extends Thread {
         @Override
         public void run() {
@@ -60,6 +64,10 @@ public final class Vault {
         }
     }
     
+    /**
+     * Register the operation scheduler.
+     * THIS SHOULD NOT BE RUN BY ANYTHING BUT THE MAIN METHOD.
+     */
     public static void operationScheduler() {
         Thread t = new OperationHook();
         Runtime.getRuntime().addShutdownHook(t);
@@ -115,9 +123,31 @@ public final class Vault {
      */
     public static void storeUserDataLocal(String userID, String guildID, @NotNull String dataKey, @NotNull String dataValue)
             throws UserDataCouldNotBeObtainedException {
-        OPERATIONS.add(new VaultOperation(userID, guildID, dataKey, dataValue));
+        if(!shutdownFileInPlace())
+            OPERATIONS.add(new VaultOperation(userID, guildID, dataKey, dataValue));
+        else {
+            //noinspection ResultOfMethodCallIgnored
+            new File("shutdown.ub").delete();
+            long time = System.currentTimeMillis();
+            while(OPERATIONS.size() != 0) {
+                if(time > System.currentTimeMillis() + 10000L)
+                    break;
+            }
+            Runtime.getRuntime().exit(0);
+        }
     }
     
+    /**
+     * @return true if the shutdown file exists.
+     */
+    private static boolean shutdownFileInPlace() {
+        return new File("shutdown.ub").exists();
+    }
+    
+    /**
+     * Piped data
+     * @param ve the vault operation
+     */
     private static void storeUserDataPiped(@NotNull VaultOperation ve) {
         UserData.checkUserExists(ve.userID, ve.guildID);
         Properties p = new Properties();
@@ -142,8 +172,8 @@ public final class Vault {
      * @see Properties#getProperty(String)
      * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
-    public static String getUserDataLocal(String userID, String guildID, @NotNull String dataKey)
-            throws UserDataCouldNotBeObtainedException{
+    public static String getUserDataLocal(String userID, String guildID, @NotNull String dataKey) throws UserDataCouldNotBeObtainedException {
+        while(OPERATIONS.size() != 0) Logger.debug("Waiting for operations..." + OPERATIONS.size());
         UserData.checkUserExists(userID, guildID);
         Properties p = new Properties();
         try {

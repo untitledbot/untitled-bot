@@ -14,6 +14,8 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -144,7 +146,6 @@ public final class Main {
 			//this is deprecated but using the new version causes
 			//errors that prevent this from compiling.
 			jda = new JDABuilder(token)
-//					      .setActivity(Activity.of(Activity.ActivityType.CUSTOM_STATUS,"with time"))
 						  .disableCache(CacheFlag.ACTIVITY)
 					      .build();
 			motd();

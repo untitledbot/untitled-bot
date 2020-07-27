@@ -18,10 +18,10 @@ public final class EmbedDefaults {
      * Set the defaults for an embed.  DO NOT PASS A CLONE OF THE OBJECT, this method
      * modifies the parameter object directly.
      * @param eb the embed builder to modify
-     * @param m the message received from the command.
+     * @param message the message received from the command.
      */
-    public static void setEmbedDefaults(@NotNull EmbedBuilder eb, @NotNull Message m) {
-        eb.setFooter("\n\n\n" + m.getAuthor().getName(), m.getAuthor().getAvatarUrl());
+    public static void setEmbedDefaults(@NotNull EmbedBuilder eb, @NotNull Message message) {
+        eb.setFooter("\n\n\n" + message.getAuthor().getName(), message.getAuthor().getAvatarUrl());
     }
     
 }

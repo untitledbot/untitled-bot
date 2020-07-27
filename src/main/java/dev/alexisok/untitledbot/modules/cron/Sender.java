@@ -1,10 +1,9 @@
 package dev.alexisok.untitledbot.modules.cron;
 
-import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 
 /**
  * Listens for events and sends them if the server wants it.
@@ -17,7 +16,7 @@ import javax.annotation.Nonnull;
 public final class Sender extends ListenerAdapter {
     
     @Override
-    public void onGuildMemberRemove(@Nonnull GuildMemberRemoveEvent e) {
+    public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent e) {
         
     }
 }

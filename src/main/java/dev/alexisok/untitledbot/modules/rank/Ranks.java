@@ -47,14 +47,21 @@ public final class Ranks extends UBPlugin implements MessageHook {
         CommandRegistrar.register("rank", "core.ranks", this);
         CommandRegistrar.register("rank-total", "core.ranks", new Total());
         CommandRegistrar.register("rank-top", "core.ranks", new Top());
+        CommandRegistrar.register("rank-settings", "admin", new RankSettings());
         Manual.setHelpPage("rank-top", "Get the top user ranks for the guild.");
         Manual.setHelpPage("rank", "Get your (or another user's) rank.\nUsage: `rank [user @ | user ID]`");
         Manual.setHelpPage("rank-total", "Get the total amount of experience of yourself or another user.\n" +
                                                  "Usage: rank-total [user @]");
+        Manual.setHelpPage("rank-settings", "Set the rank settings.\n" +
+                                                    "Usage: `rank-settings <setting> <true|false>`\n" +
+                                                    "Current settings:\n" +
+                                                    "\tannounce-xp-boost\n");
         CommandRegistrar.registerAlias("rank-top", "ranktop", "leaderboard", "top", "ranklist");
         CommandRegistrar.registerAliasManual("rank-top", "ranktop", "leaderboard", "top", "ranklist");
         Vault.addDefault("ranks-xp", "0");
         Vault.addDefault("ranks-level", "1");
+        
+        DoubleXPTime.installer();
     }
     
     @Override
@@ -143,7 +150,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         if(currentLv >= XP_REQUIRED_FOR_LEVEL_UP.length - 1)
             return;
         
-        long randAdd = ThreadLocalRandom.current().nextLong(1, 4);
+        long randAdd = ThreadLocalRandom.current().nextLong(1 * DoubleXPTime.amount, 4 * DoubleXPTime.amount);
         
         currentXP += randAdd;
         
