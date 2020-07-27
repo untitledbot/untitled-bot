@@ -9,7 +9,6 @@ has a lot of room for customization and
 ---
 
 ### Features
-* Custom permission nodes for users, roles, and the entire guild (adapted from the Unix permission system).
 * Level/rank module.
 * Logging
 * <a href="#commands">Many other commands.</a>
