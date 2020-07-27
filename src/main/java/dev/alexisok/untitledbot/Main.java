@@ -6,6 +6,7 @@ import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.economy.EconomyHook;
 import dev.alexisok.untitledbot.modules.cron.Sender;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
+import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.PluginLoader;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -120,6 +121,10 @@ public final class Main {
 		Logger.log("Loading plugins...");
 		PluginLoader.loadPlugins();
 		Logger.log("Plugin loading done.");
+		
+		Logger.log("Installing VAULT scheduler...");
+		Vault.operationScheduler();
+		Logger.log("Installed.");
 		
 		try {
 			token = args[0];
