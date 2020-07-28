@@ -48,7 +48,7 @@ public final class Top extends UBPlugin {
     
         LinkedHashMap<String, Long> topXP = new LinkedHashMap<>();
     
-        for(Member m : message.getGuild().getMembers()) {
+        for(Member m : message.getGuild().loadMembers().get()) {
             if(m.getUser().isBot())
                 continue;
             

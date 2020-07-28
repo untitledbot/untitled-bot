@@ -54,9 +54,10 @@ public final class Ranks extends UBPlugin implements MessageHook {
         Manual.setHelpPage("rank-total", "Get the total amount of experience of yourself or another user.\n" +
                                                  "Usage: rank-total [user @]");
         Manual.setHelpPage("rank-settings", "Set the rank settings.\n" +
-                                                    "Usage: `rank-settings <setting> <true|false>`\n" +
+                                                    "Usage: `rank-settings <setting> <value>`\n" +
                                                     "Current settings:\n" +
-                                                    "\tannounce-xp-boost\n");
+                                                    "\tannounce-xp-boost <true|false>\n" +
+                                                    "\tannounce-level-up <current | channel | dm | none>\n");
         CommandRegistrar.registerAlias("rank-top", "ranktop", "leaderboard", "top", "ranklist");
         CommandRegistrar.registerAliasManual("rank-top", "ranktop", "leaderboard", "top", "ranklist");
         Vault.addDefault("ranks-xp", "0");
@@ -67,7 +68,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
     
     @SuppressWarnings("DuplicatedCode")
     @Override
-    public MessageEmbed onCommand(String[] args, @NotNull Message message) {
+    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
         
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
@@ -86,6 +87,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         try {
             int s = message.getMentionedMembers().size();
             User target = s == 1 ? message.getMentionedMembers().get(0).getUser() : Main.jda.getUserById(args[1]);
+            assert target != null;
             xp = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-xp");
             lv = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-level");
             other = true;
@@ -105,6 +107,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
             try {
                 int size = message.getMentionedMembers().size();
                 User target = size == 1 ? message.getMentionedMembers().get(0).getUser() : Main.jda.getUserById(args[1]);
+                assert target != null;
                 xp = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-xp");
                 lv = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-level");
                 other = true;
@@ -119,6 +122,8 @@ public final class Ranks extends UBPlugin implements MessageHook {
             eb.addField("Error", "Looks like the level or XP is null..... this is awkward.....", false);
             return eb.build();
         }
+        
+        if(lv.equalsIgnoreCase("58")) lv = "MAX (58)";
     
         eb.setColor(Color.GREEN);
         if(!other) {
@@ -128,7 +133,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
                                 "Level: " + lv + "\n" +
                                 "Exp:   " + xp + "/" + XP_REQUIRED_FOR_LEVEL_UP[Integer.parseInt(lv) - 1] + "\n",
                         false);
-            } catch(ArrayIndexOutOfBoundsException ignored) {
+            } catch(ArrayIndexOutOfBoundsException | NumberFormatException ignored) {
                 //THIS SHOULD ONLY BE CAUGHT IF THE USER IS THE HIGHEST LEVEL
                 eb.addField("Ranking",
                         "\n" +
@@ -137,17 +142,26 @@ public final class Ranks extends UBPlugin implements MessageHook {
                         false);
             }
         } else {
-            eb.addField("Ranking",
-                    "Stats for this user:\n" + 
-                            "Level: " + lv + "\n" + 
-                            "Exp:   " + xp + "/" + XP_REQUIRED_FOR_LEVEL_UP[Integer.parseInt(lv) - 1] + "\n",
-                    false);
+            try {
+                eb.addField("Ranking",
+                        "Stats for this user:\n" +
+                                "Level: " + lv + "\n" +
+                                "Exp:   " + xp + "/" + XP_REQUIRED_FOR_LEVEL_UP[Integer.parseInt(lv) - 1] + "\n",
+                        false);
+            } catch(ArrayIndexOutOfBoundsException | NumberFormatException ignored) {
+                //THIS SHOULD ONLY BE CAUGHT IF THE USER IS THE HIGHEST LEVEL
+                eb.addField("Ranking",
+                        "Stats for this user:\n" +
+                                "Level: " + lv + "\n" +
+                                "Exp:   " + xp + "\n",
+                        false);
+            }
         }
         return eb.build();
     }
     
     @Override
-    public void onMessage(MessageReceivedEvent mre) {
+    public void onMessage(@NotNull MessageReceivedEvent mre) {
         if(!mre.isFromGuild())
             return;
         Message m = mre.getMessage();
@@ -166,16 +180,16 @@ public final class Ranks extends UBPlugin implements MessageHook {
         
         long currentXP = Long.parseLong(xpstr);
         int currentLv = Integer.parseInt(lvstr);
+    
+        if (currentLv > 56 && currentXP >= Long.MAX_VALUE - 10L) return;
         
-        if(currentLv >= XP_REQUIRED_FOR_LEVEL_UP.length - 1)
-            return;
-        
+        @SuppressWarnings("PointlessArithmeticExpression") //NOT POINTLESS
         long randAdd = ThreadLocalRandom.current().nextLong(1 * DoubleXPTime.boostAmount, 4 * DoubleXPTime.boostAmount);
         
         currentXP += randAdd;
         
         //check level up
-        if(currentXP >= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1]) {
+        if(currentLv != 58 && currentXP >= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1]) {
             currentXP -= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1];
             currentLv++;
             try {
@@ -185,13 +199,11 @@ public final class Ranks extends UBPlugin implements MessageHook {
                         .queue();
             } catch(InsufficientPermissionException ignored) {
                 int finalCurrentLv = currentLv;
-                mre.getAuthor().openPrivateChannel().queue((channel) -> {
-                                    channel.sendMessage("Congrats <@" + m.getAuthor().getId() + ">!  You are now level " + finalCurrentLv + "!!!").queue();
-                                });
+                mre.getAuthor().openPrivateChannel().queue((channel) -> channel.sendMessage("Congrats <@" + m.getAuthor().getId() + ">!  You are now level " + finalCurrentLv + "!!!").queue());
                 
             }
         }
-    
+        
         Vault.storeUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks-xp", String.valueOf(currentXP));
         Vault.storeUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks-level", String.valueOf(currentLv));
     }

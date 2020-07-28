@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
@@ -22,8 +23,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class DoubleXPTime {
     
     private static final String DISABLE_MESSAGE = "(Turn this message off with `rank-settings announce-xp-boost false`)";
-    
-    private static boolean doubleXpTime = false;
     
     protected static int boostAmount = 1;
     
@@ -45,7 +44,6 @@ public class DoubleXPTime {
     }
     
     private static void broadcast() {
-        doubleXpTime = true;
         EmbedBuilder eb = new EmbedBuilder();
         
         boostAmount = ThreadLocalRandom.current().nextInt(2, 8);
@@ -58,7 +56,6 @@ public class DoubleXPTime {
                 new TimerTask() {
                     @Override
                     public void run() {
-                        doubleXpTime = false;
                         boostAmount = 1;
                         Logger.log("XP boost over!");
                     }
@@ -87,7 +84,7 @@ public class DoubleXPTime {
                 
                 //generic channel
                 if (!found) {
-                    if (g.getDefaultChannel().canTalk())
+                    if (Objects.requireNonNull(g.getDefaultChannel()).canTalk())
                         g.getDefaultChannel().sendMessage(eb.build()).queue();
                 }
             } catch(Throwable t) {

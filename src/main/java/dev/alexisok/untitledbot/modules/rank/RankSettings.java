@@ -6,8 +6,8 @@ import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
@@ -24,7 +24,7 @@ public final class RankSettings extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        if(args.length != 3) {
+        if(args.length < 3) {
             eb.addField("Ranking", "Usage: `rank-settings <setting> <true|false>`\n" +
                                            "See `help rank-settings` for more information.", false);
             eb.setColor(Color.RED);
@@ -39,6 +39,56 @@ public final class RankSettings extends UBPlugin {
             eb.addField("Ranking", "XP boost broadcasts have been set to `" + enable + "`.", false);
             
             return eb.build();
+        }
+        
+        if(args[1].equalsIgnoreCase("announce-level-up")) {
+            args[2] = args[2].toLowerCase();
+            switch(args[2]) {
+                case "current": //current channel (when the user leveled up)
+                    Vault.storeUserDataLocal(null, message.getGuild().getId(), "ranks-broadcast.rankup", "current");
+                    eb.setColor(Color.GREEN);
+                    eb.addField("Ranking",
+                            "Level up announcements have been set to the current channel (will fallback to DM in case of permission error).",
+                            false);
+                    return eb.build();
+                case "channel": //specific channel
+                    TextChannel setChannel;
+                    try {
+                        setChannel = message.getMentionedChannels().get(0);
+                        if(!setChannel.canTalk())
+                            throw new Exception();
+                    } catch(Exception ignored) {
+                        eb.setColor(Color.RED);
+                        eb.addField("Ranking", "Usage: `rank-settings announce-level-up channel <channel #>`\n" +
+                                                       "Make sure the bot has access to send messages in the channel as well.", false);
+                        return eb.build();
+                    }
+                    Vault.storeUserDataLocal(null, message.getGuild().getId(), "ranks-broadcast.rankup", "channel");
+                    Vault.storeUserDataLocal(null, message.getGuild().getId(), "ranks-broadcast.rankup.channel", setChannel.getId());
+                    eb.addField("Ranking", "Level up announcements have been set to channel <#"
+                                                   + setChannel.getId() 
+                                                   + "> (will fallback to DM in case of permission error).", false);
+                    eb.setColor(Color.GREEN);
+                    return eb.build();
+                case "dm":
+                    Vault.storeUserDataLocal(null, message.getGuild().getId(), "ranks-broadcast.rankup", "dm");
+                    eb.addField("Ranking", "Level up announcements have been set to direct messages.", false);
+                    eb.setColor(Color.GREEN);
+                    return eb.build();
+                case "none":
+                    Vault.storeUserDataLocal(null, message.getGuild().getId(), "ranks-broadcast.rankup", "none");
+                    eb.addField("Ranking", "Level up announcements have been disabled.", false);
+                    eb.setColor(Color.GREEN);
+                    return eb.build();
+                default:
+                    eb.addField("Ranking", "Usage: `rank-settings announce-level-up <current | channel | dm | none>`\n\n" +
+                                                   "`current` - the channel where the user levels up.\n" +
+                                                   "`channel <channel #>` - a specific channel to send the level up message.\n" +
+                                                   "`dm` - send the user their level up message in a direct message.\n" +
+                                                   "`none` - do not do level up messages (does NOT stop the rank module).\n", false);
+                    eb.setColor(Color.RED);
+                    return eb.build();
+            }
         }
         
         eb.setColor(Color.RED);

@@ -173,7 +173,7 @@ public final class Vault {
      * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
     public static String getUserDataLocal(String userID, String guildID, @NotNull String dataKey) throws UserDataCouldNotBeObtainedException {
-        while(OPERATIONS.size() != 0); //this is so bad i hate myself for writing it
+        while(OPERATIONS.size() != 0 || running); //this is so bad i hate myself for writing it
         UserData.checkUserExists(userID, guildID);
         Properties p = new Properties();
         try {
