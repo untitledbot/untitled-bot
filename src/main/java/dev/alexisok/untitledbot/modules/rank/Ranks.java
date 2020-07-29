@@ -234,7 +234,9 @@ public final class Ranks extends UBPlugin implements MessageHook {
         if(lv == 0) return returnLong;
         
         for(int i = 0; i < lv; i++) {
-            returnLong += XP_REQUIRED_FOR_LEVEL_UP[i];
+            try {
+                returnLong += XP_REQUIRED_FOR_LEVEL_UP[i];
+            } catch(ArrayIndexOutOfBoundsException ignored){}
         }
         
         return returnLong;

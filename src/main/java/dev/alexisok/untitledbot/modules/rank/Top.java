@@ -27,7 +27,7 @@ public final class Top extends UBPlugin {
     private static final long TIME_BETWEEN_COMMAND_IN_SECONDS = 300; //300 seconds is 5 minutes
     
     @Override
-    public @Nullable MessageEmbed onCommand(String[] args, Message message) {
+    public @NotNull MessageEmbed onCommand(String[] args, Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
@@ -48,7 +48,7 @@ public final class Top extends UBPlugin {
     
         LinkedHashMap<String, Long> topXP = new LinkedHashMap<>();
     
-        for(Member m : message.getGuild().loadMembers().get()) {
+        for(Member m : message.getGuild().getMembers()) {
             if(m.getUser().isBot())
                 continue;
             
