@@ -15,7 +15,7 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ssh</artifactId>
-                <version>2.10</version>
+                <version>3.4.1</version>
             </extension>
         </extensions>
         <plugins>
@@ -82,7 +82,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
+            <version>5.6.2</version>
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin -->
@@ -94,7 +94,7 @@
         <dependency>
             <groupId> org.apache.cassandra</groupId>
             <artifactId>cassandra-all</artifactId>
-            <version>0.8.1</version>
+            <version>3.11.7</version>
 
             <exclusions>
                 <exclusion>
@@ -116,7 +116,7 @@
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
-            <version>3.32.3.1</version>
+            <version>3.32.3.2</version>
         </dependency>
     </dependencies>
     
