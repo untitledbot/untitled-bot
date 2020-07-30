@@ -65,13 +65,8 @@ public final class Main {
 			try {
 				p.load(new FileInputStream(new File(CONFIG_PATH + "/bot.properties")));
 			} catch (FileNotFoundException ignored) {
-				p.setProperty("configVersion", "0.0.1");
-				p.setProperty("dataPath", "./usrdata/");
-				p.setProperty("prefix", ">");
-				p.setProperty("ownerId", "000000000000000000");
-				p.setProperty("debugMode", "false");
+				setDefaultProps(p);
 				p.store(new FileOutputStream(CONFIG_PATH + "/bot.properties"), null);
-				
 				throw new IOException(); //break into the last IOException catch block
 			}
 			DATA_PATH1 = p.getProperty("dataPath");
@@ -97,6 +92,14 @@ public final class Main {
 		DATA_PATH = DATA_PATH1;
 		OWNER_ID = OWNER_ID1;
 		DEBUG = DEBUG1;
+	}
+	
+	private static void setDefaultProps(@NotNull Properties p) {
+		p.setProperty("configVersion", "1.3.8");
+		p.setProperty("dataPath", "./usrdata/");
+		p.setProperty("prefix", ">");
+		p.setProperty("ownerId", "000000000000000000");
+		p.setProperty("debugMode", "false");
 	}
 	
 	/**

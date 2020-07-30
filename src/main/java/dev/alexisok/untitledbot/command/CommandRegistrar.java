@@ -1,6 +1,7 @@
 package dev.alexisok.untitledbot.command;
 
 import dev.alexisok.untitledbot.Main;
+import dev.alexisok.untitledbot.annotation.ToBeRemoved;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -31,7 +33,6 @@ import java.util.Objects;
  *     </li>
  *     <li>
  *         (optional) Add aliases for the command: {@link CommandRegistrar#registerAlias(String, String...)}<br>
- *         (optional) Copy the manual pages for the aliases: {@link CommandRegistrar#registerAliasManual(String, String...)}
  *     </li>
  * </ul>
  * 
@@ -209,6 +210,7 @@ public class CommandRegistrar {
 	}
 	
 	/**
+	 * Check to see if the registrar has a command.
 	 * 
 	 * @param command the command to check
 	 * @return true if the command is registered, false otherwise.
@@ -219,6 +221,7 @@ public class CommandRegistrar {
 	
 	/**
 	 * Get the permission node of a command.
+	 * 
 	 * @param command the command
 	 * @return the permission node, {@code null} if it is not registered.
 	 */
@@ -238,24 +241,27 @@ public class CommandRegistrar {
 	 * aliasing for.
 	 *
 	 * Alias will inherit the same permission node from the command
-	 * it is aliasing.  You can easily register an alias manual page
-	 * using
+	 * it is aliasing.  Aliases also inherit their owners manual.
 	 *
 	 * @param command the command name.
 	 * @param aliases the aliases to give the command.
 	 */
 	public static void registerAlias(@NotNull String command, @NotNull String... aliases) {
-		for(String alias : aliases)
-			register(alias, PERMS_REGISTRAR.get(command), REGISTRAR.get(command));
+		Arrays.stream(aliases).forEachOrdered(alias -> register(alias, PERMS_REGISTRAR.get(command), REGISTRAR.get(command)));
+		Arrays.stream(aliases).forEachOrdered(alias -> Manual.setHelpPage(alias, Manual.getHelpPagesRaw(command)));
 	}
 	
 	/**
-	 * Copy a manual page from a command.  This does not need to be an
-	 * alias but it is the intended usage of this method.
 	 * 
+	 * This method is obsolete, aliases now inherit their 
+	 * 
+	 * @deprecated since 1.3.8
+	 * @see CommandRegistrar#registerAlias(String, String...)
 	 * @param originalCommand the command to copy off of
 	 * @param aliases the alias command
 	 */
+	@Deprecated
+	@ToBeRemoved("1.4")
 	public static void registerAliasManual(@NotNull String originalCommand, @NotNull String...aliases) {
 		for(String alias : aliases)
 			Manual.setHelpPage(alias, Manual.getHelpPagesRaw(originalCommand));

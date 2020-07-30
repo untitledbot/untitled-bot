@@ -62,6 +62,5 @@ public final class Ban extends UBPlugin {
         CommandRegistrar.registerAlias("ban", "banish", "obliterate", "-rm-r-f-slash-asterisk--no-preserve-root");
         Manual.setHelpPage("ban", "Banish a user.\n" +
                                           "Usage: ban <user ID | user @> <reason>\n");
-        CommandRegistrar.registerAliasManual("ban", "banish", "obliterate", "-rm-r-f-slash-asterisk--no-preserve-root");
     }
 }

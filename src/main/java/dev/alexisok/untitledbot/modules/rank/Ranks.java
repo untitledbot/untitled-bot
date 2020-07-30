@@ -59,7 +59,6 @@ public final class Ranks extends UBPlugin implements MessageHook {
                                                     "\tannounce-xp-boost <true|false>\n" +
                                                     "\tannounce-level-up <current | channel | dm | none>\n");
         CommandRegistrar.registerAlias("rank-top", "ranktop", "leaderboard", "top", "ranklist");
-        CommandRegistrar.registerAliasManual("rank-top", "ranktop", "leaderboard", "top", "ranklist");
         Vault.addDefault("ranks-xp", "0");
         Vault.addDefault("ranks-level", "1");
         

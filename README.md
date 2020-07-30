@@ -102,3 +102,8 @@ As someone who wants privacy, I respect your right to it as well.  This is a lis
 `8ball <question>` - simulate an 8 ball.\
 `ship <user A> <user B>` - ship two different server members.\
 `20` - roll a 20 sided die.
+
+### Premium?
+As of now, there are not any premium features of the bot, all features come standard for free.\
+The music module may be self-hosted only in the future, as music bots take A LOT of bandwidth and resources.\
+There are currently no plans to have any premium or paid-for parts of the bot.

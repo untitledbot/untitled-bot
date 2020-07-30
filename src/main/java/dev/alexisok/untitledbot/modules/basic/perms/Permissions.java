@@ -31,7 +31,6 @@ public final class Permissions extends UBPlugin {
         Manual.setHelpPage("setperms", "Set the permissions of a user, role, or the entire guild.\nUsage: " +
                                                "setperms <user ID|user @|role ID|role @|guild> <permission> <true|false>");
         CommandRegistrar.registerAlias("setperms", "permissions", "perms", "perm", "pr");
-        CommandRegistrar.registerAliasManual("setperms", "permissions", "perms", "perm", "pr");
     }
     
     @Override

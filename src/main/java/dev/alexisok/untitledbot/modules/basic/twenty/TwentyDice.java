@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class TwentyDice extends UBPlugin {
     
     private static final String[] ROLL_FOR = {
-            "luck", "age", "gold", "attack", "damage", "size", "stats", "abilities", "health", "initiative", "charisma"
+            "luck", "gold", "attack", "damage", "size", "stats", "abilities", "health", "initiative", "charisma"
     };
     
     @Override

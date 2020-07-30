@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  */
 public final class Top extends UBPlugin {
     
-    private static final long TIME_BETWEEN_COMMAND_IN_SECONDS = 300; //300 seconds is 5 minutes
+    private static final long TIME_BETWEEN_COMMAND_IN_SECONDS = 300;
     
     @Override
     public @Nullable MessageEmbed onCommand(String[] args, Message message) {
@@ -33,7 +33,9 @@ public final class Top extends UBPlugin {
         
         if(isRateLimit(message.getGuild().getId())) {
             eb.setColor(Color.RED);
-            eb.addField("Rate limited!", "To reduce server load, this command can only be run every 5 minutes.", false);
+            eb.addField("Rate limited!", String.format("To reduce server load, this command can only be run every %d minutes.",
+                    (int) (TIME_BETWEEN_COMMAND_IN_SECONDS / 60)), 
+                    false);
             return eb.build();
         }
         

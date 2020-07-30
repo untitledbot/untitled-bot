@@ -9,7 +9,7 @@ import java.util.HashMap;
 /**
  * Help pages for use with the "help" command.
  * 
- * To set the alias manuals, use {@link CommandRegistrar#registerAliasManual(String, String...)}
+ * Alias manuals now inherit their owner manual from {@link CommandRegistrar#registerAlias(String, String...)}.
  * 
  * @author AlexIsOK
  * @since 0.0.1

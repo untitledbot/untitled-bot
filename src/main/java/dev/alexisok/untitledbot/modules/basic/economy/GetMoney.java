@@ -57,6 +57,5 @@ public final class GetMoney extends UBPlugin {
         CommandRegistrar.registerAlias("balance", "bal", "eco", "bl", "money", "cha-ching");
         Manual.setHelpPage("balance", "Get the balance of yourself or another user.\n" +
                                               "Usage: `balance [user @]`\n");
-        CommandRegistrar.registerAliasManual("balance", "bal", "eco", "bl", "money", "cha-ching");
     }
 }

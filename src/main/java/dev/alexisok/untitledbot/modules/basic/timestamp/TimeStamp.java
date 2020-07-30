@@ -40,6 +40,7 @@ public class TimeStamp extends UBPlugin {
             time = (Long.parseLong(args[1]) >> 22) + 1420070400000L;
         } catch(Exception ignored) { //nfe, oobe, etc.
             eb.addField("Timestamp", "Usage: `timestamp <snowflake>`", false);
+            eb.setFooter("Formula: `(snowflake / 4194304) + 1420070400000` to get milliseconds since Jan. 1st, 1970 00:00");
             eb.setColor(Color.RED);
             return eb.build();
         }
