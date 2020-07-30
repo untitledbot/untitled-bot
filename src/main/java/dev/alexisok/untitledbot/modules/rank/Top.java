@@ -27,7 +27,7 @@ public final class Top extends UBPlugin {
     private static final long TIME_BETWEEN_COMMAND_IN_SECONDS = 300; //300 seconds is 5 minutes
     
     @Override
-    public @NotNull MessageEmbed onCommand(String[] args, Message message) {
+    public @Nullable MessageEmbed onCommand(String[] args, Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
@@ -37,59 +37,59 @@ public final class Top extends UBPlugin {
             return eb.build();
         }
         
-        int cap = Math.min(message.getGuild().getMemberCount(), 10);
-        
-        eb.setColor(Color.GREEN);
-        
-        if(cap == 1) {
-            eb.setColor(Color.YELLOW);
-            eb.addField("Rank top" , "Erm... there only seems to be one user in this guild with a rank...", false);
-        }
+        message.getGuild().loadMembers().onSuccess(members -> {
     
-        LinkedHashMap<String, Long> topXP = new LinkedHashMap<>();
+            final LinkedHashMap<String, Long>[] topXP = new LinkedHashMap[]{new LinkedHashMap<>()};
+            
+            EmbedBuilder eb2 = new EmbedBuilder();
+            EmbedDefaults.setEmbedDefaults(eb2, message);
+            
+            for(Member m : members) {
+                if(m.getUser().isBot())
+                    continue;
+        
+                long top = Ranks.totalXPFromAllLevels(m.getId(), message.getGuild().getId());
+                if(top == 0)
+                    continue;
+        
+                topXP[0].put(m.getId(), top);
+        
+                if(topXP[0].size() >= 10)
+                    break;
+            }
     
-        for(Member m : message.getGuild().getMembers()) {
-            if(m.getUser().isBot())
-                continue;
+            eb2.addField("Rank top", String.format("Fetching the top %d highest ranking users in this guild...", topXP[0].size()), false);
+    
+            topXP[0] = sortHashMap(topXP[0]);
+    
+            ArrayList<String> addStr = new ArrayList<>();
+    
+            int i = 0;
+            for(Map.Entry<String, Long> a : topXP[0].entrySet()) {
+                if(i >= 10)
+                    break;
+                i++;
+                addStr.add(String.format("<@%s> - %s XP (level %s)%n",
+                        a.getKey(),
+                        a.getValue(),
+                        Vault.getUserDataLocal(a.getKey(), message.getGuild().getId(), "ranks-level")));
+            }
+    
+            Collections.reverse(addStr);
+    
+            StringBuilder addStringReturn = new StringBuilder();
+    
+            for(String s : addStr) addStringReturn.append(s);
+    
+            setRateLimiter(message.getGuild().getId());
+    
+    
+            eb2.addField("===TOP RANKINGS===", addStringReturn.toString(), false);
             
-            long top = Ranks.totalXPFromAllLevels(m.getId(), message.getGuild().getId());
-            if(top == 0)
-                continue;
-            
-            topXP.put(m.getId(), top);
-            
-            if(topXP.size() >= 10)
-                break;
-        }
+            message.getChannel().sendMessage(eb2.build()).queue();
+        });
         
-        eb.addField("Rank top", String.format("Fetching the top %d highest ranking users in this guild...", topXP.size()), false);
-        
-        topXP = sortHashMap(topXP);
-        
-        ArrayList<String> addStr = new ArrayList<>();
-        
-        int i = 0;
-        for(Map.Entry<String, Long> a : topXP.entrySet()) {
-            if(i >= 10)
-                break;
-            i++;
-            addStr.add(String.format("<@%s> - %s XP (level %s)%n",
-                    a.getKey(),
-                    a.getValue(),
-                    Vault.getUserDataLocal(a.getKey(), message.getGuild().getId(), "ranks-level")));
-        }
-        
-        Collections.reverse(addStr);
-        
-        StringBuilder addStringReturn = new StringBuilder();
-        
-        for(String s : addStr) addStringReturn.append(s);
-        
-        setRateLimiter(message.getGuild().getId());
-        
-        
-        eb.addField("===TOP RANKINGS===", addStringReturn.toString(), false);
-        return eb.build();
+        return null;
     }
     
     private static @NotNull LinkedHashMap<String, Long> sortHashMap(@NotNull HashMap<String, Long> hm) {
