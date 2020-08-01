@@ -44,13 +44,6 @@ public final class Main {
 	
 	public static final boolean DEBUG;
 	
-	//bot status
-	private static final String[] MESSAGE_OF_THE_DAY = {
-			"with time", "with magic", "nothing at all",
-			"with jda",
-		    "a game i guess", "with Java", "insert motd 7 here"
-	};
-	
 	public static JDA jda;
 	
 	static {
@@ -150,7 +143,10 @@ public final class Main {
 						  .disableCache(CacheFlag.ACTIVITY)
 						  .setMemberCachePolicy(MemberCachePolicy.ALL)
 					      .build();
-			motd();
+			jda.getPresence().setPresence(
+					OnlineStatus.ONLINE,
+					Activity.of(Activity.ActivityType.DEFAULT,
+							">help"));
 			jda.addEventListener(new BotClass()); //main bot class
 			jda.addEventListener(new ModHook());  //logging module
 			jda.addEventListener(new Sender());   //event message sender module
@@ -230,27 +226,6 @@ public final class Main {
 		if(userID == null) return DATA_PATH + guildID + ".properties";
 		if(guildID == null) return DATA_PATH + userID + ".properties";
 		return DATA_PATH + guildID + "/" + userID + ".properties";
-	}
-	
-	/**
-	 * Schedule message of the day.
-	 */
-	private static void motd() {
-		Logger.log("Installing MOTD scheduler...");
-		
-		TimerTask task = new TimerTask() {
-			@Override
-			public void run() {
-				Main.jda.getPresence().setPresence(
-						OnlineStatus.ONLINE,
-						Activity.of(Activity.ActivityType.DEFAULT,
-								MESSAGE_OF_THE_DAY[Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1]));
-			}
-		};
-		
-		new Timer().schedule(task, 0L, 3600000); //hour
-		
-		Logger.log("MOTD scheduler installed.");
 	}
 	
 }

@@ -24,7 +24,6 @@ public class LaTeX extends UBPlugin {
     @Override
     public void onRegister() {
         CommandRegistrar.register("tex", "core.tex", this);
-        CommandRegistrar.setDefaultPermissionForNode("core.tex", true);
         CommandRegistrar.registerAlias("tex", "latex");
         Manual.setHelpPage("tex", "LaTeX generator.\n" +
                                           "Usage: `tex <expression>`\n");

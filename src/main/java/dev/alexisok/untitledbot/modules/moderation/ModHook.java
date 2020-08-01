@@ -39,6 +39,7 @@ public final class ModHook extends ListenerAdapter {
         CommandRegistrar.register("remove-log", "admin", new AddRemoveLogTypes());
         //this is not admin because moderators might want their users to be able to see what they log.
         CommandRegistrar.register("get-log", "logging.get", new GetLogTypes());
+        new ListLogTypes().onRegister();
         
         Manual.setHelpPage("log-channel",
                 "Move the logging channel to a specific channel.\n" +

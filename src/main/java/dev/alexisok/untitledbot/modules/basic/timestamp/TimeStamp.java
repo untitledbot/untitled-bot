@@ -59,6 +59,5 @@ public class TimeStamp extends UBPlugin {
                                                 "To get snowflakes, enable developer mode in Discord appearance settings, then " +
                                                 "right click on something to copy the ID.\n\n" +
                                                 "See [the docs](https://discord.com/developers/docs/reference#snowflakes) for more information on snowflakes.");
-        CommandRegistrar.setDefaultPermissionForNode("core.timestamp", true);
     }
 }

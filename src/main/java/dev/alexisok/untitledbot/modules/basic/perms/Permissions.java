@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.basic.perms;
 
+import dev.alexisok.untitledbot.annotation.ToBeRemoved;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
@@ -21,9 +22,13 @@ import java.util.Objects;
  * 
  * Usage: `setperms <user ID|user @|role ID|role @|guild> <permission> <true|false>`
  * 
+ * @deprecated since 1.3.8
+ * @see dev.alexisok.untitledbot.command.CommandRegistrar#runCommand(String, String[], Message)
  * @author AlexIsOK
  * @since 1.3
  */
+@Deprecated
+@ToBeRemoved("1.4")
 public final class Permissions extends UBPlugin {
     @Override
     public void onRegister() {

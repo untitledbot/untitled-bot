@@ -48,6 +48,5 @@ public class BrainFreak extends UBPlugin {
                                                 "Usage: `brainfuck <code>`\n\n" +
                                                 "[Help page](https://en.wikipedia.org/wiki/Brainfuck)\n\n" +
                                                 "Example: `brainfuck ++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.`");
-        CommandRegistrar.setDefaultPermissionForNode("core.brainfuck", true);
     }
 }

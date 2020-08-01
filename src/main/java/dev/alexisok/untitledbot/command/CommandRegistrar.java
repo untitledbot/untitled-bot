@@ -4,12 +4,10 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.annotation.ToBeRemoved;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
-import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
@@ -49,9 +47,6 @@ public class CommandRegistrar {
 	//commandName, permission
 	private static final HashMap<String, String> PERMS_REGISTRAR = new HashMap<>();
 	
-	//default permissions
-	private static final HashMap<String, Boolean> GLOBAL_NODES = new HashMap<>();
-	
 	//the hook registrar.
 	private static final ArrayList<MessageHook> HOOK_REGISTRAR = new ArrayList<>();
 	
@@ -75,15 +70,14 @@ public class CommandRegistrar {
 	
 	/**
 	 * Register a command.
+	 * 
+	 * The {@code permission} parameter is here for legacy reasons, but it may change in future releases.
+	 * 
 	 * @param commandName the name of the command.  Must match {@code ^[a-z0-9_-]*$} (alphanumerical
 	 *                    lowercase only plus underscores and hyphens).   
-	 * @param permission the permission the command uses.  Permissions are used for members
-	 *                   or groups of members, they can only use the command if they have
-	 *                   the needed permission.  Must match {@code ^[a-z]([a-z][.]?)+[a-z]$} convention is to start
-	 *                   the permission with your plugin name, period, then the command (example:
-	 *                   {@code coolplugin.command} or {@code coolplugin.category.command}.
-	 *                   Do not have the permission end or start with a period.  Numbers and
-	 *                   capital letters do not match.<br>
+	 * @param permission If the permission node is {@code admin}, users will need the Discord administrator permission
+	 *                   to execute the command, or {@code owner} for the owner of the bot.  Any other nodes will throw an exception.<br>
+	 *                   Use {@link CommandRegistrar#register(String, Command)} to register a command that everyone can run.    
 	 *                   <br>
 	 *                   Special cases: you can pass "admin" as the string name to require the user to
 	 *                   require the user to have administrator or a role with administrator.
@@ -92,7 +86,7 @@ public class CommandRegistrar {
 	 * @throws CommandAlreadyRegisteredException if the command already exists.
 	 * @throws RuntimeException if the command does not match the regex.
 	 */
-	public static void register(@NotNull String commandName, @NotNull String permission, @NotNull Command command)
+	public static void register(@NotNull String commandName, String permission, @NotNull Command command)
 			throws CommandAlreadyRegisteredException {
 		
 		if(REGISTRAR.containsKey(commandName))
@@ -108,13 +102,37 @@ public class CommandRegistrar {
 	}
 	
 	/**
+	 * Register a command.
+	 * @param commandName the name of the command.  Must match {@code ^[a-z0-9_-]*$} (alphanumerical
+	 *                    lowercase only plus underscores and hyphens).
+	 * @param command the {@link Command} to use.  {@link Command#onCommand(String[], Message)}
+	 *                will be executed when the command is called.
+	 * @throws CommandAlreadyRegisteredException if the command already exists.
+	 * @throws RuntimeException if the command does not match the regex.
+	 */
+	public static void register(@NotNull String commandName, @NotNull Command command)
+			throws CommandAlreadyRegisteredException {
+		
+		if(REGISTRAR.containsKey(commandName))
+			throw new CommandAlreadyRegisteredException();
+		
+		if(!commandName.matches("^[a-z0-9_-]*$"))
+			throw new RuntimeException("Command does not match regex!");
+		
+		REGISTRAR.put(commandName, command);
+		PERMS_REGISTRAR.put(commandName, "global");
+	}
+	
+	/**
 	 * Run a command.  This can be invoked by plugins
 	 * so there can be more creative plugins.
 	 * 
 	 * This is also the part that checks the permissions of the user.
 	 * 
 	 * @param commandName the name of the command to execute.
-	 * @return the return String.  Returns {@code null} if the command was not found.
+	 * @param args the arguments for the command.
+	 * @param m the {@link Message}   
+	 * @return the return embed.  Returns {@code null} if the command was not found (or if the command returns null by itself).
 	 */
 	public static @Nullable MessageEmbed runCommand(String commandName, String[] args, @NotNull Message m) {
 		
@@ -127,10 +145,6 @@ public class CommandRegistrar {
 		//return null if the command does not exist.
 		if(!REGISTRAR.containsKey(commandName))
 			return null;
-		
-		//noinspection ConstantConditions
-		if(permissionNode.equals("owner") && !m.getAuthor().getId().equals(Main.OWNER_ID))
-			return null;
 			
 		//owner is a global super user and can access any commands on any servers
 		if(m.getAuthor().getId().equals(Main.OWNER_ID))
@@ -140,73 +154,25 @@ public class CommandRegistrar {
 		if(Objects.requireNonNull(m.getMember()).hasPermission(Permission.ADMINISTRATOR))
 			return REGISTRAR.get(commandName).onCommand(args, m);
 		
-		//if the command is a global command
-		if(GLOBAL_NODES.containsKey(getCommandPermissionNode(commandName)) &&
-				   GLOBAL_NODES.get(getCommandPermissionNode(commandName)))
-			return REGISTRAR.get(commandName).onCommand(args, m);
+		EmbedBuilder eb = new EmbedBuilder();
+		EmbedDefaults.setEmbedDefaults(eb, m);
 		
-		Logger.debug("Permission " + permissionNode + " is not global");
+		if(permissionNode.equalsIgnoreCase("admin")) {
+			eb.addField("", "This command requires the administrator permission on Discord.", false);
+			eb.setColor(Color.RED);
+			return eb.build();
+		}
 		
+		if(permissionNode.equalsIgnoreCase("owner")) {
+			eb.addField("", "This command can only be run by the owner of the bot.", false);
+			eb.setColor(Color.RED);
+			return eb.build();
+		}
 		
 		UserData.checkUserExists(m.getAuthor().getId(), m.getGuild().getId());
 		UserData.checkUserExists(null, m.getGuild().getId());
 		
-		EmbedBuilder eb = new EmbedBuilder();
-		EmbedDefaults.setEmbedDefaults(eb, m);
-		
-		try {
-			//check user permissions and guild permissions at the same time.
-			//this could be made faster.
-			String userHas = Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), permissionNode);
-			
-			Logger.debug("Checking the permission node of user...");
-			
-			if (userHas.equalsIgnoreCase("true"))
-				return REGISTRAR.get(commandName).onCommand(args, m);
-			
-		} catch(NullPointerException ignored) {
-			//may produce npe if the permission node does not exist.
-		}
-		
-		try {
-			String guildHas = Vault.getUserDataLocal(null, m.getGuild().getId(), permissionNode);
-			
-			Logger.debug("Guild node: " + guildHas);
-			
-			if (guildHas.equalsIgnoreCase("true"))
-				return REGISTRAR.get(commandName).onCommand(args, m);
-		} catch(NullPointerException ignored){}
-		
-		Logger.debug("Checking the permission node of role...");
-		
-		//since roles have snowflakes as well, they can be treated as users here.
-		for(Role a : m.getMember().getRoles()) {
-			try {
-				UserData.checkUserExists(a.getId(), m.getGuild().getId());
-				String roleProperties = Vault.getUserDataLocal(a.getId(), a.getGuild().getId(), permissionNode);
-				if (roleProperties.equals("true"))
-					return REGISTRAR.get(commandName).onCommand(args, m);
-			} catch(NullPointerException ignored) {}
-		}
-		
-		Logger.debug("User does not have permission");
-		
-		eb.setColor(Color.RED);
-		
-		if(permissionNode.equals("admin")) {
-			eb.addField("untitled-bot", "This command requires the administrator permission on Discord.", false);
-			return eb.build();
-		} else if(permissionNode.equals("owner")) {
-			eb.addField("untitled-bot", "Only the bot owner can use this command.", false);
-			return eb.build();
-		}
-		
-		eb.addField("untitled-bot",
-				"You do not have permission to execute this command.\nIf this is an error, please have an" +
-						" administrator on the server execute `setperms guild" +
-						" " + getCommandPermissionNode(commandName) + " true`",
-					false);
-		return eb.build();
+		return REGISTRAR.get(commandName).onCommand(args, m);
 	}
 	
 	/**
@@ -298,18 +264,4 @@ public class CommandRegistrar {
 	}
 	
 	
-	/**
-	 * Set a default permission for ALL users for a specific permission node.
-	 * You do not have to be the owner of the node to run this command.  Use with caution.
-	 * 
-	 * The nodes "owner" and "admin" will be discarded.
-	 * 
-	 * @param node the node to modify
-	 * @param permission the permission
-	 */
-	public static void setDefaultPermissionForNode(String node, boolean permission) {
-		if(node.equalsIgnoreCase("owner") || node.equalsIgnoreCase("admin"))
-			return;
-		GLOBAL_NODES.put(node, permission);
-	}
 }

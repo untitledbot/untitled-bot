@@ -33,7 +33,8 @@ public final class AddRemoveLogTypes extends UBPlugin implements Command {
         if(args[0].equals("add-log")) {
             if(args.length == 1) {
                 eb.setColor(Color.RED);
-                eb.addField("Logging", "Usage: add-log <log types.....>", false);
+                eb.addField("Logging", "Usage: add-log <log types.....>\n" +
+                                               "Use `list-log-types` for a list of all log types.", false);
                 
                 return eb.build();
             }
@@ -54,6 +55,8 @@ public final class AddRemoveLogTypes extends UBPlugin implements Command {
             boolean maxBreakWarning = false;
             
             for(String s : args) {
+                s = s.replace("-", "_");
+                s = s.toUpperCase();
                 try {
                     if(s.equals("add-log"))
                         continue;
@@ -77,7 +80,8 @@ public final class AddRemoveLogTypes extends UBPlugin implements Command {
         } else if(args[0].equals("remove-log")) {
             if(args.length == 1) {
                 eb.setColor(Color.RED);
-                eb.addField("Logging", "Usage: remove-log <log types.....>", false);
+                eb.addField("Logging", "Usage: remove-log <log types.....>\n" +
+                                               "Use `list-log-types` for a list of all log types.", false);
                 return eb.build();
             }
             ArrayList<LogTypes> lt = new ArrayList<>();

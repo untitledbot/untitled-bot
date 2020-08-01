@@ -43,7 +43,7 @@ public final class GetLogTypes extends UBPlugin implements Command {
         eb.addField(
                 "Logging",
                 "Current policies for this guild:\n" + s
-                                                              .replace(",", ", ")
+                                                              .replace(",", "\n")
                                                               .replace("_", " ")
                                                               .toLowerCase(),
                 false);

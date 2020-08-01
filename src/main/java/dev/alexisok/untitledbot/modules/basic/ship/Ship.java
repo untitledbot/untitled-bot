@@ -69,6 +69,5 @@ public final class Ship extends UBPlugin {
     @Override
     public void onRegister() {
         CommandRegistrar.register("ship", "core.fun.ship", this);
-        CommandRegistrar.setDefaultPermissionForNode("core.fun.ship", true);
     }
 }

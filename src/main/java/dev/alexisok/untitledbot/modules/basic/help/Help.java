@@ -26,7 +26,6 @@ public final class Help extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("help", "core.help", this);
         CommandRegistrar.registerAlias("help", "man", "halp");
-        CommandRegistrar.setDefaultPermissionForNode("core.help", true);
     }
     
     @Override

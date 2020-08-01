@@ -27,7 +27,6 @@ public final class RPGManager extends UBPlugin implements Command {
         
         //skeleton permission nodes...
         CommandRegistrar.register("rpg", "alexisok.rpg", this);
-        CommandRegistrar.setDefaultPermissionForNode("alexisok.rpg", true);
     }
     
     public MessageEmbed onCommand(String @NotNull [] args, Message message) {

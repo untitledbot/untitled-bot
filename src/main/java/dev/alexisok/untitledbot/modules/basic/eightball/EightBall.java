@@ -43,7 +43,6 @@ public final class EightBall extends UBPlugin implements Command {
         //in a real plugin, you would not use module as the first word.
         CommandRegistrar.register("8ball", "module.example.eightball", new EightBall());
         CommandRegistrar.registerAlias("8ball", "8");
-        CommandRegistrar.setDefaultPermissionForNode("module.example.eightball", true);
     }
     
     @Override
