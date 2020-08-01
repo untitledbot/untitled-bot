@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.math.BigInteger;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -184,6 +185,9 @@ public final class Ranks extends UBPlugin implements MessageHook {
         
         @SuppressWarnings("PointlessArithmeticExpression") //NOT POINTLESS
         long randAdd = ThreadLocalRandom.current().nextLong(1 * DoubleXPTime.boostAmount, 4 * DoubleXPTime.boostAmount);
+        
+        if(DoubleXPTime.boostAmount != 1)
+            DoubleXPTime.totalXPFromBoost = DoubleXPTime.totalXPFromBoost.add(new BigInteger(String.valueOf(randAdd)));
         
         currentXP += randAdd;
         

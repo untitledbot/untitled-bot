@@ -1,6 +1,7 @@
 package dev.alexisok.untitledbot.modules.rank;
 
 import dev.alexisok.untitledbot.Main;
+import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -8,6 +9,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,6 +27,8 @@ public class DoubleXPTime {
     private static final String DISABLE_MESSAGE = "(Turn this message off with `rank-settings announce-xp-boost false`)";
     
     protected static int boostAmount = 1;
+    
+    protected static BigInteger totalXPFromBoost = new BigInteger("0");
     
     /**
      * Installs the broadcaster.
@@ -46,7 +50,7 @@ public class DoubleXPTime {
     private static void broadcast() {
         EmbedBuilder eb = new EmbedBuilder();
         
-        boostAmount = ThreadLocalRandom.current().nextInt(2, 8);
+        boostAmount = ThreadLocalRandom.current().nextInt(2, 16);
         
         eb.setTitle("untitled-bot");
         eb.addField("XP BOOST TIME", String.format("For the next hour, XP per message will be multiplied by %d!", boostAmount), false);
@@ -58,10 +62,15 @@ public class DoubleXPTime {
                     public void run() {
                         boostAmount = 1;
                         Logger.log("XP boost over!");
+                        endDTBroadcast();
                     }
                 }, 3600000
         ); //3600000 for hour
-        
+    
+        thing(eb);
+    }
+    
+    private static void thing(EmbedBuilder eb) {
         for(Guild g : Main.jda.getGuilds()) {
             try {
                 
@@ -91,6 +100,18 @@ public class DoubleXPTime {
                 t.printStackTrace();
             }
         }
+    }
+    
+    private static void endDTBroadcast() {
+        EmbedBuilder eb = new EmbedBuilder();
+    
+        eb.setTitle("untitled-bot");
+        eb.addField("XP BOOST OVER", String.format("The XP boost is over!%n%s XP was obtained from all guilds " +
+                                                           "during this boost!", totalXPFromBoost.toString()), false);
+        eb.setFooter(DISABLE_MESSAGE);
+        totalXPFromBoost = new BigInteger("0");
+        
+        thing(eb);
     }
     
 }
