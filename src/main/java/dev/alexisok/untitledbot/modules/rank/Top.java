@@ -49,7 +49,7 @@ public final class Top extends UBPlugin {
         EmbedBuilder eb2 = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb2, message);
     
-        for(File s : new File(Main.DATA_PATH + "/" + message.getGuild().getId()).listFiles()) {
+        for(File s : new File(Main.DATA_PATH + "/" + message.getGuild().getId() + "/").listFiles()) {
             try {
                 
                 long top = Ranks.totalXPFromAllLevels(s.getName().replace(".properties", ""), message.getGuild().getId());
@@ -63,12 +63,12 @@ public final class Top extends UBPlugin {
             }
         }
     
-        eb2.addField("Rank top", String.format("Fetching the top %d highest ranking users in this guild...", topXP.size()), false);
-    
+        eb2.addField("Rank top", "Fetching the top highest ranking users in this guild...", false);
+        
         topXP = sortHashMap(topXP);
-    
+        
         ArrayList<String> addStr = new ArrayList<>();
-    
+        
         int i = 0;
         for(Map.Entry<String, Long> a : topXP.entrySet()) {
             if(i >= 10)
@@ -79,19 +79,17 @@ public final class Top extends UBPlugin {
                     a.getValue(),
                     Vault.getUserDataLocal(a.getKey(), message.getGuild().getId(), "ranks-level")));
         }
-    
-        Collections.reverse(addStr);
-    
+        
         StringBuilder addStringReturn = new StringBuilder();
-    
+        
         for(String s : addStr) addStringReturn.append(s);
-    
+        
         setRateLimiter(message.getGuild().getId());
         
         eb2.setColor(Color.GREEN);
         
         eb2.addField("===TOP RANKINGS===", addStringReturn.toString(), false);
-    
+        
         message.getChannel().sendMessage(eb2.build()).queue();
         
         return null;
@@ -100,7 +98,7 @@ public final class Top extends UBPlugin {
     private static @NotNull LinkedHashMap<String, Long> sortHashMap(@NotNull HashMap<String, Long> hm) {
         List<Map.Entry<String, Long>> list = new ArrayList<>(hm.entrySet());
         list.sort(Map.Entry.comparingByValue());
-        
+        Collections.reverse(list);
         return list.stream()
                             .collect(
                                 Collectors.toMap(
