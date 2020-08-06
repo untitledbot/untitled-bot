@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
 import java.util.List;
@@ -54,7 +55,8 @@ public final class Top extends UBPlugin {
     
                 try {
                     m = Objects.requireNonNull(Main.jda.getUserById(s.getName().replace(".properties", "")));
-                } catch (Exception ignored) {
+                } catch (Exception e) {
+                    e.printStackTrace();
                     continue;
                 }
     
@@ -66,10 +68,11 @@ public final class Top extends UBPlugin {
                     continue;
     
                 topXP[0].put(m.getId(), top);
-    
-                if (topXP[0].size() >= 10)
-                    break;
-            } catch(Exception ignored) {}
+                
+            } catch(Exception e) {
+                e.printStackTrace();
+                continue;
+            }
         }
     
         eb2.addField("Rank top", String.format("Fetching the top %d highest ranking users in this guild...", topXP[0].size()), false);
