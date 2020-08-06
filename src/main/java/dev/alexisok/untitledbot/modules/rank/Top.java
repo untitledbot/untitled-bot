@@ -63,7 +63,7 @@ public final class Top extends UBPlugin {
             }
         }
     
-        eb2.addField("Rank top", "Fetching the top highest ranking users in this guild...", false);
+        eb2.addField("Rank top", "Fetching the highest ranking users in this guild...", false);
         
         topXP = sortHashMap(topXP);
         

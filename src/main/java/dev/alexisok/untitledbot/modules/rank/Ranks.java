@@ -69,7 +69,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
     
     private static void setupXPRequired() {
         for(int i = 0; i < XP_REQUIRED_FOR_LEVEL_UP.length; i++) {
-            XP_REQUIRED_FOR_LEVEL_UP[i] = (long) ((Math.pow(i, 3)) + 20L);
+            XP_REQUIRED_FOR_LEVEL_UP[i] = (long) ((Math.pow(i, 3)) + 80L);
         }
     }
     
