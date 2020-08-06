@@ -88,7 +88,8 @@ As someone who wants privacy, I respect your right to it as well.  This is a lis
 ##### Utilities
 `help [command]` - get help for a command.\
 `prefix <prefix 1 to 3 chars>` - set the prefix for the server (mentioning the bot works as well).\
-`status` - get the status of the bot.
+`status` - get the status of the bot.\
+`timestamp <snowflake>` - get the timestamp of a discord snowflake.
 
 ##### Moderation
 `log-channel <text channel #>` - set the logging channel.\

@@ -50,7 +50,7 @@ public class DoubleXPTime {
     private static void broadcast() {
         EmbedBuilder eb = new EmbedBuilder();
         
-        boostAmount = ThreadLocalRandom.current().nextInt(2, 16);
+        boostAmount = ThreadLocalRandom.current().nextInt(4, 16);
         
         eb.setTitle("untitled-bot");
         eb.addField("XP BOOST TIME", String.format("For the next hour, XP per message will be multiplied by %d!", boostAmount), false);

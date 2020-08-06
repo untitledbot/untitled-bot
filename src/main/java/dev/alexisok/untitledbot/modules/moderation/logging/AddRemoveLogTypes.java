@@ -55,8 +55,9 @@ public final class AddRemoveLogTypes extends UBPlugin implements Command {
             boolean maxBreakWarning = false;
             
             for(String s : args) {
-                s = s.replace("-", "_");
-                s = s.toUpperCase();
+                if(s.equalsIgnoreCase("add-log"))
+                    continue;
+                s = s.replace("-", "_").toUpperCase();
                 try {
                     if(s.equals("add-log"))
                         continue;
@@ -104,6 +105,9 @@ public final class AddRemoveLogTypes extends UBPlugin implements Command {
             boolean maxBreakWarning = false;
     
             for(String s : args) {
+                if(s.equalsIgnoreCase("remove-log"))
+                    continue;
+                s = s.replace("-", "_").toUpperCase();
                 try {
                     if(s.equals("remove-log"))
                         continue;

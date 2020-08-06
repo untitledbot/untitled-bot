@@ -29,14 +29,14 @@ import java.util.concurrent.ThreadLocalRandom;
 public final class Ranks extends UBPlugin implements MessageHook {
     
     //0th element is level one
-    private static final long[] XP_REQUIRED_FOR_LEVEL_UP = new long[]
-                                                                   {50, 100, 125, 150, 200, 250, 400, 500, 700, 900, 1000,
-                                                                   1250, 1500, 2000, 2500, 3000, 3500, 4000, 5000, 6000,
-                                                                   7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000,
-                                                                   15000, 16000, 17000, 18000, 19000, 20000, 25000, 30000,
-                                                                   35000, 40000, 45000, 50000, 55000, 60000, 65000, 70000,
-                                                                   80000, 90000, 100000, 150000, 200000, 400000, 800000,
-                                                                   1000000, 2000000, 3000000, 5000000, 8000000, 10000000};
+    private static final long[] XP_REQUIRED_FOR_LEVEL_UP = new long[100];
+//                                                                   {50, 100, 125, 150, 200, 250, 400, 500, 700, 900, 1000,
+//                                                                   1250, 1500, 2000, 2500, 3000, 3500, 4000, 5000, 6000,
+//                                                                   7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000,
+//                                                                   15000, 16000, 17000, 18000, 19000, 20000, 25000, 30000,
+//                                                                   35000, 40000, 45000, 50000, 55000, 60000, 65000, 70000,
+//                                                                   80000, 90000, 100000, 150000, 200000, 400000, 800000,
+//                                                                   1000000, 2000000, 3000000, 5000000, 8000000, 10000000};
     
     @Override
     public void onStartup() {
@@ -45,6 +45,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
     
     @Override
     public void onRegister() {
+        setupXPRequired();
         CommandRegistrar.registerHook(this);
         CommandRegistrar.register("rank", "core.ranks", this);
         CommandRegistrar.register("rank-total", "core.ranks", new Total());
@@ -64,6 +65,12 @@ public final class Ranks extends UBPlugin implements MessageHook {
         Vault.addDefault("ranks-level", "1");
         
         DoubleXPTime.installer();
+    }
+    
+    private static void setupXPRequired() {
+        for(int i = 0; i < XP_REQUIRED_FOR_LEVEL_UP.length; i++) {
+            XP_REQUIRED_FOR_LEVEL_UP[i] = (long) ((Math.pow(i, 3)) + 20L);
+        }
     }
     
     @SuppressWarnings("DuplicatedCode")
@@ -181,7 +188,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         long currentXP = Long.parseLong(xpstr);
         int currentLv = Integer.parseInt(lvstr);
     
-        if (currentLv > 56 && currentXP >= Long.MAX_VALUE - 10L) return;
+        if (currentLv > 99 && currentXP >= Long.MAX_VALUE - 10L) return;
         
         @SuppressWarnings("PointlessArithmeticExpression") //NOT POINTLESS
         long randAdd = ThreadLocalRandom.current().nextLong(1 * DoubleXPTime.boostAmount, 4 * DoubleXPTime.boostAmount);
@@ -192,7 +199,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         currentXP += randAdd;
         
         //check level up
-        if(currentLv != 58 && currentXP >= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1]) {
+        if(currentLv != 100 && currentXP >= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1]) {
             currentXP -= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1];
             currentLv++;
             try {

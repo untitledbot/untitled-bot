@@ -43,7 +43,7 @@ public final class Help extends UBPlugin {
         } catch(ArrayIndexOutOfBoundsException ignored) {
             eb.setColor(Color.GREEN);
             eb.addField("Help pages",
-                    "For a list of commands, visit https://github.com/alexisok/untitled-bot/wiki\nFor help with specific " +
+                    "For a list of commands, use the `commands` command.\nFor help with specific " +
                             "commands, do `help [command]`",
                     false);
             return eb.build();

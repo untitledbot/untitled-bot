@@ -1,16 +1,20 @@
 package dev.alexisok.untitledbot.modules.rank;
 
+import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.io.File;
 import java.time.Instant;
 import java.util.*;
 import java.util.List;
@@ -39,57 +43,64 @@ public final class Top extends UBPlugin {
             return eb.build();
         }
         
-        message.getGuild().loadMembers().onSuccess(members -> {
+        final LinkedHashMap<String, Long>[] topXP = new LinkedHashMap[]{new LinkedHashMap<>()};
     
-            final LinkedHashMap<String, Long>[] topXP = new LinkedHashMap[]{new LinkedHashMap<>()};
-            
-            EmbedBuilder eb2 = new EmbedBuilder();
-            EmbedDefaults.setEmbedDefaults(eb2, message);
-            
-            for(Member m : members) {
-                if(m.getUser().isBot())
+        EmbedBuilder eb2 = new EmbedBuilder();
+        EmbedDefaults.setEmbedDefaults(eb2, message);
+    
+        for(File s : new File(Main.DATA_PATH + "/" + message.getGuild().getId()).listFiles()) {
+            try {
+                User m;
+    
+                try {
+                    m = Objects.requireNonNull(Main.jda.getUserById(s.getName().replace(".properties", "")));
+                } catch (Exception ignored) {
                     continue;
-        
+                }
+    
+                if (m.isBot())
+                    continue;
+    
                 long top = Ranks.totalXPFromAllLevels(m.getId(), message.getGuild().getId());
-                if(top == 0)
+                if (top == 0)
                     continue;
-        
+    
                 topXP[0].put(m.getId(), top);
-        
-                if(topXP[0].size() >= 10)
+    
+                if (topXP[0].size() >= 10)
                     break;
-            }
+            } catch(Exception ignored) {}
+        }
     
-            eb2.addField("Rank top", String.format("Fetching the top %d highest ranking users in this guild...", topXP[0].size()), false);
+        eb2.addField("Rank top", String.format("Fetching the top %d highest ranking users in this guild...", topXP[0].size()), false);
     
-            topXP[0] = sortHashMap(topXP[0]);
+        topXP[0] = sortHashMap(topXP[0]);
     
-            ArrayList<String> addStr = new ArrayList<>();
+        ArrayList<String> addStr = new ArrayList<>();
     
-            int i = 0;
-            for(Map.Entry<String, Long> a : topXP[0].entrySet()) {
-                if(i >= 10)
-                    break;
-                i++;
-                addStr.add(String.format("<@%s> - %s XP (level %s)%n",
-                        a.getKey(),
-                        a.getValue(),
-                        Vault.getUserDataLocal(a.getKey(), message.getGuild().getId(), "ranks-level")));
-            }
+        int i = 0;
+        for(Map.Entry<String, Long> a : topXP[0].entrySet()) {
+            if(i >= 10)
+                break;
+            i++;
+            addStr.add(String.format("<@%s> - %s XP (level %s)%n",
+                    a.getKey(),
+                    a.getValue(),
+                    Vault.getUserDataLocal(a.getKey(), message.getGuild().getId(), "ranks-level")));
+        }
     
-            Collections.reverse(addStr);
+        Collections.reverse(addStr);
     
-            StringBuilder addStringReturn = new StringBuilder();
+        StringBuilder addStringReturn = new StringBuilder();
     
-            for(String s : addStr) addStringReturn.append(s);
+        for(String s : addStr) addStringReturn.append(s);
     
-            setRateLimiter(message.getGuild().getId());
+        setRateLimiter(message.getGuild().getId());
     
     
-            eb2.addField("===TOP RANKINGS===", addStringReturn.toString(), false);
-            
-            message.getChannel().sendMessage(eb2.build()).queue();
-        });
+        eb2.addField("===TOP RANKINGS===", addStringReturn.toString(), false);
+    
+        message.getChannel().sendMessage(eb2.build()).queue();
         
         return null;
     }

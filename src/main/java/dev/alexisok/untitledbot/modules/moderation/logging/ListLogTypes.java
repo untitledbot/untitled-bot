@@ -38,5 +38,6 @@ public class ListLogTypes extends UBPlugin {
         CommandRegistrar.register("list-log-types", "core.logtypeslist", this);
         Manual.setHelpPage("list-log-types", "List ALL the log types.\n" +
                                                      "Usage: `list-log-types`");
+        CommandRegistrar.registerAlias("list-log-types", "log-types");
     }
 }
