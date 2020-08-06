@@ -61,7 +61,7 @@ public final class Top extends UBPlugin {
                 if (m.isBot())
                     continue;
     
-                long top = Ranks.totalXPFromAllLevels(m.getId(), message.getGuild().getId());
+                long top = Ranks.totalXPFromAllLevels(s.getName().replace(".properties", ""), message.getGuild().getId());
                 if (top == 0)
                     continue;
     
