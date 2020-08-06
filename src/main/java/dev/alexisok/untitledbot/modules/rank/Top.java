@@ -51,23 +51,12 @@ public final class Top extends UBPlugin {
     
         for(File s : new File(Main.DATA_PATH + "/" + message.getGuild().getId()).listFiles()) {
             try {
-                User m;
-    
-                try {
-                    m = Objects.requireNonNull(Main.jda.getUserById(s.getName().replace(".properties", "")));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    continue;
-                }
-    
-                if (m.isBot())
-                    continue;
-    
+                
                 long top = Ranks.totalXPFromAllLevels(s.getName().replace(".properties", ""), message.getGuild().getId());
                 if (top == 0)
                     continue;
     
-                topXP[0].put(m.getId(), top);
+                topXP[0].put(s.getName().replace(".properties", ""), top);
                 
             } catch(Exception e) {
                 e.printStackTrace();
