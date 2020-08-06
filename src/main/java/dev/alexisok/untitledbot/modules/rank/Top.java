@@ -44,7 +44,7 @@ public final class Top extends UBPlugin {
             return eb.build();
         }
         
-        final LinkedHashMap<String, Long>[] topXP = new LinkedHashMap[]{new LinkedHashMap<>()};
+        LinkedHashMap<String, Long> topXP = new LinkedHashMap<>(new LinkedHashMap<>());
     
         EmbedBuilder eb2 = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb2, message);
@@ -56,22 +56,21 @@ public final class Top extends UBPlugin {
                 if (top == 0)
                     continue;
     
-                topXP[0].put(s.getName().replace(".properties", ""), top);
+                topXP.put(s.getName().replace(".properties", ""), top);
                 
             } catch(Exception e) {
                 e.printStackTrace();
-                continue;
             }
         }
     
-        eb2.addField("Rank top", String.format("Fetching the top %d highest ranking users in this guild...", topXP[0].size()), false);
+        eb2.addField("Rank top", String.format("Fetching the top %d highest ranking users in this guild...", topXP.size()), false);
     
-        topXP[0] = sortHashMap(topXP[0]);
+        topXP = sortHashMap(topXP);
     
         ArrayList<String> addStr = new ArrayList<>();
     
         int i = 0;
-        for(Map.Entry<String, Long> a : topXP[0].entrySet()) {
+        for(Map.Entry<String, Long> a : topXP.entrySet()) {
             if(i >= 10)
                 break;
             i++;
