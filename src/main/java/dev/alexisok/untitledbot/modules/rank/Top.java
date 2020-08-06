@@ -87,8 +87,9 @@ public final class Top extends UBPlugin {
         for(String s : addStr) addStringReturn.append(s);
     
         setRateLimiter(message.getGuild().getId());
-    
-    
+        
+        eb2.setColor(Color.GREEN);
+        
         eb2.addField("===TOP RANKINGS===", addStringReturn.toString(), false);
     
         message.getChannel().sendMessage(eb2.build()).queue();
