@@ -25,7 +25,7 @@ public final class RankSettings extends UBPlugin {
         EmbedDefaults.setEmbedDefaults(eb, message);
         
         if(args.length < 3) {
-            eb.addField("Ranking", "Usage: `rank-settings <setting> <true|false>`\n" +
+            eb.addField("Ranking", "Usage: `rank-settings <setting> <options...>`\n" +
                                            "See `help rank-settings` for more information.", false);
             eb.setColor(Color.RED);
             return eb.build();

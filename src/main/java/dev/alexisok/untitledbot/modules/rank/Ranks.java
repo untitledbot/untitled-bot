@@ -5,9 +5,12 @@ import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.command.MessageHook;
+import dev.alexisok.untitledbot.modules.rank.xpcommands.Daily;
+import dev.alexisok.untitledbot.modules.rank.xpcommands.Shop;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -18,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.math.BigInteger;
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -51,6 +55,8 @@ public final class Ranks extends UBPlugin implements MessageHook {
         CommandRegistrar.register("rank-total", "core.ranks", new Total());
         CommandRegistrar.register("rank-top", "core.ranks", new Top());
         CommandRegistrar.register("rank-settings", "admin", new RankSettings());
+        new Daily().onRegister();
+        new Shop().onRegister();
         Manual.setHelpPage("rank-top", "Get the top user ranks for the guild.");
         Manual.setHelpPage("rank", "Get your (or another user's) rank.\nUsage: `rank [user @ | user ID]`");
         Manual.setHelpPage("rank-total", "Get the total amount of experience of yourself or another user.\n" +
@@ -69,7 +75,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
     
     private static void setupXPRequired() {
         for(int i = 0; i < XP_REQUIRED_FOR_LEVEL_UP.length; i++) {
-            XP_REQUIRED_FOR_LEVEL_UP[i] = (long) ((Math.pow(i, 3) * 4) + 100L);
+            XP_REQUIRED_FOR_LEVEL_UP[i] = (long) ((Math.pow(i, 3) * 2) + 250L);
         }
     }
     
@@ -130,7 +136,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
             return eb.build();
         }
         
-        if(lv.equalsIgnoreCase("58")) lv = "MAX (58)";
+        if(lv.equalsIgnoreCase("100")) lv = "MAX (100)";
     
         eb.setColor(Color.GREEN);
         if(!other) {
@@ -169,14 +175,28 @@ public final class Ranks extends UBPlugin implements MessageHook {
     
     @Override
     public void onMessage(@NotNull MessageReceivedEvent mre) {
-        if(!mre.isFromGuild())
-            return;
+        if(!mre.isFromGuild()) {
+            String content = mre.getMessage().getContentRaw();
+            if(!content.startsWith("pls st"))
+                return;
+            if(content.equalsIgnoreCase("pls stop")) {
+                Vault.storeUserDataLocal(Objects.requireNonNull(mre.getAuthor()).getId(), null, "rank.message.individual.rankup", "false");
+                mre.getMessage().getChannel().sendMessage(":thumbsup:\nUse `pls start` if you want to continue receiving rank messages.").queue();
+            } else if(content.equalsIgnoreCase("pls start")) {
+                Vault.storeUserDataLocal(Objects.requireNonNull(mre.getAuthor().getId()), null, "rank.message.individual.rankup", "true");
+                mre.getMessage().getChannel().sendMessage(":thumbsup:\nUse `pls stop` if you don't want to receive rank messages again.").queue();
+            }
+        }
         Message m = mre.getMessage();
         if(!m.isFromGuild() || m.getAuthor().isBot())
             return;
         
         //get the xp and level of the user
         
+        doLevelStuff(m, ThreadLocalRandom.current().nextLong(3 * DoubleXPTime.boostAmount, 5 * DoubleXPTime.boostAmount));
+    }
+    
+    public static void doLevelStuff(@NotNull Message m, long randAdd) {
         String xpstr = Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks-xp");
         String lvstr = Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks-level");
     
@@ -185,13 +205,14 @@ public final class Ranks extends UBPlugin implements MessageHook {
             lvstr = "1";
         }
         
+        //make sure the user is not level 0
+        if(lvstr.equals("0"))
+            lvstr = "1";
+        
         long currentXP = Long.parseLong(xpstr);
         int currentLv = Integer.parseInt(lvstr);
     
         if (currentLv > 99 && currentXP >= Long.MAX_VALUE - 10L) return;
-        
-        @SuppressWarnings("PointlessArithmeticExpression") //NOT POINTLESS
-        long randAdd = ThreadLocalRandom.current().nextLong(1 * DoubleXPTime.boostAmount, 4 * DoubleXPTime.boostAmount);
         
         if(DoubleXPTime.boostAmount != 1)
             DoubleXPTime.totalXPFromBoost = DoubleXPTime.totalXPFromBoost.add(new BigInteger(String.valueOf(randAdd)));
@@ -203,15 +224,45 @@ public final class Ranks extends UBPlugin implements MessageHook {
             currentXP -= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1];
             currentLv++;
             try {
-                mre
-                        .getChannel()
-                        .sendMessage("Congrats <@" + m.getAuthor().getId() + ">!  You are now level " + currentLv + "!!!")
-                        .queue();
+                String shouldSendPhase1 = Vault.getUserDataLocal(m.getAuthor().getId(), null, "rank.message.individual.rankup");
+                if(shouldSendPhase1 == null) {
+                    shouldSendPhase1 = "true";
+                }
+                if(shouldSendPhase1.equalsIgnoreCase("false"))
+                    throw new AWTError("nothing i guess");
+                String shouldSendPhase2 = Vault.getUserDataLocal(null, m.getGuild().getId(), "ranks-broadcast.rankup");
+                if(shouldSendPhase2 == null) {
+                    shouldSendPhase2 = "current";
+                }
+                
+                if(shouldSendPhase2.equalsIgnoreCase("current")) {
+                    m
+                            .getChannel()
+                            .sendMessage(String.format("Nice <@%s>!  You have leveled up to level %d!", m.getAuthor().getId(), currentLv))
+                            .queue();
+                } else if(shouldSendPhase2.equalsIgnoreCase("channel")) {
+                    Objects.requireNonNull(Main.jda.getTextChannelById(Vault.getUserDataLocal(null, m.getGuild().getId(), "ranks-broadcast.rankup.channel")))
+                            .sendMessage(String.format("Nice <@%s>!  You have leveled up to level %d", m.getAuthor().getId(), currentLv))
+                            .queue();
+                } else if(shouldSendPhase2.equalsIgnoreCase("dm")) {
+                    throw new InsufficientPermissionException((Guild) null, null);
+                } else if(shouldSendPhase2.equalsIgnoreCase("none")) {
+                    throw new AWTError("nothing 2");
+                }
+                
+                //if all else fails, don't do anything.
+                
             } catch(InsufficientPermissionException ignored) {
                 int finalCurrentLv = currentLv;
-                mre.getAuthor().openPrivateChannel().queue((channel) -> channel.sendMessage("Congrats <@" + m.getAuthor().getId() + ">!  You are now level " + finalCurrentLv + "!!!").queue());
+                m.getAuthor().openPrivateChannel().queue((channel) -> channel.sendMessage(
+                        String.format("Congrats!  You are now level %d!!!" +
+                                              "\n(This was sent because the bot does not have permissions in <#%s>)." +
+                                              "\nYou can turn off level up DMs by replying \"PLS STOP\".",
+                                finalCurrentLv,
+                                m.getChannel().getId())
+                ).queue());
                 
-            }
+            } catch(AWTError ignored) {}
         }
         
         Vault.storeUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks-xp", String.valueOf(currentXP));

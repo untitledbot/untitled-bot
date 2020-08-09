@@ -58,9 +58,7 @@ public final class Top extends UBPlugin {
     
                 topXP.put(s.getName().replace(".properties", ""), top);
                 
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
+            } catch(Exception ignored) {}
         }
     
         eb2.addField("Rank top", "Fetching the highest ranking users in this guild...", false);

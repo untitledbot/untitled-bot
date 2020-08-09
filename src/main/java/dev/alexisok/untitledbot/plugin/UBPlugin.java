@@ -12,12 +12,6 @@ import dev.alexisok.untitledbot.command.Command;
 public abstract class UBPlugin implements Command {
     
     /**
-     * Run when the bot is shut down through the
-     * shutdown command.
-     */
-    public void onShutdown() {}
-    
-    /**
      * Run when the bot is started (after registration).
      */
     public void onStartup() {}
