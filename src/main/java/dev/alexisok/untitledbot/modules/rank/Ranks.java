@@ -191,8 +191,6 @@ public final class Ranks extends UBPlugin implements MessageHook {
         if(!m.isFromGuild() || m.getAuthor().isBot())
             return;
         
-        //get the xp and level of the user
-        
         doLevelStuff(m, ThreadLocalRandom.current().nextLong(3 * DoubleXPTime.boostAmount, 5 * DoubleXPTime.boostAmount));
     }
     

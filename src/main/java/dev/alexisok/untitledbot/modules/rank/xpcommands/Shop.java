@@ -78,10 +78,7 @@ public final class Shop extends UBPlugin {
                             int currentCount = currentCountStr == null ? 0 : Integer.parseInt(currentCountStr);
                             if(a.getMaximum() != -1 && currentCount >= a.getMaximum()) {
                                 eb.addField("Shop",
-                                        String.format("Error: the limit for %s is %d, you have %d of this item already.",
-                                                a.getName(),
-                                                a.getMaximum(),
-                                                currentCount),
+                                        "Error: you already have the maximum amount of this item.",
                                         false);
                                 eb.setColor(Color.RED);
                                 
