@@ -46,7 +46,7 @@ public final class BotClass extends ListenerAdapter {
 		
 		CommandRegistrar.runMessageHooks(event);
 		
-		if(!event.isFromGuild())
+		if(!event.isFromGuild() || event.getAuthor().isBot())
 			return;
 		
 		//get the prefix of the guild

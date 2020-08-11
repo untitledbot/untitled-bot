@@ -48,7 +48,7 @@ public final class RankSettings extends UBPlugin {
                     Vault.storeUserDataLocal(null, message.getGuild().getId(), "ranks-broadcast.rankup", "current");
                     eb.setColor(Color.GREEN);
                     eb.addField("Ranking",
-                            "Level up announcements have been set to the current channel (will fallback to DM in case of permission error).",
+                            "Level up announcements have been set to the current channel.",
                             false);
                     return eb.build();
                 case "channel": //specific channel
@@ -67,12 +67,7 @@ public final class RankSettings extends UBPlugin {
                     Vault.storeUserDataLocal(null, message.getGuild().getId(), "ranks-broadcast.rankup.channel", setChannel.getId());
                     eb.addField("Ranking", "Level up announcements have been set to channel <#"
                                                    + setChannel.getId() 
-                                                   + "> (will fallback to DM in case of permission error).", false);
-                    eb.setColor(Color.GREEN);
-                    return eb.build();
-                case "dm":
-                    Vault.storeUserDataLocal(null, message.getGuild().getId(), "ranks-broadcast.rankup", "dm");
-                    eb.addField("Ranking", "Level up announcements have been set to direct messages.", false);
+                                                   + ">.", false);
                     eb.setColor(Color.GREEN);
                     return eb.build();
                 case "none":

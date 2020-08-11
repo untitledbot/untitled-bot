@@ -5,12 +5,13 @@ import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.command.MessageHook;
+import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
+import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Daily;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Shop;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -64,8 +65,8 @@ public final class Ranks extends UBPlugin implements MessageHook {
         Manual.setHelpPage("rank-settings", "Set the rank settings.\n" +
                                                     "Usage: `rank-settings <setting> <value>`\n" +
                                                     "Current settings:\n" +
-                                                    "\tannounce-xp-boost <true|false>\n" +
-                                                    "\tannounce-level-up <current | channel | dm | none>\n");
+                                                    "\tannounce-xp-boost <true | false>\n" +
+                                                    "\tannounce-level-up <current | channel <channel #> | none>\n");
         CommandRegistrar.registerAlias("rank-top", "ranktop", "leaderboard", "top", "ranklist");
         Vault.addDefault("ranks-xp", "0");
         Vault.addDefault("ranks-level", "1");
@@ -175,20 +176,13 @@ public final class Ranks extends UBPlugin implements MessageHook {
     
     @Override
     public void onMessage(@NotNull MessageReceivedEvent mre) {
-        if(!mre.isFromGuild()) {
-            String content = mre.getMessage().getContentRaw();
-            if(!content.startsWith("pls st"))
-                return;
-            if(content.equalsIgnoreCase("pls stop")) {
-                Vault.storeUserDataLocal(Objects.requireNonNull(mre.getAuthor()).getId(), null, "rank.message.individual.rankup", "false");
-                mre.getMessage().getChannel().sendMessage(":thumbsup:\nUse `pls start` if you want to continue receiving rank messages.").queue();
-            } else if(content.equalsIgnoreCase("pls start")) {
-                Vault.storeUserDataLocal(Objects.requireNonNull(mre.getAuthor().getId()), null, "rank.message.individual.rankup", "true");
-                mre.getMessage().getChannel().sendMessage(":thumbsup:\nUse `pls stop` if you don't want to receive rank messages again.").queue();
-            }
-        }
+        
+        //no bots
+        if(mre.getAuthor().isBot())
+            return;
+        
         Message m = mre.getMessage();
-        if(!m.isFromGuild() || m.getAuthor().isBot())
+        if(!m.isFromGuild())
             return;
         
         doLevelStuff(m, ThreadLocalRandom.current().nextLong(3 * DoubleXPTime.boostAmount, 5 * DoubleXPTime.boostAmount));
@@ -197,7 +191,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
     public static void doLevelStuff(@NotNull Message m, long randAdd) {
         String xpstr = Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks-xp");
         String lvstr = Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks-level");
-    
+        
         if (lvstr == null || xpstr == null) {
             xpstr = "0";
             lvstr = "1";
@@ -222,12 +216,6 @@ public final class Ranks extends UBPlugin implements MessageHook {
             currentXP -= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1];
             currentLv++;
             try {
-                String shouldSendPhase1 = Vault.getUserDataLocal(m.getAuthor().getId(), null, "rank.message.individual.rankup");
-                if(shouldSendPhase1 == null) {
-                    shouldSendPhase1 = "true";
-                }
-                if(shouldSendPhase1.equalsIgnoreCase("false"))
-                    throw new AWTError("nothing i guess");
                 String shouldSendPhase2 = Vault.getUserDataLocal(null, m.getGuild().getId(), "ranks-broadcast.rankup");
                 if(shouldSendPhase2 == null) {
                     shouldSendPhase2 = "current";
@@ -236,31 +224,19 @@ public final class Ranks extends UBPlugin implements MessageHook {
                 if(shouldSendPhase2.equalsIgnoreCase("current")) {
                     m
                             .getChannel()
-                            .sendMessage(String.format("Nice <@%s>!  You have leveled up to level %d!", m.getAuthor().getId(), currentLv))
+                            .sendMessage(String.format("Nice %s!  You have leveled up to level %d!", m.getAuthor().getName(), currentLv))
                             .queue();
                 } else if(shouldSendPhase2.equalsIgnoreCase("channel")) {
                     Objects.requireNonNull(Main.jda.getTextChannelById(Vault.getUserDataLocal(null, m.getGuild().getId(), "ranks-broadcast.rankup.channel")))
-                            .sendMessage(String.format("Nice <@%s>!  You have leveled up to level %d", m.getAuthor().getId(), currentLv))
+                            .sendMessage(String.format("%s has leveled up to level %d!!!", m.getAuthor().getName(), currentLv))
                             .queue();
-                } else if(shouldSendPhase2.equalsIgnoreCase("dm")) {
-                    throw new InsufficientPermissionException((Guild) null, null);
                 } else if(shouldSendPhase2.equalsIgnoreCase("none")) {
-                    throw new AWTError("nothing 2");
+                    throw new UserDataFileCouldNotBeCreatedException("nothing 2");
                 }
                 
                 //if all else fails, don't do anything.
                 
-            } catch(InsufficientPermissionException ignored) {
-                int finalCurrentLv = currentLv;
-                m.getAuthor().openPrivateChannel().queue((channel) -> channel.sendMessage(
-                        String.format("Congrats!  You are now level %d!!!" +
-                                              "\n(This was sent because the bot does not have permissions in <#%s>)." +
-                                              "\nYou can turn off level up DMs by replying \"PLS STOP\".",
-                                finalCurrentLv,
-                                m.getChannel().getId())
-                ).queue());
-                
-            } catch(AWTError ignored) {}
+            } catch(InsufficientPermissionException | UserDataCouldNotBeObtainedException | UserDataFileCouldNotBeCreatedException ignored) {}
         }
         
         Vault.storeUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks-xp", String.valueOf(currentXP));

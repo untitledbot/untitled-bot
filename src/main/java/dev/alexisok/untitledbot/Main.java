@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot;
 
+import dev.alexisok.untitledbot.annotation.ToBeRemoved;
 import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
@@ -36,7 +37,7 @@ import java.util.*;
  */
 public final class Main {
 	
-	public static final String VERSION = "1.3.16";
+	public static final String VERSION = "1.3.17";
 	public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
 	public static final String DATA_PATH;
 	public static final String PREFIX;
@@ -156,35 +157,9 @@ public final class Main {
 			Logger.critical("Could not login to Discord!", 1);
 		}
 		
-		preStartChecks();
-		
 		CoreCommands.registerCoreCommands();
 		CoreCommands.registerModules();
 		
-	}
-	
-	/**
-	 * Do startup checks, most of these are to fill in missing
-	 * guild directories to make sure that there won't be any errors later on.
-	 * These checks are done before the commands and plugins are registered and
-	 * after the bot is logged in to discord.
-	 */
-	@SuppressWarnings("ResultOfMethodCallIgnored")
-	private static void preStartChecks() {
-		
-		for(Guild g : jda.getGuilds()) {
-			File fg = new File(Main.DATA_PATH + g.getId());
-			if(!fg.exists())
-				fg.mkdir();
-			
-			//do not simply make a new file, that could cause issues
-			UserData.checkUserExists(null, g.getId());
-			for(Member m : g.getMembers()) {
-				if(m.getUser().isBot())
-					continue;
-				UserData.checkUserExists(m.getId(), g.getId());
-			}
-		}
 	}
 	
 	/**
