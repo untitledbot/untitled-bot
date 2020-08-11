@@ -83,7 +83,8 @@ As someone who wants privacy, I respect your right to it as well.  This is a lis
 ##### Ranking
 `rank [user @]` - get the rank of yourself or another user.\
 `leaderboard` - get the highest ranking users in the server.\
-`rank-total [user @]` - get the total amount of xp of yourself or another user.
+`rank-total [user @]` - get the total amount of xp of yourself or another user.\
+`rank-settings <setting> <value>` - set the rank settings (see `help rank-settings`).
 
 ##### Utilities
 `help [command]` - get help for a command.\
