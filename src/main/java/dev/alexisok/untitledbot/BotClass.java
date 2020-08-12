@@ -54,7 +54,7 @@ public final class BotClass extends ListenerAdapter {
 		
 		String message = event.getMessage().getContentRaw();
 		
-		//if the first mention is the bot
+		//if the first mention is the bot TODO remove this and have the bot say it's prefix when mentioned
 		if(event.getMessage().getMentionedUsers().size() != 0 && event.getMessage().getMentionedMembers().get(0).getId().equals(Main.jda.getSelfUser().getId()))
 			message = message.substring(message.indexOf(" ") + 1);
 		else if(prefix == null || prefix.equals("")) {

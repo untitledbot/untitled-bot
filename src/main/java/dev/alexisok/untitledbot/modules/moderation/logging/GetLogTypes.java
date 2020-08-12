@@ -33,7 +33,8 @@ public final class GetLogTypes extends UBPlugin implements Command {
         String s = Vault.getUserDataLocal(null, message.getGuild().getId(), "log.policies");
     
         if(s == null || s.length() == 0) {
-            eb.addField("Logging", "This server doesn't appear to log anything through this bot.", false);
+            eb.addField("Logging", "This server doesn't appear to log anything through this bot, though " +
+                                           "other bots could be logging things.", false);
             eb.setColor(Color.YELLOW);
             
             return eb.build();

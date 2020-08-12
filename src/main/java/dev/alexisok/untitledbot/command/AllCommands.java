@@ -14,34 +14,53 @@ import org.jetbrains.annotations.Nullable;
  */
 public class AllCommands extends UBPlugin {
     
+    private static final MessageEmbed HELP_MESSAGE;
+    
+    static {
+        EmbedBuilder eb = new EmbedBuilder();
+    
+        eb.setTitle("untitled-bot commands");
+    
+        eb.addField("Ranks", "\n" +
+                                     "`rank` - get the rank of yourself or a specific user.\n" +
+                                     "`leaderboard` - get the highest ranking users in the guild.\n" +
+                                     "`rank-total` - get the total amount of xp of yourself or another user.\n" +
+                                     "`rank-settings` - rankup and rank boost settings for moderators.\n" +
+                                     "", true);
+        eb.addField("Utilities", "\n" +
+                                         "`help [command]` - get help for a specific command.\n" +
+                                         "`prefix <prefix>` - set this guilds prefix.\n" +
+                                         "`status` - get the status and statistics of the bot.\n" +
+                                         "`shop` - shop items (not fully implemented).\n" +
+                                         "`timestamp` - get the timestamp of a Discord snowflake.\n" +
+                                         "`uptime` - get the uptime of the bot.\n", true);
+        eb.addField("Moderation", "\n" +
+                                          "`log-channel` - set the logging channel.\n" +
+                                          "`add-log` - add a log type to the log channel.\n" +
+                                          "`remove-log` - remove a log type from the channel.\n" +
+                                          "`log-types` - list all current log types.\n" +
+                                          "`get-log` - list what's being logged (all users).", true);
+        eb.addField("Fun", "\n" +
+                                   "`someone` - mention a random user without pinging them.\n" +
+                                   "`brainfuck` - run brainfuck code" +
+                                   " (yes, [it is a real thing](https://en.wikipedia.org/wiki/Brainfuck)).\n" +
+                                   "`8ball` - simulate a magic 8 ball.\n" +
+                                   "`ship` - ship two users (was asked to add this).\n" +
+                                   "`20` - roll a twenty sided die.\n" +
+                                   "`owo` - owofy a stwing of text,,,", true);
+    
+        eb.addBlankField(false);
+    
+        eb.addField("Want something added?", "\n" +
+                                                     "If you would like to see another command added, or more features " +
+                                                     "on this bot, please [join the Discord server](https://discord.gg/vSWgQ9a) :)", false);
+        
+        HELP_MESSAGE = eb.build();
+    }
+    
     @Override
     public @Nullable MessageEmbed onCommand(String[] args, Message message) {
-        
-        message.getAuthor().openPrivateChannel().queue((channel) -> {
-            EmbedBuilder eb = new EmbedBuilder();
-            
-            eb.setTitle("[optional] <required>");
-            
-            eb.addField("Ranks", "\n" +
-                                         "`rank [user @]` - get the rank of yourself or a specific user.\n" +
-                                         "`leaderboard` - get the highest ranking users in the guild.\n" +
-                                         "`rank-total [user @]` - get the total amount of xp of yourself or another user.", false);
-            eb.addField("Utilities", "\n" +
-                                             "`help [command]` - get help for a specific command.\n" +
-                                             "`prefix <prefix>` - set this guilds prefix.\n" +
-                                             "`status` - get the status and statistics of the bot.", false);
-            eb.addField("Moderation", "\n" +
-                                              "`log-channel <text channel #>` - set the logging channel.\n" +
-                                              "`add-log` - add a log type to the log channel.", false);
-            
-            eb.addField("Note", "\n" +
-                                        "This may not be up-to-date, please check https://github.com/alexisok/untitled-bot\n" +
-                                        "for the newest commands.", false);
-            
-            channel.sendMessage(eb.build()).queue();
-        });
-        
-        return null;
+        return HELP_MESSAGE;
     }
     
     @Override

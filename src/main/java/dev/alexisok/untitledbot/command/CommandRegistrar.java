@@ -157,6 +157,10 @@ public class CommandRegistrar {
 		EmbedBuilder eb = new EmbedBuilder();
 		EmbedDefaults.setEmbedDefaults(eb, m);
 		
+		if(permissionNode == null) {
+			return null;
+		}
+		
 		if(permissionNode.equalsIgnoreCase("admin")) {
 			eb.addField("", "This command requires the administrator permission on Discord.", false);
 			eb.setColor(Color.RED);

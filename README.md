@@ -90,7 +90,8 @@ As someone who wants privacy, I respect your right to it as well.  This is a lis
 `help [command]` - get help for a command.\
 `prefix <prefix 1 to 3 chars>` - set the prefix for the server (mentioning the bot works as well).\
 `status` - get the status of the bot.\
-`timestamp <snowflake>` - get the timestamp of a discord snowflake.
+`timestamp <snowflake | user @ | channel #>` - get the timestamp of a discord snowflake.\
+`uptime` - get the uptime for the bot.
 
 ##### Moderation
 `log-channel <text channel #>` - set the logging channel.\
@@ -103,7 +104,8 @@ As someone who wants privacy, I respect your right to it as well.  This is a lis
 `brainfuck` - run [Brainf***](https://en.wikipedia.org/wiki/Brainfuck) code.\
 `8ball <question>` - simulate an 8 ball.\
 `ship <user A> <user B>` - ship two different server members.\
-`20` - roll a 20 sided die.
+`20` - roll a 20 sided die.\
+`owo <text>` - owofy a stwing of text
 
 ### Premium?
 As of now, there are not any premium features of the bot, all features come standard for free.\

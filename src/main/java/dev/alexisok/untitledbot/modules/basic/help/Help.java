@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.Objects;
 
 /**
  * Help command.
@@ -41,12 +42,7 @@ public final class Help extends UBPlugin {
             eb.addField("Help pages", embedStr, false);
             return eb.build();
         } catch(ArrayIndexOutOfBoundsException ignored) {
-            eb.setColor(Color.GREEN);
-            eb.addField("Help pages",
-                    "For a list of commands, use the `commands` command.\nFor help with specific " +
-                            "commands, do `help [command]`",
-                    false);
-            return eb.build();
+            return Objects.requireNonNull(CommandRegistrar.runCommand("commands", args, message));
         }
     }
 }

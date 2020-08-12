@@ -1,0 +1,24 @@
+why was i not doing patch notes in their own files
+anyways i said that 1.3.16 was the last until the rpg but that's going to be a while for 1.4 so i'm still going to
+make more updates and work on the rpg in its own branch
+
+this is going to be a sort of big release so hold on tight
+
+new features:
+* `owo` command - make a stwing vewy cute and owo wike,,,,,
+* `uptime` command - get the uptime of the bot in milliseconds
+* the `timestamp` command now accepts channel # and user @ for timestamps as well as snowflakes and has a better help message
+* the `help` command now displays actually useful information
+* `commands` no longer DMs and is much more compact with more info
+* the `status` command no longer fetches info on-command, it updates every three minutes
+* dropped some unnecessary stats from `status`
+* the `about` command now lists info about the bot instead of garbage that is unusable
+* removed the RPG shop items (will come back in the future)
+
+everything was really just cleaned up and it's a big quality of life update.
+
+planned features:
+* `hug`, `pat`, and other commands to spawn anime GIFs to use as reactions
+* TODO insert super cool feature here
+
+if you have any suggestions, please join the official discord server using https://discord.gg/vSWgQ9a

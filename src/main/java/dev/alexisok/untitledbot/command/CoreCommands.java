@@ -7,11 +7,13 @@ import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
 import dev.alexisok.untitledbot.modules.basic.brainfreak.BrainFreak;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
 import dev.alexisok.untitledbot.modules.basic.help.Help;
+import dev.alexisok.untitledbot.modules.basic.owo.Owo;
 import dev.alexisok.untitledbot.modules.basic.prefix.Prefix;
 import dev.alexisok.untitledbot.modules.basic.ship.Ship;
 import dev.alexisok.untitledbot.modules.basic.status.Status;
 import dev.alexisok.untitledbot.modules.basic.timestamp.TimeStamp;
 import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
+import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rpg.RPGManager;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -40,11 +42,11 @@ public final class CoreCommands {
             
             eb.setColor(Color.GREEN);
             
+            String inviteLink = String.format("https://discord.com/oauth2/authorize?client_id=%s&scope=bot&permissions=3460160",
+                    Main.jda.getSelfUser().getId());
+            
             eb.addField("Invite link",
-                    "You can invite the bot to a server using this invite link.\n" +
-                            "https://discord.com/oauth2/authorize?client_id=" +
-                            Main.jda.getSelfUser().getId() + "" +
-                            "&scope=bot&permissions=2146958839",
+                    String.format("You can invite the bot to a server using [this invite link](%s).", inviteLink),
                     false);
             
             return eb.build();
@@ -53,13 +55,22 @@ public final class CoreCommands {
             EmbedBuilder eb = new EmbedBuilder();
             EmbedDefaults.setEmbedDefaults(eb, message);
             
-            String returnString = "Hello!  I am a bot made by AlexIsOK!  I do many things (you can see the full list with" +
-                                          " the 'help' command) and I am constantly improving as well!  If you have any suggestions" +
-                                          " or bugs to report, you can do so at https://github.com/alexisok/untitled-bot/issues\n" +
+            String returnString = "```" +
                                           "\n" +
-                                          "For help with the bot, read the documentation, or if you're really confused you can" +
-                                          " join the Discord server using the 'invite' command, it's not a very big community" +
-                                          " as of now, but it would be great to have more people involved!";
+                                          "      ╔╗─╔╗╔╗     ╔╗  ╔╗    ╔╗\n" +
+                                          "     ╔╝╚╦╝╚╣║     ║║  ║║   ╔╝╚╗\n" +
+                                          "╔╗╔╦═╬╗╔╬╗╔╣║╔══╦═╝║  ║╚═╦═╩╗╔╝\n" +
+                                          "║║║║╔╗╣║╠╣║║║║║═╣╔╗╠══╣╔╗║╔╗║║\n" +
+                                          "║╚╝║║║║╚╣║╚╣╚╣║═╣╚╝╠══╣╚╝║╚╝║╚╗\n" +
+                                          "╚══╩╝╚╩═╩╩═╩═╩══╩══╝  ╚══╩══╩═╝" +
+                                          "```" +
+                                          "Hello!  I am a bot made by AlexIsOK!  I do many things (you can see the full list with" +
+                                          " the 'commands' command) and I am constantly improving as well!  If you have any suggestions," +
+                                          " bugs to report, or just want a server where you can hang out, " + //these spaces are going to be the end of me
+                                          "you can do so in the [official Discord server](https://discord.gg/r5ndhyX)!\n" +
+                                          "\n" +
+                                          "For help with the bot, use the `commands` command or join the official server for " +
+                                          "support (it's a small community but would grow with more users).";
             
             eb.setColor(Color.GREEN);
             eb.addField("", returnString, false);
@@ -107,6 +118,8 @@ public final class CoreCommands {
         new AllCommands().onRegister();
         new Help().onRegister();
         new Status().onRegister();
+        new Uptime().onRegister();
+        new Owo().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

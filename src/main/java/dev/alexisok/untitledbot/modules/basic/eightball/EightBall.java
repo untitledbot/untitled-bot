@@ -51,8 +51,6 @@ public final class EightBall extends UBPlugin implements Command {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        if(message.getAuthor().isBot() || args.length == 1)
-            return null;
         int a = ThreadLocalRandom.current().nextInt(0, 20);
         Color returnColor = Color.BLACK;
         if(RESPONSES[a].contains(":red_circle:"))

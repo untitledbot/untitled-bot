@@ -31,11 +31,8 @@ public final class Shop extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        if(args.length == 1) {
-            eb.addField("Shop", "Incorrect usage, see `help shop` for more information.", false);
-            eb.setColor(Color.RED);
-            return eb.build();
-        }
+        if(args.length == 1)
+            args = new String[]{"shop", "list"};
         
         if(args[1].equalsIgnoreCase("list")) {
             StringBuilder itemList = new StringBuilder();
@@ -139,9 +136,9 @@ public final class Shop extends UBPlugin {
     @Override
     public void onRegister() {
         CommandRegistrar.register("shop", this);
-        ITEMS.add(new ShopItem("RPG Item I", 10, "A claimable item for when the RPG releases (low-tier random item).  Can be used once the RPG is out.", 1, 10));
-        ITEMS.add(new ShopItem("RPG Item II", 20, "A claimable item for when the RPG releases (mid-tier random item).  Can be used once the RPG is out.", 2, 5));
-        ITEMS.add(new ShopItem("RPG Item III", 30, "A claimable item for when the RPG releases (high-tier random item).  Can be used once the RPG is out.", 3, 3));
+//        ITEMS.add(new ShopItem("RPG Item I", 10, "A claimable item for when the RPG releases (low-tier random item).  Can be used once the RPG is out.", 1, 10));
+//        ITEMS.add(new ShopItem("RPG Item II", 20, "A claimable item for when the RPG releases (mid-tier random item).  Can be used once the RPG is out.", 2, 5));
+//        ITEMS.add(new ShopItem("RPG Item III", 30, "A claimable item for when the RPG releases (high-tier random item).  Can be used once the RPG is out.", 3, 3));
         
         ITEMS.add(new ShopItem("RPG Early Supporter Badge", 0, "A badge that shows you were using the bot before the RPG released!  Doesn't do anything in the RPG, will show when users use the `profile` command on you.", 4, 1));
         
@@ -152,7 +149,7 @@ public final class Shop extends UBPlugin {
                                            "buy <item name> - buy a specific item.\n" +
                                            "```" +
                                            "\n\n" +
-                                           "Note: all items are purchased with your xp in this guild, use the `rank` command to see your XP and level." +
+//                                           "Note: all items are purchased with your xp in this guild, use the `rank` command to see your XP and level." +
                                            "\n\n" +
                                            "All purchases are non-refundable and are delivered immediately.");
     }
