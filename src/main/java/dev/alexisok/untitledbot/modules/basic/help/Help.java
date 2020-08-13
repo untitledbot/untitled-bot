@@ -30,7 +30,7 @@ public final class Help extends UBPlugin {
     }
     
     @Override
-    public @NotNull MessageEmbed onCommand(String[] args, Message message) {
+    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         try {

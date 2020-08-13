@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -48,6 +49,9 @@ public class AllCommands extends UBPlugin {
                                    "`ship` - ship two users (was asked to add this).\n" +
                                    "`20` - roll a twenty sided die.\n" +
                                    "`owo` - owofy a stwing of text,,,", true);
+        eb.addField("Reactions", "\n" +
+                                         "`hug` - hug another user (or yourself).\n" +
+                                         "", true);
     
         eb.addBlankField(false);
     
@@ -59,7 +63,7 @@ public class AllCommands extends UBPlugin {
     }
     
     @Override
-    public @Nullable MessageEmbed onCommand(String[] args, Message message) {
+    public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         return HELP_MESSAGE;
     }
     

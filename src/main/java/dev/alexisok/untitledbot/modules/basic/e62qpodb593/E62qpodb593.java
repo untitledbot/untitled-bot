@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -40,7 +41,7 @@ public class E62qpodb593 extends UBPlugin {
     private static final int HOME_ADDRESS = 0;
     
     @Override
-    public @Nullable MessageEmbed onCommand(String[] args, Message message) {
+    public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         final byte[] STACK = new byte[65536];
         int loopTimes = 0;
         int loopTimesCurrent = 0;

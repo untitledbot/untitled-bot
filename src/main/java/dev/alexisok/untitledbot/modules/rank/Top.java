@@ -32,7 +32,7 @@ public final class Top extends UBPlugin {
     private static final long TIME_BETWEEN_COMMAND_IN_SECONDS = 300;
     
     @Override
-    public @Nullable MessageEmbed onCommand(String[] args, Message message) {
+    public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         

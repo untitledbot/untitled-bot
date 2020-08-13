@@ -25,7 +25,7 @@ import java.util.Arrays;
 public class Owo extends UBPlugin {
     
     @Override
-    public @NotNull MessageEmbed onCommand(@NotNull String[] args, Message message) {
+    public @NotNull MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         

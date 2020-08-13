@@ -29,7 +29,7 @@ public final class RPGManager extends UBPlugin implements Command {
         CommandRegistrar.register("rpg", "alexisok.rpg", this);
     }
     
-    public MessageEmbed onCommand(String @NotNull [] args, Message message) {
+    public MessageEmbed onCommand(String @NotNull [] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         if(args.length == 1) {

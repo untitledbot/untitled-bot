@@ -24,7 +24,7 @@ import java.awt.*;
 public final class GetLogTypes extends UBPlugin implements Command {
     
     @Override
-    public @NotNull MessageEmbed onCommand(String[] args, Message message) {
+    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
         //args will be ignored...
     
         EmbedBuilder eb = new EmbedBuilder();

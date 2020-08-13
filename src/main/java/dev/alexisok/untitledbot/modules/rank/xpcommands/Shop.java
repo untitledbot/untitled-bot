@@ -27,7 +27,7 @@ public final class Shop extends UBPlugin {
     private static final ArrayList<ShopItem> ITEMS = new ArrayList<>();
     
     @Override
-    public @NotNull MessageEmbed onCommand(@NotNull String[] args, Message message) {
+    public @NotNull MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         

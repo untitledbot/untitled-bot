@@ -57,7 +57,7 @@ public final class Status extends UBPlugin {
     }
     
     @Override
-    public @NotNull MessageEmbed onCommand(String[] args, Message message) {
+    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
     

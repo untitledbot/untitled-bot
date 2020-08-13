@@ -15,6 +15,7 @@ import dev.alexisok.untitledbot.modules.basic.timestamp.TimeStamp;
 import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
 import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
+import dev.alexisok.untitledbot.modules.reactions.Hug;
 import dev.alexisok.untitledbot.modules.rpg.RPGManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -120,6 +121,7 @@ public final class CoreCommands {
         new Status().onRegister();
         new Uptime().onRegister();
         new Owo().onRegister();
+        new Hug().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

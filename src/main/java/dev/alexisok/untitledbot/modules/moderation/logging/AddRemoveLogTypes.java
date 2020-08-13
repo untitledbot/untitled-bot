@@ -26,7 +26,7 @@ public final class AddRemoveLogTypes extends UBPlugin implements Command {
     private static final String LOG_SEPARATOR = ",";
     
     @Override
-    public @Nullable MessageEmbed onCommand(@NotNull String[] args, Message message) {
+    public @Nullable MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         

@@ -1,0 +1,26 @@
+alright, i'm starting to like this new format, too bad people who read this on discord and github won't know what i'm talking about.
+
+all gif reactions must be provided as links, they are not hard-coded and are not in this repository.
+
+for people self-hosting, use this format:
+```
+untitled-bot
+╠ reactions
+║ ╠ hug.txt
+║ ╠ other.txt
+║ ╠ reactions.txt
+╠ untitled-bot.jar
+╠ bot.properties
+╚ etc.
+```
+
+non-reaction commands:
+* `userinfo` or `info` - get information on a user.  No arguments will get server info. TODO
+* `ascii` - get info on a specific character or number, see `help ascii`. TODO
+
+reaction commands:
+* `hug` - hug another user (you do not need to mention)
+
+other changes:
+* the bot will no longer reply to its own mention TODO
+* annotated the parameters in the method in Command to be org.jetbrains.annotations.NotNull.
