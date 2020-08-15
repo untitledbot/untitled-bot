@@ -23,6 +23,7 @@ reaction commands:
 * `disappointed` or `dis` - display ಠ_ಠ
 * `ayaya` - ayaya?  ayaya. ayaya!  ayayayayayaya...
 * `hide` - hide behind a wall
+* PLEASE TELL ME IF YOU HAVE GOOD GIFs OR REACTION TYPES TO ADD TO THE BOT :) 
 
 other changes:
 * the bot will no longer reply to its own mention, instead it will display the prefix.
