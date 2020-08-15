@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
 import dev.alexisok.untitledbot.modules.basic.avatar.Avatar;
+import dev.alexisok.untitledbot.modules.basic.ayaya.AYAYA;
 import dev.alexisok.untitledbot.modules.basic.brainfreak.BrainFreak;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
 import dev.alexisok.untitledbot.modules.basic.help.Help;
@@ -17,6 +18,8 @@ import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
 import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
 import dev.alexisok.untitledbot.modules.basic.userinfo.UserInfo;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
+import dev.alexisok.untitledbot.modules.reactions.Dis;
+import dev.alexisok.untitledbot.modules.reactions.Hide;
 import dev.alexisok.untitledbot.modules.reactions.Hug;
 import dev.alexisok.untitledbot.modules.rpg.RPGManager;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -126,6 +129,9 @@ public final class CoreCommands {
         new Owo().onRegister();
         new Hug().onRegister();
         new Avatar().onRegister();
+        new AYAYA().onRegister();
+        new Dis().onRegister();
+        new Hide().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

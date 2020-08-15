@@ -68,6 +68,7 @@ public final class BotClass extends ListenerAdapter {
 		String prefix;
 		
 		if(!PREFIX_CACHE.containsKey(event.getGuild().getId())) {
+			Logger.debug("Prefix cache was not found.");
 			prefix = Vault.getUserDataLocal(null, event.getGuild().getId(), "guild.prefix");
 			updateGuildPrefix(event.getGuild().getId(), prefix);
 		} else {
@@ -76,6 +77,9 @@ public final class BotClass extends ListenerAdapter {
 		}
 		
 		String message = event.getMessage().getContentRaw();
+		
+		if(message.startsWith(prefix + " "))
+			message = message.replaceFirst(prefix + " ", prefix);
 		
 		try {
 			if (event.getMessage().getMentionedMembers().get(0).getId().equals(Main.jda.getSelfUser().getId())
@@ -86,9 +90,9 @@ public final class BotClass extends ListenerAdapter {
 				
 				event.getChannel()
 						.sendMessage(String.format("Hello!  My prefix for this guild is `%s`.%n" +
-								                           "For a full list of commands, use `%shelp`.%n" +
+								                           "For a full list of commands, use `%shelp` or `%s help`.%n" +
 								                           "The default prefix is `>` and can be set by an administrator " +
-								                           "on this server by using the `prefix` command.", prefix, prefix))
+								                           "on this server by using the `prefix` command.", prefix, prefix, prefix))
 						.queue();
 				return;
 			}

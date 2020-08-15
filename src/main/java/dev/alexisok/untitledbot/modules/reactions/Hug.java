@@ -28,7 +28,7 @@ public final class Hug extends UBPlugin {
     
     private static final ArrayList<String> GIF_URLS = new ArrayList<>();
     
-    private static final String LOCATION = "./reactions/hug.txt";
+    private static final String LOCATION = "./reactions_dir/hug.txt";
     
     @Override
     public void onRegister() {

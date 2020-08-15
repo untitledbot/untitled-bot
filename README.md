@@ -107,6 +107,12 @@ As someone who wants privacy, I respect your right to it as well.  This is a lis
 `20` - roll a 20 sided die.\
 `owo <text>` - owofy a stwing of text
 
+##### Reactions
+`hug` - hug another user (or yourself)...\
+`ayaya` - react with ayaya (or something else).\
+`hide` - hide behind a wall.
+`disappointed` - display ಠ_ಠ
+
 ### Premium?
 As of now, there are not any premium features of the bot, all features come standard for free.\
 The music module may be self-hosted only in the future, as music bots take A LOT of bandwidth and resources.\

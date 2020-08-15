@@ -35,7 +35,9 @@ public class AllCommands extends UBPlugin {
                                          "`shop` - shop items (not fully implemented).\n" +
                                          "`timestamp` - get the timestamp of a Discord snowflake.\n" +
                                          "`uptime` - get the uptime of the bot.\n" +
-                                         "`info` - get info about the server or a specific user.\n", true);
+                                         "`info` - get info about the server or a specific user.\n" +
+                                         "`avatar` - get the avatar of yourself or another user.\n" +
+                                         "", true);
         eb.addField("Moderation", "\n" +
                                           "`log-channel` - set the logging channel.\n" +
                                           "`add-log` - add a log type to the log channel.\n" +
@@ -51,7 +53,10 @@ public class AllCommands extends UBPlugin {
                                    "`20` - roll a twenty sided die.\n" +
                                    "`owo` - owofy a stwing of text,,,", true);
         eb.addField("Reactions", "\n" +
-                                         "`hug` - hug another user (or yourself).\n" +
+                                         "`hug` - hug another user (or yourself)...\n" +
+                                         "`ayaya` - react with ayaya (or something else).\n" +
+                                         "`hide` - hide behind a wall.\n" +
+                                         "`dis` - display ಠ_ಠ\n" +
                                          "", true);
     
         eb.addBlankField(false);

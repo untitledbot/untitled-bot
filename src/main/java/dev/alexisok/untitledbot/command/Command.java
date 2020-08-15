@@ -26,6 +26,6 @@ public interface Command {
 	 *                (such as their Discord snowflake ID)
 	 */
 	@Nullable
-	MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message);
+	MessageEmbed onCommand(String[] args, @NotNull Message message);
 	
 }

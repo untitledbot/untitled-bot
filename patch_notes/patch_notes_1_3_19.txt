@@ -1,4 +1,4 @@
-version 1.3.19 - the GIF REACTION UPDATE.....
+version 1.3.19 - the REACTION UPDATE.....
 
 all gif reactions must be provided as links, they are not hard-coded and are not in this repository.
 
@@ -20,7 +20,9 @@ non-reaction commands:
 
 reaction commands:
 * `hug` - hug another user (or yourself...)
-* TODO
+* `disappointed` or `dis` - display ಠ_ಠ
+* `ayaya` - ayaya?  ayaya. ayaya!  ayayayayayaya...
+* `hide` - hide behind a wall
 
 other changes:
 * the bot will no longer reply to its own mention, instead it will display the prefix.
