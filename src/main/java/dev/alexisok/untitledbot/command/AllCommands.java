@@ -34,7 +34,8 @@ public class AllCommands extends UBPlugin {
                                          "`status` - get the status and statistics of the bot.\n" +
                                          "`shop` - shop items (not fully implemented).\n" +
                                          "`timestamp` - get the timestamp of a Discord snowflake.\n" +
-                                         "`uptime` - get the uptime of the bot.\n", true);
+                                         "`uptime` - get the uptime of the bot.\n" +
+                                         "`info` - get info about the server or a specific user.\n", true);
         eb.addField("Moderation", "\n" +
                                           "`log-channel` - set the logging channel.\n" +
                                           "`add-log` - add a log type to the log channel.\n" +

@@ -1,26 +1,31 @@
-alright, i'm starting to like this new format, too bad people who read this on discord and github won't know what i'm talking about.
+version 1.3.19 - the GIF REACTION UPDATE.....
 
 all gif reactions must be provided as links, they are not hard-coded and are not in this repository.
 
-for people self-hosting, use this format:
+for people who are self-hosting, use this format:
 ```
 untitled-bot
 ╠ reactions
 ║ ╠ hug.txt
 ║ ╠ other.txt
-║ ╠ reactions.txt
+║ ╚ reactions.txt
 ╠ untitled-bot.jar
 ╠ bot.properties
 ╚ etc.
 ```
 
 non-reaction commands:
-* `userinfo` or `info` - get information on a user.  No arguments will get server info. TODO
-* `ascii` - get info on a specific character or number, see `help ascii`. TODO
+* `userinfo` or `info` - get information on a user.  No arguments will get server info.
+* `avatar` - get the image avatar of yourself or another user.
 
 reaction commands:
-* `hug` - hug another user (you do not need to mention)
+* `hug` - hug another user (or yourself...)
+* TODO
 
 other changes:
-* the bot will no longer reply to its own mention TODO
+* the bot will no longer reply to its own mention, instead it will display the prefix.
 * annotated the parameters in the method in Command to be org.jetbrains.annotations.NotNull.
+* prefix can now be up to 5 characters long
+* fixed a bug with the `total` and `top` command where it would show a user has 250 extra xp
+* added ram stats (really only useful for me) that log total and available ram to a file
+* server prefixes are now cached, significantly reducing RAM, disk, and CPU usage.

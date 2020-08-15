@@ -1,8 +1,6 @@
 package dev.alexisok.untitledbot;
 
-import dev.alexisok.untitledbot.annotation.ToBeRemoved;
 import dev.alexisok.untitledbot.command.CoreCommands;
-import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.cron.Sender;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
@@ -12,8 +10,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.Contract;
@@ -21,7 +17,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 /**
@@ -37,17 +35,20 @@ import java.util.*;
  */
 public final class Main {
 	
-	public static final String VERSION = "1.3.18";
+	public static final String VERSION = "1.3.19";
 	public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
 	public static final String DATA_PATH;
 	public static final String PREFIX;
 	public static final String OWNER_ID;
+	public static final String STATS_DIR = String.format("%s/stats", Paths.get("").toAbsolutePath().toString());
+	public static final String DAY_FOR_STATS = new Date().toString();
 	
 	public static final boolean DEBUG;
 	
 	public static JDA jda;
 	
 	static {
+		Runtime.getRuntime().addShutdownHook(new ShutdownHook());
 		String DEFAULT_PREFIX1;
 		//temp for final string
 		String DATA_PATH1;
@@ -86,6 +87,38 @@ public final class Main {
 		DATA_PATH = DATA_PATH1;
 		OWNER_ID = OWNER_ID1;
 		DEBUG = DEBUG1;
+		
+		//register RAM statistics
+		
+		TimerTask task = new TimerTask() {
+			@Override
+			public void run() {
+				try {
+					Files.write(Paths.get(String.format("%s/%s", STATS_DIR, DAY_FOR_STATS)),
+							ramStats().getBytes(),
+							StandardOpenOption.APPEND);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		
+		new Timer().schedule(task, 1000, 5000);
+		try {new File(String.format("%s/%s", STATS_DIR, DAY_FOR_STATS)).createNewFile();} catch (IOException e) {e.printStackTrace();}
+	}
+	
+	/**
+	 * Get the stats of ram for the timer task in the static block
+	 * will be run every 5 seconds
+	 * @return the ram stats
+	 */
+	@NotNull
+	private static String ramStats() {
+		String returnString = String.format("%n%s%n", new Date().toString());
+		returnString += String.format("Free: %d%n", Runtime.getRuntime().freeMemory() / 1024 / 1024);
+		returnString += String.format("Total: %d%n", Runtime.getRuntime().totalMemory() / 1024 / 1024);
+		
+		return returnString;
 	}
 	
 	private static void setDefaultProps(@NotNull Properties p) {

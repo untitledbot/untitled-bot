@@ -274,6 +274,9 @@ public final class Ranks extends UBPlugin implements MessageHook {
             } catch(ArrayIndexOutOfBoundsException ignored){}
         }
         
+        //250 was being added in the loop, should remove it here.
+        returnLong = returnLong - 250;
+        
         return returnLong;
     }
 }

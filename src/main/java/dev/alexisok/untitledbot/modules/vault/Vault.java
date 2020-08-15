@@ -6,6 +6,7 @@ import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
 import dev.alexisok.untitledbot.logging.Logger;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -98,8 +99,9 @@ public final class Vault {
      * Get a new {@link HashMap} that has the same data as the default data.
      * @return the {@link HashMap}.
      */
-    @Contract(" -> new")
-    public static @NotNull HashMap<String, String> getDefaultData() {
+    @NotNull
+    @Contract(pure = true)
+    public static HashMap<String, String> getDefaultData() {
         return new HashMap<>(DEFAULT_DATA);
     }
     
@@ -172,6 +174,8 @@ public final class Vault {
      * @see Properties#getProperty(String)
      * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
+    @Nullable
+    @Contract(pure = true)
     public static String getUserDataLocal(String userID, String guildID, @NotNull String dataKey) throws UserDataCouldNotBeObtainedException {
         while(OPERATIONS.size() != 0 || running); //this is so bad i hate myself for writing it
         UserData.checkUserExists(userID, guildID);

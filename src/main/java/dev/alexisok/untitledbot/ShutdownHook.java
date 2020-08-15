@@ -12,4 +12,8 @@ public final class ShutdownHook extends Thread {
         
     }
     
+    protected ShutdownHook() {
+        
+    }
+    
 }

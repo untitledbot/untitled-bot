@@ -30,9 +30,11 @@ public final class Status extends UBPlugin {
         TimerTask t = new TimerTask() {
             @Override
             public void run() {
+                //not the best idea to put this here but might as well.
+                //i've been seeing high memory usage, and i'm not sure if this is related or not.
+                Runtime.getRuntime().gc();
                 String returnString = "```";
                 returnString += "          Version: " + Main.VERSION + "\n";
-                returnString += "       JDA status: " + Main.jda.getStatus() + "\n";
                 returnString += " Available memory: " + Runtime.getRuntime().freeMemory() / 1024 / 1024 + " MB\n";
                 returnString += "     Total memory: " + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " MB\n";
                 returnString += "       Processors: " + Runtime.getRuntime().availableProcessors() + "\n";
@@ -45,7 +47,7 @@ public final class Status extends UBPlugin {
                 returnString += "    Text channels: " + Main.jda.getTextChannels().size() + "\n";
                 returnString += "   Voice channels: " + Main.jda.getVoiceChannels().size() + "\n";
                 returnString += "          Plugins: " + CommandRegistrar.registrarSize() + "\n";
-    
+                Runtime.getRuntime().runFinalization();
                 returnString += "```";
                 
                 returnString += "(note: this only updates once every three minutes).";

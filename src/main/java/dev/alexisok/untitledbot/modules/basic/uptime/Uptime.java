@@ -26,9 +26,11 @@ public class Uptime extends UBPlugin {
         EmbedDefaults.setEmbedDefaults(eb, message);
     
         eb.addField("Uptime",
-                String.format("Current uptime: %dms (%.2f days).",
+                String.format("Current uptime: %dms (%.2f days or %.2f hours).%nCPU load: %.2f.",
                         ManagementFactory.getRuntimeMXBean().getUptime(),
-                        ManagementFactory.getRuntimeMXBean().getUptime() / 86400000.0), //86400000 ms in a day
+                        ManagementFactory.getRuntimeMXBean().getUptime() / 86400000.0, //86400000 ms in a day
+                        ManagementFactory.getRuntimeMXBean().getUptime() / 86400000.0 * 24.0,
+                        ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage()),
                 false);
         eb.setColor(Color.GREEN);
         

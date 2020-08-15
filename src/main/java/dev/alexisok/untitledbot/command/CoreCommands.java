@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
+import dev.alexisok.untitledbot.modules.basic.avatar.Avatar;
 import dev.alexisok.untitledbot.modules.basic.brainfreak.BrainFreak;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
 import dev.alexisok.untitledbot.modules.basic.help.Help;
@@ -14,6 +15,7 @@ import dev.alexisok.untitledbot.modules.basic.status.Status;
 import dev.alexisok.untitledbot.modules.basic.timestamp.TimeStamp;
 import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
 import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
+import dev.alexisok.untitledbot.modules.basic.userinfo.UserInfo;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.reactions.Hug;
 import dev.alexisok.untitledbot.modules.rpg.RPGManager;
@@ -120,8 +122,10 @@ public final class CoreCommands {
         new Help().onRegister();
         new Status().onRegister();
         new Uptime().onRegister();
+        new UserInfo().onRegister();
         new Owo().onRegister();
         new Hug().onRegister();
+        new Avatar().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

@@ -134,7 +134,7 @@ public class CommandRegistrar {
 	 * @param m the {@link Message}   
 	 * @return the return embed.  Returns {@code null} if the command was not found (or if the command returns null by itself).
 	 */
-	public static @Nullable MessageEmbed runCommand(String commandName, String[] args, @NotNull Message m) {
+	public static @Nullable MessageEmbed runCommand(@NotNull String commandName, @NotNull String[] args, @NotNull Message m) {
 		
 		commandsSent++;
 		
@@ -150,12 +150,20 @@ public class CommandRegistrar {
 		if(m.getAuthor().getId().equals(Main.OWNER_ID))
 			return REGISTRAR.get(commandName).onCommand(args, m);
 		
+		
+		EmbedBuilder eb = new EmbedBuilder();
+		EmbedDefaults.setEmbedDefaults(eb, m);
+		
+		if(permissionNode.equalsIgnoreCase("owner")) {
+			eb.addField("", "This command can only be run by the owner of the bot.", false);
+			eb.setColor(Color.RED);
+			return eb.build();
+		}
+		
 		//if the user is a superuser, execute the command without checking the permission node.
 		if(Objects.requireNonNull(m.getMember()).hasPermission(Permission.ADMINISTRATOR))
 			return REGISTRAR.get(commandName).onCommand(args, m);
 		
-		EmbedBuilder eb = new EmbedBuilder();
-		EmbedDefaults.setEmbedDefaults(eb, m);
 		
 		if(permissionNode == null) {
 			return null;
@@ -167,11 +175,6 @@ public class CommandRegistrar {
 			return eb.build();
 		}
 		
-		if(permissionNode.equalsIgnoreCase("owner")) {
-			eb.addField("", "This command can only be run by the owner of the bot.", false);
-			eb.setColor(Color.RED);
-			return eb.build();
-		}
 		
 		UserData.checkUserExists(m.getAuthor().getId(), m.getGuild().getId());
 		UserData.checkUserExists(null, m.getGuild().getId());

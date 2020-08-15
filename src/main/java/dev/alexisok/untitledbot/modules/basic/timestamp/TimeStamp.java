@@ -21,10 +21,10 @@ import java.util.Date;
  * @author AlexIsOK
  * @since 1.3
  */
-public class TimeStamp extends UBPlugin {
+public final class TimeStamp extends UBPlugin {
     
     @Override
-    public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
+    public @NotNull MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
     
@@ -32,7 +32,7 @@ public class TimeStamp extends UBPlugin {
         
         if(args.length == 1) {
             eb.addField("Timestamp", "Usage: `timestamp <snowflake ID | user @ | channel #>`" +
-                                             "\n" +
+                                             "\n\n" +
                                              "To enable ID copying, see " +
                                              "[Discord's support page]" +
                                              "(https://support.discord.com/hc/en-us/articles/206346498).", false);

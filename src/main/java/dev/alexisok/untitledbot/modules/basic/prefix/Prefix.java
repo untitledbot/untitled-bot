@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.basic.prefix;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
@@ -9,7 +10,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
@@ -29,31 +29,31 @@ public final class Prefix extends UBPlugin {
     }
     
     @Override
-    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
+    public @NotNull MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
-    
+        
         if(args.length == 1) {
             eb.setColor(Color.RED);
-            eb.addField("Prefix", "Usage: set-prefix <prefix>", false);
-        
+            eb.addField("Prefix", "Usage: `set-prefix <prefix>`", false);
+            
             return eb.build();
         }
-    
+        
         String prefix = args[1];
-    
-        if(prefix.length() > 3 || prefix.length() < 1) {
-            eb.setColor(Color.RED);
-            eb.addField("Prefix", "Prefix must be one to three characters in length.", false);
         
+        if(prefix.length() > 5 || prefix.length() < 1) {
+            eb.setColor(Color.RED);
+            eb.addField("Prefix", "Prefix must be one to five characters in length.", false);
+            
             return eb.build();
         }
-    
+        
         Vault.storeUserDataLocal(null, message.getGuild().getId(), "guild.prefix", prefix);
-    
+        
         eb.setColor(Color.GREEN);
-        eb.addField("Prefix", "Prefix changed to " + prefix + ", however mentioning the bot will work as well.", false);
-    
+        eb.addField("Prefix", String.format("Prefix changed to `%s`.  You can mention the bot to get the server prefix.", prefix), false);
+        BotClass.updateGuildPrefix(message.getGuild().getId(), prefix);
         return eb.build();
     }
 }
