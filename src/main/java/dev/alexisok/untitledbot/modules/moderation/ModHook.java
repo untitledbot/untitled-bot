@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Class that hooks on to the {@link dev.alexisok.untitledbot.BotClass#onGenericEvent(GenericEvent)}
@@ -310,7 +311,7 @@ public final class ModHook extends ListenerAdapter {
         eb.addField("Logger", "User left voice channel.\n" +
                                       "User: <@" + e.getMember().getId() + ">\n" +
                                       "Channel: " + e.getChannelLeft().getName(), false);
-        eb.setColor(Color.GREEN);
+        eb.setColor(Color.RED);
         lc(guildID).sendMessage(eb.build()).queue();
     }
     
@@ -324,7 +325,8 @@ public final class ModHook extends ListenerAdapter {
         EmbedBuilder eb = new EmbedBuilder();
         
         eb.addField("Logger", "User joined guild.\n" +
-                                      "User: <@" + e.getUser().getId() + ">\n", false);
+                                      "User: <@" + e.getUser().getId() + ">\n" +
+                                      "Account creation time: " + new Date((e.getUser().getIdLong() >> 22) + 1420070400000L).toString(), false);
         
         eb.setColor(Color.GREEN);
         lc(guildID).sendMessage(eb.build()).queue();

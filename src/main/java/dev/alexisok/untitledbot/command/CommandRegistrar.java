@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.command;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.annotation.ToBeRemoved;
 import dev.alexisok.untitledbot.data.UserData;
@@ -42,7 +43,9 @@ import java.util.Objects;
  */
 public class CommandRegistrar {
 	
-	private static final HashMap<String, Command> REGISTRAR = new HashMap<>();
+	public CommandRegistrar() {}
+	
+	private final HashMap<String, Command> REGISTRAR = new HashMap<>();
 	
 	//commandName, permission
 	private static final HashMap<String, String> PERMS_REGISTRAR = new HashMap<>();
@@ -57,7 +60,7 @@ public class CommandRegistrar {
 	 * 
 	 * @return the size of the registrar.
 	 */
-	public static int registrarSize() {
+	public int registrarSize() {
 		return REGISTRAR.size();
 	}
 	
@@ -89,16 +92,18 @@ public class CommandRegistrar {
 	public static void register(@NotNull String commandName, String permission, @NotNull Command command)
 			throws CommandAlreadyRegisteredException {
 		
-		if(REGISTRAR.containsKey(commandName))
-			throw new CommandAlreadyRegisteredException();
-		
-		if(!commandName.matches("^[a-z0-9_-]*$"))
-			throw new RuntimeException("Command does not match regex!");
-		if(!permission.matches("^[a-z]([a-z][.]?)+[a-z]$") && !permission.equals("admin") && !permission.equals("owner")) //this took too long to make...
-			throw new RuntimeException("Command permission does not match regex!");
-		
-		REGISTRAR.put(commandName, command);
-		PERMS_REGISTRAR.put(commandName, permission);
+		for(CommandRegistrar r : BotClass.getRegistrars()) {
+			if (r.REGISTRAR.containsKey(commandName))
+				throw new CommandAlreadyRegisteredException();
+			
+			if (!commandName.matches("^[a-z0-9_-]*$"))
+				throw new RuntimeException("Command does not match regex!");
+			if (!permission.matches("^[a-z]([a-z][.]?)+[a-z]$") && !permission.equals("admin") && !permission.equals("owner")) //this took too long to make...
+				throw new RuntimeException("Command permission does not match regex!");
+			
+			r.REGISTRAR.put(commandName, command);
+			PERMS_REGISTRAR.put(commandName, permission);
+		}
 	}
 	
 	/**
@@ -113,14 +118,16 @@ public class CommandRegistrar {
 	public static void register(@NotNull String commandName, @NotNull Command command)
 			throws CommandAlreadyRegisteredException {
 		
-		if(REGISTRAR.containsKey(commandName))
-			throw new CommandAlreadyRegisteredException();
-		
-		if(!commandName.matches("^[a-z0-9_-]*$"))
-			throw new RuntimeException("Command does not match regex!");
-		
-		REGISTRAR.put(commandName, command);
-		PERMS_REGISTRAR.put(commandName, "global");
+		for(CommandRegistrar r : BotClass.getRegistrars()) {
+			if (r.REGISTRAR.containsKey(commandName))
+				throw new CommandAlreadyRegisteredException();
+			
+			if (!commandName.matches("^[a-z0-9_-]*$"))
+				throw new RuntimeException("Command does not match regex!");
+			
+			r.REGISTRAR.put(commandName, command);
+			PERMS_REGISTRAR.put(commandName, "global");
+		}
 	}
 	
 	/**
@@ -134,7 +141,7 @@ public class CommandRegistrar {
 	 * @param m the {@link Message}   
 	 * @return the return embed.  Returns {@code null} if the command was not found (or if the command returns null by itself).
 	 */
-	public static @Nullable MessageEmbed runCommand(@NotNull String commandName, @NotNull String[] args, @NotNull Message m) {
+	public @Nullable MessageEmbed runCommand(@NotNull String commandName, @NotNull String[] args, @NotNull Message m) {
 		
 		commandsSent++;
 		
@@ -165,10 +172,6 @@ public class CommandRegistrar {
 			return REGISTRAR.get(commandName).onCommand(args, m);
 		
 		
-		if(permissionNode == null) {
-			return null;
-		}
-		
 		if(permissionNode.equalsIgnoreCase("admin")) {
 			eb.addField("", "This command requires the administrator permission on Discord.", false);
 			eb.setColor(Color.RED);
@@ -188,7 +191,7 @@ public class CommandRegistrar {
 	 * @param command the command to check
 	 * @return true if the command is registered, false otherwise.
 	 */
-	public static boolean hasCommand(String command) {
+	public boolean hasCommand(String command) {
 		return REGISTRAR.containsKey(command);
 	}
 	
@@ -198,7 +201,7 @@ public class CommandRegistrar {
 	 * @param command the command
 	 * @return the permission node, {@code null} if it is not registered.
 	 */
-	public static @Nullable String getCommandPermissionNode(String command) {
+	public @Nullable String getCommandPermissionNode(String command) {
 		if(!hasCommand(command))
 			return null;
 		return PERMS_REGISTRAR.get(command);
@@ -220,8 +223,10 @@ public class CommandRegistrar {
 	 * @param aliases the aliases to give the command.
 	 */
 	public static void registerAlias(@NotNull String command, @NotNull String... aliases) {
-		Arrays.stream(aliases).forEachOrdered(alias -> register(alias, PERMS_REGISTRAR.get(command), REGISTRAR.get(command)));
-		Arrays.stream(aliases).forEachOrdered(alias -> Manual.setHelpPage(alias, Manual.getHelpPagesRaw(command)));
+		for(CommandRegistrar r : BotClass.getRegistrars()) {
+			Arrays.stream(aliases).forEachOrdered(alias -> register(alias, PERMS_REGISTRAR.get(command), r.REGISTRAR.get(command)));
+			Arrays.stream(aliases).forEachOrdered(alias -> Manual.setHelpPage(alias, Manual.getHelpPagesRaw(command)));
+		}
 	}
 	
 	/**

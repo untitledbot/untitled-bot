@@ -1,0 +1,33 @@
+
+the update that does some things number twelve or something i lost track
+
+this update is really just a performance boost.
+i also updated the website to make it not a blob of text, check it out:
+https://alexisok.dev/untitled-bot
+
+changes:
+* bot now sends a message when it joins a guild
+* guild member join now displays account creation time
+* bot now communicates with top.gg for server count TODO
+* the bot now tells you how much time to wait for your daily reward TODO
+* update README to remove plugin stuff.  there will not be plugin support for external jars.  sorry.
+* `rank-role <level> <role @ | role ID | role name | none>` - have server admins set this up to give specific roles on specific levels! TODO
+* `rank-roles` - list the rank roles. TODO
+* `timezone <utc offset> <server | me>` - set your timezone offset from utc. ex. `timezone +1:00` or `timezone -4:30`.  Must be within 24 hours of utc.  TODO
+* `timestamp` command now adjusts for timezone TODO
+* sharding - the program is NO LONGER SINGLE THREADED!!!!! this took forever, why didn't i just do this in the first place? TODO
+
+
+bug fixes:
+* user leaving voice channel uses the correct color (red) instead of the one used for joining a voice channel (green) (yes, i did copy paste)
+* 
+
+future things:
+* multi-language support (bot can have its language changed to accommodate different languages)
+* `lang` command to change the language
+* if you speak other languages, especially ones that are common, please help translate :) (i only speak english)
+
+todo:
+TODO add this to site
+TODO add this to README
+TODO add this to AllCommands
