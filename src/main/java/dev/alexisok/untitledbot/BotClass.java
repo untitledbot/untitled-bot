@@ -113,7 +113,7 @@ public final class BotClass extends ListenerAdapter {
 			message = message.replaceFirst(prefix + " ", prefix);
 		
 		try {
-			if(event.getMessage().getMentionedMembers().get(0).getId().equals(Main.jda.getSelfUser().getId())
+			if(event.getMessage().getMentionedMembers().get(0).getId().equals(Main.jdas[0].getSelfUser().getId())
 					    && message.split(" ").length == 1) {
 				
 				if (prefix == null)
@@ -152,7 +152,7 @@ public final class BotClass extends ListenerAdapter {
 		//execute a command and return the message it provides
 		try {
 			event.getChannel()
-					.sendMessage((Objects.requireNonNull(runCommand(args[0], args, event.getMessage()))))
+					.sendMessage((Objects.requireNonNull(REGISTRARS.get(event.getJDA().getShardInfo().getShardId()).runCommand(args[0], args, event.getMessage()))))
 					.queue();
 		} catch(NullPointerException ignored) { //this returns null if the command does not exist.
 		} catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).

@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.basic.help;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
@@ -42,7 +43,7 @@ public final class Help extends UBPlugin {
             eb.addField("Help pages", embedStr, false);
             return eb.build();
         } catch(ArrayIndexOutOfBoundsException ignored) {
-            return Objects.requireNonNull(CommandRegistrar.runCommand("commands", args, message));
+            return Objects.requireNonNull(BotClass.getRegistrars().get(message.getJDA().getShardInfo().getShardId()).runCommand("commands", args, message));
         }
     }
 }
