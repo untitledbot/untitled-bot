@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import org.discordbots.api.client.DiscordBotListAPI;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,15 +30,12 @@ import java.util.*;
  * For more information on developing, use the wiki
  * posted on the GitHub page.
  * 
- * Note: this program is one-shard, meaning that one shard handles EVERYTHING.
- * It was set up this way, but will be changed in the future.
- * 
  * @author AlexIsOK
  * @since 0.0.1
  */
 public final class Main {
 	
-	public static final String VERSION = "1.3.20";
+	public static final String VERSION = "1.3.19";
 	public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
 	public static final String DATA_PATH;
 	public static final String PREFIX;
@@ -47,18 +43,11 @@ public final class Main {
 	public static final String STATS_DIR = String.format("%s/stats", Paths.get("").toAbsolutePath().toString());
 	public static final String DAY_FOR_STATS = new Date().toString();
 	
-	public static final DiscordBotListAPI API;
-	
-	private static final String SECRETS_FILE = CONFIG_PATH + "/secrets.properties";
-	
-	private static final TimerTask UPDATE_COUNT;
-	
 	public static final boolean DEBUG;
 	
-	public static JDA[] jdas;
+	public static JDA jda;
 	
 	static {
-		DiscordBotListAPI API1;
 		Runtime.getRuntime().addShutdownHook(new ShutdownHook());
 		String DEFAULT_PREFIX1;
 		//temp for final string
@@ -116,32 +105,6 @@ public final class Main {
 		
 		new Timer().schedule(task, 1000, 5000);
 		try {new File(String.format("%s/%s", STATS_DIR, DAY_FOR_STATS)).createNewFile();} catch (IOException e) {e.printStackTrace();}
-		
-		UPDATE_COUNT = new TimerTask() {
-			@Override
-			public void run() {
-				API.setStats(Main.jda.getGuilds().size());
-			}
-		};
-		
-		Properties a = new Properties();
-		try {
-			a.load(new FileReader(SECRETS_FILE));
-			
-			String APIToken = a.getProperty("top.gg.token");
-			
-			if(APIToken.isEmpty())
-				throw new IOException();
-			
-			API1 = new DiscordBotListAPI.Builder()
-					      .token(APIToken)
-					      .botId("730135989863055472") // :)
-					      .build();
-		} catch (IOException e) {
-			e.printStackTrace();
-			API1 = null;
-		}
-		API = API1;
 	}
 	
 	/**
@@ -159,7 +122,7 @@ public final class Main {
 	}
 	
 	private static void setDefaultProps(@NotNull Properties p) {
-		p.setProperty("configVersion", "1.3.20");
+		p.setProperty("configVersion", "1.3.8");
 		p.setProperty("dataPath", "./usrdata/");
 		p.setProperty("prefix", ">");
 		p.setProperty("ownerId", "000000000000000000");
@@ -222,17 +185,6 @@ public final class Main {
 			jda.addEventListener(new ModHook());  //logging module
 			jda.addEventListener(new Sender());   //event message sender module
 			jda.awaitReady();
-			
-			//start top.gg api
-			if(API != null) {
-				Logger.log("Installing top.gg scheduler...");
-				//wait 5 seconds for the first and run every 20 minutes (~72 times/day)
-				new Timer().schedule(UPDATE_COUNT, 5000, 1200000);
-				Logger.log("top.gg scheduler installed.");
-			} else {
-				Logger.critical("API was null, meaning that the token was not found or there was an error reading secrets.properties.", -1, false);
-				Logger.critical("This is not something to worry about if you are self-hosting.", -1, false);
-			}
 		} catch(LoginException | InterruptedException e) {
 			e.printStackTrace();
 			Logger.critical("Could not login to Discord!", 1);
@@ -240,6 +192,7 @@ public final class Main {
 		
 		CoreCommands.registerCoreCommands();
 		CoreCommands.registerModules();
+		
 	}
 	
 	/**

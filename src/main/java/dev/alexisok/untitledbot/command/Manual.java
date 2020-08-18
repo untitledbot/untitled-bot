@@ -1,8 +1,8 @@
 package dev.alexisok.untitledbot.command;
 
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import static dev.alexisok.untitledbot.command.CommandRegistrar.*;
 
 import java.util.HashMap;
 
@@ -23,13 +23,13 @@ public final class Manual {
 	 * @param page the page.
 	 * @return the help page specified or {@code null} if no such page exists.
 	 */
-	@Nullable
-	@Contract(pure = true)
-	public static String getHelpPages(String page) {
-		if(MAN_PAGES.containsKey(page))
-			return String.format("Help for %s:%n%n%s", page, MAN_PAGES.get(page));
-		else
-			return String.format("There doesn't seem to be a help page for %s!", page);
+	public static @Nullable String getHelpPages(String page) {
+		return MAN_PAGES.containsKey(page)
+				       ? "Help for " + page + ":\n\n" + MAN_PAGES.get(page) + "\n\nPermission node: "
+						         + getCommandPermissionNode(page)
+				       : getCommandPermissionNode(page) != null ?
+						         "There doesn't seem to be any help pages available for this command!\nPermission node: "
+								         + getCommandPermissionNode(page) : null;
 	}
 	
 	/**
@@ -38,8 +38,6 @@ public final class Manual {
 	 * @param page the page.
 	 * @return the help page specified or {@code null} if no such page exists.
 	 */
-	@Nullable
-	@Contract(pure = true)
 	public static String getHelpPagesRaw(String page) {
 		return MAN_PAGES.getOrDefault(page, null);
 	}

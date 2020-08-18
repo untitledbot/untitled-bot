@@ -1,7 +1,8 @@
 # untitled-bot
 
 untitled-bot is a multi-purpose bot that
-has a lot of room for customization.
+has a lot of room for customization and
+(soon) plugin development.  You can self host it as well.
 
 ![Build](https://github.com/AlexIsOK/untitled-bot/workflows/Java%20CI%20with%20Maven%20(UBUNTU)/badge.svg)
 ![Version](https://img.shields.io/badge/version-1.3-blue)
@@ -11,12 +12,14 @@ has a lot of room for customization.
 * Level/rank module.
 * Logging
 * <a href="#commands">Many other commands.</a>
-* Message sender (send custom messages when a user joins a guild or on a timer).
 
 ---
 ### Upcoming features
+* Plugin support
 * Web UI
 * (M)MORPG module (Massive Multiplayer Online Role Playing Game, though probably not that massive).
+* Music player
+* Message sender (send messages to a user when they join the server).
 ---
 ### Discord server
 You can join the untitled-bot discord server [here](https://alexisok.dev/ub/discord.html).
@@ -107,7 +110,7 @@ As someone who wants privacy, I respect your right to it as well.  This is a lis
 ##### Reactions
 `hug` - hug another user (or yourself)...\
 `ayaya` - react with ayaya (or something else).\
-`hide` - hide behind a wall.\
+`hide` - hide behind a wall.
 `disappointed` - display ಠ_ಠ
 
 ### Premium?
