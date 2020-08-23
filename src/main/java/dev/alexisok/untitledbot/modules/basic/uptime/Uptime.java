@@ -18,19 +18,17 @@ import java.util.concurrent.TimeUnit;
  * @author AlexIsOK
  * @since 1.3
  */
-public class Uptime extends UBPlugin {
+public final class Uptime extends UBPlugin {
     
     @Override
-    public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
+    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
     
         eb.addField("Uptime",
-                String.format("Current uptime: %dms (%.2f days or %.2f hours).%nCPU load: %.2f.",
-                        ManagementFactory.getRuntimeMXBean().getUptime(),
+                String.format("Current uptime: %.2f days or %.2f hours.",
                         ManagementFactory.getRuntimeMXBean().getUptime() / 86400000.0, //86400000 ms in a day
-                        ManagementFactory.getRuntimeMXBean().getUptime() / 86400000.0 * 24.0,
-                        ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage()),
+                        ManagementFactory.getRuntimeMXBean().getUptime() / 86400000.0 * 24.0),
                 false);
         eb.setColor(Color.GREEN);
         

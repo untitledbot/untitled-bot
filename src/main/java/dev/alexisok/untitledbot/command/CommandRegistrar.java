@@ -83,14 +83,12 @@ public class CommandRegistrar {
 	 *                   require the user to have administrator or a role with administrator.
 	 * @param command the {@link Command} to use.  {@link Command#onCommand(String[], Message)}
 	 *                will be executed when the command is called.
-	 * @throws CommandAlreadyRegisteredException if the command already exists.
 	 * @throws RuntimeException if the command does not match the regex.
 	 */
-	public static void register(@NotNull String commandName, String permission, @NotNull Command command)
-			throws CommandAlreadyRegisteredException {
+	public static void register(@NotNull String commandName, String permission, @NotNull Command command) {
 		
 		if(REGISTRAR.containsKey(commandName))
-			throw new CommandAlreadyRegisteredException();
+			return;
 		
 		if(!commandName.matches("^[a-z0-9_-]*$"))
 			throw new RuntimeException("Command does not match regex!");
@@ -143,8 +141,10 @@ public class CommandRegistrar {
 		Logger.debug("Getting permission node " + permissionNode);
 		
 		//return null if the command does not exist.
-		if(!REGISTRAR.containsKey(commandName))
+		if(!REGISTRAR.containsKey(commandName) || permissionNode == null) {
+			Logger.debug(String.format("Rejecting key %s because it was either null or did not exist in the registrar.", commandName));
 			return null;
+		}
 			
 		//owner is a global super user and can access any commands on any servers
 		if(m.getAuthor().getId().equals(Main.OWNER_ID))
@@ -163,11 +163,6 @@ public class CommandRegistrar {
 		//if the user is a superuser, execute the command without checking the permission node.
 		if(Objects.requireNonNull(m.getMember()).hasPermission(Permission.ADMINISTRATOR))
 			return REGISTRAR.get(commandName).onCommand(args, m);
-		
-		
-		if(permissionNode == null) {
-			return null;
-		}
 		
 		if(permissionNode.equalsIgnoreCase("admin")) {
 			eb.addField("", "This command requires the administrator permission on Discord.", false);

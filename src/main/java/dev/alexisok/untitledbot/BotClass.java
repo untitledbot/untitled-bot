@@ -1,9 +1,14 @@
 package dev.alexisok.untitledbot;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
@@ -12,7 +17,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class handles communicating with Discord.
@@ -30,11 +37,30 @@ public final class BotClass extends ListenerAdapter {
 	 */
 	BotClass() {}
 	
+	{
+		Logger.log("new instance of BotClass created:  " + this.toString());
+	}
+	
 	private static long messagesSentTotal = 0L;
 	
 	public static long getMessagesSentTotal() {
 		return messagesSentTotal;
 	}
+	
+	private static final MessageEmbed JOIN_MESSAGE = new EmbedBuilder().addField("untitled-bot",
+			"\n```" +
+					"      ╔╗ ╔╗╔╗     ╔╗  ╔╗    ╔╗\n" +
+					"     ╔╝╚╦╝╚╣║     ║║  ║║   ╔╝╚╗\n" +
+					"╔╗╔╦═╬╗╔╬╗╔╣║╔══╦═╝║  ║╚═╦═╩╗╔╝\n" +
+					"║║║║╔╗╣║╠╣║║║║║═╣╔╗╠══╣╔╗║╔╗║║\n" +
+					"║╚╝║║║║╚╣║╚╣╚╣║═╣╚╝╠══╣╚╝║╚╝║╚╗\n" +
+					"╚══╩╝╚╩═╩╩═╩═╩══╩══╝  ╚══╩══╩═╝\n" +
+					"```" +
+					"\n\n\n" +
+					"Thank you for inviting untitled-bot!\n" +
+					"For help with the bot, use `" + Main.PREFIX + "help`\n" +
+					"The website for the bot is [here](https://alexisok.dev/untitled-bot), and the " +
+					"official support server is [here](https://discord.gg/vSWgQ9a).", false).build();
 	
 	//cache for server prefixes
 	private static final HashMap<String, String> PREFIX_CACHE = new HashMap<>();
@@ -57,6 +83,8 @@ public final class BotClass extends ListenerAdapter {
 	@Override
 	public final void onMessageReceived(@Nonnull MessageReceivedEvent event) {
 		
+//		Logger.debug("Message was received...");
+		
 		messagesSentTotal++;
 		
 		CommandRegistrar.runMessageHooks(event);
@@ -68,11 +96,9 @@ public final class BotClass extends ListenerAdapter {
 		String prefix;
 		
 		if(!PREFIX_CACHE.containsKey(event.getGuild().getId())) {
-			Logger.debug("Prefix cache was not found.");
 			prefix = Vault.getUserDataLocal(null, event.getGuild().getId(), "guild.prefix");
 			updateGuildPrefix(event.getGuild().getId(), prefix);
 		} else {
-			Logger.debug("Prefix cache was found.");
 			prefix = PREFIX_CACHE.get(event.getGuild().getId());
 		}
 		
@@ -82,7 +108,8 @@ public final class BotClass extends ListenerAdapter {
 			message = message.replaceFirst(prefix + " ", prefix);
 		
 		try {
-			if (event.getMessage().getMentionedMembers().get(0).getId().equals(Main.jda.getSelfUser().getId())
+			//if the message is @untitled-bot
+			if(event.getMessage().getMentionedMembers().get(0).getId().equals("730135989863055472")
 					    && message.split(" ").length == 1) {
 				
 				if (prefix == null)
@@ -137,6 +164,31 @@ public final class BotClass extends ListenerAdapter {
 	@Override
 	public void onGenericEvent(@Nonnull GenericEvent event) {
 		CommandRegistrar.runGenericListeners(event);
+	}
+	
+	@Override
+	public void onGuildJoin(@Nonnull GuildJoinEvent e) {
+		List<TextChannel> ch = e.getGuild().getTextChannels();
+		
+		boolean found = false;
+		
+		try {
+			for (TextChannel tc : ch) {
+				if (tc.getName().contains("bot")) {
+					found = true;
+					tc.sendMessage(JOIN_MESSAGE).queueAfter(3000, TimeUnit.MILLISECONDS);
+					break;
+				}
+			}
+			if(!found)
+				throw new UserDataFileCouldNotBeCreatedException();
+		} catch(InsufficientPermissionException | UserDataFileCouldNotBeCreatedException ignored) {
+			try {
+				Objects.requireNonNull(e.getGuild().getDefaultChannel()).sendMessage(JOIN_MESSAGE).queueAfter(3000, TimeUnit.MILLISECONDS);
+			} catch(InsufficientPermissionException | NullPointerException ignored2) {
+				Logger.debug(String.format("Could not send a welcome message to %s.", e.getGuild().getId()));
+			}
+		}
 	}
 	
 }

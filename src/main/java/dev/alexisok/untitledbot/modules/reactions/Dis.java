@@ -6,8 +6,12 @@ import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.validation.constraints.Null;
 
 /**
  * ಠ_ಠ
@@ -17,13 +21,17 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class Dis extends UBPlugin {
     
-    private static final MessageEmbed FACE = new EmbedBuilder().addField("", "ಠ_ಠ", false).build();
+    private static final String FACE = "ಠ_ಠ";
     
-    @NotNull
+    @Null
+    @Nullable
     @Override
     @Contract(pure = true)
     public MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
-        return FACE;
+        try {
+            message.getChannel().sendMessage(FACE).queue();
+        } catch (InsufficientPermissionException ignored) {}
+        return null;
     }
     
     @Override

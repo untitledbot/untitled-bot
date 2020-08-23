@@ -39,7 +39,7 @@ public final class Help extends UBPlugin {
                                       ? "Could not find the help page, did you make a typo?"
                                       : returnString;
             eb.setColor(returnString == null ? Color.RED : Color.GREEN);
-            eb.addField("Help pages", embedStr, false);
+            eb.addField("", embedStr, false);
             return eb.build();
         } catch(ArrayIndexOutOfBoundsException ignored) {
             return Objects.requireNonNull(CommandRegistrar.runCommand("commands", args, message));

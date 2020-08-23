@@ -1,0 +1,38 @@
+
+the update that does some things number twelve or something i lost track
+
+this update is really just a performance boost.
+i also updated the website to make it not a blob of text, check it out:
+https://alexisok.dev/untitled-bot
+
+changes:
+* bot now sends a message when it joins a guild.
+* guild member join now displays account creation time
+* bot now communicates with top.gg for server count
+* the bot now tells you how much time to wait for your daily reward
+* update README to remove plugin stuff.  there will not be plugin support for external jars.  sorry.
+* `rank-role <level> <role @ | role ID | role name | none>` - have server admins set this up to give specific roles on specific levels!
+* `rank-roles` - list the rank roles.
+* `help` command no longer displays the permission node of the command.
+* `uptime` command displays days and hours instead of milliseconds
+* `vote-reward` or `vr` - get bonus XP for voting for the bot (1000 on normal days, 4000 on double vote weekend).
+* `timestamp` command now defaults to the server creation time instead of the help page.
+* `bug-report <content>` - report bugs directly to me (delay of 24 hours between bug reports).
+
+bug fixes:
+* user leaving voice channel uses the correct color (red) instead of the one used for joining a voice channel (green) (yes, i did copy paste code).
+* log checking could produce NullPointerException, filling up the logs.  i have fixed this by literally moving one line of code.  wait what did i change i forgot oops
+* `dis` command now shows the face without an embed.
+* user nickname change no longer shows `null` if the user did not previously have a nickname.
+* `avatar` command is now on the website and README, it was already in all commands...
+
+future things:
+* multi-language support (bot can have its language changed to accommodate different languages).
+* `lang` command to change the language.
+* if you speak other languages, especially ones that are common, please help translate :) (i only speak english).
+* `cron <dm | channel #> <@join | @leave | m h d m w> <message...>` - set a cron to send messages at intervals (dm only supports @join and @leave).
+* `crons` - list cron jobs, there will be a limit of 10 cron jobs per server (to reduce server load on my end ;-;)
+* `cron-del <cron #>` - delete a cron job number as listed in `crons`.
+* `craft <recipe | skin> <item | username>` - get the minecraft crafting recipe of an item or skin of a user.
+
+anyways

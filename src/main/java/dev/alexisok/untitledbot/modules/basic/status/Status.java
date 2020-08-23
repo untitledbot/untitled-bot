@@ -32,37 +32,54 @@ public final class Status extends UBPlugin {
             public void run() {
                 //not the best idea to put this here but might as well.
                 //i've been seeing high memory usage, and i'm not sure if this is related or not.
-                Runtime.getRuntime().gc();
-                String returnString = "```";
-                returnString += "          Version: " + Main.VERSION + "\n";
-                returnString += " Available memory: " + Runtime.getRuntime().freeMemory() / 1024 / 1024 + " MB\n";
-                returnString += "     Total memory: " + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " MB\n";
-                returnString += "       Processors: " + Runtime.getRuntime().availableProcessors() + "\n";
-                returnString += "           Uptime: " + ManagementFactory.getRuntimeMXBean().getUptime() + " ms\n";
-                returnString += "  Commands issued: " + CommandRegistrar.getTotalCommands() + "\n";
-                returnString += "   Total messages: " + BotClass.getMessagesSentTotal() + "\n";
-                returnString += "           Guilds: " + Main.jda.getGuilds().size() + "\n";
-                returnString += "            Roles: " + Main.jda.getRoles().size() + "\n";
-                returnString += "            Users: " + Main.jda.getUsers().size() + "\n";
-                returnString += "    Text channels: " + Main.jda.getTextChannels().size() + "\n";
-                returnString += "   Voice channels: " + Main.jda.getVoiceChannels().size() + "\n";
-                returnString += "          Plugins: " + CommandRegistrar.registrarSize() + "\n";
-                Runtime.getRuntime().runFinalization();
-                returnString += "```";
-                
-                returnString += "(note: this only updates once every three minutes).";
-    
-                stats = returnString;
+                updateStatsString();
             }
         };
         new Timer().schedule(t, 0, 180000); //3 minutes is 180000 ms
+    }
+    
+    private static void forceUpdate() {
+        //not the best idea to put this here but might as well.
+        //i've been seeing high memory usage, and i'm not sure if this is related or not.
+        updateStatsString();
+    }
+    
+    private static void updateStatsString() {
+        Runtime.getRuntime().gc();
+        long guilds = Main.jda.getGuilds().size();
+        long roles  = Main.jda.getRoles().size();
+        long users  = Main.jda.getUsers().size();
+        long texts  = Main.jda.getTextChannels().size();
+        long voice  = Main.jda.getVoiceChannels().size();
+        String returnString = "```";
+        returnString += "          Version: " + Main.VERSION + "\n";
+        returnString += " Available memory: " + Runtime.getRuntime().freeMemory() / 1024 / 1024 + " MB\n";
+        returnString += "     Total memory: " + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " MB\n";
+        returnString += "       Processors: " + Runtime.getRuntime().availableProcessors() + "\n";
+        returnString += "           Uptime: " + ManagementFactory.getRuntimeMXBean().getUptime() + " ms\n";
+        returnString += "  Commands issued: " + CommandRegistrar.getTotalCommands() + "\n";
+        returnString += "   Total messages: " + BotClass.getMessagesSentTotal() + "\n";
+        returnString += "          Servers: " + guilds + "\n";
+        returnString += "            Roles: " + roles + "\n";
+        returnString += "            Users: " + users + "\n";
+        returnString += "    Text channels: " + texts + "\n";
+        returnString += "   Voice channels: " + voice + "\n";
+        returnString += "          Plugins: " + CommandRegistrar.registrarSize() + "\n";
+        returnString += "```";
+        returnString += "(note: this only updates once every three minutes).";
+        
+        stats = returnString;
     }
     
     @Override
     public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
-    
+        
+        //force update if the owner is asking for the stats
+        if(message.getAuthor().getId().equals(Main.OWNER_ID))
+            forceUpdate();
+        
         eb.setColor(Color.GREEN);
         eb.addField("Status", stats, true);
         return eb.build();
@@ -71,6 +88,7 @@ public final class Status extends UBPlugin {
     @Override
     public void onRegister() {
         CommandRegistrar.register("status", "core.stats", this);
+        CommandRegistrar.registerAlias("status", "stats");
         Manual.setHelpPage("status", "Get the status and other statistics about the bot.");
     }
 }

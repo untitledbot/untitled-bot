@@ -216,6 +216,14 @@ public final class Ranks extends UBPlugin implements MessageHook {
             currentXP -= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1];
             currentLv++;
             try {
+                String rankToReward = Vault.getUserDataLocal(null, m.getGuild().getId(), "role.reward." + currentLv);
+                String roleMessage = "";
+                if(rankToReward != null && !rankToReward.equals("none")) {
+                    try {
+                        m.getGuild().addRoleToMember(m.getAuthor().getId(), Objects.requireNonNull(m.getGuild().getRoleById(rankToReward))).queue();
+                        roleMessage = String.format("You have also been awarded rank %s!!!", Objects.requireNonNull(m.getGuild().getRoleById(rankToReward)).getName());
+                    } catch(Throwable ignored) {}
+                }
                 String shouldSendPhase2 = Vault.getUserDataLocal(null, m.getGuild().getId(), "ranks-broadcast.rankup");
                 if(shouldSendPhase2 == null) {
                     shouldSendPhase2 = "current";
@@ -224,11 +232,11 @@ public final class Ranks extends UBPlugin implements MessageHook {
                 if(shouldSendPhase2.equalsIgnoreCase("current")) {
                     m
                             .getChannel()
-                            .sendMessage(String.format("Nice %s!  You have leveled up to level %d!", m.getAuthor().getName(), currentLv))
+                            .sendMessage(String.format("Nice %s!  You have leveled up to level %d!%n%s", m.getAuthor().getName(), currentLv, roleMessage))
                             .queue();
                 } else if(shouldSendPhase2.equalsIgnoreCase("channel")) {
-                    Objects.requireNonNull(Main.jda.getTextChannelById(Vault.getUserDataLocal(null, m.getGuild().getId(), "ranks-broadcast.rankup.channel")))
-                            .sendMessage(String.format("%s has leveled up to level %d!!!", m.getAuthor().getName(), currentLv))
+                    Objects.requireNonNull(Main.jda.getTextChannelById(Objects.requireNonNull(Vault.getUserDataLocal(null, m.getGuild().getId(), "ranks-broadcast.rankup.channel"))))
+                            .sendMessage(String.format("%s has leveled up to level %d!%n%s", m.getAuthor().getName(), currentLv, roleMessage))
                             .queue();
                 } else if(shouldSendPhase2.equalsIgnoreCase("none")) {
                     throw new UserDataFileCouldNotBeCreatedException("nothing 2");

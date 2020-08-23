@@ -33,10 +33,7 @@ public final class Hug extends UBPlugin {
     @Override
     public void onRegister() {
         try {
-            for(String line : Files.readAllLines(Paths.get(LOCATION), StandardCharsets.UTF_8)) {
-                GIF_URLS.add(line);
-                Logger.log(String.format("Added %s as a hug gif", line));
-            }
+            GIF_URLS.addAll(Files.readAllLines(Paths.get(LOCATION), StandardCharsets.UTF_8));
         } catch(IOException ignored) {
             Logger.critical(String.format("Could not load %s for reading.", LOCATION), -1, false);
             return; //do not register the command if it fails

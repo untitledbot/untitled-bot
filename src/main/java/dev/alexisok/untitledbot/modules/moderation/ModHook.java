@@ -4,8 +4,6 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.modules.moderation.logging.*;
-import dev.alexisok.untitledbot.modules.moderation.modcommands.Ban;
-import dev.alexisok.untitledbot.modules.moderation.modcommands.Pardon;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -13,7 +11,6 @@ import net.dv8tion.jda.api.events.*;
 import net.dv8tion.jda.api.events.guild.member.*;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.events.guild.voice.*;
-import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.role.*;
 import net.dv8tion.jda.api.events.role.update.*;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -22,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Objects;
 
 /**
  * Class that hooks on to the {@link dev.alexisok.untitledbot.BotClass#onGenericEvent(GenericEvent)}
@@ -70,11 +69,10 @@ public final class ModHook extends ListenerAdapter {
      * @return true if it does or false otherwise
      */
     private static boolean ch(String guildID, LogTypes lt) {
-        if(Vault.getUserDataLocal(null, guildID, "log.channel") == null || 
-           Vault.getUserDataLocal(null, guildID, "log.channel").equals("null"))
-            return false;
-        
         try {
+            if(Vault.getUserDataLocal(null, guildID, "log.channel") == null ||
+                       Objects.equals(Vault.getUserDataLocal(null, guildID, "log.channel"), "null"))
+                return false;
             String[] policies = Vault.getUserDataLocal(null, guildID, "log.policies").split(",");
             for(String s : policies) {
                 if(LogTypes.valueOf(s).equals(lt))
@@ -113,8 +111,8 @@ public final class ModHook extends ListenerAdapter {
         
         eb.addField("Logger", "User nickname changed.\n" +
                                       "User: <@" + e.getMember().getId() + ">\n\n" +
-                                      "Old nickname: " + e.getOldNickname() + "\n" +
-                                      "New nickname: " + e.getNewNickname() + "\n", false);
+                                      "Old nickname: " + (e.getOldNickname() == null ? "" : e.getOldNickname()) + "\n" +
+                                      "New nickname: " + (e.getNewNickname() == null ? "" : e.getNewNickname()) + "\n", false);
         eb.setColor(Color.YELLOW);
         lc(guildID).sendMessage(eb.build()).queue();
     }
@@ -310,7 +308,7 @@ public final class ModHook extends ListenerAdapter {
         eb.addField("Logger", "User left voice channel.\n" +
                                       "User: <@" + e.getMember().getId() + ">\n" +
                                       "Channel: " + e.getChannelLeft().getName(), false);
-        eb.setColor(Color.GREEN);
+        eb.setColor(Color.RED);
         lc(guildID).sendMessage(eb.build()).queue();
     }
     
@@ -324,7 +322,8 @@ public final class ModHook extends ListenerAdapter {
         EmbedBuilder eb = new EmbedBuilder();
         
         eb.addField("Logger", "User joined guild.\n" +
-                                      "User: <@" + e.getUser().getId() + ">\n", false);
+                                      "User: <@" + e.getUser().getId() + ">\n" +
+                                      "Account creation time: " + new Date(((e.getUser().getIdLong() >> 22) + 1420070400000L)).toString(), false);
         
         eb.setColor(Color.GREEN);
         lc(guildID).sendMessage(eb.build()).queue();

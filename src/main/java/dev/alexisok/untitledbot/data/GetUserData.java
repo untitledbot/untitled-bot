@@ -81,7 +81,7 @@ public final class GetUserData extends UBPlugin {
     
     /**
      *
-     * @param userID the ID of the guild.
+     * @param userID the ID of the user.
      * @return true if there is a rate limit, false otherwise.
      */
     private static boolean isRateLimit(String userID) {

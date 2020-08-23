@@ -25,11 +25,9 @@ public final class Manual {
 	 */
 	public static @Nullable String getHelpPages(String page) {
 		return MAN_PAGES.containsKey(page)
-				       ? "Help for " + page + ":\n\n" + MAN_PAGES.get(page) + "\n\nPermission node: "
-						         + getCommandPermissionNode(page)
+				       ? "Help for " + page + ":\n\n" + MAN_PAGES.get(page)
 				       : getCommandPermissionNode(page) != null ?
-						         "There doesn't seem to be any help pages available for this command!\nPermission node: "
-								         + getCommandPermissionNode(page) : null;
+						         "There doesn't seem to be any help pages available for this command!" : null;
 	}
 	
 	/**

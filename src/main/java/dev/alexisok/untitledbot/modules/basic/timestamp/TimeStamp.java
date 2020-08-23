@@ -31,12 +31,11 @@ public final class TimeStamp extends UBPlugin {
         long time;
         
         if(args.length == 1) {
-            eb.addField("Timestamp", "Usage: `timestamp <snowflake ID | user @ | channel #>`" +
-                                             "\n\n" +
-                                             "To enable ID copying, see " +
-                                             "[Discord's support page]" +
-                                             "(https://support.discord.com/hc/en-us/articles/206346498).", false);
-            eb.setColor(Color.RED);
+            eb.addField("Timestamp", "Timestamp of this guild:\n" +
+                                             "" + new Date(((message.getGuild().getIdLong() >> 22) + 1420070400000L)) + "\n" +
+                                                          "Other timestamps: `timestamp [user @ | channel # | discord snowflake]`", false);
+            eb.setFooter("Formula: `(snowflake / 4194304) + 1420070400000` to get milliseconds since Jan. 1st, 1970 00:00");
+            eb.setColor(Color.GREEN);
             return eb.build();
         }
         
@@ -54,7 +53,7 @@ public final class TimeStamp extends UBPlugin {
             //get the unix timestamp.
             time = (Long.parseLong(args[1]) >> 22) + 1420070400000L;
         } catch(Exception ignored) { //nfe, oobe, etc.
-            eb.addField("Timestamp", "Usage: `timestamp <snowflake ID | user @ | channel #>`" +
+            eb.addField("Timestamp", "Usage: `timestamp [snowflake ID | user @ | channel #]`" +
                                              "\n" +
                                              "To enable ID copying, see " +
                                              "[Discord's support page]" +
@@ -76,7 +75,7 @@ public final class TimeStamp extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("timestamp", "core.timestamp", this);
         Manual.setHelpPage("timestamp", "Get the timestamp of a snowflake.\n" +
-                                                "Usage: `timestamp <snowflake>`\n" +
+                                                "Usage: `timestamp [snowflake | user @ | channel #]`\n" +
                                                 "To get snowflakes, enable developer mode in Discord appearance settings, then " +
                                                 "right click on something to copy the ID.\n\n" +
                                                 "See [the docs](https://discord.com/developers/docs/reference#snowflakes) for more information on snowflakes.");

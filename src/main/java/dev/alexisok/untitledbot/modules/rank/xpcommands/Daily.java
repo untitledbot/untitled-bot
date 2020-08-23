@@ -22,7 +22,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public final class Daily extends UBPlugin {
     
     private static final long DAILY_MIN = 400L;
-    private static final long DAILY_MAX = 650L;
+    private static final long DAILY_MAX = 1000L;
     
     @Override
     public void onRegister() {
@@ -37,7 +37,13 @@ public final class Daily extends UBPlugin {
         EmbedDefaults.setEmbedDefaults(eb, message);
         
         if(isRateLimit(message.getAuthor().getId(), message.getGuild().getId())) {
-            eb.addField("Daily XP", "You have already claimed your daily reward!", false);
+            eb.addField(
+                    "Daily XP",
+                    String.format("You have already claimed your daily reward!%nTry again in %.2f hours.",
+                        rateLimitTimeHours(message.getAuthor().getId(), message.getGuild().getId())
+                    ),
+                    false
+            );
             eb.setColor(Color.RED);
             return eb.build();
         }
@@ -68,5 +74,20 @@ public final class Daily extends UBPlugin {
     
     private static void setRateLimiter(String userID, String guildID) {
         Vault.storeUserDataLocal(userID, guildID, "daily.cooldown", String.valueOf(Instant.now().getEpochSecond()));
+    }
+    
+    
+    private static double rateLimitTimeHours(String userID, String guildID) {
+        return ((86400.0 - (Instant.now().getEpochSecond() - rateLimitTime(userID, guildID))) / 60.0) / 60.0;
+    }
+    
+    /**
+     * Get the time for the user rate-limit in unix-epoch.
+     * returns 0 if the data is null or empty.
+     * @return the time left for rate-limit in seconds
+     */
+    private static double rateLimitTime(String userID, String guildID) {
+        String a = Vault.getUserDataLocal(userID, guildID, "daily.cooldown");
+        return a == null || a.isEmpty() ? 0.0 : Double.parseDouble(a) + 0.0;
     }
 }

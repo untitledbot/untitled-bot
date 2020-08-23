@@ -11,6 +11,7 @@ import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
 import dev.alexisok.untitledbot.modules.basic.help.Help;
 import dev.alexisok.untitledbot.modules.basic.owo.Owo;
 import dev.alexisok.untitledbot.modules.basic.prefix.Prefix;
+import dev.alexisok.untitledbot.modules.basic.report.BugReport;
 import dev.alexisok.untitledbot.modules.basic.ship.Ship;
 import dev.alexisok.untitledbot.modules.basic.status.Status;
 import dev.alexisok.untitledbot.modules.basic.timestamp.TimeStamp;
@@ -18,9 +19,12 @@ import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
 import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
 import dev.alexisok.untitledbot.modules.basic.userinfo.UserInfo;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
+import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleGet;
+import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleSet;
 import dev.alexisok.untitledbot.modules.reactions.Dis;
 import dev.alexisok.untitledbot.modules.reactions.Hide;
 import dev.alexisok.untitledbot.modules.reactions.Hug;
+import dev.alexisok.untitledbot.modules.reward.VoteReward;
 import dev.alexisok.untitledbot.modules.rpg.RPGManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -48,8 +52,7 @@ public final class CoreCommands {
             
             eb.setColor(Color.GREEN);
             
-            String inviteLink = String.format("https://discord.com/oauth2/authorize?client_id=%s&scope=bot&permissions=3460160",
-                    Main.jda.getSelfUser().getId());
+            String inviteLink = "https://discord.com/oauth2/authorize?client_id=730135989863055472&scope=bot&permissions=3460160";
             
             eb.addField("Invite link",
                     String.format("You can invite the bot to a server using [this invite link](%s).", inviteLink),
@@ -132,6 +135,10 @@ public final class CoreCommands {
         new AYAYA().onRegister();
         new Dis().onRegister();
         new Hide().onRegister();
+        new VoteReward().onRegister();
+        new RankRoleSet().onRegister();
+        new RankRoleGet().onRegister();
+        new BugReport().onRegister();
         Logger.log("Modules have been registered.");
     }
 }
