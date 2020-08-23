@@ -143,7 +143,7 @@ public final class VoteReward extends UBPlugin {
                                         "ranks-xp"
                                 )
                             )
-                        ) + XP_TO_GIVE
+                        ) + reward
                 )
         );
         try {message.getChannel().sendMessage(eb.build()).queue();} catch (Exception e) {
