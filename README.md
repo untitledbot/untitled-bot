@@ -93,7 +93,11 @@ As someone who wants privacy, I respect your right to it as well.  This is a lis
 `timestamp <snowflake | user @ | channel #>` - get the timestamp of a discord snowflake.\
 `uptime` - get the uptime for the bot.\
 `avatar <@user>` - get the avatar of a user.\
-`bug-report` - report a bug directly to me.
+`bug-report` - report a bug directly to me.\
+`lang` - switch the bot language (help wanted for this!).\
+`cron <dm | channel #> <@join | @leave | m h d m w> <message...>` - schedule a [cron](https://en.wikipedia.org/wiki/Cron)).\
+`crons` - get a list of all crons in place.\
+`cron-del` - delete a cron as listed in `crons`.
 
 ##### Moderation
 `log-channel <text channel #>` - set the logging channel.\
@@ -108,6 +112,10 @@ As someone who wants privacy, I respect your right to it as well.  This is a lis
 `ship <user A> <user B>` - ship two different server members.\
 `20` - roll a 20 sided die.\
 `owo <text>` - owofy a stwing of text.
+
+##### Games
+`craft <recipe | skin> <item | username>` - get the minecraft crafting recipe of an item or skin of a user.
+
 
 ##### Reactions
 `hug` - hug another user (or yourself)...\

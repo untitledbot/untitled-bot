@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--order: container is root (dev.alexisok.untitledbot) and everything else is a package or classname.  Classnames
+are defined by their uppercase letter.  Nested classes count as the same class.
+
+uses String.format, so `%n` is newline.
+-->
+<container>
+    <package lang="english">
+        <command>
+            <AllCommands>
+                <levelCommands>
+                    `rank` - get the rank of yourself or a specific user.%n +
+                    `leaderboard` - get the highest ranking users in the guild.%n +
+                    `rank-total` - get the total amount of xp of yourself or another user.%n +
+                    `rank-settings` - rankup and rank boost settings for moderators. (admin)%n +
+                    `rank-role` - assign rank roles for users when they level up. (admin)%n +
+                    `rank-roles` - get a list of current rank roles.
+                </levelCommands>
+                <utilCommands>
+                    `help [command]` - get help for a specific command.%n +
+                    `prefix &lt;prefix&gt;` - set this guilds prefix. (admin)%n +
+                    `status` - get the status and statistics of the bot.%n +
+                    `shop` - shop items (not fully implemented).%n +
+                    `timestamp` - get the timestamp of a Discord snowflake.%n +
+                    `uptime` - get the uptime of the bot.%n +
+                    `info` - get info about the server or a specific user.%n +
+                    `avatar` - get the avatar of yourself or another user.%n +
+                    `bug-report` - report a bug directly to me.%n
+                </utilCommands>
+                <moderationCommands>
+                    `log-channel` - set the logging channel. (admin)%n
+                    `add-log` - add a log type to the log channel. (admin)%n
+                    `remove-log` - remove a log type from the channel. (admin)%n
+                    `log-types` - list all current log types.%n
+                    `get-log` - list what's being logged.%n
+                </moderationCommands>
+            </AllCommands>
+        </command>
+    </package>
+    <package lang="french">
+        
+    </package>
+</container>

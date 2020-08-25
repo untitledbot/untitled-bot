@@ -1,0 +1,17 @@
+
+multi-language support will come later, i underestimated how big of an update that will be
+
+new things:
+* `cron <dm | channel #> <@join | @leave | m h d m w> <message...>` - set a cron to send messages at intervals (dm only supports @join and @leave). TODO
+* `crons` - list cron jobs, there will be a limit of 10 cron jobs per server (to reduce server load on my end ;-;) TODO
+* `cron-del <cron #>` - delete a cron job number as listed in `crons`. TODO
+* `craft <recipe | skin> <item | username>` - get the minecraft crafting recipe of an item or skin of a user. TODO
+* `discord` - get an invite link for the Discord server. TODO
+* `vote` - get the vote link for the bot. TODO
+
+bug fixes:
+* `help` command now displays the discord server link like it should.
+* `timestamp` command no longer displays gray when it gets a timestamp. TODO
+
+other things:
+* i have made a LOT OF DOCUMENTATION for the bot.  comments everywhere.  just wanted to do that before i forgot what stuff did.

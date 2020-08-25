@@ -10,6 +10,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Lists all commands to the user.
  * 
+ * Uses command `commands`.
+ * 
  * @author AlexIsOK
  * @since 1.3
  */
@@ -71,14 +73,33 @@ public class AllCommands extends UBPlugin {
 //                                                     "If you would like to see another command added, or more features " +
 //                                                     "on this bot, please [join the Discord server](https://discord.gg/vSWgQ9a) :)", false);
         
+        eb.addField("", String.format("**[Discord Server](%s) | [GitHub](%s) | [Vote on Top.GG](%s)**", "https://alexisok.dev/ub/discord.html", "https://github.com/alexisok/untitled-bot", "https://top.gg/bot/730135989863055472/vote"), false);
+        
         HELP_MESSAGE = eb.build();
     }
     
+    /**
+     * 
+     * Get the help command as statically defined in this class.
+     * The help command is generated when the command is registered,
+     * but it might be changed when multi-language support is added.
+     * 
+     * @param args arguments for the command.
+     *             The first argument is always the name of
+     *             the command.  Arguments are the discord
+     *             message separated by spaces.
+     * @param message the {@link Message} that can be used
+     *                to get information from the user
+     * @return the help message.
+     */
     @Override
     public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         return HELP_MESSAGE;
     }
     
+    /**
+     * Registers the command `commands`
+     */
     @Override
     public void onRegister() {
         CommandRegistrar.register("commands", "core.commands", this);
