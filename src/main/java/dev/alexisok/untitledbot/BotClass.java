@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -46,6 +47,8 @@ public final class BotClass extends ListenerAdapter {
 	public static long getMessagesSentTotal() {
 		return messagesSentTotal;
 	}
+	
+	public static final ArrayList<String> BLACKLIST = new ArrayList<>();
 	
 	private static final MessageEmbed JOIN_MESSAGE = new EmbedBuilder().addField("untitled-bot",
 			"\n```" +
@@ -89,7 +92,10 @@ public final class BotClass extends ListenerAdapter {
 		
 		CommandRegistrar.runMessageHooks(event);
 		
-		if(!event.isFromGuild() || event.getAuthor().isBot())
+		if(!event.isFromGuild() || event.getAuthor().isBot() || event.isWebhookMessage())
+			return;
+		
+		if(BLACKLIST.contains(event.getAuthor().getId()))
 			return;
 		
 		//get the prefix of the guild

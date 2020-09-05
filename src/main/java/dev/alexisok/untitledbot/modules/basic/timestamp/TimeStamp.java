@@ -23,18 +23,19 @@ import java.util.Date;
  */
 public final class TimeStamp extends UBPlugin {
     
+    private static final String FOOTER = "Formula: `(snowflake / 4194304) + 1420070400000` to get milliseconds since Jan. 1st, 1970 00:00";
+    
     @Override
     public @NotNull MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
-        EmbedDefaults.setEmbedDefaults(eb, message);
-    
+        
         long time;
         
         if(args.length == 1) {
             eb.addField("Timestamp", "Timestamp of this guild:\n" +
                                              "" + new Date(((message.getGuild().getIdLong() >> 22) + 1420070400000L)) + "\n" +
-                                                          "Other timestamps: `timestamp [user @ | channel # | discord snowflake]`", false);
-            eb.setFooter("Formula: `(snowflake / 4194304) + 1420070400000` to get milliseconds since Jan. 1st, 1970 00:00");
+                                                          "Other timestamps: `timestamp [user @ | channel # | Discord snowflake]`", false);
+            eb.setFooter(FOOTER);
             eb.setColor(Color.GREEN);
             return eb.build();
         }
@@ -52,6 +53,7 @@ public final class TimeStamp extends UBPlugin {
             
             //get the unix timestamp.
             time = (Long.parseLong(args[1]) >> 22) + 1420070400000L;
+            eb.setColor(Color.GREEN);
         } catch(Exception ignored) { //nfe, oobe, etc.
             eb.addField("Timestamp", "Usage: `timestamp [snowflake ID | user @ | channel #]`" +
                                              "\n" +
@@ -59,14 +61,14 @@ public final class TimeStamp extends UBPlugin {
                                              "[Discord's support page]" +
                                              "(https://support.discord.com/hc/en-us/articles/206346498).",
                     false);
-            eb.setFooter("Formula: `(snowflake / 4194304) + 1420070400000` to get milliseconds since Jan. 1st, 1970 00:00");
+            eb.setFooter(FOOTER);
             eb.setColor(Color.RED);
             return eb.build();
         }
         
         eb.addField("", new Date(time).toString(), false);
         eb.addBlankField(false);
-        eb.setFooter("Formula: `(snowflake / 4194304) + 1420070400000` to get milliseconds since Jan. 1st, 1970 00:00");
+        eb.setFooter(FOOTER);
         
         return eb.build();
     }

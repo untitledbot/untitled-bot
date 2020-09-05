@@ -222,7 +222,13 @@ public final class Ranks extends UBPlugin implements MessageHook {
                     try {
                         m.getGuild().addRoleToMember(m.getAuthor().getId(), Objects.requireNonNull(m.getGuild().getRoleById(rankToReward))).queue();
                         roleMessage = String.format("You have also been awarded rank %s!!!", Objects.requireNonNull(m.getGuild().getRoleById(rankToReward)).getName());
-                    } catch(Throwable ignored) {}
+                    } catch(Throwable ignored) {
+                        try {
+                            roleMessage = String.format("I would also assign you rank %s, but I don't have access to it!", Objects.requireNonNull(m.getGuild().getRoleById(rankToReward)).getName());
+                        } catch(Throwable ignored2) {
+                            roleMessage = String.format("I would assign you the role for level %d but there was an error getting the role name!  Was it deleted?", currentLv);
+                        }
+                    }
                 }
                 String shouldSendPhase2 = Vault.getUserDataLocal(null, m.getGuild().getId(), "ranks-broadcast.rankup");
                 if(shouldSendPhase2 == null) {

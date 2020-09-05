@@ -4,6 +4,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Instant;
+
 /**
  * 
  * Set the defaults for embeds.
@@ -22,6 +24,7 @@ public final class EmbedDefaults {
      */
     public static void setEmbedDefaults(@NotNull EmbedBuilder eb, @NotNull Message message) {
         eb.setFooter("\n\n\n" + message.getAuthor().getName(), message.getAuthor().getAvatarUrl());
+        eb.setTimestamp(Instant.now());
     }
     
 }

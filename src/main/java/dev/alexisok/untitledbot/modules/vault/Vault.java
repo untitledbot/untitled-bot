@@ -65,6 +65,10 @@ public final class Vault {
         }
     }
     
+    public static long vaultQueueSize() {
+        return OPERATIONS.size();
+    }
+    
     /**
      * Register the operation scheduler.
      * THIS SHOULD NOT BE RUN BY ANYTHING BUT THE MAIN METHOD.

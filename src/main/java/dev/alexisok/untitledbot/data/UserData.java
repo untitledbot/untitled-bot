@@ -25,33 +25,6 @@ import java.nio.file.Paths;
 public final class UserData {
 	
 	/**
-	 * Get a specific KEY of a user.
-	 * 
-	 * @param userID the user's Discord userID snowflake
-	 * @param key the KEY.
-	 * @return the content of the key for the given user.  Returns {@code null} if the key cannot be found.
-	 * @throws UserDataCouldNotBeObtainedException if there is an exception getting the user's data.
-	 */
-	public static @Nullable String getKey(String userID, String guildID, String key) throws UserDataCouldNotBeObtainedException {
-		return Vault.getUserDataLocal(userID, guildID, key);
-	}
-	
-	/**
-	 * Set a specific KEY of a user.
-	 * 
-	 * To remove a key, specify a blank or {@code null} value.
-	 * 
-	 * @param userID the Discord ID snowflake of a user.
-	 * @param key the KEY to get.
-	 * @param value the value to set.
-	 *              Can be either blank or {@code null} to
-	 *              unset a key.
-	 */
-	public static void setKey(String userID, String guildID, String key, String value) {
-		Vault.storeUserDataLocal(userID, guildID, key, value);
-	}
-	
-	/**
 	 * Check to see if the user is in the database, creates a new user
 	 * if one does not exist.  Does not return a boolean or anything
 	 * for that matter.

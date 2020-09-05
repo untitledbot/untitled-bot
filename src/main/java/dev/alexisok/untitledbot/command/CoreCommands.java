@@ -6,21 +6,27 @@ import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
 import dev.alexisok.untitledbot.modules.basic.avatar.Avatar;
 import dev.alexisok.untitledbot.modules.basic.ayaya.AYAYA;
+import dev.alexisok.untitledbot.modules.basic.blacklist.Blacklist;
 import dev.alexisok.untitledbot.modules.basic.brainfreak.BrainFreak;
+import dev.alexisok.untitledbot.modules.basic.discordCommand.Discord;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
 import dev.alexisok.untitledbot.modules.basic.help.Help;
 import dev.alexisok.untitledbot.modules.basic.owo.Owo;
+import dev.alexisok.untitledbot.modules.basic.ping.Ping;
 import dev.alexisok.untitledbot.modules.basic.prefix.Prefix;
 import dev.alexisok.untitledbot.modules.basic.report.BugReport;
+import dev.alexisok.untitledbot.modules.basic.reverse.Reverse;
 import dev.alexisok.untitledbot.modules.basic.ship.Ship;
 import dev.alexisok.untitledbot.modules.basic.status.Status;
 import dev.alexisok.untitledbot.modules.basic.timestamp.TimeStamp;
 import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
 import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
 import dev.alexisok.untitledbot.modules.basic.userinfo.UserInfo;
+import dev.alexisok.untitledbot.modules.basic.vote.Vote;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleGet;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleSet;
+import dev.alexisok.untitledbot.modules.rank.xpcommands.Inventory;
 import dev.alexisok.untitledbot.modules.reactions.Dis;
 import dev.alexisok.untitledbot.modules.reactions.Hide;
 import dev.alexisok.untitledbot.modules.reactions.Hug;
@@ -60,6 +66,8 @@ public final class CoreCommands {
             
             return eb.build();
         });
+        
+        //The about command to get information about the bot and the server link.
         CommandRegistrar.register("about", "core.about", (args, message) -> {
             EmbedBuilder eb = new EmbedBuilder();
             EmbedDefaults.setEmbedDefaults(eb, message);
@@ -85,27 +93,29 @@ public final class CoreCommands {
             eb.addField("", returnString, false);
             return eb.build();
         });
+        
+        //idk man testing or something
         CommandRegistrar.register("test", "test.test.a", (args, message) -> {
             EmbedBuilder eb = new EmbedBuilder();
             EmbedDefaults.setEmbedDefaults(eb, message);
             eb.setColor(Color.CYAN);
-            eb.addField("title", "works i think", false);
+            eb.addField("title", "works i think <a:blob:751578995904217198>", false);
             return eb.build();
         });
-        
-        new Prefix().onRegister();
         
         Logger.log("Core commands have been registered.");
         registerHelp();
     }
     
     /**
-     * Register core help pages.
+     * Register help pages for the following commands:
+     * help, status, invite, about, rank.
+     * 
+     * Not all of those are core commands.
      */
     private static void registerHelp() {
-        Manual.setHelpPage("help", "Get help with a specific command.\nUsage: `man <command>`.");
+        Manual.setHelpPage("help", "Get help with a specific command.\nUsage: `help <command>`.");
         Manual.setHelpPage("status", "Get the status of the bot and JVM.");
-        Manual.setHelpPage("shutdown", "Shutdown the bot.\nUsage: `shutdown [code]` where code is the optional exit code.");
         Manual.setHelpPage("invite", "Get the invite link for the bot.");
         Manual.setHelpPage("about", "much knowledge");
         Manual.setHelpPage("rank", "Get the current level and XP of a user.\nUsage: " +
@@ -113,6 +123,14 @@ public final class CoreCommands {
                                            "leave argument blank for your own stats.");
     }
     
+    /**
+     * Register almost every single command in the bot.
+     * Each command is stored as its own object which
+     * may take up more memory but is much more organized.
+     * 
+     * In the code, the commands are listed in about the order
+     * they were made, with {@link EightBall} being the first.
+     */
     public static void registerModules() {
         Logger.log("Registering modules.");
         new EightBall().onRegister();
@@ -122,6 +140,7 @@ public final class CoreCommands {
         new TwentyDice().onRegister();
         new Ship().onRegister();
         new GetUserData().onRegister();
+        new Prefix().onRegister();
         new BrainFreak().onRegister();
         new TimeStamp().onRegister();
         new AllCommands().onRegister();
@@ -139,6 +158,12 @@ public final class CoreCommands {
         new RankRoleSet().onRegister();
         new RankRoleGet().onRegister();
         new BugReport().onRegister();
+        new Blacklist().onRegister();
+        new Vote().onRegister();
+        new Ping().onRegister();
+        new Inventory().onRegister();
+        new Reverse().onRegister();
+        new Discord().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

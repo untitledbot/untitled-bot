@@ -18,7 +18,7 @@ final class ShopItem {
     private final int itemID;
     
     //max a user can have in their inventory, -1 is infinite
-    private int maximum = -1;
+    private long maximum = -1;
     
     /**
      * Constructor for shop items.
@@ -45,9 +45,9 @@ final class ShopItem {
      * @param itemID id of the item.
      * @param limit maximum amount of the item a user can have.  use -1 for unlimited.
      *              
-     * @throws AssertionError if itemID is less than 0 or costInLevels is less than 0.
+     * @throws IllegalArgumentException if itemID is less than 0 or costInLevels is less than 0.
      */
-    protected ShopItem(@NotNull String name, long costInLevels, @NotNull String description, int itemID, int limit) throws AssertionError {
+    protected ShopItem(@NotNull String name, long costInLevels, @NotNull String description, int itemID, long limit) throws IllegalArgumentException {
         assert itemID >= 0;
         assert costInLevels >= 0;
         this.name = name;
@@ -73,7 +73,7 @@ final class ShopItem {
         return this.itemID;
     }
     
-    protected int getMaximum() {return this.maximum;}
+    protected long getMaximum() {return this.maximum;}
     
     protected void setMaximum(int maximum) {this.maximum = maximum;}
     

@@ -93,6 +93,7 @@ public class DoubleXPTime {
                 
                 //generic channel
                 if (!found) {
+                    //default channel could be null
                     if (Objects.requireNonNull(g.getDefaultChannel()).canTalk())
                         g.getDefaultChannel().sendMessage(eb.build()).queue();
                 }

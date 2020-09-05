@@ -53,7 +53,7 @@ public class CommandRegistrar {
 	private static long commandsSent = 0L;
 	
 	/**
-	 * ...this used to be used for something...
+	 * Get the size of the register.  Includes alias commands.
 	 * 
 	 * @return the size of the registrar.
 	 */
@@ -62,6 +62,7 @@ public class CommandRegistrar {
 	}
 	
 	/**
+	 * Get the total amount of commands sent while the bot was active.
 	 * @return the amount of commands sent through this bot.
 	 */
 	public static long getTotalCommands() {
