@@ -22,7 +22,7 @@ import java.util.Arrays;
  */
 public final class Reverse extends UBPlugin {
     
-    @Nullable
+    @NotNull
     @Override
     @Contract(pure = true)
     public MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
@@ -50,6 +50,6 @@ public final class Reverse extends UBPlugin {
     @Override
     public void onRegister() {
         CommandRegistrar.register("reverse", this);
-        Manual.setHelpPage("reverse", "Reverse a string.");
+        Manual.setHelpPage("reverse", ".gnirts a esreveR");
     }
 }

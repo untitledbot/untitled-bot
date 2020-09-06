@@ -21,14 +21,14 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public final class Daily extends UBPlugin {
     
-    private static final long DAILY_MIN = 400L;
-    private static final long DAILY_MAX = 1000L;
+    private static final long DAILY_MIN = 50L;
+    private static final long DAILY_MAX = 200L;
     
     @Override
     public void onRegister() {
         CommandRegistrar.register("daily", this);
         Manual.setHelpPage("daily",
-                String.format("Get your daily XP reward from the bot.%nUsage: `daily`%nRange: %d-%d XP.", DAILY_MIN, DAILY_MAX));
+                String.format("Get your daily UB$ reward from the bot.%nUsage: `daily`%nRange: %d-%d XP.", DAILY_MIN, DAILY_MAX));
     }
     
     @Override
@@ -38,7 +38,7 @@ public final class Daily extends UBPlugin {
         
         if(isRateLimit(message.getAuthor().getId(), message.getGuild().getId())) {
             eb.addField(
-                    "Daily XP",
+                    "Daily",
                     String.format("You have already claimed your daily reward!%nTry again in %.2f hours.",
                         rateLimitTimeHours(message.getAuthor().getId(), message.getGuild().getId())
                     ),
@@ -50,12 +50,24 @@ public final class Daily extends UBPlugin {
         
         long xpToBeGranted = ThreadLocalRandom.current().nextLong(DAILY_MIN, DAILY_MAX);
         
-        eb.addField("Daily XP", String.format("You have been given %d XP for your daily reward!", xpToBeGranted), false);
+        eb.addField("Daily XP", String.format("You have been given UB$%d for your daily reward!", xpToBeGranted), false);
         eb.setColor(Color.GREEN);
         
         setRateLimiter(message.getAuthor().getId(), message.getGuild().getId());
         
-        Ranks.doLevelStuff(message, xpToBeGranted);
+        String cur = Vault.getUserDataLocal(message.getAuthor().getId(),
+                message.getGuild().getId(),
+                Shop.CURRENCY_VAULT_NAME);
+    
+        if(cur == null) cur = "0";
+        
+        long totalMoney = Long.parseLong(cur);
+        
+        Vault.storeUserDataLocal(message.getAuthor().getId(),
+                message.getGuild().getId(),
+                Shop.CURRENCY_VAULT_NAME,
+                String.format("%d", + totalMoney + xpToBeGranted) 
+        );
         
         return eb.build();
         

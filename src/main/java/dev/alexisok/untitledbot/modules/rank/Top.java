@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,6 +36,21 @@ public final class Top extends UBPlugin {
     public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
+        
+        int amountToList = 10;
+        
+        if(args.length >= 2) {
+            try {
+                int tmp = Integer.parseInt(args[1]);
+                if(tmp >= 50)
+                    amountToList = 50;
+                else if(tmp <= 10)
+                    amountToList = 10;
+                else
+                    amountToList = 10;
+            } catch(Exception ignored) {}
+        }
+            
         
         if(isRateLimit(message.getGuild().getId())) {
             eb.setColor(Color.RED);
@@ -69,7 +85,7 @@ public final class Top extends UBPlugin {
         
         int i = 0;
         for(Map.Entry<String, Long> a : topXP.entrySet()) {
-            if(i >= 10)
+            if(i >= amountToList)
                 break;
             i++;
             addStr.add(String.format("<@%s> - %s XP (level %s)%n",
@@ -93,7 +109,9 @@ public final class Top extends UBPlugin {
         return null;
     }
     
-    private static @NotNull LinkedHashMap<String, Long> sortHashMap(@NotNull HashMap<String, Long> hm) {
+    @NotNull
+    @Contract(pure = true)
+    private static LinkedHashMap<String, Long> sortHashMap(@NotNull HashMap<String, Long> hm) {
         List<Map.Entry<String, Long>> list = new ArrayList<>(hm.entrySet());
         list.sort(Map.Entry.comparingByValue());
         Collections.reverse(list);

@@ -58,7 +58,8 @@ public final class Ranks extends UBPlugin implements MessageHook {
         CommandRegistrar.register("rank-settings", "admin", new RankSettings());
         new Daily().onRegister();
         new Shop().onRegister();
-        Manual.setHelpPage("rank-top", "Get the top user ranks for the guild.");
+        Manual.setHelpPage("rank-top", "Get the top user ranks for the guild.\n" +
+                                               "Usage: `top [amnt]`");
         Manual.setHelpPage("rank", "Get your (or another user's) rank.\nUsage: `rank [user @ | user ID]`");
         Manual.setHelpPage("rank-total", "Get the total amount of experience of yourself or another user.\n" +
                                                  "Usage: rank-total [user @]");
@@ -68,6 +69,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
                                                     "\tannounce-xp-boost <true | false>\n" +
                                                     "\tannounce-level-up <current | channel <channel #> | none>\n");
         CommandRegistrar.registerAlias("rank-top", "ranktop", "leaderboard", "top", "ranklist");
+        CommandRegistrar.registerAlias("rank", "level");
         Vault.addDefault("ranks-xp", "0");
         Vault.addDefault("ranks-level", "1");
         

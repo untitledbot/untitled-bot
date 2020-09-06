@@ -7,6 +7,11 @@ has a lot of room for customization.  You can self-host it as well.
 ![Version](https://img.shields.io/badge/version-1.3-blue)
 ---
 
+### Invite
+You can invite untitled-bot to your server instantly using
+<a href="https://discord.com/oauth2/authorize?client_id=730135989863055472&scope=bot&permissions=3460160">
+this link</a>.
+
 ### Features
 * Level/rank module.
 * Logging

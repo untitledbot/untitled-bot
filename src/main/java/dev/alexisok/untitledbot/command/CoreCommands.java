@@ -1,6 +1,5 @@
 package dev.alexisok.untitledbot.command;
 
-import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
@@ -23,6 +22,7 @@ import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
 import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
 import dev.alexisok.untitledbot.modules.basic.userinfo.UserInfo;
 import dev.alexisok.untitledbot.modules.basic.vote.Vote;
+import dev.alexisok.untitledbot.modules.eco.Balance;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleGet;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleSet;
@@ -164,6 +164,7 @@ public final class CoreCommands {
         new Inventory().onRegister();
         new Reverse().onRegister();
         new Discord().onRegister();
+        new Balance().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

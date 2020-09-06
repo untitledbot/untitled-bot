@@ -30,7 +30,7 @@ public final class Discord extends UBPlugin {
         
         eb.addField("Discord Support Server", String.format("Hello!  If you need help with the bot, want to report a bug, " +
                                                       "or just need someone to talk to, you can join [the untitled-bot " +
-                                                      "support server](%s).", "https://alexisok.dev/ub/discord.html"), false);
+                                                      "support server](%s) :)", "https://alexisok.dev/ub/discord.html"), false);
         eb.setColor(Color.GREEN);
         return eb.build();
     }

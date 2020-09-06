@@ -192,11 +192,13 @@ public final class Shop extends UBPlugin {
     @Override
     public void onRegister() {
         CommandRegistrar.register("shop", this);
-        ITEMS.add(new ShopItem("RPG Item I", 50000, "A claimable item for when the RPG releases (low-tier random item).  Can be used once the RPG is out.", 1, 10));
-        ITEMS.add(new ShopItem("RPG Item II", 150000, "A claimable item for when the RPG releases (mid-tier random item).  Can be used once the RPG is out.", 2, 5));
+        ITEMS.add(new ShopItem("RPG Item I", 1000, "A claimable item for when the RPG releases (low-tier random item).  Can be used once the RPG is out.", 1, 10));
+        ITEMS.add(new ShopItem("RPG Item II", 20000, "A claimable item for when the RPG releases (mid-tier random item).  Can be used once the RPG is out.", 2, 5));
         ITEMS.add(new ShopItem("RPG Item III", 500000, "A claimable item for when the RPG releases (high-tier random item).  Can be used once the RPG is out.", 3, 3));
         
         ITEMS.add(new ShopItem("RPG Early Supporter Badge", 0, "A badge that shows you were using the bot before the RPG released!  Doesn't do anything in the RPG, will show when users use the `profile` command on you.", 4, 1));
+        
+        ITEMS.add(new ShopItem("Moderator Role on the Support Server", Long.MAX_VALUE, "Gives you the \"moderator\" role on the support server.", 5));
         
         Manual.setHelpPage("shop", "" +
                                            "Available sub-commands:\n" +

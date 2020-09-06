@@ -5,11 +5,14 @@ new things:
 * `discord` - get an invite link for the Discord server.
 * `vote` - get the vote link for the bot.
 * `ping` - get the ping of the bot.
-* `bal` or `balance` - get your (or another users) balance for the bot (not the same as XP).  TODO
+* `bal` or `balance` - get your (or another users) balance for the bot (not the same as XP).
 * `shop` - list the shop or buy items.
 * `work`, `steal`, and `bet` - earn or lose money depending on the command (and your luck :P).  TODO
 * `inv` - list your inventory.
-* `reverse` - reverse a string. 
+* `reverse` - reverse a string.
+* `days-until <yyyy> <mm> <dd>` - days until a specific date.  yes, i'm forcing iso 8601.TODO
+* `config` - central configuration for the bot.TODO
+* the site now has a spot to generate single-command `config` commands for quick server setup.TODO
 * there was probably something else i did i forgot to document.
 
 bug fixes:
@@ -20,9 +23,19 @@ bug fixes:
 
 other things:
 * i have made a LOT OF DOCUMENTATION for the bot.  comments everywhere.  just wanted to do that before i forgot what stuff did.
-* commands now display the timestamp thing.
+* commands now display the timestamp thing as well as the mod logs.
 * `status` displays a lot more stuff now.
+* `top` command now allows you to input 10 to 50 people to display instead of always 10.  `top [#]`
+* i didn't test the command above so please let me know if it's broken or something thanks
+* `vr` and `daily` command now give you untitled-bot currency instead of XP.
+* README now has an invite link for the bot because it actually needs it lol
+* `level` is now an alias for `rank`.
 
 TODO UPDATE SITE
 TODO UPDATE ALL COMMANDS
 TODO UPDATE README
+
+so this is just notes for me pls do not commit this
+the config easy thing will be like this
+`config opt:val;opt:val;opt:val;opt:val`
+makes it a lot easier to quickly setup the things.
