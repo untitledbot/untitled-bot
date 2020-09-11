@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Implements the `work` command.
@@ -36,11 +36,11 @@ public final class Work extends UBPlugin {
         String limitStr = Vault.getUserDataLocal(null, message.getGuild().getId(), "work.cooldown");
         
         long limit = 86400; //1 day
-    
+        
         if(limitStr != null && limitStr.matches("[0-9]+"))
             limit = Long.parseLong(limitStr);
         
-        if(isRateLimit(message.getAuthor().getId(), message.getGuild().getId(), limit)){
+        if(isRateLimit(message.getAuthor().getId(), message.getGuild().getId(), limit)) {
             eb.addField("Work",
                     "You cannot work, as you are rate limited!  Perhaps a moderator could change the limit with the" +
                             " `config` command?",
@@ -49,30 +49,70 @@ public final class Work extends UBPlugin {
             return eb.build();
         }
         
+        long current = Long.parseLong(Vault.getUserDataLocalOrDefault(message.getAuthor().getId(), message.getGuild().getId(), Shop.CURRENCY_VAULT_NAME, "0"));
         
-        long randFirst = 
+        long min = Long.parseLong(Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "work.limit.minimum", "100"));
+        long max = Long.parseLong(Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "work.limit.maximum", "500"));
         
+        long amount = ThreadLocalRandom.current().nextLong(min, max + 1);
         
-        eb.addField("Work", );
+        if((current + (amount * 5)) > Long.MAX_VALUE - 2000L || current + (amount * 5) < -10) {
+            eb.addField("Work", String.format("I would give you %d but you have the maximum amount of money!", amount), false);
+            if(current < -10)
+                current = Long.MAX_VALUE - 2000L;
+            eb.setColor(Color.YELLOW);
+            return eb.build();
+        }
         
+        try {
+            eb.addField("Work",
+                    String.format(RESPONSES.get(ThreadLocalRandom.current().nextInt(RESPONSES.size() + 1)), //intentional ioobe :)
+                            amount),
+                    false);
+            current += amount;
+        } catch(RuntimeException ignored) {
+            eb.addField("Work",
+                    String.format("You would have earned UB$%d but instead you earned UB$%d because there is a bug.%n" +
+                                          "First person to report this bug with the `bug-report` command gets +40 levels (up to 100 max)" +
+                                          " for every server they are currently in.%n" +
+                                          "Will you report the bug, or will you continue to abuse it?  The choice is yours to make.",
+                            amount, amount * 5), false);
+            current += amount * 5;
+        }
+        
+        setRateLimiter(message.getAuthor().getId(), message.getGuild().getId());
+        
+        Vault.storeUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), Shop.CURRENCY_VAULT_NAME, String.valueOf(current));
+        
+        eb.setColor(Color.GREEN);
+        
+        return eb.build();
     }
     
     @Override
     public void onRegister() {
         
-        //use "UB$%d" for the place of the money earned.
-        RESPONSES.add("You work as a developer for [untitled-bot](https://github.com/alexisok/untitled-bot) and make UB$%d.");
-        RESPONSES.add("You make UB$%d making a Minecraft Lets Play series.");
-        RESPONSES.add("You get your Discord bot verified and earn UB$%d from donations.");
-        RESPONSES.add("You set your Discord profile picture to an anime girl and get UB$%d in donations.");
-        RESPONSES.add("You mine bitcoin using your old laptop and make UB$%d.");
-        RESPONSES.add("You play Untitled Goose Game and get UB$%d in YouTube revenue.");
-        RESPONSES.add("???  You stumble across UB$%d when walking your dog!");
-        RESPONSES.add("You illegally download UB$ onto your computer, getting UB$%d.  Disgusting.");
-        RESPONSES.add("With only one option left, you use 100 percent of your power, gaining UB$%d in the process.");
-        RESPONSES.add("You lick the pudding off of the lid like a sane person, gaining UB$%d because of it.");
-        RESPONSES.add("You entered the [untitled-bot contest](https://youtu.be/M5V_IXMewl4), gaining UB$%d because of it.");
-        RESPONSES.add("UB$%d appears in your pocket as if by MaGiC.");
+        //use "UB$%s" for the place of the money earned.
+        RESPONSES.add("You work as a developer for [untitled-bot](https://github.com/alexisok/untitled-bot) and make UB$%s.");
+        RESPONSES.add("You make UB$%s making a Minecraft Lets Play series.");
+        RESPONSES.add("You get your Discord bot verified and earn UB$%s from donations.");
+        RESPONSES.add("You set your Discord profile picture to an anime girl and get UB$%s in donations.");
+        RESPONSES.add("You mine bitcoin using your old laptop and make UB$%s.");
+        RESPONSES.add("You play Untitled Goose Game and get UB$%s in YouTube revenue.");
+        RESPONSES.add("???  You stumble across UB$%s when walking your dog!");
+        RESPONSES.add("You illegally download UB$ onto your computer, getting UB$%s.  Disgusting.");
+        RESPONSES.add("You use 10 percent of your power, gaining UB$%s in the process.");
+        RESPONSES.add("You lick the pudding off of the lid like a sane person, gaining UB$%s.");
+        RESPONSES.add("You entered the [untitled-bot contest](https://youtu.be/M5V_IXMewl4), gaining UB$%s because of it.");
+        RESPONSES.add("UB$%s appears in your pocket as if by magic.");
+        RESPONSES.add("You wander throughout the Discord Forest and find Wumpus.  He gives you UB$%d.");
+        RESPONSES.add("you get UB$%d");
+        RESPONSES.add("You write your first program, but say \"How are you, World?\" instead of \"Hello, World!\".\n" +
+                              "The World appreciates your thoughts and gives you UB$%d as a thank you.");
+        RESPONSES.add("You use your STAND POWER to unlock UB$%d."); //menacing
+        RESPONSES.add("i need more responses please contribute to this on github or something anyways you earned UB$%d.");
+        RESPONSES.add("You find out the purpose of life, and earn UB$%d because of it.");
+        RESPONSES.add("You went vegan for ten minutes and earn UB$%d from stream donations.");
         
         CommandRegistrar.register("work", this);
         Manual.setHelpPage("work", "Work to get untitled-bot currency (not a real currency).");

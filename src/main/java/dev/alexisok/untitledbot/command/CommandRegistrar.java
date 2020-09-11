@@ -84,17 +84,18 @@ public class CommandRegistrar {
 	 *                   require the user to have administrator or a role with administrator.
 	 * @param command the {@link Command} to use.  {@link Command#onCommand(String[], Message)}
 	 *                will be executed when the command is called.
-	 * @throws RuntimeException if the command does not match the regex.
+	 * @throws IllegalArgumentException if the command does not match the regex.
 	 */
-	public static void register(@NotNull String commandName, String permission, @NotNull Command command) {
+	public static void register(@NotNull String commandName, String permission, @NotNull Command command)
+			throws IllegalArgumentException {
 		
 		if(REGISTRAR.containsKey(commandName))
 			return;
 		
 		if(!commandName.matches("^[a-z0-9_-]*$"))
-			throw new RuntimeException("Command does not match regex!");
+			throw new IllegalArgumentException("Command does not match regex!");
 		if(!permission.matches("^[a-z]([a-z][.]?)+[a-z]$") && !permission.equals("admin") && !permission.equals("owner")) //this took too long to make...
-			throw new RuntimeException("Command permission does not match regex!");
+			throw new IllegalArgumentException("Command permission does not match regex!");
 		
 		REGISTRAR.put(commandName, command);
 		PERMS_REGISTRAR.put(commandName, permission);
@@ -107,16 +108,16 @@ public class CommandRegistrar {
 	 * @param command the {@link Command} to use.  {@link Command#onCommand(String[], Message)}
 	 *                will be executed when the command is called.
 	 * @throws CommandAlreadyRegisteredException if the command already exists.
-	 * @throws RuntimeException if the command does not match the regex.
+	 * @throws IllegalArgumentException if the command does not match the regex.
 	 */
 	public static void register(@NotNull String commandName, @NotNull Command command)
-			throws CommandAlreadyRegisteredException {
+			throws CommandAlreadyRegisteredException, IllegalArgumentException {
 		
 		if(REGISTRAR.containsKey(commandName))
 			throw new CommandAlreadyRegisteredException();
 		
 		if(!commandName.matches("^[a-z0-9_-]*$"))
-			throw new RuntimeException("Command does not match regex!");
+			throw new IllegalArgumentException("Command does not match regex!");
 		
 		REGISTRAR.put(commandName, command);
 		PERMS_REGISTRAR.put(commandName, "global");

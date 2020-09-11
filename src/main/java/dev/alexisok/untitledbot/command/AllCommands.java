@@ -73,7 +73,10 @@ public class AllCommands extends UBPlugin {
 //                                                     "If you would like to see another command added, or more features " +
 //                                                     "on this bot, please [join the Discord server](https://discord.gg/vSWgQ9a) :)", false);
         
-        eb.addField("", String.format("**[Discord Server](%s) | [GitHub](%s) | [Vote on Top.GG](%s)**", "https://alexisok.dev/ub/discord.html", "https://github.com/alexisok/untitled-bot", "https://top.gg/bot/730135989863055472/vote"), false);
+        eb.addField("", String.format("**[Discord Server](%s) | [GitHub](%s) | [Vote on Top.GG](%s)**",
+                "https://alexisok.dev/ub/discord.html", //DO NOT CHANGE TO XYZ SITE
+                "https://github.com/alexisok/untitled-bot",
+                "https://top.gg/bot/730135989863055472/vote"), false);
         
         HELP_MESSAGE = eb.build();
     }

@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.rank;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
@@ -187,7 +188,14 @@ public final class Ranks extends UBPlugin implements MessageHook {
         if(!m.isFromGuild())
             return;
         
-        doLevelStuff(m, ThreadLocalRandom.current().nextLong(3 * DoubleXPTime.boostAmount, 5 * DoubleXPTime.boostAmount));
+        //do not do rank stuffs if there is a command
+        if(m.getContentRaw().startsWith(BotClass.getPrefix(mre.getGuild().getId())))
+            return;
+        
+        //was 3 to 5
+        long randomAmount = ThreadLocalRandom.current().nextLong(0, 7 * DoubleXPTime.boostAmount);
+        if(randomAmount != 0)
+            doLevelStuff(m, randomAmount);
     }
     
     public static void doLevelStuff(@NotNull Message m, long randAdd) {

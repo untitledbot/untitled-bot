@@ -19,8 +19,6 @@ this link</a>.
 
 ---
 ### Upcoming features
-* Cron (send messages on intervals or with events)
-* Web UI
 * (M)MORPG module (Massive Multiplayer Online Role Playing Game, though probably not that massive).
 ---
 ### Discord server
@@ -87,22 +85,18 @@ As someone who wants privacy, I respect your right to it as well.  This is a lis
 `leaderboard` or `top` - get the highest ranking users in the server.\
 `rank-total [user @]` - get the total amount of xp of yourself or another user.\
 `rank-settings <setting> <value>` - set the rank settings (see `help rank-settings`).\
-`vote-reward` or `vr` - get bonus XP for [voting for the bot on top.gg](https://top.gg/bot/730135989863055472/vote).\
+`daily` - get a set amount of XP every day.\
 `rank-role <level> <role @ | role ID | role name | none>` - assign roles for users when they level up.\
 `rank-roles` - get a list of current rank roles.
 
 ##### Utilities
 `help [command]` - get help for a command.\
-`prefix <prefix 1 to 3 chars>` - set the prefix for the server (mentioning the bot works as well).\
+`prefix <prefix 1 to 5 chars>` - set the prefix for the server (mentioning the bot works as well).\
 `status` - get the status of the bot.\
 `timestamp <snowflake | user @ | channel #>` - get the timestamp of a discord snowflake.\
 `uptime` - get the uptime for the bot.\
 `avatar <@user>` - get the avatar of a user.\
 `bug-report` - report a bug directly to me.\
-`lang` - switch the bot language (help wanted for this!).\
-`cron <dm | channel #> <@join | @leave | m h d m w> <message...>` - schedule a [cron](https://en.wikipedia.org/wiki/Cron)).\
-`crons` - get a list of all crons in place.\
-`cron-del` - delete a cron as listed in `crons`.
 
 ##### Moderation
 `log-channel <text channel #>` - set the logging channel.\
@@ -118,15 +112,20 @@ As someone who wants privacy, I respect your right to it as well.  This is a lis
 `20` - roll a 20 sided die.\
 `owo <text>` - owofy a stwing of text.
 
-##### Games
-`craft <recipe | skin> <item | username>` - get the minecraft crafting recipe of an item or skin of a user.
-
-
 ##### Reactions
 `hug` - hug another user (or yourself)...\
 `ayaya` - react with ayaya (or something else).\
 `hide` - hide behind a wall.\
 `disappointed` - display ಠ_ಠ.
+
+#### Economy
+Note: UB$ is not a real currency (unfortunately).
+`vote-reward` or `vr` - get bonus UB$ for [voting for the bot on top.gg](https://top.gg/bot/730135989863055472/vote).
+Other sites supported soon:tm:\
+`work` - work to get UB$.\
+`steal` - (attempt to) steal UB$ from another user.\
+`bet` - let fate decide what happens to the UB$ you bet (and by fate, I mean ThreadLocalRandom).\
+`balanace` or `bal` - view your balance.
 
 ### Premium?
 As of now, there are not any premium features of the bot, all features come standard for free.\

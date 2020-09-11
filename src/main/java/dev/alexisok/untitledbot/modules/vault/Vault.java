@@ -193,4 +193,31 @@ public final class Vault {
         }
     }
     
+    /**
+     * Get the data of a user or guild, or fallback to the default value if it is not found.
+     *
+     * @param userID the user ID, pass {@code null} for guild only.
+     * @param guildID the guild ID.
+     * @param dataKey the key to use to get the data.
+     * @param defaultValue value to be returned if the key was not found.
+     * @return the user's data, or {@code defaultValue} if it was not found.
+     * @see Properties#getProperty(String)
+     * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
+     */
+    @NotNull
+    @Contract(pure = true)
+    public static String getUserDataLocalOrDefault(String userID, String guildID, @NotNull String dataKey, @NotNull String defaultValue)
+            throws UserDataCouldNotBeObtainedException {
+        while(OPERATIONS.size() != 0 || running); //this is so bad i hate myself for writing it
+        UserData.checkUserExists(userID, guildID);
+        Properties p = new Properties();
+        try {
+            p.load(new FileReader(Main.parsePropertiesLocation(userID, guildID)));
+            return p.getProperty(dataKey, defaultValue);
+        } catch(IOException e) {
+            e.printStackTrace();
+            throw new UserDataCouldNotBeObtainedException();
+        }
+    }
+    
 }

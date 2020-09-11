@@ -36,27 +36,38 @@ public final class Top extends UBPlugin {
     public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
-        
-        int amountToList = 10;
-        
-        if(args.length >= 2) {
-            try {
-                int tmp = Integer.parseInt(args[1]);
-                if(tmp >= 50)
-                    amountToList = 50;
-                else if(tmp <= 10)
-                    amountToList = 10;
-                else
-                    amountToList = 10;
-            } catch(Exception ignored) {}
-        }
-            
-        
+    
+    
         if(isRateLimit(message.getGuild().getId())) {
             eb.setColor(Color.RED);
             eb.addField("Rate limited!", String.format("To reduce server load, this command can only be run every %d minutes.",
-                    (int) (TIME_BETWEEN_COMMAND_IN_SECONDS / 60)), 
+                    (int) (TIME_BETWEEN_COMMAND_IN_SECONDS / 60)),
                     false);
+            return eb.build();
+        }
+        
+        int amountToList = 10;
+        boolean b = false; //i was going to name this something else but i spent five minutes just trying to figure out how to spell it and i couldn't so it named 'b' for now.
+        if(args.length >= 2) {
+            try {
+                int tmp = Integer.parseInt(args[1]);
+                if(tmp > 50)
+                    b = true;
+                amountToList = Math.min(tmp, 50);
+            } catch(Exception ignored) {}
+        }
+        
+        if(amountToList == 0) {
+            setRateLimiter(message.getGuild().getId());
+            eb.addField("Rank top", "Congratulations, you just got a leaderboard of ZERO PEOPLE.\n" +
+                                            "Enjoy the five minute cooldown :)", false);
+            eb.setColor(Color.PINK);
+            return eb.build();
+        } else if (amountToList < 0) {
+            eb.addField("Rank top?", "you know what, i'm not even going to set a cooldown for this.\n" +
+                                             "i'm not sure why you thought you could get a leaderboard of negative" +
+                                             " people but it didn't work.  i think this bot is pretty much exploit proof :)", false);
+            eb.setColor(new Color(154, 0, 255)); //purple i think
             return eb.build();
         }
         
@@ -77,7 +88,7 @@ public final class Top extends UBPlugin {
             } catch(Exception ignored) {}
         }
     
-        eb2.addField("Rank top", "Fetching the highest ranking users in this guild...", false);
+        eb2.addField("Rank top", "Fetching the top " + amountToList + " users in this guild...", false);
         
         topXP = sortHashMap(topXP);
         
@@ -103,6 +114,9 @@ public final class Top extends UBPlugin {
         eb2.setColor(Color.GREEN);
         
         eb2.addField("===TOP RANKINGS===", addStringReturn.toString(), false);
+        
+        if(b) //b is the shortened variable in case you missed the last comment
+            eb2.addField("Warning", "The list has been shortened to 50 members.", false);
         
         message.getChannel().sendMessage(eb2.build()).queue();
         

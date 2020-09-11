@@ -22,11 +22,14 @@ import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
 import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
 import dev.alexisok.untitledbot.modules.basic.userinfo.UserInfo;
 import dev.alexisok.untitledbot.modules.basic.vote.Vote;
+import dev.alexisok.untitledbot.modules.config.ConfigHandle;
+import dev.alexisok.untitledbot.modules.config.ConfigTokens;
 import dev.alexisok.untitledbot.modules.eco.Balance;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleGet;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleSet;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Inventory;
+import dev.alexisok.untitledbot.modules.rank.xpcommands.Work;
 import dev.alexisok.untitledbot.modules.reactions.Dis;
 import dev.alexisok.untitledbot.modules.reactions.Hide;
 import dev.alexisok.untitledbot.modules.reactions.Hug;
@@ -165,6 +168,8 @@ public final class CoreCommands {
         new Reverse().onRegister();
         new Discord().onRegister();
         new Balance().onRegister();
+//      new ConfigHandle().onRegister();
+        new Work().onRegister();
         Logger.log("Modules have been registered.");
     }
 }
