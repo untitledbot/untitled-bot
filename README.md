@@ -125,8 +125,7 @@ As someone who wants privacy, I respect your right to it as well.  This is a lis
 <dd>> <code>dis</code> - short for disappointed, display ಠ_ಠ</dd><br>
 </dl>
 
-### Premium?
-As of now, there are not any premium features of the bot, all features come standard for free.\
-The music module is not in this bot as it would take too much CPU and memory.\
-If you want to self-host a music bot, I recommend using [MusicBot](https://github.com/jagrosh/MusicBot) by [jagrosh](https://github.com/jagrosh). \
-There are currently no plans to have any premium or paid-for parts of the bot.
+### Contributing
+
+Please help contribute to the bot!  Having multiple people help with the bot makes the repository much better than if
+one person did everything.  As of 1.3.21, contributors get a custom background for the `rank` command!

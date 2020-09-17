@@ -21,14 +21,14 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public final class Daily extends UBPlugin {
     
-    private static final long DAILY_MIN = 50L;
-    private static final long DAILY_MAX = 200L;
+    private static final long DAILY_MIN = 200L;
+    private static final long DAILY_MAX = 500L;
     
     @Override
     public void onRegister() {
         CommandRegistrar.register("daily", this);
         Manual.setHelpPage("daily",
-                String.format("Get your daily UB$ reward from the bot.%nUsage: `daily`%nRange: %d-%d XP.", DAILY_MIN, DAILY_MAX));
+                String.format("Get your daily UB$ reward from the bot.%nUsage: `daily`%nRange: %d-%d UB$.", DAILY_MIN, DAILY_MAX));
     }
     
     @Override
@@ -50,7 +50,7 @@ public final class Daily extends UBPlugin {
         
         long xpToBeGranted = ThreadLocalRandom.current().nextLong(DAILY_MIN, DAILY_MAX);
         
-        eb.addField("Daily XP", String.format("You have been given UB$%d for your daily reward!", xpToBeGranted), false);
+        eb.addField("Daily UB$", String.format("You have been given UB$%d for your daily reward!", xpToBeGranted), false);
         eb.setColor(Color.GREEN);
         
         setRateLimiter(message.getAuthor().getId(), message.getGuild().getId());

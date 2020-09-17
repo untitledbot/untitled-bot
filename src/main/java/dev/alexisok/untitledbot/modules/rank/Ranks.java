@@ -27,6 +27,7 @@ import javax.annotation.CheckForSigned;
 import javax.annotation.CheckReturnValue;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
@@ -168,7 +169,8 @@ public final class Ranks extends UBPlugin implements MessageHook {
                 File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong(), false));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
                 return null;
-            } catch(InsufficientPermissionException | NullPointerException ignored2) {
+            } catch(InsufficientPermissionException | NullPointerException | IOException | FontFormatException e) {
+                e.printStackTrace();
                 try {
                     eb.addField("Ranking",
                             "Could not send image, falling back to text.\n" +
@@ -206,6 +208,8 @@ public final class Ranks extends UBPlugin implements MessageHook {
                                     "Exp:   " + xp + "\n",
                             false);
                 }
+            } catch (FontFormatException | IOException e) {
+                e.printStackTrace();
             }
         }
         return eb.build();

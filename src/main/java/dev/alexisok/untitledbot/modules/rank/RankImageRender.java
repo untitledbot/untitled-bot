@@ -29,8 +29,6 @@ public final class RankImageRender {
     
     private RankImageRender(){}
     
-    private static final String FONT_NAME = Font.MONOSPACED;
-    
     static {
         Logger.log("Created tmp rank directory?  " + new File("./tmp/rank/").mkdirs());
         Logger.log("If this is false, it probably means the directory already exists.  If the directory doesn't exist, make sure" +
@@ -54,8 +52,8 @@ public final class RankImageRender {
     @CheckReturnValue
     @Contract(pure = true)
     @SuppressWarnings("SameParameterValue")
-    public static File render(String userID, String guildID, long uniqueID, boolean another) throws UserDataCouldNotBeObtainedException {
-    
+    public static File render(String userID, String guildID, long uniqueID, boolean another) throws UserDataCouldNotBeObtainedException, IOException, FontFormatException {
+        
         User u = Main.jda.getUserById(userID);
         
         //current and needed xp
@@ -88,6 +86,11 @@ public final class RankImageRender {
         } catch(NullPointerException ignored) {
             return null;
         }
+    
+        for(String fn : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
+            Logger.debug("Font " + fn + " is registered.");
+        }
+        Logger.debug("Done listing fonts.");
         
         //shorten the string up a bit if it's over 1k
         String currentAsDisplay = current >= 1000 ? String.format("%.2fk", current / 1000.0) : "" + current;
@@ -122,16 +125,17 @@ public final class RankImageRender {
         }
         
         //username and discriminator
-        gtd.setFont(new Font(FONT_NAME, Font.PLAIN, 38));
+        Font f = Font.createFont(Font.TRUETYPE_FONT, new File("./font.ttf"));
+        GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(f);
+        gtd.setFont(new Font("FreeMono", Font.PLAIN, 36));
         gtd.setColor(Color.WHITE);
         gtd.drawString("" + name + "#" + discriminator, 30, 50);
         
         //balance
-        gtd.setFont(new Font(FONT_NAME, Font.PLAIN, 26));
+        gtd.setFont(new Font("FreeMono", Font.PLAIN, 26));
         gtd.drawString("Balance: UB$" + balanceAsDisplay, 30, 80);
         
         //level numbers (x / y XP)
-        gtd.setFont(new Font(FONT_NAME, Font.PLAIN, 26));
         gtd.drawString(String.format("%s / %s XP", currentAsDisplay, maximumAsDisplay), 30, 180);
         gtd.drawString(String.format("%sLevel %d%s", rank != 100 ? "    " : "", rank, rank == 100 ? " (MAX)" : ""), 555, 180);
         
@@ -160,7 +164,7 @@ public final class RankImageRender {
     
             if (!custom && !lecturedStr.equals("1")) {
                 gtd.setColor(Color.GRAY);
-                gtd.setFont(new Font(FONT_NAME, Font.PLAIN, 16));
+                gtd.setFont(new Font("FreeMono", Font.PLAIN, 16));
                 gtd.drawString("Want a custom background?  Contribute to the bot on GitHub!", 0, height - 50);
                 gtd.drawString("This message will not show again for you.", 0, height - 20);
             }
