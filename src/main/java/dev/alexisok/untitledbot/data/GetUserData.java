@@ -20,6 +20,9 @@ import java.util.concurrent.Callable;
  * Allow users to get their data.
  * All data is returned to users in a direct message.
  * 
+ * The data is in text files and is sent to the users with one file per message.
+ * They are rate-limited to getting their data to once/day.
+ * 
  * @author AlexIsOK
  * @since 1.3
  */
@@ -74,13 +77,17 @@ public final class GetUserData extends UBPlugin {
         return eb.build();
     }
     
+    /**
+     * Registers the `data` command.
+     */
     @Override
     public void onRegister() {
         CommandRegistrar.register("data", "core.data", this);
     }
     
     /**
-     *
+     * Checks if the user is currently under rate-limit.
+     * 
      * @param userID the ID of the user.
      * @return true if there is a rate limit, false otherwise.
      */
@@ -95,6 +102,10 @@ public final class GetUserData extends UBPlugin {
         return epochCurrent - epochPrevious <= 86400;
     }
     
+    /**
+     * Set the rate limit of the user so they can't spam the command.
+     * @param userID the discord ID of the user.
+     */
     private static void setRateLimiter(String userID) {
         Vault.storeUserDataLocal(userID, null, "data.ratelimit", String.valueOf(Instant.now().getEpochSecond()));
     }

@@ -14,8 +14,11 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -47,6 +50,8 @@ public final class BotClass extends ListenerAdapter {
 		return messagesSentTotal;
 	}
 	
+	public static final ArrayList<String> BLACKLIST = new ArrayList<>();
+	
 	private static final MessageEmbed JOIN_MESSAGE = new EmbedBuilder().addField("untitled-bot",
 			"\n```" +
 					"      ╔╗ ╔╗╔╗     ╔╗  ╔╗    ╔╗\n" +
@@ -59,11 +64,20 @@ public final class BotClass extends ListenerAdapter {
 					"\n\n\n" +
 					"Thank you for inviting untitled-bot!\n" +
 					"For help with the bot, use `" + Main.PREFIX + "help`\n" +
-					"The website for the bot is [here](https://alexisok.dev/untitled-bot), and the " +
+					"The website for the bot is [here](https://untitled-bot.xyz), and the " +
 					"official support server is [here](https://discord.gg/vSWgQ9a).", false).build();
 	
 	//cache for server prefixes
 	private static final HashMap<String, String> PREFIX_CACHE = new HashMap<>();
+	
+	/**
+	 * Nullify the prefix cache for a specific guild.
+	 * @param guildID the ID of the guild.
+	 * @return {@code true} if the element was removed, {@code false} otherwise.   
+	 */
+	public static boolean nullifyPrefixCacheSpecific(String guildID) {
+		return PREFIX_CACHE.remove(guildID) != null;
+	}
 	
 	/**
 	 * Update the cached prefix for a guild.
@@ -77,30 +91,52 @@ public final class BotClass extends ListenerAdapter {
 	}
 	
 	/**
+	 * Get the prefix of a guild if it is cached.
+	 * 
+	 * Attempts to do the following:
+	 * 
+	 * 1. get the prefix from the cache
+	 * 
+	 * 2. if the prefix is not in the cache, load it
+	 * 
+	 * 3. if the prefix does not exist, use ">"
+	 * 
+	 * @param guildID the ID of the guild.
+	 * @return the prefix.
+	 */
+	@NotNull
+	@Contract(pure = true)
+	public static String getPrefix(@NotNull String guildID) {
+		String prefix;
+		if(!PREFIX_CACHE.containsKey(guildID)) {
+			prefix = Vault.getUserDataLocal(null, guildID, "guild.prefix");
+			updateGuildPrefix(guildID, prefix);
+		} else {
+			prefix = PREFIX_CACHE.get(guildID);
+		}
+		
+		return prefix == null ? ">" : prefix;
+	}
+	
+	/**
 	 * This is messy...
 	 * @param event the mre
 	 */
 	@Override
 	public final void onMessageReceived(@Nonnull MessageReceivedEvent event) {
 		
-//		Logger.debug("Message was received...");
-		
 		messagesSentTotal++;
 		
 		CommandRegistrar.runMessageHooks(event);
 		
-		if(!event.isFromGuild() || event.getAuthor().isBot())
+		if(!event.isFromGuild() || event.getAuthor().isBot() || event.isWebhookMessage())
+			return;
+		
+		if(BLACKLIST.contains(event.getAuthor().getId()))
 			return;
 		
 		//get the prefix of the guild
-		String prefix;
-		
-		if(!PREFIX_CACHE.containsKey(event.getGuild().getId())) {
-			prefix = Vault.getUserDataLocal(null, event.getGuild().getId(), "guild.prefix");
-			updateGuildPrefix(event.getGuild().getId(), prefix);
-		} else {
-			prefix = PREFIX_CACHE.get(event.getGuild().getId());
-		}
+		String prefix = getPrefix(event.getGuild().getId());
 		
 		String message = event.getMessage().getContentRaw();
 		
@@ -112,9 +148,6 @@ public final class BotClass extends ListenerAdapter {
 			if(event.getMessage().getMentionedMembers().get(0).getId().equals("730135989863055472")
 					    && message.split(" ").length == 1) {
 				
-				if (prefix == null)
-					prefix = ">";
-				
 				event.getChannel()
 						.sendMessage(String.format("Hello!  My prefix for this guild is `%s`.%n" +
 								                           "For a full list of commands, use `%shelp` or `%s help`.%n" +
@@ -125,7 +158,7 @@ public final class BotClass extends ListenerAdapter {
 			}
 		} catch(IndexOutOfBoundsException ignored) {}
 		
-		if(prefix == null || prefix.equals("")) {
+		if(prefix.equals("")) {
 			//if the message does not start with the prefix or the message is only the prefix
 			if(!event.getMessage().getContentRaw().startsWith(Main.PREFIX) || event.getMessage().getContentRaw().equals(Main.PREFIX))
 				return;

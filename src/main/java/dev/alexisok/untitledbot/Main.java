@@ -11,10 +11,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
-import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +36,7 @@ import java.util.*;
  */
 public final class Main {
     
-    public static final String VERSION = "1.3.20";
+    public static final String VERSION = "1.3.21";
     public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
     public static final String DATA_PATH;
     public static final String PREFIX;
@@ -213,7 +210,8 @@ public final class Main {
             //message reactions may be used for a future release
             jda = new JDABuilder(token)
                           .enableIntents(GatewayIntent.GUILD_MESSAGE_REACTIONS)
-                          .addEventListeners(new ModHook(), new BotClass())
+                          .setMemberCachePolicy(MemberCachePolicy.ALL)
+                          .addEventListeners(new ModHook(), new BotClass(), new Sender())
                           .build();
             jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help"));
             

@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
+ * Utility for logging things to the console.
  * 
  * @author AlexIsOK
  * @since 0.0.1

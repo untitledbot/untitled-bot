@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
@@ -114,6 +115,7 @@ public final class ModHook extends ListenerAdapter {
                                       "Old nickname: " + (e.getOldNickname() == null ? "" : e.getOldNickname()) + "\n" +
                                       "New nickname: " + (e.getNewNickname() == null ? "" : e.getNewNickname()) + "\n", false);
         eb.setColor(Color.YELLOW);
+        eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
     }
     
@@ -137,6 +139,7 @@ public final class ModHook extends ListenerAdapter {
                                       "Roles added:\n" +
                                       Arrays.toString(roleIDs), false);
         eb.setColor(Color.GREEN);
+        eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
     }
     
@@ -159,6 +162,7 @@ public final class ModHook extends ListenerAdapter {
                                       "Roles removed:\n" +
                                       Arrays.toString(roleIDs), false);
         eb.setColor(Color.RED);
+        eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
     }
     
@@ -176,6 +180,7 @@ public final class ModHook extends ListenerAdapter {
         eb.addField("Logger", "Guild role created.\n" +
                                       "Role: <@&" + roleCreated + ">", false);
         eb.setColor(Color.GREEN);
+        eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
     }
     
@@ -193,6 +198,7 @@ public final class ModHook extends ListenerAdapter {
         eb.addField("Logger", "Guild role deleted.\n" +
                                       "Role: <@&" + roleCreated + ">", false);
         eb.setColor(Color.RED);
+        eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
     }
     
@@ -210,6 +216,7 @@ public final class ModHook extends ListenerAdapter {
                                       "Old mentionable state: " + e.getOldValue() + "\n" +
                                       "New mentionable state: " + e.getNewValue() + "\n", false);
         eb.setColor(Color.YELLOW);
+        eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
     }
     
@@ -227,6 +234,7 @@ public final class ModHook extends ListenerAdapter {
                                       "Old name: " + e.getOldValue() + "\n" +
                                       "New name: " + e.getNewValue() + "\n", false);
         eb.setColor(Color.YELLOW);
+        eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
     }
     
@@ -260,6 +268,7 @@ public final class ModHook extends ListenerAdapter {
                                       "Old permissions: " + String.join(", ", oldValues) + "\n" +
                                       "New permissions: " + String.join(", ", newValues), false);
         eb.setColor(Color.YELLOW);
+        eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
     }
     
@@ -276,6 +285,7 @@ public final class ModHook extends ListenerAdapter {
                                       "User: <@" + e.getMember().getId() + ">\n" +
                                       "Channel: " + e.getNewValue().getName(), false);
         eb.setColor(Color.GREEN);
+        eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
     }
     
@@ -293,6 +303,7 @@ public final class ModHook extends ListenerAdapter {
                                       "Old channel: " + e.getOldValue().getName() + "\n" +
                                       "New channel: " + e.getNewValue().getName() + "\n", false);
         eb.setColor(Color.YELLOW);
+        eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
     }
     
@@ -309,6 +320,7 @@ public final class ModHook extends ListenerAdapter {
                                       "User: <@" + e.getMember().getId() + ">\n" +
                                       "Channel: " + e.getChannelLeft().getName(), false);
         eb.setColor(Color.RED);
+        eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
     }
     
@@ -326,6 +338,7 @@ public final class ModHook extends ListenerAdapter {
                                       "Account creation time: " + new Date(((e.getUser().getIdLong() >> 22) + 1420070400000L)).toString(), false);
         
         eb.setColor(Color.GREEN);
+        eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
     }
     
@@ -342,6 +355,7 @@ public final class ModHook extends ListenerAdapter {
                                       "User: <@" + e.getUser().getId() + ">", false);
         
         eb.setColor(Color.RED);
+        eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
     }
     

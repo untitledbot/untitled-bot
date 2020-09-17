@@ -35,7 +35,7 @@ public final class RPGManager extends UBPlugin implements Command {
         if(args.length == 1) {
             eb.setColor(Color.GREEN);
             eb.addField("untitled-rpg",
-                    "For help with the RPG, please see https://alexisok.dev/untitled-bot/rpg.html",
+                    "For help with the RPG, please see https://untitled-bot.xyz/rpg.html",
                     false);
             return eb.build();
         }

@@ -8,10 +8,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -65,6 +62,10 @@ public final class Vault {
         }
     }
     
+    public static long vaultQueueSize() {
+        return OPERATIONS.size();
+    }
+    
     /**
      * Register the operation scheduler.
      * THIS SHOULD NOT BE RUN BY ANYTHING BUT THE MAIN METHOD.
@@ -80,15 +81,16 @@ public final class Vault {
                 if(OPERATIONS.size() == 0)
                     return;
                 running = true;
-                
-                try {
-                    VaultOperation va = OPERATIONS.get(0);
-                    OPERATIONS.remove(0);
-                    storeUserDataPiped(va);
-                } catch(Throwable t) {
-                    t.printStackTrace();
+                synchronized(this) {
+                    try {
+                        VaultOperation va = OPERATIONS.get(0);
+                        OPERATIONS.remove(0);
+                        storeUserDataPiped(va);
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                    }
+                    running = false;
                 }
-                running = false;
             }
         };
     
@@ -156,7 +158,7 @@ public final class Vault {
         try {
             p.load(new FileReader(Main.parsePropertiesLocation(ve.userID, ve.guildID)));
             p.setProperty(ve.dataKey, ve.dataValue);
-            p.store(new FileOutputStream(Main.parsePropertiesLocation(ve.userID, ve.guildID)), new Date().toString());
+            p.store(new FileOutputStream(Main.parsePropertiesLocation(ve.userID, ve.guildID)), "");
         } catch (IOException e) {
             e.printStackTrace();
             //to be caught and reported to the end user over Discord.
@@ -183,6 +185,33 @@ public final class Vault {
         try {
             p.load(new FileReader(Main.parsePropertiesLocation(userID, guildID)));
             return p.getProperty(dataKey);
+        } catch(IOException e) {
+            e.printStackTrace();
+            throw new UserDataCouldNotBeObtainedException();
+        }
+    }
+    
+    /**
+     * Get the data of a user or guild, or fallback to the default value if it is not found.
+     *
+     * @param userID the user ID, pass {@code null} for guild only.
+     * @param guildID the guild ID.
+     * @param dataKey the key to use to get the data.
+     * @param defaultValue value to be returned if the key was not found.
+     * @return the user's data, or {@code defaultValue} if it was not found.
+     * @see Properties#getProperty(String)
+     * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
+     */
+    @NotNull
+    @Contract(pure = true)
+    public static String getUserDataLocalOrDefault(String userID, String guildID, @NotNull String dataKey, @NotNull String defaultValue)
+            throws UserDataCouldNotBeObtainedException {
+        while(OPERATIONS.size() != 0 || running); //this is so bad i hate myself for writing it
+        UserData.checkUserExists(userID, guildID);
+        Properties p = new Properties();
+        try {
+            p.load(new FileReader(Main.parsePropertiesLocation(userID, guildID)));
+            return p.getProperty(dataKey, defaultValue);
         } catch(IOException e) {
             e.printStackTrace();
             throw new UserDataCouldNotBeObtainedException();

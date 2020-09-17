@@ -1,0 +1,50 @@
+
+multi-language support will come later, i underestimated how big of an update that will be
+
+BEFORE ANYTHING...
+new site: https://untitled-bot.xyz
+
+this is a big update.  there won't be another feature-packed update for quite a while, maybe even 2021.
+i'll still look at pull requests and issues and fix bugs, but probably no new features for a while.
+
+new things:
+* `discord` - get an invite link for the Discord server.
+* `vote` - get the vote link for the bot.
+* `ping` - get the ping of the bot.
+* `bal` or `balance` - get your (or another users) balance for the bot (not the same as XP).
+* `shop` - list the shop or buy items.
+* `work` and `steal` - earn or lose money depending on the command (and your luck :P).
+* `inv` - list your inventory.
+* `reverse` - reverse a string.
+* `config` - central configuration for the bot.
+* `profile [user @ | user ID]` - get an image of your profile.  NOTE: this effectively replaces `rank`, `level`, and `bal`.
+* `caps` - MAKE A MESSAGE ALL CAPITAL LETTERS.
+* `lowercase` - make a message all lowercase letters.
+* `alternate-case` - MaKe A mEsSaGe ChAnGe EaCh LeTtEr CaPiTaLiZaTiOn.
+* there was probably something else i did i forgot to document.
+
+bug fixes:
+* `help` command now displays the discord server link like it should.
+* `timestamp` command no longer displays gray when it gets a timestamp.  its now a happy green instead of sad gray.
+* rank roles might not be assigned for some reason.  if you still have problems, please report them using `bug-report`.
+* the text in the `info` command is now much easier to read on mobile (title of fields is bold).
+* commands no longer reward XP.  it wasn't really a bug but i've been meaning to change this for a while now.
+* `rank-settings` help for the level up messages no longer shows the unavailable option for DMs.
+* having more than 2 billion untitled bot dollars would break the shop.
+
+other things:
+* i have made a LOT OF DOCUMENTATION for the bot.  comments everywhere.  just wanted to do that before i forgot what stuff did.
+* commands now display the timestamp thing as well as the mod logs.
+* `status` displays a lot more stuff now.
+* `top` command now allows you to input 10 to 50 people to display instead of always 10.  `top [#]`
+* i didn't test the command above so please let me know if it's broken or something thanks
+* `vr` and `daily` command now give you untitled-bot currency instead of XP.
+* README now has an invite link for the bot because it actually needs it lol
+* `level` is now an alias for `rank`.
+* `brainfuck` now uses standard input (comma) to be fully compliant with the language.
+* ranking now awards 0 to 7 xp instead of 3 to 5.  this should make it a bit more luck based.
+* `rank` and `bal` now displays your stats as an image rather than text.
+
+known bugs:
+* using `:` or `;` as or included in the prefix doesn't work correctly if you configure the prefix using the `config` command.
+* rank roles can be a bit wonky at times.

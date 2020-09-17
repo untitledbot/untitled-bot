@@ -16,6 +16,18 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class Avatar extends UBPlugin {
     
+    /**
+     * 
+     * Get the avatar image and send it as an image
+     * 
+     * @param args arguments for the command.
+     *             The first argument is always the name of
+     *             the command.  Arguments are the discord
+     *             message separated by spaces.
+     * @param message the {@link Message} that can be used
+     *                to get information from the user
+     * @return the embed with the avatar image
+     */
     @Override
     public @NotNull MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
@@ -37,6 +49,9 @@ public final class Avatar extends UBPlugin {
         }
     }
     
+    /**
+     * Registers the commands `avatar` and `av`
+     */
     @Override
     public void onRegister() {
         CommandRegistrar.register("avatar", this);

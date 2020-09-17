@@ -114,20 +114,20 @@ public final class UserInfo extends UBPlugin {
             }
             
             eb.setThumbnail(u.getAvatarUrl());
-            eb.addField("Basic info", String.format("Username: `%s`%n" +
+            eb.addField("**Basic info**", String.format("Username: `%s`%n" +
                                                             "Discriminator: `%s`%n" +
                                                             "Account creation time: `%s`%n",
                     u.getName(), u.getDiscriminator(), 
                     new Date((Long.parseLong(u.getId()) >> 22) + 1420070400000L).toString()), true);
-            eb.addField("User flags", userFlags, true);
-            eb.addField("Other info", String.format("" +
+            eb.addField("**User flags**", userFlags, true);
+            eb.addField("**Other info**", String.format("" +
                                                             "ID: `%s`%n" +
                                                             "Raw flags: `%d`%n" +
                                                             "",
                     u.getId(), u.getFlagsRaw()), true);
             return eb.build();
         } else {
-            eb.addField("Info", "Usage: `info [user @]`, leave the argument blank for server info.", false);
+            eb.addField("**Info**", "Usage: `info [user @]`, leave the argument blank for server info.", false);
             eb.setColor(Color.RED);
             return eb.build();
         }
