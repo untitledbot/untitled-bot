@@ -126,10 +126,8 @@ public final class Shop extends UBPlugin {
                         } else {
                             
                             eb.addField("Shop",
-                                    String.format("Error: `%s` costs UB$ %d, but you only have UB$ %d.",
-                                            a.getName(),
-                                            a.getCostInLevels(),
-                                            userLevel),
+                                    String.format("Error: `%s` costs UB$" + a.getCostInLevels() + ", but you only have UB$" + userLevel + ".",
+                                            a.getName()),
                                     false);
                             eb.setColor(Color.RED);
                             

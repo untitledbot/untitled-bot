@@ -71,6 +71,15 @@ public final class BotClass extends ListenerAdapter {
 	private static final HashMap<String, String> PREFIX_CACHE = new HashMap<>();
 	
 	/**
+	 * Nullify the prefix cache for a specific guild.
+	 * @param guildID the ID of the guild.
+	 * @return {@code true} if the element was removed, {@code false} otherwise.   
+	 */
+	public static boolean nullifyPrefixCacheSpecific(String guildID) {
+		return PREFIX_CACHE.remove(guildID) != null;
+	}
+	
+	/**
 	 * Update the cached prefix for a guild.
 	 * @param guildID the ID of the guild as a String
 	 * @param prefix the prefix of that guild

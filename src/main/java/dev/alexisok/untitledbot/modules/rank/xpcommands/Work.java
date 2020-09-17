@@ -42,8 +42,10 @@ public final class Work extends UBPlugin {
         
         if(isRateLimit(message.getAuthor().getId(), message.getGuild().getId(), limit)) {
             eb.addField("Work",
-                    "You cannot work, as you are rate limited!  Perhaps a moderator could change the limit with the" +
-                            " `config` command?",
+                    String.format("You cannot work so soon!\n%s",
+                            limit == 86400
+                                    ? "A moderator can set the limit and amount using the `config` command." 
+                                    : "Please wait " + limit + " seconds."),
                     false);
             eb.setColor(Color.RED);
             return eb.build();
@@ -53,6 +55,12 @@ public final class Work extends UBPlugin {
         
         long min = Long.parseLong(Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "work.limit.minimum", "100"));
         long max = Long.parseLong(Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "work.limit.maximum", "500"));
+        
+        if(min > max) {
+            eb.addField("Error", "Please [reconfigure the work command](https://untitled-bot.xyz/config.html)." +
+                                         "  The bound (maximum) amount of money must be greater than the origin (minimum).", false);
+            eb.setColor(Color.RED);
+        }
         
         long amount = ThreadLocalRandom.current().nextLong(min, max + 1);
         
@@ -66,14 +74,14 @@ public final class Work extends UBPlugin {
         
         try {
             eb.addField("Work",
-                    String.format(RESPONSES.get(ThreadLocalRandom.current().nextInt(RESPONSES.size() + 1)), //intentional ioobe :)
+                    String.format(RESPONSES.get(ThreadLocalRandom.current().nextInt(RESPONSES.size())),
                             amount),
                     false);
             current += amount;
         } catch(RuntimeException ignored) {
             eb.addField("Work",
                     String.format("You would have earned UB$%d but instead you earned UB$%d because there is a bug.%n" +
-                                          "First person to report this bug with the `bug-report` command gets +40 levels (up to 100 max)" +
+                                          "First person to report this bug through the Discord server gets +40 levels (up to 100 max)" +
                                           " for every server they are currently in.%n" +
                                           "Will you report the bug, or will you continue to abuse it?  The choice is yours to make.",
                             amount, amount * 5), false);
@@ -103,7 +111,7 @@ public final class Work extends UBPlugin {
         RESPONSES.add("You illegally download UB$ onto your computer, getting UB$%s.  Disgusting.");
         RESPONSES.add("You use 10 percent of your power, gaining UB$%s in the process.");
         RESPONSES.add("You lick the pudding off of the lid like a sane person, gaining UB$%s.");
-        RESPONSES.add("You entered the [untitled-bot contest](https://youtu.be/M5V_IXMewl4), gaining UB$%s because of it.");
+        RESPONSES.add("You entered the [UB$ contest](https://youtu.be/M5V_IXMewl4), gaining UB$%s because of it.");
         RESPONSES.add("UB$%s appears in your pocket as if by magic.");
         RESPONSES.add("You wander throughout the Discord Forest and find Wumpus.  He gives you UB$%d.");
         RESPONSES.add("you get UB$%d");

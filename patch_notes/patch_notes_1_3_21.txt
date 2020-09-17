@@ -2,9 +2,10 @@
 multi-language support will come later, i underestimated how big of an update that will be
 
 BEFORE ANYTHING...
-new site: untitled-bot.xyz
+new site: https://untitled-bot.xyz
 
-also i just kept piling stuff on for this update and i think i need to cool down on how much stuff is done in one update.
+this is a big update.  there won't be another feature-packed update for quite a while, maybe even 2021.
+i'll still look at pull requests and issues and fix bugs, but probably no new features for a while.
 
 new things:
 * `discord` - get an invite link for the Discord server.
@@ -12,14 +13,14 @@ new things:
 * `ping` - get the ping of the bot.
 * `bal` or `balance` - get your (or another users) balance for the bot (not the same as XP).
 * `shop` - list the shop or buy items.
-* `work`, `steal`, and `bet` - earn or lose money depending on the command (and your luck :P).TODO and TODO test work min higher than max
+* `work` and `steal` - earn or lose money depending on the command (and your luck :P).
 * `inv` - list your inventory.
 * `reverse` - reverse a string.
-* `days-until <yyyy> <mm> <dd>` - days until a specific date.  yes, i'm forcing iso 8601.TODO
-* `time <command>` - time a command.TODO
-* `config` - central configuration for the bot.TODO
-* `item` - use an item in your inventory.TODO
-* added an `xp voucher` item that can be used with the item.
+* `config` - central configuration for the bot.
+* `profile [user @ | user ID]` - get an image of your profile.  NOTE: this effectively replaces `rank`, `level`, and `bal`.
+* `caps` - MAKE A MESSAGE ALL CAPITAL LETTERS.
+* `lowercase` - make a message all lowercase letters.
+* `alternate-case` - MaKe A mEsSaGe ChAnGe EaCh LeTtEr CaPiTaLiZaTiOn.
 * there was probably something else i did i forgot to document.
 
 bug fixes:
@@ -28,7 +29,8 @@ bug fixes:
 * rank roles might not be assigned for some reason.  if you still have problems, please report them using `bug-report`.
 * the text in the `info` command is now much easier to read on mobile (title of fields is bold).
 * commands no longer reward XP.  it wasn't really a bug but i've been meaning to change this for a while now.
-* ranking now awards 0 to 7 xp instead of 3 to 5.  this should make it a bit more luck based.
+* `rank-settings` help for the level up messages no longer shows the unavailable option for DMs.
+* having more than 2 billion untitled bot dollars would break the shop.
 
 other things:
 * i have made a LOT OF DOCUMENTATION for the bot.  comments everywhere.  just wanted to do that before i forgot what stuff did.
@@ -40,18 +42,16 @@ other things:
 * README now has an invite link for the bot because it actually needs it lol
 * `level` is now an alias for `rank`.
 * `brainfuck` now uses standard input (comma) to be fully compliant with the language.
-* i have unified the description of the bot on ALL SITES..... i needed to do that as there was a lot of outdated stuff.TODO
+* i have unified the description of the bot on ALL SITES..... i needed to do that as there was a lot of outdated stuff.
+* ranking now awards 0 to 7 xp instead of 3 to 5.  this should make it a bit more luck based.
+* `rank` and `bal` now displays your stats as an image rather than text.
+
+known bugs:
+* using `:` or `;` as or included in the prefix doesn't work correctly if you configure the prefix using the `config` command.
+* rank roles can be a bit wonky at times.
 
 TODO UPDATE SITE
 TODO UPDATE ALL COMMANDS
 TODO UPDATE README
 TODO UPDATE TOP.GG
 TODO UPDATE OTHER SITES
-TODO MAKE SECOND JAR WITH PATCH FOR WORK COMMAND
-
-so this is just notes for me pls do not commit this
-the config easy thing will be like this
-`config opt:val;opt:val;opt:val;opt:val`
-makes it a lot easier to quickly setup the things.
-
-oops i committed it just don't include it in the patch notes

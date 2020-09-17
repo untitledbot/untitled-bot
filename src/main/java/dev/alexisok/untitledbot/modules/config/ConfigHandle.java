@@ -1,8 +1,10 @@
 package dev.alexisok.untitledbot.modules.config;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -34,7 +36,7 @@ public final class ConfigHandle extends UBPlugin {
             eb.addField("Easy Config", "Hello!  The config command allows for easy bot setup.\n" +
                                                "You can generate a config command [here](" + CONFIG_GENERATOR_URL + ").\n" +
                                                "", false);
-            eb.setColor(Color.RED);
+            eb.setColor(Color.GREEN);
             return eb.build();
         }
         
@@ -43,7 +45,7 @@ public final class ConfigHandle extends UBPlugin {
         String[] splitCheck = check.split(";");
         
         
-        //check legal expressions
+        //check legal expressions, store after the command is 100% correct.
         for(String s : splitCheck) {
             try {
                 String token = s.split(":")[0];
@@ -56,21 +58,47 @@ public final class ConfigHandle extends UBPlugin {
                                               "It seems as if the value %s is not acceptable for %s.\n" +
                                               "If you modified the config command, please revert it," +
                                               " if you didn't, please report this as a bug.",
-                                s.split(":")[0],
-                                s.split(":")[1]),
+                                s.split(":")[1],
+                                s.split(":")[0]),
                         false);
                 eb.setColor(Color.RED);
                 return eb.build();
-            } catch(IndexOutOfBoundsException ignored) {
+            } catch(Throwable t) {
                 eb.addField("Error", "Looks like there is an error with the config code, and I couldn't" +
                                                            " seem to find where it is.  Please report this by either joining the " +
                                                            "support server or by using the `bug-report` command.", false);
+                eb.addField("Error", t.getMessage(), false);
                 eb.setColor(Color.RED);
                 return eb.build();
             }
             
         } //ef
-        return null;
+        
+        //store
+        for(String s : splitCheck) {
+            
+            String token = ConfigTokens.getVaultKey(s.split(":")[0]);
+            String val = s.split(":")[1];
+            if(ConfigTokens.getTransform().containsKey(token)) {
+                String[] get = ConfigTokens.getTransform().get(token);
+                for(int i = 0; i < get.length; i += 2) {
+                    val = val.replace(get[i], get[i + 1]);
+                }
+            }
+            
+            Vault.storeUserDataLocal(
+                    null,
+                    message.getGuild().getId(),
+                    token,
+                    val
+            );
+        }
+        
+        eb.addField("Config", "Congrats!  Your server has been easily configured with the `config` command.\n" +
+                                      "You can run this command again if you want to change the configuration.\n", false);
+        eb.setColor(Color.GREEN);
+        BotClass.nullifyPrefixCacheSpecific(message.getGuild().getId());
+        return eb.build();
     }
     
     

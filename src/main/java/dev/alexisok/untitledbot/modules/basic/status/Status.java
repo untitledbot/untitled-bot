@@ -75,6 +75,7 @@ public final class Status extends UBPlugin {
         returnString += "             Bots: " + bots +   "\n";
         returnString += "    Text channels: " + texts +  "\n";
         returnString += "   Voice channels: " + voice +  "\n";
+        returnString += "        UBPlugins: " + CommandRegistrar.registrarSize() + "\n";
         returnString += "```";
         returnString += "(note: this only updates once every three minutes).";
         

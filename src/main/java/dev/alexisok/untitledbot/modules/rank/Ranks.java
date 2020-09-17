@@ -8,6 +8,7 @@ import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.command.MessageHook;
 import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
 import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Daily;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Shop;
 import dev.alexisok.untitledbot.modules.vault.Vault;
@@ -20,8 +21,12 @@ import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.CheckForSigned;
+import javax.annotation.CheckReturnValue;
 import java.awt.*;
+import java.io.File;
 import java.math.BigInteger;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
@@ -44,6 +49,12 @@ public final class Ranks extends UBPlugin implements MessageHook {
 //                                                                   80000, 90000, 100000, 150000, 200000, 400000, 800000,
 //                                                                   1000000, 2000000, 3000000, 5000000, 8000000, 10000000};
     
+    static {
+        for(int i = 0; i < XP_REQUIRED_FOR_LEVEL_UP.length; i++) {
+            XP_REQUIRED_FOR_LEVEL_UP[i] = (long) ((Math.pow(i, 3) * 2) + 250L);
+        }
+    }
+    
     @Override
     public void onStartup() {
         super.onStartup();
@@ -51,7 +62,6 @@ public final class Ranks extends UBPlugin implements MessageHook {
     
     @Override
     public void onRegister() {
-        setupXPRequired();
         CommandRegistrar.registerHook(this);
         CommandRegistrar.register("rank", "core.ranks", this);
         CommandRegistrar.register("rank-total", "core.ranks", new Total());
@@ -77,15 +87,25 @@ public final class Ranks extends UBPlugin implements MessageHook {
         DoubleXPTime.installer();
     }
     
-    private static void setupXPRequired() {
-        for(int i = 0; i < XP_REQUIRED_FOR_LEVEL_UP.length; i++) {
-            XP_REQUIRED_FOR_LEVEL_UP[i] = (long) ((Math.pow(i, 3) * 2) + 250L);
-        }
+    /**
+     * Get the amount of xp needed for this level.
+     * @param i the level.
+     * @return the xp needed or {@code -1} if you are level 100.
+     */
+    @CheckForSigned
+    @CheckReturnValue
+    public static long xpNeededForLevel(int i) {
+        if(i == 0 || i > 100)
+            throw new IllegalArgumentException("\"i\" must be between 1 and 100 (inclusive)");
+        if(i == 100)
+            return -1;
+        return XP_REQUIRED_FOR_LEVEL_UP[i - 1];
     }
     
     @SuppressWarnings("DuplicatedCode")
+    @Nullable
     @Override
-    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
+    public MessageEmbed onCommand(String[] args, @NotNull Message message) {
         
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
@@ -145,33 +165,47 @@ public final class Ranks extends UBPlugin implements MessageHook {
         eb.setColor(Color.GREEN);
         if(!other) {
             try {
-                eb.addField("Ranking",
-                        "\n" +
-                                "Level: " + lv + "\n" +
-                                "Exp:   " + xp + "/" + XP_REQUIRED_FOR_LEVEL_UP[Integer.parseInt(lv) - 1] + "\n",
-                        false);
-            } catch(ArrayIndexOutOfBoundsException | NumberFormatException ignored) {
-                //THIS SHOULD ONLY BE CAUGHT IF THE USER IS THE HIGHEST LEVEL
-                eb.addField("Ranking",
-                        "\n" +
-                                "Level: " + lv + "\n" +
-                                "Exp:   " + xp + "\n",
-                        false);
+                File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong(), false));
+                message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
+                return null;
+            } catch(InsufficientPermissionException | NullPointerException ignored2) {
+                try {
+                    eb.addField("Ranking",
+                            "Could not send image, falling back to text.\n" +
+                                    "Level: " + lv + "\n" +
+                                    "Exp:   " + xp + "/" + XP_REQUIRED_FOR_LEVEL_UP[Integer.parseInt(lv) - 1] + "\n",
+                            false);
+                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {
+                    //THIS SHOULD ONLY BE CAUGHT IF THE USER IS THE HIGHEST LEVEL
+                    eb.addField("Ranking",
+                            "Could not send image, falling back to text.\n" +
+                                    "Level: " + lv + "\n" +
+                                    "Exp:   " + xp + "\n",
+                            false);
+                }
             }
         } else {
             try {
-                eb.addField("Ranking",
-                        "Stats for this user:\n" +
-                                "Level: " + lv + "\n" +
-                                "Exp:   " + xp + "/" + XP_REQUIRED_FOR_LEVEL_UP[Integer.parseInt(lv) - 1] + "\n",
-                        false);
-            } catch(ArrayIndexOutOfBoundsException | NumberFormatException ignored) {
-                //THIS SHOULD ONLY BE CAUGHT IF THE USER IS THE HIGHEST LEVEL
-                eb.addField("Ranking",
-                        "Stats for this user:\n" +
-                                "Level: " + lv + "\n" +
-                                "Exp:   " + xp + "\n",
-                        false);
+                int size = message.getMentionedMembers().size();
+                User target = size == 1 ? message.getMentionedMembers().get(0).getUser() : Main.jda.getUserById(args[1]);
+                File f = Objects.requireNonNull(RankImageRender.render(Objects.requireNonNull(target).getId(), message.getGuild().getId(), message.getIdLong(), true));
+                message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
+                return null;
+            } catch(InsufficientPermissionException | NullPointerException ignored2) {
+                try {
+                    eb.addField("Ranking",
+                            "Stats for this user:\n" +
+                                    "Level: " + lv + "\n" +
+                                    "Exp:   " + xp + "/" + XP_REQUIRED_FOR_LEVEL_UP[Integer.parseInt(lv) - 1] + "\n",
+                            false);
+                } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {
+                    //THIS SHOULD ONLY BE CAUGHT IF THE USER IS THE HIGHEST LEVEL
+                    eb.addField("Ranking",
+                            "Stats for this user:\n" +
+                                    "Level: " + lv + "\n" +
+                                    "Exp:   " + xp + "\n",
+                            false);
+                }
             }
         }
         return eb.build();

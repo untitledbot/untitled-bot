@@ -8,10 +8,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -84,15 +81,16 @@ public final class Vault {
                 if(OPERATIONS.size() == 0)
                     return;
                 running = true;
-                
-                try {
-                    VaultOperation va = OPERATIONS.get(0);
-                    OPERATIONS.remove(0);
-                    storeUserDataPiped(va);
-                } catch(Throwable t) {
-                    t.printStackTrace();
+                synchronized(this) {
+                    try {
+                        VaultOperation va = OPERATIONS.get(0);
+                        OPERATIONS.remove(0);
+                        storeUserDataPiped(va);
+                    } catch (Throwable t) {
+                        t.printStackTrace();
+                    }
+                    running = false;
                 }
-                running = false;
             }
         };
     
@@ -160,7 +158,7 @@ public final class Vault {
         try {
             p.load(new FileReader(Main.parsePropertiesLocation(ve.userID, ve.guildID)));
             p.setProperty(ve.dataKey, ve.dataValue);
-            p.store(new FileOutputStream(Main.parsePropertiesLocation(ve.userID, ve.guildID)), new Date().toString());
+            p.store(new FileOutputStream(Main.parsePropertiesLocation(ve.userID, ve.guildID)), "");
         } catch (IOException e) {
             e.printStackTrace();
             //to be caught and reported to the end user over Discord.

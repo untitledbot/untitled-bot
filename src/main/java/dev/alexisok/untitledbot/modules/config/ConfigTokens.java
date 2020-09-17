@@ -2,6 +2,7 @@ package dev.alexisok.untitledbot.modules.config;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.CheckReturnValue;
 import java.util.Arrays;
@@ -78,11 +79,15 @@ public final class ConfigTokens {
     
     static {
         addValue("announceXPBoost", "true", "ranks-broadcast.boost", "true", "false");
-        addValue("announceLevelUp", "true", "ranks-broadcast.rankup", "true", "false");
+        addValue("announceLevelUp", "current", "ranks-broadcast.rankup", "current", "none");
         addValue("workMin", "100", "work.limit.minimum", "REGEX", "[0-9]{1,4}");
         addValue("workMax", "500", "work.limit.maximum", "REGEX", "[0-9]{1,4}");
         addValue("workTimeout", "86400", "work.cooldown", "REGEX", "[0-9]{2,5}");
         addValue("prefix", ">", "guild.prefix", "REGEX", ".{1,5}");
+        addValue("stealMin", "50", "steal.limit.minimum", "REGEX", "[0-9]{1,5}");
+        addValue("stealMax", "300", "steal.limit.maximum", "REGEX", "[0-9]{1,5}");
+        addValue("stealChance", "50", "steal.chance", "REGEX", "[0-9]{1,2}");
+        addValue("stealTimeout", "86400", "steal.cooldown", "REGEX", "[0-9]{2,5}");
         TRANSFORM.put("prefix", new String[] {COLON, ":", SEMI_COLON, ";"});
     }
     
@@ -149,6 +154,17 @@ public final class ConfigTokens {
             return value.matches(legalValues[1]);
     
         return Arrays.asList(legalValues).contains(value);
+    }
+    
+    /**
+     * Get the vault key of a specified token.
+     * @param key the token.
+     * @return the vault key, or the default value.
+     */
+    @NotNull
+    @Contract(pure = true)
+    public static String getVaultKey(String key) {
+        return VAULT_KEYS.get(key);
     }
     
 }

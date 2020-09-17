@@ -79,7 +79,6 @@ public final class RankSettings extends UBPlugin {
                     eb.addField("Ranking", "Usage: `rank-settings announce-level-up <current | channel | dm | none>`\n\n" +
                                                    "`current` - the channel where the user levels up.\n" +
                                                    "`channel <channel #>` - a specific channel to send the level up message.\n" +
-                                                   "`dm` - send the user their level up message in a direct message.\n" +
                                                    "`none` - do not do level up messages (does NOT stop the rank module).\n", false);
                     eb.setColor(Color.RED);
                     return eb.build();
