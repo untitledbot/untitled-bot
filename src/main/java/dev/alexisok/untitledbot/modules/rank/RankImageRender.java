@@ -13,7 +13,6 @@ import javax.annotation.CheckReturnValue;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.renderable.RenderableImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -33,6 +32,10 @@ public final class RankImageRender {
         Logger.log("Created tmp rank directory?  " + new File("./tmp/rank/").mkdirs());
         Logger.log("If this is false, it probably means the directory already exists.  If the directory doesn't exist, make sure" +
                            " that the bot has write permissions in the current directory.");
+        for(String fn : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
+            Logger.debug("Font " + fn + " is registered.");
+        }
+        Logger.debug("Done listing fonts.");
     }
     
     /**
@@ -86,11 +89,6 @@ public final class RankImageRender {
         } catch(NullPointerException ignored) {
             return null;
         }
-    
-        for(String fn : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
-            Logger.debug("Font " + fn + " is registered.");
-        }
-        Logger.debug("Done listing fonts.");
         
         //shorten the string up a bit if it's over 1k
         String currentAsDisplay = current >= 1000 ? String.format("%.2fk", current / 1000.0) : "" + current;
@@ -172,8 +170,8 @@ public final class RankImageRender {
         
         //save the image.
         try {
-            ImageIO.write(bi, "png", new File("./tmp/rank/" + name + uniqueID + ".png"));
-            return new File("./tmp/rank/" + name + uniqueID + ".png");
+            ImageIO.write(bi, "png", new File(String.format("./tmp/rank/%d.png", uniqueID)));
+            return new File(String.format("./tmp/rank/%d.png", uniqueID));
         } catch (IOException e) {
             e.printStackTrace();
             return null;
