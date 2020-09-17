@@ -75,57 +75,55 @@ As someone who wants privacy, I respect your right to it as well.  This is a lis
 @@ the above logs will NOT be saved on my end @@
 ```
 
-### Commands
-<a id="commands"></a>
+<dl>
+<h2>Ranking</h2>
+<dd>> <code>rank [user @]</code> - get the rank of yourself or another user.</dd><br>
+<dd>> <code>leaderboard</code> - show a list of the highest ranking users in the server.</dd><br>
+<dd>> <code>rank-total</code> - show the total amount of xp someone has.</dd><br>
+<dd>> <code>rank-settings &lt;setting&gt;</code> - set the rank settings (use <code>help rank-settings</code> for a list of rank settings).</dd><br>
+<dd>> <code>rank-role</code> - give users roles when they level up.</dd><br>
+<dd>> <code>rank-roles</code> - get a list of roles that are assigned on rankup.</dd><br>
 
-`[optional argument] <required argument>`
+<h2>Utilities</h2>
+<dd>> <code>help [command]</code> - get help with a specific command, or display all the commands.</dd><br>
+<dd>> <code>prefix</code> - set the prefix for the guild.</dd><br>
+<dd>> <code>status</code> - get the status and some statistics of the bot.</dd><br>
+<dd>> <code>timestamp &lt;snowflake | user @ | channel #&gt;</code> - get the time a user made their account, a channel was created, or the timestamp of a snowflake.</dd><br>
+<dd>> <code>uptime</code> - get the time since the bot started</dd><br>
+<dd>> <code>info</code> - get info about the server or a specific user.</dd><br>
+<dd>> <code>avatar</code> - get the avatar of yourself or another user.</dd><br>
+<dd>> <code>bug-report</code> - report a bug directly to me.</dd><br>
+<dd>> <code>discord</code> - get an invite link for the Discord support server.</dd><br>
+<dd>> <code>vote</code> - vote for the bot on <a href="https://top.gg">Top.GG</a>.</dd><br>
+<dd>> <code>ping</code> - get the ping of the bot.</dd><br>
+<dd>> <code>inv</code> - list your inventory.</dd><br>
+<dd>> <code>reverse</code> - reverse a string.</dd><br>
+<dd>> <code>config</code> - easy configuration for the bot.</dd><br>
+<dd>> <code>profile</code> - get the profile of another user.</dd><br>
+<dd>> <code>caps</code> - change a string to all capital letters.</dd><br>
+<dd>> <code>lowercase</code> - change a string to all lowercase letters.</dd><br>
+<dd>> <code>alternate-case</code> - MaKe A mEsSaGe ChAnGe EaCh LeTtEr CaPiTaLiZaTiOn.</dd><br>
 
-##### Ranking
-`rank [user @]` - get the rank of yourself or another user.\
-`leaderboard` or `top` - get the highest ranking users in the server.\
-`rank-total [user @]` - get the total amount of xp of yourself or another user.\
-`rank-settings <setting> <value>` - set the rank settings (see `help rank-settings`).\
-`daily` - get a set amount of XP every day.\
-`rank-role <level> <role @ | role ID | role name | none>` - assign roles for users when they level up.\
-`rank-roles` - get a list of current rank roles.
+<h2>Moderation</h2>
+<dd>> <code>log-channel</code> - set the channel where things will be logged.</dd><br>
+<dd>> <code>add-log</code> - add a logging type to the channel.</dd><br>
+<dd>> <code>remove-log</code> - remove a logging type from the channel.</dd><br>
+<dd>> <code>get-log</code> - list all logs currently in use.</dd><br>
 
-##### Utilities
-`help [command]` - get help for a command.\
-`prefix <prefix 1 to 5 chars>` - set the prefix for the server (mentioning the bot works as well).\
-`status` - get the status of the bot.\
-`timestamp <snowflake | user @ | channel #>` - get the timestamp of a discord snowflake.\
-`uptime` - get the uptime for the bot.\
-`avatar <@user>` - get the avatar of a user.\
-`bug-report` - report a bug directly to me.\
+<h2>Fun</h2>
+<dd>> <code>someone</code> - mention a random user without pinging them.</dd><br>
+<dd>> <code>brainfuck</code> - run <a href="https://en.wikipedia.org/wiki/Brainfuck">brainf***</a> code.</dd><br>
+<dd>> <code>8ball</code> - simulate an 8 ball.</dd><br>
+<dd>> <code>ship</code> - ship two different server members (user requested).</dd><br>
+<dd>> <code>20</code> - roll a twenty-sided die.</dd><br>
+<dd>> <code>owo &lt;text&gt;</code> - convewt da text u input to make it vewy kawaii &lt;3</dd><br>
 
-##### Moderation
-`log-channel <text channel #>` - set the logging channel.\
-`add-log` - add a log type to the log channel.\
-`remove-log` - remove a log type from the log channel.\
-`get-log` - get the log types the guild has in use.
-
-##### Fun
-`someone` - mention a random user (does NOT ping them).\
-`brainfuck` - run [Brainf***](https://en.wikipedia.org/wiki/Brainfuck) code.\
-`8ball <question>` - simulate an 8 ball.\
-`ship <user A> <user B>` - ship two different server members.\
-`20` - roll a 20 sided die.\
-`owo <text>` - owofy a stwing of text.
-
-##### Reactions
-`hug` - hug another user (or yourself)...\
-`ayaya` - react with ayaya (or something else).\
-`hide` - hide behind a wall.\
-`disappointed` - display ಠ_ಠ.
-
-#### Economy
-Note: UB$ is not a real currency (unfortunately).
-`vote-reward` or `vr` - get bonus UB$ for [voting for the bot on top.gg](https://top.gg/bot/730135989863055472/vote).
-Other sites supported soon:tm:\
-`work` - work to get UB$.\
-`steal` - (attempt to) steal UB$ from another user.\
-`bet` - let fate decide what happens to the UB$ you bet (and by fate, I mean ThreadLocalRandom).\
-`balanace` or `bal` - view your balance.
+<h2>Reactions</h2>
+<dd>> <code>hug</code> - send a hug gif.</dd><br>
+<dd>> <code>ayaya</code> - I encourage you to not ask questions about this command.</dd><br>
+<dd>> <code>hide</code> - hide behind a wall.</dd><br>
+<dd>> <code>dis</code> - short for disappointed, display ಠ_ಠ</dd><br>
+</dl>
 
 ### Premium?
 As of now, there are not any premium features of the bot, all features come standard for free.\

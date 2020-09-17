@@ -42,16 +42,9 @@ other things:
 * README now has an invite link for the bot because it actually needs it lol
 * `level` is now an alias for `rank`.
 * `brainfuck` now uses standard input (comma) to be fully compliant with the language.
-* i have unified the description of the bot on ALL SITES..... i needed to do that as there was a lot of outdated stuff.
 * ranking now awards 0 to 7 xp instead of 3 to 5.  this should make it a bit more luck based.
 * `rank` and `bal` now displays your stats as an image rather than text.
 
 known bugs:
 * using `:` or `;` as or included in the prefix doesn't work correctly if you configure the prefix using the `config` command.
 * rank roles can be a bit wonky at times.
-
-TODO UPDATE SITE
-TODO UPDATE ALL COMMANDS
-TODO UPDATE README
-TODO UPDATE TOP.GG
-TODO UPDATE OTHER SITES

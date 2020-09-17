@@ -29,7 +29,7 @@ public final class RankImageRender {
     
     private RankImageRender(){}
     
-    private static final String FONT_NAME = "DialogInput";
+    private static final String FONT_NAME = Font.MONOSPACED;
     
     static {
         Logger.log("Created tmp rank directory?  " + new File("./tmp/rank/").mkdirs());
