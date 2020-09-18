@@ -73,10 +73,9 @@ public final class BotClass extends ListenerAdapter {
 	/**
 	 * Nullify the prefix cache for a specific guild.
 	 * @param guildID the ID of the guild.
-	 * @return {@code true} if the element was removed, {@code false} otherwise.   
 	 */
-	public static boolean nullifyPrefixCacheSpecific(String guildID) {
-		return PREFIX_CACHE.remove(guildID) != null;
+	public static void nullifyPrefixCacheSpecific(@NotNull String guildID) {
+		PREFIX_CACHE.remove(guildID);
 	}
 	
 	/**
@@ -84,7 +83,7 @@ public final class BotClass extends ListenerAdapter {
 	 * @param guildID the ID of the guild as a String
 	 * @param prefix the prefix of that guild
 	 */
-	public static void updateGuildPrefix(String guildID, String prefix) {
+	public static void updateGuildPrefix(@NotNull String guildID, @NotNull String prefix) {
 		Logger.debug(String.format("Updating prefix cache to include %s for %s", prefix, guildID));
 		PREFIX_CACHE.put(guildID, prefix);
 		Logger.debug("Prefix cache updated.");
@@ -109,7 +108,7 @@ public final class BotClass extends ListenerAdapter {
 	public static String getPrefix(@NotNull String guildID) {
 		String prefix;
 		if(!PREFIX_CACHE.containsKey(guildID)) {
-			prefix = Vault.getUserDataLocal(null, guildID, "guild.prefix");
+			prefix = Vault.getUserDataLocalOrDefault(null, guildID, "guild.prefix", ">");
 			updateGuildPrefix(guildID, prefix);
 		} else {
 			prefix = PREFIX_CACHE.get(guildID);

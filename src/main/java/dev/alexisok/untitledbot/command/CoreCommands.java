@@ -20,14 +20,12 @@ import dev.alexisok.untitledbot.modules.basic.report.BugReport;
 import dev.alexisok.untitledbot.modules.basic.reverse.Reverse;
 import dev.alexisok.untitledbot.modules.basic.ship.Ship;
 import dev.alexisok.untitledbot.modules.basic.status.Status;
-import dev.alexisok.untitledbot.modules.basic.time.TimeCommand;
 import dev.alexisok.untitledbot.modules.basic.timestamp.TimeStamp;
 import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
 import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
 import dev.alexisok.untitledbot.modules.basic.userinfo.UserInfo;
 import dev.alexisok.untitledbot.modules.basic.vote.Vote;
 import dev.alexisok.untitledbot.modules.config.ConfigHandle;
-import dev.alexisok.untitledbot.modules.config.ConfigTokens;
 import dev.alexisok.untitledbot.modules.eco.Balance;
 import dev.alexisok.untitledbot.modules.profile.Profile;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
@@ -40,7 +38,7 @@ import dev.alexisok.untitledbot.modules.reactions.Dis;
 import dev.alexisok.untitledbot.modules.reactions.Hide;
 import dev.alexisok.untitledbot.modules.reactions.Hug;
 import dev.alexisok.untitledbot.modules.reward.VoteReward;
-import dev.alexisok.untitledbot.modules.rpg.RPGManager;
+import dev.alexisok.untitledbot.modules.rpg.RPGCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -145,7 +143,6 @@ public final class CoreCommands {
         new EightBall().onRegister();
         new AtSomeone().onRegister();
         new Ranks().onRegister();
-        new RPGManager().onRegister();
         new TwentyDice().onRegister();
         new Ship().onRegister();
         new GetUserData().onRegister();
@@ -181,6 +178,8 @@ public final class CoreCommands {
         new Uppercase().onRegister();
         new Lowercase().onRegister();
         new ToggleCase().onRegister();
+        
+        new RPGCommand().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

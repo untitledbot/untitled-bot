@@ -1,7 +1,6 @@
 package dev.alexisok.untitledbot.command;
 
 import dev.alexisok.untitledbot.Main;
-import dev.alexisok.untitledbot.annotation.ToBeRemoved;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -219,22 +218,6 @@ public class CommandRegistrar {
 	public static void registerAlias(@NotNull String command, @NotNull String... aliases) {
 		Arrays.stream(aliases).forEachOrdered(alias -> register(alias, PERMS_REGISTRAR.get(command), REGISTRAR.get(command)));
 		Arrays.stream(aliases).forEachOrdered(alias -> Manual.setHelpPage(alias, Manual.getHelpPagesRaw(command)));
-	}
-	
-	/**
-	 * 
-	 * This method is obsolete, aliases now inherit their 
-	 * 
-	 * @deprecated since 1.3.8
-	 * @see CommandRegistrar#registerAlias(String, String...)
-	 * @param originalCommand the command to copy off of
-	 * @param aliases the alias command
-	 */
-	@Deprecated
-	@ToBeRemoved("1.4")
-	public static void registerAliasManual(@NotNull String originalCommand, @NotNull String...aliases) {
-		for(String alias : aliases)
-			Manual.setHelpPage(alias, Manual.getHelpPagesRaw(originalCommand));
 	}
 	
 	/**

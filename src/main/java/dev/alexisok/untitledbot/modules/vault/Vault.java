@@ -28,6 +28,8 @@ import java.util.*;
 @SuppressWarnings("DuplicatedCode")
 public final class Vault {
     
+    private Vault(){}
+    
     private static final HashMap<String, String> DEFAULT_DATA = new HashMap<>();
     
     private static volatile ArrayList<VaultOperation> OPERATIONS = new ArrayList<>();
