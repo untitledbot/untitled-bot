@@ -3,6 +3,7 @@
 untitled-bot is a multi-purpose bot that
 has a lot of room for customization.  You can self-host it as well.
 
+[![Discord Bots](https://top.gg/api/widget/730135989863055472.svg)](https://top.gg/bot/730135989863055472)
 ![Build](https://github.com/AlexIsOK/untitled-bot/workflows/Java%20CI%20with%20Maven%20(UBUNTU)/badge.svg)
 ![Version](https://img.shields.io/badge/version-1.3-blue)
 ---
