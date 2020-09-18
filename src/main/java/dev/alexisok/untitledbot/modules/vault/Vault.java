@@ -32,7 +32,7 @@ public final class Vault {
     
     private static final HashMap<String, String> DEFAULT_DATA = new HashMap<>();
     
-    private static volatile ArrayList<VaultOperation> OPERATIONS = new ArrayList<>();
+    private static final ArrayList<VaultOperation> OPERATIONS = new ArrayList<>();
     
     private static boolean running = false;
     
@@ -41,14 +41,12 @@ public final class Vault {
      */
     public static class OperationHook extends Thread {
         @Override
-        public void run() {
+        public synchronized void run() {
             Logger.log("Cleaning up...");
             Logger.log("VAULT: there are " + OPERATIONS.size() + " items left in the queue.");
             
             while(OPERATIONS.size() != 0) {
                 if(running)
-                    return;
-                if(OPERATIONS.size() == 0)
                     return;
                 running = true;
     
@@ -72,7 +70,7 @@ public final class Vault {
      * Register the operation scheduler.
      * THIS SHOULD NOT BE RUN BY ANYTHING BUT THE MAIN METHOD.
      */
-    public static void operationScheduler() {
+    public static synchronized void operationScheduler() {
         Thread t = new OperationHook();
         Runtime.getRuntime().addShutdownHook(t);
         TimerTask task = new TimerTask() {
@@ -105,7 +103,7 @@ public final class Vault {
      */
     @NotNull
     @Contract(pure = true)
-    public static HashMap<String, String> getDefaultData() {
+    public static synchronized HashMap<String, String> getDefaultData() {
         return new HashMap<>(DEFAULT_DATA);
     }
     
@@ -114,7 +112,7 @@ public final class Vault {
      * @param key the key.
      * @param data the data.
      */
-    public static void addDefault(String key, String data) {
+    public static synchronized void addDefault(String key, String data) {
         DEFAULT_DATA.put(key, data);
     }
     
@@ -127,7 +125,7 @@ public final class Vault {
      * @param dataValue the data that will be stored under the key.
      * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
-    public static void storeUserDataLocal(String userID, String guildID, @NotNull String dataKey, @NotNull String dataValue)
+    public static synchronized void storeUserDataLocal(String userID, String guildID, @NotNull String dataKey, @NotNull String dataValue)
             throws UserDataCouldNotBeObtainedException {
         if(!shutdownFileInPlace())
             OPERATIONS.add(new VaultOperation(userID, guildID, dataKey, dataValue));
@@ -146,7 +144,7 @@ public final class Vault {
     /**
      * @return true if the shutdown file exists.
      */
-    private static boolean shutdownFileInPlace() {
+    private static synchronized boolean shutdownFileInPlace() {
         return new File("shutdown.ub").exists();
     }
     
@@ -154,7 +152,7 @@ public final class Vault {
      * Piped data
      * @param ve the vault operation
      */
-    private static void storeUserDataPiped(@NotNull VaultOperation ve) {
+    private static synchronized void storeUserDataPiped(@NotNull VaultOperation ve) {
         UserData.checkUserExists(ve.userID, ve.guildID);
         Properties p = new Properties();
         try {
@@ -180,7 +178,7 @@ public final class Vault {
      */
     @Nullable
     @Contract(pure = true)
-    public static String getUserDataLocal(String userID, String guildID, @NotNull String dataKey) throws UserDataCouldNotBeObtainedException {
+    public static synchronized String getUserDataLocal(String userID, String guildID, @NotNull String dataKey) throws UserDataCouldNotBeObtainedException {
         while(OPERATIONS.size() != 0 || running); //this is so bad i hate myself for writing it
         UserData.checkUserExists(userID, guildID);
         Properties p = new Properties();

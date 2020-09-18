@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.rpg.exception.RPGDataFileHasAlreadyBeenInitializedException;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -66,8 +67,14 @@ public final class RPGCommand extends UBPlugin {
                 }
             }
             case "init": {
-                
-                eb.addField("RPG", "Your data file for this guild has been updated to support the RPG.", false);
+                try {
+                    Init.init(message.getAuthor().getId(), message.getGuild().getId());
+                    eb.addField("RPG", "Your data file for this guild has been updated to support the RPG.", false);
+                    eb.setColor(Color.GREEN);
+                } catch(RPGDataFileHasAlreadyBeenInitializedException ignored) {
+                    eb.addField("RPG", "You already started the RPG!", false);
+                    eb.setColor(Color.RED);
+                }
                 return eb.build();
             }
             
