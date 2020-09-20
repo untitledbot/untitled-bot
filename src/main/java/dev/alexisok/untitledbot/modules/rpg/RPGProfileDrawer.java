@@ -35,7 +35,7 @@ final class RPGProfileDrawer {
     @CheckReturnValue
     @Contract(pure = true)
     protected static File render(String userID, String guildID, String randomID) {
-        
+        return null;
     }
     
 }

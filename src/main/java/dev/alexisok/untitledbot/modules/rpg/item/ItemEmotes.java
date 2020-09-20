@@ -12,8 +12,12 @@ import lombok.Data;
 @Data
 public final class ItemEmotes {
     
+    public static final String NONE = "";
+    
     public static final String HEALING_POTION_1  = "";
     public static final String HEALING_POTION_2  = "";
+    public static final String WATER             = "";
+    public static final String EMPTY_POTION      = "";
     public static final String POWER_UP_POTION   = "";
     public static final String DEFENSE_UP_POTION = "";
     public static final String LUCK_UP_POTION    = "";

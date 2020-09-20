@@ -68,7 +68,7 @@ public final class RPGCommand extends UBPlugin {
             }
             case "init": {
                 try {
-                    Init.init(message.getAuthor().getId(), message.getGuild().getId());
+                    Init.init(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong());
                     eb.addField("RPG", "Your data file for this guild has been updated to support the RPG.", false);
                     eb.setColor(Color.GREEN);
                 } catch(RPGDataFileHasAlreadyBeenInitializedException ignored) {

@@ -10,6 +10,7 @@ import dev.alexisok.untitledbot.modules.basic.brainfreak.BrainFreak;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.Lowercase;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.ToggleCase;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.Uppercase;
+import dev.alexisok.untitledbot.modules.basic.datamod.UserDataMod;
 import dev.alexisok.untitledbot.modules.basic.discordCommand.Discord;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
 import dev.alexisok.untitledbot.modules.basic.help.Help;
@@ -18,6 +19,7 @@ import dev.alexisok.untitledbot.modules.basic.ping.Ping;
 import dev.alexisok.untitledbot.modules.basic.prefix.Prefix;
 import dev.alexisok.untitledbot.modules.basic.report.BugReport;
 import dev.alexisok.untitledbot.modules.basic.reverse.Reverse;
+import dev.alexisok.untitledbot.modules.basic.rot13.ROT13;
 import dev.alexisok.untitledbot.modules.basic.ship.Ship;
 import dev.alexisok.untitledbot.modules.basic.status.Status;
 import dev.alexisok.untitledbot.modules.basic.timestamp.TimeStamp;
@@ -180,6 +182,8 @@ public final class CoreCommands {
         new ToggleCase().onRegister();
         
         new RPGCommand().onRegister();
+        new UserDataMod().onRegister();
+        new ROT13().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

@@ -3,6 +3,8 @@ package dev.alexisok.untitledbot.modules.rpg.item;
 /**
  * Enumeration for item rarity, along with their shorter name.
  * 
+ * From worst to best, the rarity is D, C, B, A, S, SS.
+ * 
  * @author AlexIsOK
  * @since 1.4.0
  */
