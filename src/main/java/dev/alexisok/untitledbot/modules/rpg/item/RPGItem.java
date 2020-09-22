@@ -172,20 +172,38 @@ public final class RPGItem {
                 }
         ));
         addToItems(new RPGItem(
-                "Oliy",
-                "oliy",
+                "Balance Test Spell",
+                "balance_test_spell",
+                ItemRarity.PAINITE,
+                ItemClass.BALANCE,
+                "balance_test_spell",
+                "Deal 1 " + ItemEmotes.BALANCE + " damage.",
+                -1,
+                1.00,
+                (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
+                    targets[0].setHealthCurrent(targets[0].getHealthCurrent() - 1);
+                    return "1 damage has been dealt to " + targets[0].getUsername();
+                }
+        ));
+        addToItems(new RPGItem(
+                "Oliy's Blessing",
+                "oliy_blessing",
                 ItemRarity.PAINITE,
                 ItemClass.FROST,
-                "oliy.png",
+                "oliy_blessing.png",
                 "Give a user resident in Oliy Island",
                 -100,
                 0.00, //this always fails lol
                 (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
-                    Objects.requireNonNull(Main.jda.getGuildById(419422246168166400L))
-                            .addRoleToMember(caster.getUserID(),
-                                    Objects.requireNonNull(Main.jda.getRoleById(755412894794907728L)))
-                            .queue();
-                    return "If this bot ever gets added to Oliy's server, I will use this item to give myself resident.";
+                    try {
+                        Objects.requireNonNull(Main.jda.getGuildById(419422246168166400L))
+                                .addRoleToMember(caster.getUserID(),
+                                        Objects.requireNonNull(Main.jda.getRoleById(755412894794907728L)))
+                                .queue();
+                        return "Wow it actually worked!";
+                    } catch(Throwable t) {
+                        return "No resident 4 u";
+                    }
                 } 
         ));
     }

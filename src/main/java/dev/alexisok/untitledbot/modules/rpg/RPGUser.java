@@ -19,6 +19,9 @@ public final class RPGUser {
     private final String guildID;
     
     @Getter
+    private final String username;
+    
+    @Getter
     private long healthCurrent;
     
     @Getter
@@ -30,9 +33,11 @@ public final class RPGUser {
     @Getter
     private long manaMax;
     
-    public RPGUser(String userID, String guildID, long healthCurrent, long healthMax, long manaCurrent, long manaMax) {
+    
+    public RPGUser(String userID, String guildID, String username, long healthCurrent, long healthMax, long manaCurrent, long manaMax) {
         this.userID = userID;
         this.guildID = guildID;
+        this.username = username;
         this.healthCurrent = healthCurrent;
         this.healthMax = healthMax;
         this.manaCurrent = manaCurrent;
