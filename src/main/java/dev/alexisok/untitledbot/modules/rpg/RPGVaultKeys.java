@@ -17,6 +17,8 @@ public final class RPGVaultKeys {
     public static final String DEF             = "rpg.stat.def";
     public static final String HEALTH_CURRENT  = "rpg.stat.hp.current";
     public static final String HEALTH_MAXIMUM  = "rpg.stat.hp.max";
+    public static final String MANA_CURRENT    = "rpg.stat.mana.current";
+    public static final String MANA_MAXIMUM    = "rpg.stat.mana.max";
     public static final String GOLD            = "rpg.stat.gold";
     public static final String SILVER          = "rpg.stat.silver";
     public static final String IN_BATTLE       = "rpg.battle"; //true/false

@@ -1,6 +1,5 @@
 package dev.alexisok.untitledbot.modules.basic.rot13;
 
-import com.google.common.base.Splitter;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
@@ -11,10 +10,8 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
-import java.util.Iterator;
+import java.awt.Color;
 
 /**
  * Do ROT13 stuffs
@@ -56,6 +53,7 @@ public final class ROT13 extends UBPlugin {
         return eb.build();
     }
     
+    @Contract(pure = true)
     private static char switchChar(char c) {
         if(c >= 65 && c <= 77) //A-M
             return (char) (c + 13);

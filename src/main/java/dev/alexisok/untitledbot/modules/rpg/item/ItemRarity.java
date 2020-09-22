@@ -10,7 +10,7 @@ package dev.alexisok.untitledbot.modules.rpg.item;
  */
 public enum ItemRarity {
     
-    CRYSTAL("D"), EMERALD("C"), RUBY("B"), SAPPHIRE("A"), PLATINUM("S"), DIAMOND("SS");
+    CRYSTAL("D"), EMERALD("C"), RUBY("B"), SAPPHIRE("A"), PLATINUM("S"), DIAMOND("SS"), PAINITE("DEV");
     
     private final String name;
     

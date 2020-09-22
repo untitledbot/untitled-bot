@@ -8,7 +8,12 @@ import lombok.Getter;
  */
 public enum ItemClass {
     
-    FIRE("Fire"), FROST("Frost"), LIFE("Life"), DEATH("Death"), STORM("Storm"), BALANCE("Balance"), ALL("All");
+    BALANCE("Balance"),
+    DEATH("Death"),
+    FIRE("Fire"),
+    FROST("Frost"),
+    LIFE("Life"),
+    STORM("Storm");
     
     @Getter
     private final String displayName;

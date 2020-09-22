@@ -43,8 +43,6 @@ final class Init {
         Vault.storeUserDataLocal(userID, guildID, SILVER, "300");
         Vault.storeUserDataLocal(userID, guildID, IN_BATTLE, "false");
         Vault.storeUserDataLocal(userID, guildID, BATTLE_TURN, "false");
-        Vault.storeUserDataLocal(userID, guildID, BATTLE_POTION, "none");
-        Vault.storeUserDataLocal(userID, guildID, POTION_MODIFIER, "+POW_0.00");
         
         //check class
         String classToAssign = Vault.getUserDataLocalOrDefault(userID, null, CLASS, assignRandomClass(randomNumber));

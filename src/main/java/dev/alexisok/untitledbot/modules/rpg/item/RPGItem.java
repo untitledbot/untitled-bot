@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.rpg.item;
 
+import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.modules.rpg.RPGVaultKeys;
 import dev.alexisok.untitledbot.modules.rpg.exception.ConsumableItemWasNotConsumedCorrectlyException;
 import dev.alexisok.untitledbot.modules.vault.Vault;
@@ -19,6 +20,9 @@ import java.util.Objects;
  */
 public final class RPGItem {
     
+    /**
+     * All of the items.  Do not access this or save to this directly.
+     */
     @Getter
     private static final ArrayList<RPGItem> ITEMS = new ArrayList<>();
     
@@ -37,10 +41,10 @@ public final class RPGItem {
     private ItemRarity rarity;
     
     @Getter@Setter
-    private ItemType type;
+    private String imageLocation;
     
     @Getter@Setter
-    private String emoteName;
+    private String description;
     
     @Getter@Setter
     private ItemProperties[] properties;
@@ -51,16 +55,20 @@ public final class RPGItem {
     @Getter
     private final int itemID;
     
+    @Getter@Setter
+    private double accuracy;
+    
     /**
      * Describes RPG items that can be used in the game.
      *
      * @param displayName The name as it is displayed to the user in-game.
      * @param name the name of the item as it is stored in the vault.
      * @param rarity the {@link ItemRarity} of the item, see enum.
-     * @param type the {@link ItemType} of the item, see enum.
      * @param clazz the {@link ItemClass} of the item, see enum.
-     * @param emoteName the emote to display alongside the item.
+     * @param imageLocation the location as it appears relative to the directory inside "./cards/media/"
+     * @param description the description of the card as it is displayed to the user.
      * @param itemID the ID of the item.
+     * @param accuracy the accuracy that the item will work as a decimal, from 0.00 (none) to 1.00 (guaranteed).
      * @param action the {@link ConsumerAction} to execute upon use.
      */
     @NotNull
@@ -68,25 +76,30 @@ public final class RPGItem {
     public RPGItem(@NotNull String displayName,
                    @NotNull String name,
                    @NotNull ItemRarity rarity,
-                   @NotNull ItemType type,
                    @NotNull ItemClass clazz,
-                   @NotNull String emoteName,
+                   @NotNull String imageLocation,
+                   @NotNull String description,
                    int itemID,
+                   double accuracy,
                    @NotNull ConsumerAction action) {
         if(ITEM_IDS.contains(itemID))
             throw new RuntimeException(String.format("An item ID of %d is already registered, so %s cannot have it.", itemID, name));
         this.displayName = displayName;
         this.name = name;
         this.rarity = rarity;
-        this.type = type;
-        this.emoteName = emoteName;
-        this.itemID = itemID;
-        this.action = action;
         this.itemClass = clazz;
+        this.imageLocation = imageLocation;
+        this.description = description;
+        this.itemID = itemID;
+        this.accuracy = accuracy;
+        this.action = action;
     }
     
     /**
      * Add an item to the total items {@link ArrayList}.
+     * 
+     * Do not add to the ITEMS array list directly.
+     * 
      * @param item the {@link RPGItem} to add.
      */
     public static void addToItems(RPGItem item) {
@@ -95,84 +108,85 @@ public final class RPGItem {
     
     static {
         //initialize all of the items.
-        ITEMS.add(new RPGItem("Healing Potion I",
-                "healing_potion_1",
-                ItemRarity.CRYSTAL,
-                ItemType.POTION,
-                ItemClass.ALL,
-                ItemEmotes.HEALING_POTION_1,
-                1,
-                (userID, guildID, targetID, item) -> {
-                    final int AMOUNT = 25;
-                    int healthCurrent = Integer.parseInt(Objects.requireNonNull(Vault.getUserDataLocal(userID, guildID, RPGVaultKeys.HEALTH_CURRENT)));
-                    int healthMaximum = Integer.parseInt(Objects.requireNonNull(Vault.getUserDataLocal(userID, guildID, RPGVaultKeys.HEALTH_MAXIMUM)));
-                    
-                    int store = healthCurrent + AMOUNT;
-                    if(store > healthMaximum)
-                        store = healthMaximum;
-                    
-                    Vault.storeUserDataLocal(userID, guildID, RPGVaultKeys.HEALTH_CURRENT, String.valueOf(store));
-                    return store == healthMaximum
-                            ? "Your health has been fully restored."
-                            : String.format("You have replenished %d health, your current health is %d out of %d.", AMOUNT, store, healthMaximum);
-                })
-        );
-        ITEMS.add(new RPGItem("Healing Potion II",
-                "healing_potion_2",
-                ItemRarity.EMERALD,
-                ItemType.POTION,
-                ItemClass.ALL,
-                ItemEmotes.HEALING_POTION_2,
-                2,
-                (userID, guildID, targetID, item) -> {
-                    final int AMOUNT = 100;
-                    int healthCurrent = Integer.parseInt(Objects.requireNonNull(Vault.getUserDataLocal(userID, guildID, RPGVaultKeys.HEALTH_CURRENT)));
-                    int healthMaximum = Integer.parseInt(Objects.requireNonNull(Vault.getUserDataLocal(userID, guildID, RPGVaultKeys.HEALTH_MAXIMUM)));
-    
-                    int store = healthCurrent + AMOUNT;
-                    if(store > healthMaximum)
-                        store = healthMaximum;
-    
-                    Vault.storeUserDataLocal(userID, guildID, RPGVaultKeys.HEALTH_CURRENT, String.valueOf(store));
-                    return store == healthMaximum
-                                   ? "Your health has been fully restored."
-                                   : String.format("You have replenished %d health, your current health is %d out of %d.", AMOUNT, store, healthMaximum);
-                    }
-        ));
-        ITEMS.add(new RPGItem("POW+ Potion I",
-                "power_up_potion_1",
-                ItemRarity.EMERALD,
-                ItemType.POTION,
-                ItemClass.ALL,
-                ItemEmotes.POWER_UP_POTION,
-                3,
-                (userID, guildID, targetID, item) -> { 
-                    if(!Vault.getUserDataLocalOrDefault(userID, guildID, RPGVaultKeys.IN_BATTLE, "false").equals("true"))
-                        throw new ConsumableItemWasNotConsumedCorrectlyException("You must be in a battle to use this item!");
-                    
-                    Vault.storeUserDataLocal(userID, guildID, RPGVaultKeys.BATTLE_POTION, item.getDisplayName()); //i love lombok
-                    Vault.storeUserDataLocal(userID, guildID, RPGVaultKeys.POTION_MODIFIER, "+POW_0.15"); //pow *= 0.15 for this battle
-                    
-                    return "Your power has been increased by 15%!";
-                }
-        ));
-        ITEMS.add(new RPGItem("DEF+ Potion I",
-                "defense_up_potion",
-                ItemRarity.EMERALD,
-                ItemType.POTION,
-                ItemClass.ALL,
-                ItemEmotes.DEFENSE_UP_POTION,
-                4,
-                (userID, guildID, targetID, item) -> {
-                    if(!Vault.getUserDataLocalOrDefault(userID, guildID, RPGVaultKeys.IN_BATTLE, "false").equals("true"))
-                        throw new ConsumableItemWasNotConsumedCorrectlyException("You must be in a battle to use this item!");
-                    
-                    Vault.storeUserDataLocal(userID, guildID, RPGVaultKeys.BATTLE_POTION, item.getDisplayName());
-                    Vault.storeUserDataLocal(userID, guildID, RPGVaultKeys.POTION_MODIFIER, "+DEF_0.10");
-                    
-                    return "Your defense has been increased by 10%!";
-                }
-        ));
         
+        
+    }
+    
+    private static void registerDevCards() {
+        addToItems(new RPGItem(
+                "SMITE",
+                "smite",
+                ItemRarity.PAINITE,
+                ItemClass.FIRE,
+                "smite.png",
+                "Deal " + Integer.MAX_VALUE + ItemEmotes.FROST + " damage.",
+                -5,
+                1.00,
+                (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
+                
+                    targets[0].setHealthCurrent(targets[0].getHealthCurrent() - Integer.MAX_VALUE);
+                
+                    return "Thou hast been smitten.";
+                }
+        ));
+        addToItems(new RPGItem(
+                "Oopsie",
+                "oopsie",
+                ItemRarity.PAINITE,
+                ItemClass.FROST,
+                "oopsie.png",
+                "Deal -1" + ItemEmotes.STORM + " damage",
+                -4,
+                1.00,
+                (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
+                    targets[0].setHealthCurrent(targets[0].getHealthCurrent() - -1);
+                    return "imagine testing in production 4head";
+                }
+        ));
+        addToItems(new RPGItem(
+                "Uber Heal:TM:",
+                "uber_heal",
+                ItemRarity.PAINITE,
+                ItemClass.DEATH,
+                "uber_heal.png",
+                "Heal " + Integer.MAX_VALUE + " health.",
+                -3,
+                1.00,
+                (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
+                    targets[0].setHealthCurrent(targets[0].getHealthCurrent() + Integer.MAX_VALUE);
+                    return "lel";
+                }
+        ));
+        addToItems(new RPGItem(
+                "Am I Doing it Right?",
+                "am_i_doing_it_right",
+                ItemRarity.PAINITE,
+                ItemClass.STORM,
+                "am_i_doing_it_right.png",
+                "Heal -500 health.",
+                -2,
+                1.00,
+                (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
+                    targets[0].setHealthCurrent(targets[0].getHealthCurrent() + -500);
+                    return "you have been healed -500 health i guess";
+                }
+        ));
+        addToItems(new RPGItem(
+                "Oliy",
+                "oliy",
+                ItemRarity.PAINITE,
+                ItemClass.FROST,
+                "oliy.png",
+                "Give a user resident in Oliy Island",
+                -100,
+                0.00, //this always fails lol
+                (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
+                    Objects.requireNonNull(Main.jda.getGuildById(419422246168166400L))
+                            .addRoleToMember(caster.getUserID(),
+                                    Objects.requireNonNull(Main.jda.getRoleById(755412894794907728L)))
+                            .queue();
+                    return "If this bot ever gets added to Oliy's server, I will use this item to give myself resident.";
+                } 
+        ));
     }
 }

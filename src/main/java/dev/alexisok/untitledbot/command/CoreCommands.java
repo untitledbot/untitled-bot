@@ -10,6 +10,7 @@ import dev.alexisok.untitledbot.modules.basic.brainfreak.BrainFreak;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.Lowercase;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.ToggleCase;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.Uppercase;
+import dev.alexisok.untitledbot.modules.basic.catfact.CatFact;
 import dev.alexisok.untitledbot.modules.basic.datamod.UserDataMod;
 import dev.alexisok.untitledbot.modules.basic.discordCommand.Discord;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
@@ -184,6 +185,7 @@ public final class CoreCommands {
         new RPGCommand().onRegister();
         new UserDataMod().onRegister();
         new ROT13().onRegister();
+        new CatFact().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

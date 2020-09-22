@@ -1,5 +1,8 @@
 package dev.alexisok.untitledbot.modules.rpg.item;
 
+import dev.alexisok.untitledbot.modules.rpg.RPGUser;
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Callback for when an item is used.
  * 
@@ -8,14 +11,12 @@ package dev.alexisok.untitledbot.modules.rpg.item;
  */
 public interface ConsumerAction {
     
-    /**
-     * Called when an {@link RPGItem} is used.
-     * @param userID the Discord ID of the user.
-     * @param guildID the Discord ID of the guild.
-     * @param targetID the Discord ID of the target.
-     * @param item the {@link RPGItem}
-     * @return the String that will be displayed to the user on use.
-     */
-    String onItemUse(String userID, String guildID, String targetID, RPGItem item);
+    String onItemUse(@NotNull String guildID,
+                     @NotNull RPGUser caster,
+                     @NotNull RPGUser[] friendlyUsers,
+                     @NotNull RPGUser[] enemyUsers,
+                     @NotNull RPGUser[] targets,
+                     @NotNull RPGItem item,
+                     @NotNull ItemClass casterClass);
     
 }
