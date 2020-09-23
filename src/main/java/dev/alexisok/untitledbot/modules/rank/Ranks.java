@@ -166,7 +166,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         eb.setColor(Color.GREEN);
         if(!other) {
             try {
-                File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong(), false));
+                File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong()));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
                 return null;
             } catch(InsufficientPermissionException | NullPointerException | IOException | FontFormatException e) {
@@ -190,7 +190,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
             try {
                 int size = message.getMentionedMembers().size();
                 User target = size == 1 ? message.getMentionedMembers().get(0).getUser() : Main.jda.getUserById(args[1]);
-                File f = Objects.requireNonNull(RankImageRender.render(Objects.requireNonNull(target).getId(), message.getGuild().getId(), message.getIdLong(), true));
+                File f = Objects.requireNonNull(RankImageRender.render(Objects.requireNonNull(target).getId(), message.getGuild().getId(), message.getIdLong()));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
                 return null;
             } catch(InsufficientPermissionException | NullPointerException ignored2) {

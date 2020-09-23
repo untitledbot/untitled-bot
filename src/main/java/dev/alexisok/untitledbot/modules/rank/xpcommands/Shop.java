@@ -30,6 +30,7 @@ public final class Shop extends UBPlugin {
     private static final ArrayList<ShopItem> ITEMS = new ArrayList<>();
     
     public static final String CURRENCY_VAULT_NAME = "balance";
+    public static final String BANK_VAULT_NAME     = "balance.bank";
     
     /**
      * Get the amount of ITEMS.

@@ -11,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Describes items for the RPG as Objects.
@@ -108,8 +110,30 @@ public final class RPGItem {
     
     static {
         //initialize all of the items.
+        registerDevCards();
+        registerTierOneCards();
         
+    }
+    
+    private static void registerTierOneCards() {
         
+        addToItems(new RPGItem(
+                "Minor Wrath of Hamderforge",
+                "wrath_of_hamderforge_i",
+                ItemRarity.CRYSTAL,
+                ItemClass.FIRE,
+                "wrath_of_hamderforge_i",
+                "Deal 25 to 35 " + ItemEmotes.FIRE + " damage.",
+                1,
+                0.75,
+                (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
+                    int rand = ThreadLocalRandom.current().nextInt(25, 36); //25 to 35
+                    targets[0].setHealthCurrent(targets[0].getHealthCurrent() - rand);
+                    return String.format("%s has dealt %d damage to %s using %s!", caster.getUsername(), rand, targets[0].getUsername(), item.getName());
+                }
+        ));
+        
+        //TODO
     }
     
     private static void registerDevCards() {

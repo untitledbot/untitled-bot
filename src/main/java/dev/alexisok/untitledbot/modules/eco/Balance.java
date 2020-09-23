@@ -57,10 +57,10 @@ public final class Balance extends UBPlugin {
                 User m = args[1].matches("[0-9]+")
                                  ? Objects.requireNonNull(Main.jda.getUserById(args[1]))
                                  : message.getMentionedMembers().get(0).getUser();
-                File f = Objects.requireNonNull(RankImageRender.render(m.getId(), message.getGuild().getId(), message.getIdLong(), true));
+                File f = Objects.requireNonNull(RankImageRender.render(m.getId(), message.getGuild().getId(), message.getIdLong()));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
             } else {
-                File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong(), false));
+                File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong()));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
             }
             return null;

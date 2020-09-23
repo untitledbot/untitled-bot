@@ -30,6 +30,8 @@ import dev.alexisok.untitledbot.modules.basic.userinfo.UserInfo;
 import dev.alexisok.untitledbot.modules.basic.vote.Vote;
 import dev.alexisok.untitledbot.modules.config.ConfigHandle;
 import dev.alexisok.untitledbot.modules.eco.Balance;
+import dev.alexisok.untitledbot.modules.eco.Deposit;
+import dev.alexisok.untitledbot.modules.eco.Withdraw;
 import dev.alexisok.untitledbot.modules.profile.Profile;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleGet;
@@ -186,6 +188,8 @@ public final class CoreCommands {
         new UserDataMod().onRegister();
         new ROT13().onRegister();
         new CatFact().onRegister();
+        new Deposit().onRegister();
+        new Withdraw().onRegister();
         Logger.log("Modules have been registered.");
     }
 }
