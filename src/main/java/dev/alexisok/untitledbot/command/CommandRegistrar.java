@@ -93,7 +93,7 @@ public class CommandRegistrar {
 		
 		if(!commandName.matches("^[a-z0-9_-]*$"))
 			throw new IllegalArgumentException("Command does not match regex!");
-		if(!permission.matches("^[a-z]([a-z][.]?)+[a-z]$") && !permission.equals("admin") && !permission.equals("owner")) //this took too long to make...
+		if(!permission.equals("admin") && !permission.equals("owner")) //this took too long to make...
 			throw new IllegalArgumentException("Command permission does not match regex!");
 		
 		REGISTRAR.put(commandName, command);

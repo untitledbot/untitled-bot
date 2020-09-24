@@ -1,6 +1,7 @@
 package dev.alexisok.untitledbot.modules.starboard;
 
 import dev.alexisok.untitledbot.Main;
+import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -26,8 +27,8 @@ import java.util.List;
  */
 public final class Starboard extends ListenerAdapter {
     
+    //speed ups
     private static final HashMap<String, Boolean> STARBOARD_ENABLED_CACHE = new HashMap<>();
-    private static final HashMap<String, String>  STARBOARD_CHANNEL_CACHE = new HashMap<>();
     
     /**
      * Void the starboard cache for a guild in case it is updated.
@@ -35,12 +36,10 @@ public final class Starboard extends ListenerAdapter {
      */
     public static void voidCacheForGuild(String guildID) {
         STARBOARD_ENABLED_CACHE.remove(guildID);
-        STARBOARD_CHANNEL_CACHE.remove(guildID);
     }
     
     @Override
     public void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent e) {
-        Logger.debug("Guild message emote added.");
         boolean shouldRun;
         if(!STARBOARD_ENABLED_CACHE.containsKey(e.getGuild().getBannerId())) {
             shouldRun = Vault.getUserDataLocalOrDefault(null, e.getGuild().getId(), "starboard", "false").equals("true");
@@ -50,16 +49,23 @@ public final class Starboard extends ListenerAdapter {
         }
         
         if(shouldRun) {
-            Logger.debug("Stuff and things");
             try {
+                //oh no
+                //if the emote is not :star:
                 if(e.getReactionEmote().getEmoji().equals("\u2B50")) {
+                    //get the required amount of the emote
                     int count = Integer.parseInt(Vault.getUserDataLocalOrDefault(null, e.getGuild().getId(), "starboard.threshold", "10"));
-                    ArrayList<MessageReaction> reactions = new ArrayList<>(e.getChannel().retrieveMessageById(e.getMessageId()).complete().getReactions());
-                    reactions.removeIf(messageReaction1 -> !messageReaction1.getReactionEmote().getEmoji().equals("\u2B50"));
-                    if(reactions.get(0).getCount() >= count) {
-                        Message a = e.getChannel().retrieveMessageById(e.getMessageId()).complete();
-                        pinMessage(e.getGuild().getId(), a);
-                    }
+                    //retrieve the message and queue it to check
+                    e.getChannel().retrieveMessageById(e.getMessageId()).queue(consumer -> {
+                        //remove any reactions from the List that are not :star: (does not remove them on Discord)
+                        ArrayList<MessageReaction> reactions = new ArrayList<>(consumer.getReactions());
+                        reactions.removeIf(messageReaction1 -> !messageReaction1.getReactionEmote().getEmoji().equals("\u2B50"));
+                        //check conditions
+                        if(reactions.get(0).getCount() >= count) {
+                            //pin the message...
+                            e.getChannel().retrieveMessageById(e.getMessageId()).queue(consumer1 -> pinMessage(e.getGuild().getId(), consumer1));
+                        }
+                    });
                 }
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -72,8 +78,6 @@ public final class Starboard extends ListenerAdapter {
      * @param guildID the ID of the guild.
      */
     private static void pinMessage(@NotNull String guildID, @NotNull Message linkedMessage) {
-        Logger.debug("Pinning the message");
-        
         String channelID = Vault.getUserDataLocalOrDefault(null, guildID, "starboard.channel", "none");
         
         if(channelID.equals("none")) return;
@@ -91,13 +95,12 @@ public final class Starboard extends ListenerAdapter {
         } catch(Throwable ignored) {}
         
         String message = linkedMessage.getContentRaw();
-        message = message.substring(0, Math.min(message.length(), 1900)); //1900 to be safe TODO test this
-        
-        
-        eb.setAuthor(linkedMessage.getAuthor().getAvatarUrl());
+        message = message.substring(0, Math.min(message.length(), 1999)); //1999 to be safe
+    
         eb.setTimestamp(linkedMessage.getTimeCreated());
         eb.setColor(Color.BLUE);
         eb.setTitle(linkedMessage.getAuthor().getName() + "#" + linkedMessage.getAuthor().getDiscriminator());
+        eb.setFooter("\n\n\n" + linkedMessage.getAuthor().getName(), linkedMessage.getAuthor().getAvatarUrl());
         eb.setDescription(message);
         
         try {
