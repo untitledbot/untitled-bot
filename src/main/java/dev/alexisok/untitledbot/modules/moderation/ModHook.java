@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.awt.*;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
@@ -51,12 +52,12 @@ public final class ModHook extends ListenerAdapter {
                 "Add a specific logging type to the log channel.\n" +
                         "Usage: add-log <type>\n" +
                         "To remove a log, use the remove-log command.\n" +
-                        "A list of all logs available is on the wiki https://github.com/alexisok/untitled-bot/wiki");
+                        "A list of all logs can be found using the command `log-types`");
         Manual.setHelpPage("remove-log",
                 "Remove a specific logging type to the log channel.\n" +
                         "Usage: remove-log <type>\n" +
                         "To add a log, use the add-log command.\n" +
-                        "A list of all logs available is on the wiki https://github.com/alexisok/untitled-bot/wiki");
+                        "A list of all logs can be found using the command `log-types`");
         Manual.setHelpPage("get-log", "Get the logging types for this guild.\n" +
                                               "Usage: get-log\n");
         
@@ -71,10 +72,26 @@ public final class ModHook extends ListenerAdapter {
      */
     private static boolean ch(String guildID, LogTypes lt) {
         try {
-            if(Vault.getUserDataLocal(null, guildID, "log.channel") == null ||
-                       Objects.equals(Vault.getUserDataLocal(null, guildID, "log.channel"), "null"))
+            String channelID = Vault.getUserDataLocal(null, guildID, "log.channel");
+            if(channelID == null || channelID.equals("null"))
                 return false;
+            ArrayList<TextChannel> guildChannels = new ArrayList<>(Main.jda.getGuildById(guildID).getTextChannels());
+            ArrayList<String> channelIDs = new ArrayList<>();
+            for(TextChannel tc : guildChannels) {
+                channelIDs.add(tc.getId());
+            }
+            boolean found = false;
+            for(String ID : channelIDs) {
+                if(ID.equals(channelID)) {
+                    found = true;
+                    break;
+                }
+            }
+            
+            if(!found) return false;
+            
             String[] policies = Vault.getUserDataLocal(null, guildID, "log.policies").split(",");
+            
             for(String s : policies) {
                 if(LogTypes.valueOf(s).equals(lt))
                     return true;

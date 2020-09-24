@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * Set the logging channels.
@@ -42,9 +43,32 @@ public final class SetLogChannel extends UBPlugin {
         if(!args[1].equals("null")) {
             TextChannel tc = message.getMentionedChannels().get(0);
     
-            if (tc.isNSFW())
-                eb.addField("Warning", "Channel is NSFW", false);
+            ArrayList<TextChannel> IDsList = new ArrayList<>(message.getGuild().getTextChannels());
+            ArrayList<String> IDs = new ArrayList<>();
+            
+            for(TextChannel tc1 : IDsList) {
+                IDs.add(tc1.getId());
+            }
+            
+            boolean found = false;
     
+            for(String id : IDs) {
+                if(id.equals(tc.getId())) {
+                    found = true;
+                    break;
+                }
+            }
+            
+            if(!found) {
+                eb.addField("Logging", "Usage: log-channel <text channel # | null>", false);
+                eb.setColor(Color.RED);
+                return eb.build();
+            }
+            
+            if(tc.isNSFW())
+                eb.addField("Warning", "Channel is NSFW", false);
+            
+            
             //make sure the bot has access to the channel
             if (!tc.canTalk()) {
                 eb.addField("Logging", "Cannot access that channel, do I have permission to send messages there?", false);
