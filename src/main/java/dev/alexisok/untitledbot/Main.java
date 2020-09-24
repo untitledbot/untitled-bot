@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.cron.Sender;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
+import dev.alexisok.untitledbot.modules.starboard.Starboard;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.PluginLoader;
 import net.dv8tion.jda.api.JDA;
@@ -23,6 +24,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
+import static net.dv8tion.jda.api.requests.GatewayIntent.*;
+import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_MEMBERS;
+
 /**
  *
  * Main class, contains the main method.
@@ -36,7 +40,7 @@ import java.util.*;
  */
 public final class Main {
     
-    public static final String VERSION = "1.3.21";
+    public static final String VERSION = "1.4.0";
     public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
     public static final String DATA_PATH;
     public static final String PREFIX;
@@ -209,9 +213,9 @@ public final class Main {
         try {
             //message reactions may be used for a future release
             jda = new JDABuilder(token)
-                          .enableIntents(GatewayIntent.GUILD_MESSAGE_REACTIONS)
+                          .enableIntents(GUILD_MESSAGE_REACTIONS, GUILD_EMOJIS, GUILD_MEMBERS)
                           .setMemberCachePolicy(MemberCachePolicy.ALL)
-                          .addEventListeners(new ModHook(), new BotClass(), new Sender())
+                          .addEventListeners(new ModHook(), new BotClass(), new Starboard())
                           .build();
             jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help"));
             

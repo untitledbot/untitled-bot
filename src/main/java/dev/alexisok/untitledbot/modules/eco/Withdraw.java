@@ -47,7 +47,13 @@ public final class Withdraw extends UBPlugin {
                 throw new Exception();
             if(amountToDeposit < 1)
                 throw new NumberFormatException();
-        
+            
+            if(moneyPockets + amountToDeposit < 0) {
+                eb.addField("Uhm", "Somehow, you reached the maximum amount of money...", false);
+                eb.setColor(Color.RED);
+                return eb.build();
+            }
+            
             Vault.storeUserDataLocal(message.getAuthor().getId(),
                     message.getGuild().getId(),
                     Shop.CURRENCY_VAULT_NAME,

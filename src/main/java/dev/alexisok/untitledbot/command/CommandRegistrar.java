@@ -85,11 +85,11 @@ public class CommandRegistrar {
 	 *                will be executed when the command is called.
 	 * @throws IllegalArgumentException if the command does not match the regex.
 	 */
-	public static void register(@NotNull String commandName, String permission, @NotNull Command command)
+	public static void register(@NotNull String commandName, @NotNull String permission, @NotNull Command command)
 			throws IllegalArgumentException {
 		
 		if(REGISTRAR.containsKey(commandName))
-			return;
+			throw new CommandAlreadyRegisteredException();
 		
 		if(!commandName.matches("^[a-z0-9_-]*$"))
 			throw new IllegalArgumentException("Command does not match regex!");

@@ -3,14 +3,19 @@ ONE OF THE BIGGEST UPDATES FOR UNTITLED-BOT!
 new things:
 * `rpg` - the rpg.  please read the documentation for this because it is quite long.TODO
 * `usrdatamod` - modify user data (owner only)
-* `pay` and `give` - give a user UB$.TODO
+* `pay` and `give` - give a user UB$.
+* `bet` - bet UB$ (not a real currency btw before i get sued).TODO
 * `deposit` - deposit UB$ into your bank where it cannot be stolen.
 * `withdraw` - withdraw UB$ from your bank into your pockets.
+* `starboard` - have users add a star emoji to put the messages in a starboard channel.
 * there are now free profile backgrounds for all users, available on the site https://untitled-bot.xyz.TODO
 * `set-background` - to set a background from one of the images on the site.TODO
 * custom profile backgrounds are available to anyone who joins the server and asks for one, though they must be approved.
 * `rot13` - run a string through ROT13.
 * `data-delete` - delete your data.  Note: your user ID is used for some RNG stuff, so unless you make a new account, you will always be the same class.TODO
+
+changes:
+* `top` command now actually looks niceish.TODO
 
 bug fixes:
 * `top` command won't respond if you try to get more than 20 or so members.TODO

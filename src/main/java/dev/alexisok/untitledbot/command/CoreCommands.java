@@ -31,6 +31,7 @@ import dev.alexisok.untitledbot.modules.basic.vote.Vote;
 import dev.alexisok.untitledbot.modules.config.ConfigHandle;
 import dev.alexisok.untitledbot.modules.eco.Balance;
 import dev.alexisok.untitledbot.modules.eco.Deposit;
+import dev.alexisok.untitledbot.modules.eco.Pay;
 import dev.alexisok.untitledbot.modules.eco.Withdraw;
 import dev.alexisok.untitledbot.modules.profile.Profile;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
@@ -184,12 +185,14 @@ public final class CoreCommands {
         new Lowercase().onRegister();
         new ToggleCase().onRegister();
         
+        //1.4 commands
         new RPGCommand().onRegister();
         new UserDataMod().onRegister();
         new ROT13().onRegister();
         new CatFact().onRegister();
         new Deposit().onRegister();
         new Withdraw().onRegister();
+        new Pay().onRegister();
         Logger.log("Modules have been registered.");
     }
 }
