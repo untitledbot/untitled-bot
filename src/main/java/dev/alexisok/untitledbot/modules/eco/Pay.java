@@ -81,7 +81,7 @@ public final class Pay extends UBPlugin {
             eb.setColor(Color.GREEN);
             return eb.build();
             
-        } catch(ArrayIndexOutOfBoundsException ignored) {
+        } catch(IndexOutOfBoundsException ignored) {
             eb.addField("Pay", "Usage: `pay <user @> <amount>`", false);
             eb.setColor(Color.RED);
             return eb.build();
@@ -93,7 +93,7 @@ public final class Pay extends UBPlugin {
         CommandRegistrar.register("pay", this);
         Manual.setHelpPage("pay", "Pay someone UB$.\n" +
                                           "Usage: `pay <user @> <amount>`\n" +
-                                          "Note: funds are withdrawn from your bank, not your pocket..");
+                                          "Note: funds are withdrawn from your bank, not your pocket.");
         CommandRegistrar.registerAlias("pay", "give", "transfer");
     }
 }

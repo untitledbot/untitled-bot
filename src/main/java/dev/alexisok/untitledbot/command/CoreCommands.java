@@ -45,6 +45,7 @@ import dev.alexisok.untitledbot.modules.reactions.Hide;
 import dev.alexisok.untitledbot.modules.reactions.Hug;
 import dev.alexisok.untitledbot.modules.reward.VoteReward;
 import dev.alexisok.untitledbot.modules.rpg.RPGCommand;
+import dev.alexisok.untitledbot.modules.starboard.StarboardHandle;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -193,6 +194,7 @@ public final class CoreCommands {
         new Deposit().onRegister();
         new Withdraw().onRegister();
         new Pay().onRegister();
+        new StarboardHandle().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

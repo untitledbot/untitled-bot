@@ -2,16 +2,13 @@ package dev.alexisok.untitledbot;
 
 import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.logging.Logger;
-import dev.alexisok.untitledbot.modules.cron.Sender;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import dev.alexisok.untitledbot.modules.starboard.Starboard;
 import dev.alexisok.untitledbot.modules.vault.Vault;
-import dev.alexisok.untitledbot.plugin.PluginLoader;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.jetbrains.annotations.Contract;
@@ -25,7 +22,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;
-import static net.dv8tion.jda.api.requests.GatewayIntent.GUILD_MEMBERS;
 
 /**
  *
@@ -146,7 +142,12 @@ public final class Main {
         }
         
         new Timer().schedule(task, 1000L, 5000L);
-        try {new File(String.format("%s/%s", STATS_DIR, DAY_FOR_STATS)).createNewFile();} catch (IOException e) {e.printStackTrace();}
+        try {
+            if(!new File(String.format("%s/%s", STATS_DIR, DAY_FOR_STATS)).createNewFile())
+                throw new IOException();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     /**
@@ -183,16 +184,10 @@ public final class Main {
     @SuppressWarnings("deprecation")
     public static void main(@NotNull String[] args) {
         
-        checkArgs(args.clone());
-        
         Logger.log("Starting untitled bot " + VERSION + ".");
         Logger.log("Starting in location " + System.getProperty("user.dir"));
         
         String token;
-        
-        Logger.log("Loading plugins...");
-        PluginLoader.loadPlugins();
-        Logger.log("Plugin loading done.");
         
         Logger.log("Installing VAULT scheduler...");
         Vault.operationScheduler();
@@ -227,27 +222,6 @@ public final class Main {
         CoreCommands.registerCoreCommands();
         CoreCommands.registerModules();
         
-    }
-    
-    /**
-     * Check the arguments.  The arguments have their own method because
-     * I feel as if it is cleaner to do it this way than to have
-     * everything be done in the main method.
-     *
-     * @param args arguments
-     */
-    private static void checkArgs(@NotNull String[] args) {
-        
-        for(int i = 0; i < args.length; i++) {
-            args[i] = args[i].toLowerCase();
-        }
-        
-        for(String s : args) {
-            if ("--version".equals(s)) {
-                System.out.println("v" + VERSION);
-                System.exit(0);
-            }
-        }
     }
     
     /**

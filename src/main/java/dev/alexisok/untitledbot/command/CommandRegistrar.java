@@ -74,10 +74,10 @@ public class CommandRegistrar {
 	 * The {@code permission} parameter is here for legacy reasons, but it may change in future releases.
 	 * 
 	 * @param commandName the name of the command.  Must match {@code ^[a-z0-9_-]*$} (alphanumerical
-	 *                    lowercase only plus underscores and hyphens).   
+	 *                    lowercase only plus underscores and hyphens).
 	 * @param permission If the permission node is {@code admin}, users will need the Discord administrator permission
-	 *                   to execute the command, or {@code owner} for the owner of the bot.  Any other nodes will throw an exception.<br>
-	 *                   Use {@link CommandRegistrar#register(String, Command)} to register a command that everyone can run.    
+	 *                   to execute the command, or {@code owner} for the owner of the bot.  Any other nodes will be ignored.<br>
+	 *                   Use {@link CommandRegistrar#register(String, Command)} to register a command that everyone can run.
 	 *                   <br>
 	 *                   Special cases: you can pass "admin" as the string name to require the user to
 	 *                   require the user to have administrator or a role with administrator.
@@ -93,8 +93,6 @@ public class CommandRegistrar {
 		
 		if(!commandName.matches("^[a-z0-9_-]*$"))
 			throw new IllegalArgumentException("Command does not match regex!");
-		if(!permission.equals("admin") && !permission.equals("owner")) //this took too long to make...
-			throw new IllegalArgumentException("Command permission does not match regex!");
 		
 		REGISTRAR.put(commandName, command);
 		PERMS_REGISTRAR.put(commandName, permission);

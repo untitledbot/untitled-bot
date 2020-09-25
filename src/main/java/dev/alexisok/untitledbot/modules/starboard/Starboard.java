@@ -1,7 +1,6 @@
 package dev.alexisok.untitledbot.modules.starboard;
 
 import dev.alexisok.untitledbot.Main;
-import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -15,9 +14,13 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * 
@@ -29,6 +32,15 @@ public final class Starboard extends ListenerAdapter {
     
     //speed ups
     private static final HashMap<String, Boolean> STARBOARD_ENABLED_CACHE = new HashMap<>();
+    
+    private static final String STARBOARD_DIR = "./stars/";
+    
+    static {
+        Logger.log("Checking to see if the stars directory exists...");
+        
+        Logger.log("Starboard directory creation returned " + new File(STARBOARD_DIR).mkdir());
+        Logger.log("...I have no idea what that means, just check if there is a directory named 'stars' if you're having problems.");
+    }
     
     /**
      * Void the starboard cache for a guild in case it is updated.
@@ -89,7 +101,9 @@ public final class Starboard extends ListenerAdapter {
         if(!tc.canTalk()) return;
     
         EmbedBuilder eb = new EmbedBuilder();
-    
+        
+        addMessageIDToFile(linkedMessage);
+        
         try {
             eb.setImage(linkedMessage.getAttachments().get(0).getUrl());
         } catch(Throwable ignored) {}
@@ -106,6 +120,19 @@ public final class Starboard extends ListenerAdapter {
         try {
             tc.sendMessage(eb.build()).queue();
         } catch(Throwable ignored) {}
+    }
+    
+    private static void addMessageIDToFile(@NotNull Message m) {
+        File f = new File(STARBOARD_DIR + m.getGuild().getId() + ".star");
+        try {
+            if(!f.exists()) {
+                if(!f.createNewFile())
+                    throw new IOException();
+            }
+            Files.write(Paths.get(f.toURI()), m.getId().getBytes(), StandardOpenOption.APPEND);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
     }
     
     @Override

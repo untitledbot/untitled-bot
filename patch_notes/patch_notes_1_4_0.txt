@@ -20,10 +20,12 @@ changes:
 * `info` command is now readable to non-developers.TODO
 
 dev changes:
-* all commands that do not use the permission node "owner" or "admin" are now deprecated, and will throw exceptions.
+* removed a lot of stuff that was marked as deprecated and to be removed.  removed some other stuff as well.
+* cleaned up some things i guess.
 
 bug fixes:
 * `top` command won't respond if you try to get more than 20 or so members.TODO
+* `rank-role` wouldn't allow assigning of roles for level 100.TODO
 
 TODO add to README
 TODO add to site
