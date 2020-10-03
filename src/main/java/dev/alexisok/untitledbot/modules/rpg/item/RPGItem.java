@@ -1,9 +1,7 @@
 package dev.alexisok.untitledbot.modules.rpg.item;
 
 import dev.alexisok.untitledbot.Main;
-import dev.alexisok.untitledbot.modules.rpg.RPGVaultKeys;
-import dev.alexisok.untitledbot.modules.rpg.exception.ConsumableItemWasNotConsumedCorrectlyException;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Contract;
@@ -11,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -57,6 +54,12 @@ public final class RPGItem {
     @Getter
     private final int itemID;
     
+    @Getter
+    private final int maximumItemCount;
+    
+    @Getter@Setter
+    private final ItemUses use;
+    
     @Getter@Setter
     private double accuracy;
     
@@ -67,8 +70,11 @@ public final class RPGItem {
      * @param name the name of the item as it is stored in the vault.
      * @param rarity the {@link ItemRarity} of the item, see enum.
      * @param clazz the {@link ItemClass} of the item, see enum.
-     * @param imageLocation the location as it appears relative to the directory inside "./cards/media/"
-     * @param description the description of the card as it is displayed to the user.
+     * @param imageLocation the location as it appears relative to the directory inside "./cards/media/".
+     *                      This is NOT the location where the card is stored.
+     * @param description the description of the card as it is displayed to the user.  This will automatically
+     *                    change the names of {@link ItemClass}es to be the colour they need to be (such as
+     *                    red for FIRE, but the names of the classes must be IN ALL CAPS...)
      * @param itemID the ID of the item.
      * @param accuracy the accuracy that the item will work as a decimal, from 0.00 (none) to 1.00 (guaranteed).
      * @param action the {@link ConsumerAction} to execute upon use.
@@ -81,8 +87,10 @@ public final class RPGItem {
                    @NotNull ItemClass clazz,
                    @NotNull String imageLocation,
                    @NotNull String description,
+                   @NotNull ItemUses use,
                    int itemID,
                    double accuracy,
+                   int maximumItemCount,
                    @NotNull ConsumerAction action) {
         if(ITEM_IDS.contains(itemID))
             throw new RuntimeException(String.format("An item ID of %d is already registered, so %s cannot have it.", itemID, name));
@@ -92,8 +100,10 @@ public final class RPGItem {
         this.itemClass = clazz;
         this.imageLocation = imageLocation;
         this.description = description;
+        this.use = use;
         this.itemID = itemID;
         this.accuracy = accuracy;
+        this.maximumItemCount = maximumItemCount;
         this.action = action;
     }
     
@@ -111,41 +121,63 @@ public final class RPGItem {
     static {
         //initialize all of the items.
         registerDevCards();
-        registerTierOneCards();
+        registerFireCards();
         
+        //do this last
+        generateAllImages();
     }
     
-    private static void registerTierOneCards() {
-        
+    private static void registerFireCards() {
+        Logger.log("Registering fire cards");
         addToItems(new RPGItem(
                 "Minor Wrath of Hamderforge",
                 "wrath_of_hamderforge_i",
                 ItemRarity.CRYSTAL,
                 ItemClass.FIRE,
                 "wrath_of_hamderforge_i",
-                "Deal 25 to 35 " + ItemEmotes.FIRE + " damage.",
+                "Deal 25 to 35 FIRE damage.",
+                ItemUses.BATTLE,
                 1,
                 0.75,
+                900,
                 (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
                     int rand = ThreadLocalRandom.current().nextInt(25, 36); //25 to 35
                     targets[0].setHealthCurrent(targets[0].getHealthCurrent() - rand);
                     return String.format("%s has dealt %d damage to %s using %s!", caster.getUsername(), rand, targets[0].getUsername(), item.getName());
                 }
         ));
-        
-        //TODO
+        addToItems(new RPGItem(
+                "TODO", //TODO
+                "todo",
+                ItemRarity.EMERALD,
+                ItemClass.FIRE,
+                "todo",
+                "Deal 1 FIRE damage, then deal 40 FIRE damage.",
+                ItemUses.BATTLE,
+                2,
+                0.75,
+                700,
+                (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
+                    targets[0].setHealthCurrent(targets[0].getHealthCurrent() - 1);
+                    targets[0].setHealthCurrent(targets[0].getHealthCurrent() - 40);
+                    return ""; //FIXME
+                }
+        ));
     }
     
     private static void registerDevCards() {
+        Logger.log("Registering dev cards that do nothing i guess");
         addToItems(new RPGItem(
                 "SMITE",
                 "smite",
                 ItemRarity.PAINITE,
                 ItemClass.FIRE,
                 "smite.png",
-                "Deal " + Integer.MAX_VALUE + ItemEmotes.FROST + " damage.",
+                "Deal " + Integer.MAX_VALUE + " STORM damage.",
+                ItemUses.BATTLE,
                 -5,
                 1.00,
+                0,
                 (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
                 
                     targets[0].setHealthCurrent(targets[0].getHealthCurrent() - Integer.MAX_VALUE);
@@ -160,8 +192,10 @@ public final class RPGItem {
                 ItemClass.FROST,
                 "oopsie.png",
                 "Deal -1" + ItemEmotes.STORM + " damage",
+                ItemUses.BATTLE,
                 -4,
                 1.00,
+                0,
                 (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
                     targets[0].setHealthCurrent(targets[0].getHealthCurrent() - -1);
                     return "imagine testing in production 4head";
@@ -173,9 +207,11 @@ public final class RPGItem {
                 ItemRarity.PAINITE,
                 ItemClass.DEATH,
                 "uber_heal.png",
-                "Heal " + Integer.MAX_VALUE + " health.",
+                "HEAL " + Integer.MAX_VALUE + " health.",
+                ItemUses.NOT_DIALOGUE,
                 -3,
                 1.00,
+                0,
                 (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
                     targets[0].setHealthCurrent(targets[0].getHealthCurrent() + Integer.MAX_VALUE);
                     return "lel";
@@ -187,9 +223,11 @@ public final class RPGItem {
                 ItemRarity.PAINITE,
                 ItemClass.STORM,
                 "am_i_doing_it_right.png",
-                "Heal -500 health.",
+                "HEAL -500 health.",
+                ItemUses.NOT_DIALOGUE,
                 -2,
                 1.00,
+                0,
                 (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
                     targets[0].setHealthCurrent(targets[0].getHealthCurrent() + -500);
                     return "you have been healed -500 health i guess";
@@ -202,8 +240,10 @@ public final class RPGItem {
                 ItemClass.BALANCE,
                 "balance_test_spell",
                 "Deal 1 " + ItemEmotes.BALANCE + " damage.",
+                ItemUses.BATTLE,
                 -1,
                 1.00,
+                0,
                 (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
                     targets[0].setHealthCurrent(targets[0].getHealthCurrent() - 1);
                     return "1 damage has been dealt to " + targets[0].getUsername();
@@ -215,20 +255,65 @@ public final class RPGItem {
                 ItemRarity.PAINITE,
                 ItemClass.FROST,
                 "oliy_blessing.png",
-                "Give a user resident in Oliy Island",
+                "Give a user the Oliy and Friends role in Oliy Island.\nThis is only usable by Oliy.",
+                ItemUses.ANYTIME,
                 -100,
-                0.00, //this always fails lol
+                1.00,
+                1,
                 (guildID, caster, friendlyUsers, enemyUsers, targets, item, casterClass) -> {
+                    if(!caster.getUserID().equals("129908908096487424"))
+                        return "Error: only Oliy is allowed to use this item.  Become him and try again.";
                     try {
                         Objects.requireNonNull(Main.jda.getGuildById(419422246168166400L))
-                                .addRoleToMember(caster.getUserID(),
-                                        Objects.requireNonNull(Main.jda.getRoleById(755412894794907728L)))
+                                .addRoleToMember(targets[0].toString(),
+                                        Objects.requireNonNull(Main.jda.getRoleById(755412615605518469L)))
                                 .queue();
                         return "Wow it actually worked!";
                     } catch(Throwable t) {
-                        return "No resident 4 u";
+                        return "<@" + targets[0] + "> is not Oliy's friend :(";
                     }
                 } 
         ));
     }
+    
+    /**
+     * Renders all the cards into images to be used.
+     */
+    public static void generateAllImages() {
+        Logger.log("Generating images, this might take a while");
+        RPGCardDrawer.renderCards();
+        Logger.log("Done!");
+    }
+    
+    /**
+     * toString method.
+     * 
+     * Get the name of the card, this is the same
+     * as {@link RPGItem#getName()}.
+     * 
+     * @return the name of the card.
+     */
+    @Override
+    public String toString() {
+        return this.name;
+    }
+    
+    /**
+     * Check to see if two RPGItems are equal.
+     * 
+     * Checks to see if the Object is the same type
+     * then compares the names as described in
+     * {@link RPGItem#getName()} and compares it with
+     * {@code this}.
+     * 
+     * @param o the item to compare
+     * @return {@code true} if the two items have the same name, {@code false} otherwise.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if(!(o instanceof RPGItem))
+            return false;
+        return ((RPGItem) o).name.equals(this.name);
+    }
+    
 }

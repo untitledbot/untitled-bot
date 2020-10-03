@@ -5,7 +5,7 @@ new things:
 * `usrdatamod` - modify user data (owner only)
 * `pay` and `give` - give a user UB$.
 * `bet` - bet UB$ (not a real currency btw before i get sued).TODO
-* `deposit` - deposit UB$ into your bank where it cannot be stolen.
+* `deposit` - deposit UB$ into your bank where it cannot be stolen.TODO add cooldown
 * `withdraw` - withdraw UB$ from your bank into your pockets.
 * `starboard` - have users add a star emoji to put the messages in a starboard channel.
 * `catfact` or `cat` - get a catfact.
@@ -14,18 +14,26 @@ new things:
 * custom profile backgrounds are available to anyone who joins the server and asks for one, though they must be approved.
 * `rot13` - run a string through ROT13.
 * `data-delete` - delete your data.  Note: your user ID is used for some RPG stuff, so unless you make a new account, you will always be the same class.TODO
+* `source` and `github` - link to the github page.TODO
+* `which` - get the package of a command.
 
 changes:
 * `top` command now actually looks niceish.TODO
 * `info` command is now readable to non-developers.TODO
+* `rob` is now an alias to `steal`
+* `rank-settings announce-level-up current` is no longer ambiguous.TODO
 
 dev changes:
 * removed a lot of stuff that was marked as deprecated and to be removed.  removed some other stuff as well.
 * cleaned up some things i guess.
+* touching the shutdown file now stops accepting new commands but waits 10s for other commands to finish.TODO
 
 bug fixes:
 * `top` command won't respond if you try to get more than 20 or so members.TODO
 * `rank-role` wouldn't allow assigning of roles for level 100.TODO
+* `steal` now waits the cooldown amount.TODO
+* `data` now gives your data for servers that were deleted.TODO
+* `caps`, `toggle-case`, and `lowercase` can now display 2000 characters.TODO
 
 TODO add to README
 TODO add to site

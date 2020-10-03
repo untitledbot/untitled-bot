@@ -129,12 +129,12 @@ public final class RankImageRender {
         //username and discriminator
         Font f = Font.createFont(Font.TRUETYPE_FONT, new File("./font.ttf"));
         GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(f);
-        gtd.setFont(new Font("FreeMono", Font.BOLD, 36));
+        gtd.setFont(f);
         gtd.setColor(Color.WHITE);
         gtd.drawString("" + name + "#" + discriminator, 30, 50);
         
         //balance
-        gtd.setFont(new Font("FreeMono", Font.BOLD, 26));
+        gtd.setFont(f);
         gtd.drawString("Balance: UB$" + balanceAsDisplay, 30, 80);
         gtd.drawString("In Bank: UB$" + bankBalAsDisplay, 30, 120);
         

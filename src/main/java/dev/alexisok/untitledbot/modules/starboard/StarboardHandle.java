@@ -106,7 +106,7 @@ public final class StarboardHandle extends UBPlugin {
                 }
             case "info":
                 
-                if(Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "starboard", "false").equals("true")) {
+                if(!Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "starboard", "false").equals("true")) {
                     eb.addField("Starboard", "Starboard is not enabled in this server.", false);
                     eb.setColor(Color.GREEN);
                     return eb.build();
@@ -117,7 +117,8 @@ public final class StarboardHandle extends UBPlugin {
                 
                 eb.addField("Starboard", "The starboard channel is <#" + channelID + "> and there are " + threshold + " :star: emotes required for messages to " +
                                                  "be added to the channel.", false);
-                eb
+                eb.setColor(Color.GREEN);
+                return eb.build();
             default:
                 eb.addField("Starboard", "Unknown sub-command " + args[1] + ".  Usage:\n" +
                                                  "`starboard enable` to enable the starboard.\n" +

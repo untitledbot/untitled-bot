@@ -22,6 +22,7 @@ import dev.alexisok.untitledbot.modules.basic.report.BugReport;
 import dev.alexisok.untitledbot.modules.basic.reverse.Reverse;
 import dev.alexisok.untitledbot.modules.basic.rot13.ROT13;
 import dev.alexisok.untitledbot.modules.basic.ship.Ship;
+import dev.alexisok.untitledbot.modules.basic.source.Source;
 import dev.alexisok.untitledbot.modules.basic.status.Status;
 import dev.alexisok.untitledbot.modules.basic.timestamp.TimeStamp;
 import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
@@ -29,10 +30,7 @@ import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
 import dev.alexisok.untitledbot.modules.basic.userinfo.UserInfo;
 import dev.alexisok.untitledbot.modules.basic.vote.Vote;
 import dev.alexisok.untitledbot.modules.config.ConfigHandle;
-import dev.alexisok.untitledbot.modules.eco.Balance;
-import dev.alexisok.untitledbot.modules.eco.Deposit;
-import dev.alexisok.untitledbot.modules.eco.Pay;
-import dev.alexisok.untitledbot.modules.eco.Withdraw;
+import dev.alexisok.untitledbot.modules.eco.*;
 import dev.alexisok.untitledbot.modules.profile.Profile;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleGet;
@@ -195,6 +193,9 @@ public final class CoreCommands {
         new Withdraw().onRegister();
         new Pay().onRegister();
         new StarboardHandle().onRegister();
+        new Bet().onRegister();
+        new Which().onRegister();
+        new Source().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.command;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
@@ -246,6 +247,10 @@ public class CommandRegistrar {
 	 */
 	public static void registerHook(MessageHook mh) {
 		HOOK_REGISTRAR.add(mh);
+	}
+	
+	public static Class<? extends Command> getClassOfCommand(String command) {
+		return REGISTRAR.get(command).getClass();
 	}
 	
 	

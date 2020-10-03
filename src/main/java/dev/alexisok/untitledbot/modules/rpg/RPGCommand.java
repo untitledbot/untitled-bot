@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.rpg.exception.RPGDataFileHasAlreadyBeenInitializedException;
+import dev.alexisok.untitledbot.modules.rpg.item.RPGItem;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -45,7 +46,7 @@ public final class RPGCommand extends UBPlugin {
                                        "help pages.\n" +
                                        "\n" +
                                        "More information and better help guides are available on the " +
-                                       "[official website](https://untitled-bot.xyz/rpg).", false);
+                                       "[official website](https://untitled-bot.xyz/rpg) (has video help as well).", false);
             return eb.build();
         }
         
@@ -90,6 +91,7 @@ public final class RPGCommand extends UBPlugin {
     @Override
     public void onRegister() {
         //here we go!!
+        RPGItem.generateAllImages();
         CommandRegistrar.register("rpg", this);
         Manual.setHelpPage("rpg", "Because the RPG command handles so much, you must use the following commands for help.\n" +
                                           "`help rpg-`"); //TODO

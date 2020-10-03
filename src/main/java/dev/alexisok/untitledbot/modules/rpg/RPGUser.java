@@ -48,10 +48,13 @@ public final class RPGUser {
      * Set the health current.  This will also modify the VAULT value.
      *
      * @param newValue the new value to set.
+     * @return the amount of damage dealt.
      */
-    public void setHealthCurrent(long newValue) {
+    public long setHealthCurrent(long newValue) {
+        
         this.healthCurrent = Math.min(newValue, this.healthMax);
         Vault.storeUserDataLocal(this.userID, this.guildID, RPGVaultKeys.HEALTH_CURRENT, String.valueOf(healthCurrent));
+        return -1; //FIXME
     }
     
     /**
@@ -84,5 +87,12 @@ public final class RPGUser {
         Vault.storeUserDataLocal(this.userID, this.guildID, RPGVaultKeys.MANA_MAXIMUM, String.valueOf(newValue));
     }
     
-    
+    /**
+     * Get the ID of the user.
+     * @return the ID of the user.
+     */
+    @Override
+    public String toString() {
+        return this.userID;
+    }
 }
