@@ -5,17 +5,21 @@ import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -90,6 +94,12 @@ public final class Starboard extends ListenerAdapter {
      * @param guildID the ID of the guild.
      */
     private static void pinMessage(@NotNull String guildID, @NotNull Message linkedMessage) {
+        
+        try {
+            if(FileUtils.readFileToString(new File(STARBOARD_DIR + linkedMessage.getGuild().getId() + ".star"), StandardCharsets.UTF_8).contains(linkedMessage.getId()))
+                return;
+        } catch(IOException ignored) {}
+        
         String channelID = Vault.getUserDataLocalOrDefault(null, guildID, "starboard.channel", "none");
         
         if(channelID.equals("none")) return;
@@ -110,15 +120,27 @@ public final class Starboard extends ListenerAdapter {
         
         String message = linkedMessage.getContentRaw();
         message = message.substring(0, Math.min(message.length(), 1999)); //1999 to be safe
-    
+        
+        if(linkedMessage.getEmbeds().size() != 0) {
+            java.util.List<MessageEmbed.Field> fields = linkedMessage.getEmbeds().get(0).getFields();
+            String description = linkedMessage.getEmbeds().get(0).getDescription();
+            if(description != null && description.length() != 0) {
+                message = description;
+            }
+            
+        } else
+            eb.setDescription(message);
+        
         eb.setTimestamp(linkedMessage.getTimeCreated());
         eb.setColor(Color.BLUE);
         eb.setTitle(linkedMessage.getAuthor().getName() + "#" + linkedMessage.getAuthor().getDiscriminator());
         eb.setFooter("\n\n\n" + linkedMessage.getAuthor().getName(), linkedMessage.getAuthor().getAvatarUrl());
-        eb.setDescription(message);
         
         try {
-            tc.sendMessage(eb.build()).queue();
+            tc.sendMessage(eb.build()).queue(consumer -> {
+                addMessageIDToFile(consumer);
+                consumer.addReaction("U+2B50").queue();
+            });
         } catch(Throwable ignored) {}
     }
     
@@ -129,7 +151,7 @@ public final class Starboard extends ListenerAdapter {
                 if(!f.createNewFile())
                     throw new IOException();
             }
-            Files.write(Paths.get(f.toURI()), m.getId().getBytes(), StandardOpenOption.APPEND);
+            Files.write(Paths.get(f.toURI()), ('\n' + m.getId()).getBytes(), StandardOpenOption.APPEND);
         } catch(IOException e) {
             e.printStackTrace();
         }

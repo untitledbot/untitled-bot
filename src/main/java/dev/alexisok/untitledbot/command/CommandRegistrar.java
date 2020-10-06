@@ -3,7 +3,6 @@ package dev.alexisok.untitledbot.command;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
-import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;

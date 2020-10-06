@@ -23,8 +23,6 @@ import java.util.Date;
  */
 public final class TimeStamp extends UBPlugin {
     
-    private static final String FOOTER = "Formula: `(snowflake / 4194304) + 1420070400000` to get milliseconds since Jan. 1st, 1970 00:00";
-    
     @Override
     public @NotNull MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
@@ -35,7 +33,6 @@ public final class TimeStamp extends UBPlugin {
             eb.addField("Timestamp", "Timestamp of this guild:\n" +
                                              "" + new Date(((message.getGuild().getIdLong() >> 22) + 1420070400000L)) + "\n" +
                                                           "Other timestamps: `timestamp [user @ | channel # | Discord snowflake]`", false);
-            eb.setFooter(FOOTER);
             eb.setColor(Color.GREEN);
             return eb.build();
         }
@@ -61,14 +58,12 @@ public final class TimeStamp extends UBPlugin {
                                              "[Discord's support page]" +
                                              "(https://support.discord.com/hc/en-us/articles/206346498).",
                     false);
-            eb.setFooter(FOOTER);
             eb.setColor(Color.RED);
             return eb.build();
         }
         
         eb.addField("", new Date(time).toString(), false);
         eb.addBlankField(false);
-        eb.setFooter(FOOTER);
         
         return eb.build();
     }

@@ -16,9 +16,12 @@ new things:
 * `data-delete` - delete your data.  Note: your user ID is used for some RPG stuff, so unless you make a new account, you will always be the same class.TODO
 * `source` and `github` - link to the github page.TODO
 * `which` - get the package of a command.
+* `no-prefix` - enter the NoPrefix:TM: mode, allowing you to execute commands without a prefix.
+* `exit` - exit the NoPrefix:TM: mode.
 
 changes:
 * `top` command now actually looks niceish.TODO
+* `top` command will only get the top 10 members due to limitations of image generating.
 * `info` command is now readable to non-developers.TODO
 * `rob` is now an alias to `steal`
 * `rank-settings announce-level-up current` is no longer ambiguous.TODO
@@ -34,6 +37,7 @@ bug fixes:
 * `steal` now waits the cooldown amount.TODO
 * `data` now gives your data for servers that were deleted.TODO
 * `caps`, `toggle-case`, and `lowercase` can now display 2000 characters.TODO
+* logger will no longer @mention a user that left as it won't display for most users.TODO
 
 TODO add to README
 TODO add to site

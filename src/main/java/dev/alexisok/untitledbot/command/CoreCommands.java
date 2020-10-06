@@ -31,6 +31,8 @@ import dev.alexisok.untitledbot.modules.basic.userinfo.UserInfo;
 import dev.alexisok.untitledbot.modules.basic.vote.Vote;
 import dev.alexisok.untitledbot.modules.config.ConfigHandle;
 import dev.alexisok.untitledbot.modules.eco.*;
+import dev.alexisok.untitledbot.modules.noprefix.Exit;
+import dev.alexisok.untitledbot.modules.noprefix.NoPrefix;
 import dev.alexisok.untitledbot.modules.profile.Profile;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleGet;
@@ -196,6 +198,8 @@ public final class CoreCommands {
         new Bet().onRegister();
         new Which().onRegister();
         new Source().onRegister();
+        new NoPrefix().onRegister();
+        new Exit().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

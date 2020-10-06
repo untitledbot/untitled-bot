@@ -52,6 +52,8 @@ public final class BotClass extends ListenerAdapter {
 	
 	public static final ArrayList<String> BLACKLIST = new ArrayList<>();
 	
+	private static final ArrayList<String> NO_PREFIX = new ArrayList<>();
+	
 	private static final MessageEmbed JOIN_MESSAGE = new EmbedBuilder().addField("untitled-bot",
 			"\n```" +
 					"      ╔╗ ╔╗╔╗     ╔╗  ╔╗    ╔╗\n" +
@@ -101,11 +103,14 @@ public final class BotClass extends ListenerAdapter {
 	 * 3. if the prefix does not exist, use ">"
 	 * 
 	 * @param guildID the ID of the guild.
+	 * @param userID the ID of the user.  (Make {@code null} to skip user prefix).
 	 * @return the prefix.
 	 */
 	@NotNull
 	@Contract(pure = true)
-	public static String getPrefix(@NotNull String guildID) {
+	public static String getPrefix(@NotNull String guildID, String userID) {
+		if(userID != null && NO_PREFIX.contains(userID))
+			return "";
 		String prefix;
 		if(!PREFIX_CACHE.containsKey(guildID)) {
 			prefix = Vault.getUserDataLocalOrDefault(null, guildID, "guild.prefix", ">");
@@ -115,6 +120,29 @@ public final class BotClass extends ListenerAdapter {
 		}
 		
 		return prefix == null ? ">" : prefix;
+	}
+	
+	/**
+	 * Add a user to the no-prefix list.
+	 * 
+	 * @param userID the ID of the user as a String.
+	 * @return {@code true} if the user was added, {@code false} if they were already added.
+	 */
+	public static boolean addToNoPrefix(@NotNull String userID) {
+		if(NO_PREFIX.contains(userID))
+			return false;
+		return NO_PREFIX.add(userID);
+	}
+	
+	/**
+	 * Removes a user from the no-prefix list.
+	 * @param userID the ID of the user as a String.
+	 * @return {@code true} if they were removed, {@code false} if they were not removed.
+	 */
+	public static boolean removeFromNoPrefix(@NotNull String userID) {
+		if(!NO_PREFIX.contains(userID))
+			return false;
+		return NO_PREFIX.remove(userID);
 	}
 	
 	/**
@@ -135,7 +163,7 @@ public final class BotClass extends ListenerAdapter {
 			return;
 		
 		//get the prefix of the guild
-		String prefix = getPrefix(event.getGuild().getId());
+		String prefix = getPrefix(event.getGuild().getId(), event.getAuthor().getId());
 		
 		String message = event.getMessage().getContentRaw();
 		
@@ -157,18 +185,10 @@ public final class BotClass extends ListenerAdapter {
 			}
 		} catch(IndexOutOfBoundsException ignored) {}
 		
-		if(prefix.equals("")) {
-			//if the message does not start with the prefix or the message is only the prefix
-			if(!event.getMessage().getContentRaw().startsWith(Main.PREFIX) || event.getMessage().getContentRaw().equals(Main.PREFIX))
-				return;
-			
-			message = message.substring(Main.PREFIX.length());
-		} else {
-			if(!event.getMessage().getContentRaw().startsWith(prefix) || event.getMessage().getContentRaw().equals(prefix))
-				return;
-			
-			message = message.substring(prefix.length());
-		}
+		if(!event.getMessage().getContentRaw().startsWith(prefix) || event.getMessage().getContentRaw().equals(prefix))
+			return;
+		
+		message = message.substring(prefix.length());
 		
 		//replace all "  " with " "
 		while(message.contains("  "))

@@ -2,11 +2,9 @@ package dev.alexisok.untitledbot.modules.rank;
 
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
-import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -16,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
 import java.util.List;
@@ -47,29 +44,6 @@ public final class Top extends UBPlugin {
         }
         
         int amountToList = 10;
-        boolean b = false; //i was going to name this something else but i spent five minutes just trying to figure out how to spell it and i couldn't so it named 'b' for now.
-        if(args.length >= 2) {
-            try {
-                int tmp = Integer.parseInt(args[1]);
-                if(tmp > 50)
-                    b = true;
-                amountToList = Math.min(tmp, 50);
-            } catch(Exception ignored) {}
-        }
-        
-        if(amountToList == 0) {
-            setRateLimiter(message.getGuild().getId());
-            eb.addField("Rank top", "Congratulations, you just got a leaderboard of ZERO PEOPLE.\n" +
-                                            "Enjoy the five minute cooldown :)", false);
-            eb.setColor(Color.PINK);
-            return eb.build();
-        } else if (amountToList < 0) {
-            eb.addField("Rank top?", "you know what, i'm not even going to set a cooldown for this.\n" +
-                                             "i'm not sure why you thought you could get a leaderboard of negative" +
-                                             " people but it didn't work.  i think this bot is pretty much exploit proof :)", false);
-            eb.setColor(new Color(154, 0, 255)); //purple i think
-            return eb.build();
-        }
         
         LinkedHashMap<String, Long> topXP = new LinkedHashMap<>(new LinkedHashMap<>());
     
@@ -99,8 +73,9 @@ public final class Top extends UBPlugin {
             if(i >= amountToList)
                 break;
             i++;
-            addStr.add(String.format("<@%s> - %s XP (level %s)%n",
-                    a.getKey(),
+            User u = Main.jda.getUserById(a.getKey());
+            addStr.add(String.format("%s - %s XP (level %s)%n",
+                    u == null ? "<@" + a.getKey() + ">" : u.getName() + "#" + u.getDiscriminator(),
                     a.getValue(),
                     Vault.getUserDataLocal(a.getKey(), message.getGuild().getId(), "ranks-level")));
         }
@@ -114,9 +89,6 @@ public final class Top extends UBPlugin {
         eb2.setColor(Color.GREEN);
         
         eb2.addField("===TOP RANKINGS===", addStringReturn.toString(), false);
-        
-        if(b) //b is the shortened variable in case you missed the last comment
-            eb2.addField("Warning", "The list has been shortened to 50 members.", false);
         
         message.getChannel().sendMessage(eb2.build()).queue();
         
