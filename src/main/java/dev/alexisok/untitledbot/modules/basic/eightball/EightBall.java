@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 
  * 8ball command example.  This class will have the bot listen for the
  * command "8ball" and run {@link EightBall#onCommand(String[], Message)} when it
- * is triggered.  The permission node
+ * is triggered.
  * 
  * @author AlexIsOK
  * @since 0.0.1

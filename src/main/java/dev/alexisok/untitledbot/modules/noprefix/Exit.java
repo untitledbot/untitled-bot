@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -27,16 +28,20 @@ public final class Exit extends UBPlugin {
     public MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
-        
-        if(BotClass.removeFromNoPrefix(message.getAuthor().getId())) {
-            eb.addField("NoPrefix:TM:", "You have been removed from the no-prefix mode.\n" +
-                                                "The prefix for this guild is `" + BotClass.getPrefix(message.getGuild().getId() + "`", null), false);
-            eb.setColor(Color.GREEN);
-        } else {
-            eb.addField("NoPrefix:TM:", "You don't seem to be in the no-prefix mode as of now...", false);
-            eb.setColor(Color.RED);
+        Logger.debug("Removing a user from the NoPrefix:TM: mode.");
+        try {
+            if (BotClass.removeFromNoPrefix(message.getAuthor().getId())) {
+                eb.addField("NoPrefix:TM:", "You have been removed from the no-prefix mode.\n" +
+                                                    "The prefix for this server is `" + BotClass.getPrefix(message.getGuild().getId(), null) + "`", false);
+                eb.setColor(Color.GREEN);
+            } else {
+                eb.addField("NoPrefix:TM:", "You don't seem to be in the no-prefix mode as of now...", false);
+                eb.setColor(Color.RED);
+            }
+        } catch(Throwable ignored) {
+            BotClass.removeFromNoPrefix(message.getAuthor().getId());
+            eb.addField("Error!", "There was an error.  You have been removed from no-prefix mode (i think)", false);
         }
-        
         return eb.build();
     }
     

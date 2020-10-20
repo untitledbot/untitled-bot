@@ -68,63 +68,79 @@ public final class UserInfo extends UBPlugin {
             
             eb.addField("Basic info",
                     String.format("Name: `%s`%n" +
-                                          "User count: `%d`%n" +
-                                          "Role count: `%d`%n" +
-                                          "Emoji count: `%d`%n" +
-                                          "Security level: `%s`%n" +
-                                          "Server region: `%s`%n" +
+                                          "Users: %d%n" +
+                                          "Roles: %d%n" +
+                                          "Emojis: %d%n" +
+                                          "Security level: %s%n" +
+                                          "Server region: %s%n" +
                                           "System message channel: %s%n",
                             g.getName(), g.getMemberCount(), g.getRoles().size(), g.getEmotes().size(),
                             veStr, g.getRegionRaw().toLowerCase(), sysChannel),
-                    true);
+                    false);
             eb.addField("Other information",
-                    String.format("ID: `%s`%n" +
-                                          "Creation date: `%s`%n" +
-                                          "MFA Level: `%s`%n" +
-                                          "AFK timeout: `%d` minutes%n" +
-                                          "Default notification level: `%s`%n" +
-                                          "Explicit content level: `%s`%n" +
-                                          "Max bitrate: `%dkbps`%n" +
-                                          "Max emotes: `%d`%n" +
-                                          "Max file size: `%dMiB`%n" +
+                    String.format("ID: %s%n" +
+                                          "Creation date: %s%n" +
+                                          "MFA Level: %s%n" +
+                                          "AFK timeout: %d minutes%n" +
+                                          "Default notification level: %s%n" +
+                                          "Explicit content level: %s%n" +
+                                          "Max bitrate: %dkbps%n" +
+                                          "Max emotes: %d%n" +
+                                          "Max file size: %dMiB%n" +
                                           "Owner: <@%s>%n" +
-                                          "Channels: `%d`%n" +
-                                          "Voice channels: `%d`%n" +
+                                          "Channels: %d%n" +
+                                          "Voice channels: %d%n" +
                                           "Categories: `%d`%n",
                             g.getId(), g.getTimeCreated().toInstant().toString(), g.getRequiredMFALevel().toString().toLowerCase(),
                             g.getAfkTimeout().getSeconds() / 60, g.getDefaultNotificationLevel().toString().toLowerCase(),
                             g.getExplicitContentLevel().getDescription(), g.getBoostTier().getMaxBitrate() / 1000,
                             g.getBoostTier().getMaxEmotes(), g.getMaxFileSize() / 1024 / 1024, g.getOwnerId(),
-                            g.getTextChannels().size(), g.getVoiceChannels().size(), g.getCategories().size()), true);
+                            g.getTextChannels().size(), g.getVoiceChannels().size(), g.getCategories().size()), false);
             eb.addField("Nitro stuffs",
-                    String.format("Boosters: `%d`%n" +
-                                          "Boosts: `%d`%n" +
-                                          "Tier: `%d`%n" +
+                    String.format("Boosters: %d%n" +
+                                          "Boosts: %d%n" +
+                                          "Tier: %d%n" +
                                           "",
-                            g.getBoosters().size(), g.getBoostCount(), g.getBoostTier().getKey()), true);
+                            g.getBoosters().size(), g.getBoostCount(), g.getBoostTier().getKey()), false);
+            eb.setThumbnail(message.getGuild().getIconUrl());
             return eb.build();
         } else if(message.getMentionedMembers().size() == 1) {
             //member info
-            User u = message.getMentionedMembers().get(0).getUser();
+            Member u = message.getMentionedMembers().get(0);
             
-            String userFlags = "";
+            eb.setThumbnail(u.getUser().getAvatarUrl());
+            String highestRole = "None";
+            try {
+                 highestRole = u.getRoles().get(0).getAsMention();
+            } catch(Throwable ignored) {}
             
-            for(User.UserFlag uf : u.getFlags()) {
-                userFlags += String.format("`%s`%n", uf.getName());
+            StringBuilder roles = new StringBuilder();
+            
+            int i = 0;
+            for(Role r : u.getRoles()) {
+                roles.append(r.getAsMention()).append("\n");
+                i++;
+                if(i > 10)
+                    break;
             }
             
-            eb.setThumbnail(u.getAvatarUrl());
-            eb.addField("**Basic info**", String.format("Username: `%s`%n" +
-                                                            "Discriminator: `%s`%n" +
-                                                            "Account creation time: `%s`%n",
-                    u.getName(), u.getDiscriminator(), 
-                    new Date((Long.parseLong(u.getId()) >> 22) + 1420070400000L).toString()), true);
-            eb.addField("**User flags**", userFlags, true);
-            eb.addField("**Other info**", String.format("" +
-                                                            "ID: `%s`%n" +
-                                                            "Raw flags: `%d`%n" +
-                                                            "",
-                    u.getId(), u.getFlagsRaw()), true);
+            eb.addField("**Member**", String.format("Name: %s%nJoin date: %s%nHighest role: %s%n" +
+                                                            "Top 10 roles: %n%s%nFor permissions, do `permissions <user>`",
+                    "<@" + u.getEffectiveName() + ">", u.getTimeJoined(), highestRole, roles
+            ), false);
+            
+            eb.addField("**User**", String.format("Name: %s%nCreation date: %s%nBot: %s%nID: %s%n",
+                    u.getUser().getName() + u.getUser().getDiscriminator(), u.getUser().getTimeCreated().toString(), u.getUser().isBot(),
+                    u.getId()), false);
+    
+            String boostingSince = "Not boosting";
+            try {
+                boostingSince = Objects.requireNonNull(u.getTimeBoosted()).toString();
+            } catch(Throwable ignored){}
+            eb.addField("**Nitro Stuffs**", String.format("Boosting since: %s%n",
+                    boostingSince), false);
+            
+            eb.setColor(u.getColor());
             return eb.build();
         } else {
             eb.addField("**Info**", "Usage: `info [user @]`, leave the argument blank for server info.", false);
@@ -137,6 +153,6 @@ public final class UserInfo extends UBPlugin {
     @Override
     public void onRegister() {
         CommandRegistrar.register("userinfo", this);
-        CommandRegistrar.registerAlias("userinfo", "info");
+        CommandRegistrar.registerAlias("userinfo", "info", "ui");
     }
 }

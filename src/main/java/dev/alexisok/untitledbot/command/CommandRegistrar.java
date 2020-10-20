@@ -9,9 +9,11 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.CheckReturnValue;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,13 +51,36 @@ public class CommandRegistrar {
 	//the hook registrar.
 	private static final ArrayList<MessageHook> HOOK_REGISTRAR = new ArrayList<>();
 	
+	//command, cooldown in seconds
+	private static final HashMap<String, Long> COOLDOWN = new HashMap<>();
+	
 	private static long commandsSent = 0L;
+	
+	/**
+	 * Get the cooldown of a command
+	 * @param commandName the name of the command as the user executes it.
+	 * @return the cooldown or -1 if the command does not exist/does not have a cooldown.
+	 */
+	@Contract(pure = true)
+	public static long getCommandCooldown(@NotNull String commandName) {
+		return COOLDOWN.getOrDefault(commandName, -1L);
+	}
+	
+	/**
+	 * Set the cooldown of a specific command.
+	 * @param commandName the name of the command as the user executes it.
+	 * @param time the time in seconds of the cooldown.
+	 */
+	public static void setCommandCooldown(@NotNull String commandName, long time) {
+		COOLDOWN.put(commandName, time);
+	}
 	
 	/**
 	 * Get the size of the register.  Includes alias commands.
 	 * 
 	 * @return the size of the registrar.
 	 */
+	@Contract(pure = true)
 	public static int registrarSize() {
 		return REGISTRAR.size();
 	}
@@ -64,6 +89,7 @@ public class CommandRegistrar {
 	 * Get the total amount of commands sent while the bot was active.
 	 * @return the amount of commands sent through this bot.
 	 */
+	@Contract(pure = true)
 	public static long getTotalCommands() {
 		return commandsSent;
 	}
@@ -131,7 +157,9 @@ public class CommandRegistrar {
 	 * @param m the {@link Message}   
 	 * @return the return embed.  Returns {@code null} if the command was not found (or if the command returns null by itself).
 	 */
-	public static @Nullable MessageEmbed runCommand(@NotNull String commandName, @NotNull String[] args, @NotNull Message m) {
+	@Nullable
+	@CheckReturnValue
+	public static MessageEmbed runCommand(@NotNull String commandName, @NotNull String[] args, @NotNull Message m) {
 		
 		commandsSent++;
 		
@@ -182,6 +210,7 @@ public class CommandRegistrar {
 	 * @param command the command to check
 	 * @return true if the command is registered, false otherwise.
 	 */
+	@Contract(pure = true)
 	public static boolean hasCommand(String command) {
 		return REGISTRAR.containsKey(command);
 	}
@@ -189,10 +218,14 @@ public class CommandRegistrar {
 	/**
 	 * Get the permission node of a command.
 	 * 
+	 * As of 1.3.22, this is unused.
+	 * 
 	 * @param command the command
 	 * @return the permission node, {@code null} if it is not registered.
 	 */
-	public static @Nullable String getCommandPermissionNode(String command) {
+	@Nullable
+	@Contract(pure = true)
+	public static String getCommandPermissionNode(String command) {
 		if(!hasCommand(command))
 			return null;
 		return PERMS_REGISTRAR.get(command);
@@ -248,6 +281,14 @@ public class CommandRegistrar {
 		HOOK_REGISTRAR.add(mh);
 	}
 	
+	/**
+	 * Get the {@link Class} of a command.
+	 * @param command the command to get
+	 * @return the Class
+	 */
+	@Nullable
+	@CheckReturnValue
+	@Contract(pure = true)
 	public static Class<? extends Command> getClassOfCommand(String command) {
 		return REGISTRAR.get(command).getClass();
 	}

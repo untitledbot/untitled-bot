@@ -1,0 +1,46 @@
+
+had a lot of things i wanted to add and the rpg is still being worked on just not in this repo
+
+new things:
+* `usrdatamod` - modify user data (owner only)
+* `pay` and `give` - give a user UB$.
+* `bet` - bet UB$ (not a real currency btw before i get sued).TODO
+* `deposit` - deposit UB$ into your bank where it cannot be stolen.
+* `withdraw` - withdraw UB$ from your bank into your pockets.
+* `starboard` - have users add a star emoji to put the messages in a starboard channel.
+* `catfact` or `cat` - get a catfact.
+* there are now free profile backgrounds for all users, available on the site https://untitled-bot.xyz.TODO
+* `set-background` - to set a background from one of the images on the site.TODO
+* custom profile backgrounds are available to anyone who joins the server and asks for one, though they must be approved.
+* `rot13` - run a string through ROT13.
+* `data-delete` - delete your data.TODO
+* `source` and `github` - link to the github page.
+* `which` - get the package of a command.
+* `no-prefix` - enter the NoPrefix:TM: mode, allowing you to execute commands without a prefix.
+* `exit` - exit the NoPrefix:TM: mode.
+* `bean <@user>` - bean a user.TODO
+* `cooldown <command>` - set a cooldown for a command.TODO
+* `permissions [@user]` - get the guild permissions for a user.TODO
+
+changes:
+* `top` command now actually looks niceish.TODO
+* `top` command will only get the top 10 members due to limitations of image generating.
+* `info` command is now readable to non-developers.TODO
+* `rob` is now an alias to `steal`
+* `rank-settings announce-level-up current` is no longer ambiguous.TODO
+* `ui` is now an alias of `userinfo` and `info`.
+
+dev changes:
+* removed a lot of stuff that was marked as deprecated and to be removed.  removed some other stuff as well.
+* cleaned up some things i guess.
+* touching the shutdown file now stops accepting new commands but waits 10s for other commands to finish.TODO
+* VAULT get data now returns void.  It will execute an interface when it gets or sets the data.
+* VAULT now uses notify and wait instead of a while(true) loop
+
+bug fixes:
+* `top` command won't respond if you try to get more than 20 or so members.TODO
+* `rank-role` wouldn't allow assigning of roles for level 100.TODO
+* `steal` now waits the cooldown amount.TODO
+* `data` now gives your data for servers that were deleted.TODO
+* `caps`, `toggle-case`, and `lowercase` can now display 2000 characters.TODO
+* logger will no longer @mention a user that left as it won't display for most users.TODO

@@ -52,7 +52,7 @@ public final class BotClass extends ListenerAdapter {
 	
 	public static final ArrayList<String> BLACKLIST = new ArrayList<>();
 	
-	private static final ArrayList<String> NO_PREFIX = new ArrayList<>();
+	private static final transient ArrayList<String> NO_PREFIX = new ArrayList<>();
 	
 	private static final MessageEmbed JOIN_MESSAGE = new EmbedBuilder().addField("untitled-bot",
 			"\n```" +
@@ -139,9 +139,7 @@ public final class BotClass extends ListenerAdapter {
 	 * @param userID the ID of the user as a String.
 	 * @return {@code true} if they were removed, {@code false} if they were not removed.
 	 */
-	public static boolean removeFromNoPrefix(@NotNull String userID) {
-		if(!NO_PREFIX.contains(userID))
-			return false;
+	public static synchronized boolean removeFromNoPrefix(@NotNull String userID) {
 		return NO_PREFIX.remove(userID);
 	}
 	
@@ -175,12 +173,15 @@ public final class BotClass extends ListenerAdapter {
 			if(event.getMessage().getMentionedMembers().get(0).getId().equals("730135989863055472")
 					    && message.split(" ").length == 1) {
 				
-				event.getChannel()
-						.sendMessage(String.format("Hello!  My prefix for this guild is `%s`.%n" +
-								                           "For a full list of commands, use `%shelp` or `%s help`.%n" +
-								                           "The default prefix is `>` and can be set by an administrator " +
-								                           "on this server by using the `prefix` command.", prefix, prefix, prefix))
-						.queue();
+				if(prefix.equals(""))
+					event.getChannel().sendMessage("You seem to be in the NoPrefix:TM: mode, to exit, simply say `exit`.").queue();
+				else
+					event.getChannel()
+							.sendMessage(String.format("Hello!  My prefix for this guild is `%s`.%n" +
+									                           "For a full list of commands, use `%shelp` or `%s help`.%n" +
+									                           "The default prefix is `>` and can be set by an administrator " +
+									                           "on this server by using the `prefix` command.", prefix, prefix, prefix))
+							.queue();
 				return;
 			}
 		} catch(IndexOutOfBoundsException ignored) {}

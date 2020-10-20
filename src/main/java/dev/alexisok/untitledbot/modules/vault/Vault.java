@@ -172,14 +172,12 @@ public final class Vault {
      * @param userID the user ID, pass {@code null} for guild only.
      * @param guildID the guild ID.
      * @param dataKey the key to use to get the data.
-     * @return the user's data, or {@code null} if it was not found.
      * @see Properties#getProperty(String)
      * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
     @Nullable
     @Contract(pure = true)
     public static synchronized String getUserDataLocal(String userID, String guildID, @NotNull String dataKey) throws UserDataCouldNotBeObtainedException {
-        while(OPERATIONS.size() != 0 || running); //this is so bad i hate myself for writing it
         UserData.checkUserExists(userID, guildID);
         Properties p = new Properties();
         try {

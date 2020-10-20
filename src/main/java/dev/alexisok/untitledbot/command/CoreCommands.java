@@ -186,8 +186,7 @@ public final class CoreCommands {
         new Lowercase().onRegister();
         new ToggleCase().onRegister();
         
-        //1.4 commands
-        new RPGCommand().onRegister();
+        //1.3.22 commands
         new UserDataMod().onRegister();
         new ROT13().onRegister();
         new CatFact().onRegister();
@@ -200,6 +199,8 @@ public final class CoreCommands {
         new Source().onRegister();
         new NoPrefix().onRegister();
         new Exit().onRegister();
+        
+//      new RPGCommand().onRegister();
         Logger.log("Modules have been registered.");
     }
 }
