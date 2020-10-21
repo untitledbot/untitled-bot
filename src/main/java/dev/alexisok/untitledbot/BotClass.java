@@ -226,8 +226,8 @@ public final class BotClass extends ListenerAdapter {
 		boolean found = false;
 		
 		try {
-			for (TextChannel tc : ch) {
-				if (tc.getName().contains("bot")) {
+			for(TextChannel tc : ch) {
+				if(tc.getName().contains("bot")) {
 					found = true;
 					tc.sendMessage(JOIN_MESSAGE).queueAfter(3000, TimeUnit.MILLISECONDS);
 					break;

@@ -18,6 +18,7 @@ import dev.alexisok.untitledbot.modules.basic.help.Help;
 import dev.alexisok.untitledbot.modules.basic.owo.Owo;
 import dev.alexisok.untitledbot.modules.basic.ping.Ping;
 import dev.alexisok.untitledbot.modules.basic.prefix.Prefix;
+import dev.alexisok.untitledbot.modules.basic.remind.Remind;
 import dev.alexisok.untitledbot.modules.basic.report.BugReport;
 import dev.alexisok.untitledbot.modules.basic.reverse.Reverse;
 import dev.alexisok.untitledbot.modules.basic.rot13.ROT13;
@@ -44,7 +45,6 @@ import dev.alexisok.untitledbot.modules.reactions.Dis;
 import dev.alexisok.untitledbot.modules.reactions.Hide;
 import dev.alexisok.untitledbot.modules.reactions.Hug;
 import dev.alexisok.untitledbot.modules.reward.VoteReward;
-import dev.alexisok.untitledbot.modules.rpg.RPGCommand;
 import dev.alexisok.untitledbot.modules.starboard.StarboardHandle;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -93,7 +93,7 @@ public final class CoreCommands {
                                           "╔╗╔╦═╬╗╔╬╗╔╣║╔══╦═╝║  ║╚═╦═╩╗╔╝\n" +
                                           "║║║║╔╗╣║╠╣║║║║║═╣╔╗╠══╣╔╗║╔╗║║\n" +
                                           "║╚╝║║║║╚╣║╚╣╚╣║═╣╚╝╠══╣╚╝║╚╝║╚╗\n" +
-                                          "╚══╩╝╚╩═╩╩═╩═╩══╩══╝  ╚══╩══╩═╝" +
+                                          "╚══╩╝╚╩═╩╩═╩═╩══╩══╝  ╚══╩══╩═╝\n" +
                                           "```" +
                                           "Hello!  I am a bot made by AlexIsOK!  I do many things (you can see the full list with" +
                                           " the 'commands' command) and I am constantly improving as well!  If you have any suggestions," +
@@ -113,8 +113,17 @@ public final class CoreCommands {
             EmbedBuilder eb = new EmbedBuilder();
             EmbedDefaults.setEmbedDefaults(eb, message);
             eb.setColor(Color.CYAN);
-            eb.addField("title", "works i think <a:blob:751578995904217198>", false);
+            eb.addField("title", "works i think", false);
             return eb.build();
+        });
+        
+        //cooldown command
+        CommandRegistrar.register("cooldown", "owner", (args, message) -> {
+            if(args.length == 2)
+                return new EmbedBuilder().addField("its " + CommandRegistrar.getCommandCooldown(args[1]), "a", false).build();
+            EmbedBuilder eb = new EmbedBuilder();
+            CommandRegistrar.setCommandCooldown(args[1], Long.parseLong(args[2]));
+            return eb.addField("done i guess", ".", false).build();
         });
         
         Logger.log("Core commands have been registered.");
@@ -199,6 +208,7 @@ public final class CoreCommands {
         new Source().onRegister();
         new NoPrefix().onRegister();
         new Exit().onRegister();
+        new Remind().onRegister();
         
 //      new RPGCommand().onRegister();
         Logger.log("Modules have been registered.");

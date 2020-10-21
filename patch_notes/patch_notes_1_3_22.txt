@@ -18,9 +18,9 @@ new things:
 * `which` - get the package of a command.
 * `no-prefix` - enter the NoPrefix:TM: mode, allowing you to execute commands without a prefix.
 * `exit` - exit the NoPrefix:TM: mode.
-* `bean <@user>` - bean a user.TODO
 * `cooldown <command>` - set a cooldown for a command.TODO
 * `permissions [@user]` - get the guild permissions for a user.TODO
+* `remind <time> <unit> <message...>` - have the bot dm you a reminder.
 
 changes:
 * `top` command now actually looks niceish.TODO
@@ -34,8 +34,7 @@ dev changes:
 * removed a lot of stuff that was marked as deprecated and to be removed.  removed some other stuff as well.
 * cleaned up some things i guess.
 * touching the shutdown file now stops accepting new commands but waits 10s for other commands to finish.TODO
-* VAULT get data now returns void.  It will execute an interface when it gets or sets the data.
-* VAULT now uses notify and wait instead of a while(true) loop
+* VAULT get/set data now will execute an interface when it gets or sets the data.
 
 bug fixes:
 * `top` command won't respond if you try to get more than 20 or so members.TODO
