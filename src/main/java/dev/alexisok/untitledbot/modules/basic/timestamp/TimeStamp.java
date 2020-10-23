@@ -23,18 +23,16 @@ import java.util.Date;
  */
 public final class TimeStamp extends UBPlugin {
     
+    @Nullable
     @Override
-    public @NotNull MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
-        EmbedBuilder eb = new EmbedBuilder();
-        
+    public MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
         long time;
         
         if(args.length == 1) {
-            eb.addField("Timestamp", "Timestamp of this guild:\n" +
+            message.getChannel().sendMessage("This server was created:\n" +
                                              "" + new Date(((message.getGuild().getIdLong() >> 22) + 1420070400000L)) + "\n" +
-                                                          "Other timestamps: `timestamp [user @ | channel # | Discord snowflake]`", false);
-            eb.setColor(Color.GREEN);
-            return eb.build();
+                                                          "Other timestamps: `timestamp [user @ | channel # | Discord snowflake]`").queue();
+            return null;
         }
         
         try {
@@ -50,22 +48,16 @@ public final class TimeStamp extends UBPlugin {
             
             //get the unix timestamp.
             time = (Long.parseLong(args[1]) >> 22) + 1420070400000L;
-            eb.setColor(Color.GREEN);
         } catch(Exception ignored) { //nfe, oobe, etc.
-            eb.addField("Timestamp", "Usage: `timestamp [snowflake ID | user @ | channel #]`" +
+            message.getChannel().sendMessage("Usage: `timestamp [snowflake ID | user @ | channel #]`" +
                                              "\n" +
                                              "To enable ID copying, see " +
-                                             "[Discord's support page]" +
-                                             "(https://support.discord.com/hc/en-us/articles/206346498).",
-                    false);
-            eb.setColor(Color.RED);
-            return eb.build();
+                                             "support.discord.com/hc/en-us/articles/206346498").queue();
+            return null;
         }
         
-        eb.addField("", new Date(time).toString(), false);
-        eb.addBlankField(false);
-        
-        return eb.build();
+        message.getChannel().sendMessage("Provided timestamp was created:\n" + new Date(time).toString()).queue();
+        return null;
     }
     
     @Override

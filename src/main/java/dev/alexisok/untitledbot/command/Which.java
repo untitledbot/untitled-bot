@@ -45,9 +45,9 @@ public class Which extends UBPlugin {
                 String.format("Package of %s is %s%n" +
                                       "[Source code for %s](https://github.com/AlexIsOK/untitled-bot/tree/master/src/main/java/%s.java)",
                         args[1],
-                        clazz.getName(),
-                        clazz.getSimpleName(),
-                        clazz.getName().replace(".", "/")),
+                        clazz.getName().split("\\$")[0], //$ to escape lambda functions
+                        clazz.getSimpleName().split("\\$")[0],
+                        clazz.getName().replace(".", "/").split("\\$")[0]),
                 false);
         return eb.build();
         

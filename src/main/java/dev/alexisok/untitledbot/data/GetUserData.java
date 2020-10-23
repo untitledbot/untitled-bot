@@ -3,16 +3,19 @@ package dev.alexisok.untitledbot.data;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileFilter;
 import java.time.Instant;
 import java.util.concurrent.Callable;
 
@@ -47,13 +50,16 @@ public final class GetUserData extends UBPlugin {
                 return null;
             }
             
-            for(Guild g : Main.jda.getGuilds()) {
-                if(new File(Main.parsePropertiesLocation(userID, g.getId())).exists()) {
-                    message.getAuthor().openPrivateChannel().queue((channel) -> channel.sendFile(new File(Main.parsePropertiesLocation(userID, g.getId())),
-                            g.getId() + " " + g.getName() + ".txt").queue());
+            for(File f : new File(Main.DATA_PATH).listFiles()) {
+                if(!f.isDirectory())
+                    continue;
+                for(File a : f.listFiles()) {
+                    if(a.getName().equals(message.getAuthor().getId() + ".properties")) {
+                        message.getAuthor().openPrivateChannel().queue((channel) -> channel.sendFile(a, a.getPath().split("/")[2] + ".txt").queue());
+                    }
                 }
             }
-    
+            
             if(new File(Main.parsePropertiesLocation(userID, null)).exists()) {
                 message.getAuthor().openPrivateChannel().queue((channel) -> channel.sendFile(
                         new File(Main.parsePropertiesLocation(userID, null)), "globalData.txt"
@@ -64,7 +70,7 @@ public final class GetUserData extends UBPlugin {
             
             return null;
         };
-    
+        
         try {
             task.call();
         } catch (Exception e) {

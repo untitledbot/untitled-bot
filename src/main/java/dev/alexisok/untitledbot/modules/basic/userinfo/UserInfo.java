@@ -52,7 +52,7 @@ public final class UserInfo extends UBPlugin {
                     veStr = "i can't see the level i think someone turned off the lights";
                     break;
                 default:
-                    veStr = "pls report this a bug happened user info verstr was default branch or something gdnhjsbhjaf";
+                    veStr = "you should never see this text ever and if you do then please report it right away";
             }
             
             Guild g = message.getGuild();
@@ -99,8 +99,7 @@ public final class UserInfo extends UBPlugin {
             eb.addField("Nitro stuffs",
                     String.format("Boosters: %d%n" +
                                           "Boosts: %d%n" +
-                                          "Tier: %d%n" +
-                                          "",
+                                          "Tier: %d%n",
                             g.getBoosters().size(), g.getBoostCount(), g.getBoostTier().getKey()), false);
             eb.setThumbnail(message.getGuild().getIconUrl());
             return eb.build();
@@ -126,7 +125,7 @@ public final class UserInfo extends UBPlugin {
             
             eb.addField("**Member**", String.format("Name: %s%nJoin date: %s%nHighest role: %s%n" +
                                                             "Top 10 roles: %n%s%nFor permissions, do `permissions <user>`",
-                    "<@" + u.getEffectiveName() + ">", u.getTimeJoined(), highestRole, roles
+                    u.getNickname(), u.getTimeJoined(), highestRole, roles
             ), false);
             
             eb.addField("**User**", String.format("Name: %s%nCreation date: %s%nBot: %s%nID: %s%n",

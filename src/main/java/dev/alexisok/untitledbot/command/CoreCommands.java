@@ -16,6 +16,7 @@ import dev.alexisok.untitledbot.modules.basic.discordCommand.Discord;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
 import dev.alexisok.untitledbot.modules.basic.help.Help;
 import dev.alexisok.untitledbot.modules.basic.owo.Owo;
+import dev.alexisok.untitledbot.modules.basic.permission.PermissionsCommand;
 import dev.alexisok.untitledbot.modules.basic.ping.Ping;
 import dev.alexisok.untitledbot.modules.basic.prefix.Prefix;
 import dev.alexisok.untitledbot.modules.basic.remind.Remind;
@@ -23,6 +24,7 @@ import dev.alexisok.untitledbot.modules.basic.report.BugReport;
 import dev.alexisok.untitledbot.modules.basic.reverse.Reverse;
 import dev.alexisok.untitledbot.modules.basic.rot13.ROT13;
 import dev.alexisok.untitledbot.modules.basic.ship.Ship;
+import dev.alexisok.untitledbot.modules.basic.shutdown.Shutdown;
 import dev.alexisok.untitledbot.modules.basic.source.Source;
 import dev.alexisok.untitledbot.modules.basic.status.Status;
 import dev.alexisok.untitledbot.modules.basic.timestamp.TimeStamp;
@@ -122,7 +124,7 @@ public final class CoreCommands {
             if(args.length == 2)
                 return new EmbedBuilder().addField("its " + CommandRegistrar.getCommandCooldown(args[1]), "a", false).build();
             EmbedBuilder eb = new EmbedBuilder();
-            CommandRegistrar.setCommandCooldown(args[1], Long.parseLong(args[2]));
+            CommandRegistrar.setCommandCooldown(args[1], (args[2]));
             return eb.addField("done i guess", ".", false).build();
         });
         
@@ -209,6 +211,8 @@ public final class CoreCommands {
         new NoPrefix().onRegister();
         new Exit().onRegister();
         new Remind().onRegister();
+        new PermissionsCommand().onRegister();
+        new Shutdown().onRegister();
         
 //      new RPGCommand().onRegister();
         Logger.log("Modules have been registered.");

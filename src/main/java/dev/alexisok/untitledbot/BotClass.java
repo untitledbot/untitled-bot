@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -200,6 +201,14 @@ public final class BotClass extends ListenerAdapter {
 		
 		//execute a command and return the message it provides
 		try {
+			if(!CommandRegistrar.getCommandCooldown(args[0]).equals("-1")) {
+				long currentTime = Long.parseLong(Vault.getUserDataLocalOrDefault(event.getAuthor().getId(), null, "cooldown." + args[0], "0"));
+				if(currentTime > Instant.now().toEpochMilli() / 1000) {
+					event.getChannel().sendMessage("The command `" + args[0] + "` is on a cooldown.  Please wait " + (currentTime - Instant.now().toEpochMilli() / 1000) + " more seconds.").queue();
+					return;
+				}
+				Vault.storeUserDataLocal(event.getAuthor().getId(), null, "cooldown." + args[0], CommandRegistrar.getCommandCooldown(args[0]) + (Instant.now().toEpochMilli() / 1000));
+			}
 			event.getChannel()
 					.sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
 					.queue();

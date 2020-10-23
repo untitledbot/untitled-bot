@@ -53,7 +53,6 @@ public final class RankImageRender {
     @Nullable
     @CheckReturnValue
     @Contract(pure = true)
-    @SuppressWarnings("SameParameterValue")
     public static File render(String userID, String guildID, long uniqueID) throws UserDataCouldNotBeObtainedException, IOException, FontFormatException {
         
         User u = Main.jda.getUserById(userID);
@@ -127,7 +126,7 @@ public final class RankImageRender {
         }
         
         //username and discriminator
-        Font f = Font.createFont(Font.TRUETYPE_FONT, new File("./font.ttf"));
+        Font f = Font.createFont(Font.PLAIN, new File("./font.ttf"));
         GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(f);
         gtd.setFont(f);
         gtd.setColor(Color.WHITE);

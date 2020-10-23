@@ -15,10 +15,10 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.CheckReturnValue;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * This is where all commands are registered.  To register the command, you must do the following:
@@ -52,9 +52,19 @@ public class CommandRegistrar {
 	private static final ArrayList<MessageHook> HOOK_REGISTRAR = new ArrayList<>();
 	
 	//command, cooldown in seconds
-	private static final HashMap<String, Long> COOLDOWN = new HashMap<>();
+	private static final HashMap<String, String> COOLDOWN = new HashMap<>();
 	
 	private static long commandsSent = 0L;
+	
+	static {
+		Properties p = new Properties();
+		try {
+			p.load(new FileInputStream("./cooldowns.properties"));
+			p.forEach((key, value) -> COOLDOWN.put(key.toString(), value.toString()));
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/**
 	 * Get the cooldown of a command
@@ -62,8 +72,8 @@ public class CommandRegistrar {
 	 * @return the cooldown or -1 if the command does not exist/does not have a cooldown.
 	 */
 	@Contract(pure = true)
-	public static long getCommandCooldown(@NotNull String commandName) {
-		return COOLDOWN.getOrDefault(commandName, -1L);
+	public static String getCommandCooldown(@NotNull String commandName) {
+		return COOLDOWN.getOrDefault(commandName, "-1");
 	}
 	
 	/**
@@ -71,8 +81,20 @@ public class CommandRegistrar {
 	 * @param commandName the name of the command as the user executes it.
 	 * @param time the time in seconds of the cooldown.
 	 */
-	public static void setCommandCooldown(@NotNull String commandName, long time) {
+	public static void setCommandCooldown(@NotNull String commandName, String time) {
 		COOLDOWN.put(commandName, time);
+		storeCommandCooldown();
+	}
+	
+	private static void storeCommandCooldown() {
+		Properties p = new Properties();
+		try {
+			p.load(new FileInputStream("./cooldowns.properties"));
+			p.putAll(COOLDOWN);
+			p.store(new FileOutputStream("./cooldowns.properties"), "#cooldown");
+		} catch(IOException ignored) {
+			Logger.critical("Could not save cooldown to properties file!", -1, false);
+		}
 	}
 	
 	/**

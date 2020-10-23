@@ -43,7 +43,7 @@ public final class NoPrefix extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("no-prefix", this);
+        CommandRegistrar.register("no-prefix", "owner", this);
         Manual.setHelpPage("no-prefix", "Enter the no-prefix mode to get access to bot commands without " +
                                                 "having to use the prefix.  Type `exit` at anytime to get out of this mode.");
     }
