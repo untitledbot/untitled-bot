@@ -39,7 +39,7 @@ dev changes:
 bug fixes:
 * `top` command won't respond if you try to get more than 20 or so members.
 * `rank-role` wouldn't allow assigning of roles for level 100.TODO
-* `steal` now waits the cooldown amount.TODO
+* `steal` now waits the cooldown amount.
 * `data` now gives your data for servers that were deleted or that the bot is no longer in.
 * `caps`, `toggle-case`, and `lowercase` can now display 2000 characters.TODO
-* `prefix` is now much more strict about what characters qualify as a prefix.TODO
+* `prefix` is now much more strict about what characters qualify as a prefix.
