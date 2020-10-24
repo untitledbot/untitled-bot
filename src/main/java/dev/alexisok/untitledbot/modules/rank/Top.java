@@ -195,7 +195,7 @@ public final class Top extends UBPlugin {
                 if(i.get() <= Math.min(map.size() - 1, 9))
                     gtd.fillRect(10, y.get() - 20, 780, 3);
                 new File("./tmp/" + s + ".png").delete();
-            } catch(Exception ignored) {ignored.printStackTrace();}
+            } catch(Exception ignored) {}
         });
         
         //save the image.
