@@ -33,7 +33,7 @@ public final class Uppercase extends UBPlugin {
                 message.getChannel().sendMessage((String.join(" ", ArrayUtils.remove(args, 0)).toUpperCase())).queue();
             }
         } catch(Throwable ignored) {
-            message.getChannel().sendMessage("Cannot mock the previous message as it either had no text or the text is in an embed.").queue();
+            message.getChannel().sendMessage("Cannot uppercase the previous message as it either had no text or the text is in an embed.").queue();
         }
         return null;
     }
