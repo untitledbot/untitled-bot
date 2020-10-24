@@ -10,16 +10,13 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;
@@ -43,8 +40,6 @@ public final class Main {
     public static final String DATA_PATH;
     public static final String PREFIX;
     public static final String OWNER_ID;
-    public static final String STATS_DIR = String.format("%s/stats", Paths.get("").toAbsolutePath().toString());
-    public static final String DAY_FOR_STATS = new Date().toString();
     
     public static final boolean DEBUG;
     

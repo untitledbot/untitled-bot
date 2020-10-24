@@ -19,65 +19,15 @@ this link</a>.
 ### Features
 * Level/rank module.
 * Logging
-* <a href="#commands">Many other commands.</a>
+* Starboard
+* Level roles
+* Much, much more, see below :)
 
----
-### Upcoming features
-* (M)MORPG module (Massive Multiplayer Online Role Playing Game, though probably not that massive).
 ---
 ### Discord server
 You can join the untitled-bot discord server [here](https://alexisok.dev/ub/discord.html).
 
----
-### Self hosting
-NOTE: Binaries for Windows have not been tested, it might not work at all!\
-Pre-compiled binaries are available [here](https://github.com/AlexIsOK/untitled-bot/releases/latest). \
-or, you can compile the source code as follows:
-```console
-# download the requirements
-# if you're not using a debian-based distro, figure it out yourself
-apt install openjdk-11-jdk maven git
-
-# clone the repository and cd
-git clone https://github.com/alexisok/untitled-bot
-cd untitled-bot/
-
-# compile from the source
-mvn clean compile assembly:single
-
-# run the bot (the name of the file may be different)
-cd target/
-java -jar untitledbot.jar "TOKEN"
-```
-
-I recommend using [pm2](https://github.com/Unitech/pm2) or screen
-if you are self hosting the bot.
-
-### Privacy
-(before anything, you can request your data from the bot by joining the official server and using the `data` command).\
-As someone who wants privacy, I respect your right to it as well.  This is a list of everything the bot keeps on users:
-
-```diff
-@@ it will keep @@
-+ Your Discord Snowflake (public ID)
-+ Any data that goes through the bot (balance, xp, level, etc)
-+ Shared guilds with the bot
-+ A list of all server members by ID in the guild (who have sent a message)
-
-@@ it will NOT @@
-- Cache messages
-- Log messages
-- Save presence history
-- Read you a bedtime story
-
-@@ this information could be logged to log channels if the server admins set it up @@
-+ Nickname updates
-+ Role updates
-+ Voice channel join/leave/switch
-+ Server role changes
-+ Member join/leave guild
-@@ the above logs will NOT be saved on my end @@
-```
+# Commands
 
 <dl>
 <h2>Ranking</h2>
@@ -106,7 +56,12 @@ As someone who wants privacy, I respect your right to it as well.  This is a lis
 <dd>> <code>profile</code> - get the profile of another user.</dd><br>
 <dd>> <code>caps</code> - change a string to all capital letters.</dd><br>
 <dd>> <code>lowercase</code> - change a string to all lowercase letters.</dd><br>
-<dd>> <code>alternate-case</code> - MaKe A mEsSaGe ChAnGe EaCh LeTtEr CaPiTaLiZaTiOn.</dd><br>
+<dd>> <code>mock</code> - MaKe A mEsSaGe ChAnGe EaCh LeTtEr CaPiTaLiZaTiOn.</dd><br>
+<dd>> <code>source</code> - Get the source code for the bot</dd><br>
+<dd>> <code>which</code> - Get the code of a command.</dd><br>
+<dd>> <code>perms</code> - Get Discord permissions of yourself or another user.</dd><br>
+<dd>> <code>remind</code> - Remind yourself of an event.</dd><br>
+<dd>> <code>rot13</code> - Run a string through ROT13.</dd><br>
 
 <h2>Moderation</h2>
 <dd>> <code>log-channel</code> - set the channel where things will be logged.</dd><br>
@@ -121,6 +76,7 @@ As someone who wants privacy, I respect your right to it as well.  This is a lis
 <dd>> <code>ship</code> - ship two different server members (user requested).</dd><br>
 <dd>> <code>20</code> - roll a twenty-sided die.</dd><br>
 <dd>> <code>owo &lt;text&gt;</code> - convewt da text u input to make it vewy kawaii &lt;3</dd><br>
+<dd>> <code>cat</code> - Get a cat fact.</dd><br>
 
 <h2>Reactions</h2>
 <dd>> <code>hug</code> - send a hug gif.</dd><br>
