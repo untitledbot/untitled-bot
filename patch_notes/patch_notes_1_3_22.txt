@@ -4,7 +4,7 @@ had a lot of things i wanted to add and the rpg is still being worked on just no
 new things:
 * `usrdatamod` - modify user data (owner only)
 * `pay` and `give` - give a user UB$.
-* `bet` - bet UB$ (not a real currency btw before i get sued).TODO
+* `bet` - bet UB$ (not a real currency btw before i get sued).
 * `deposit` - deposit UB$ into your bank where it cannot be stolen.
 * `withdraw` - withdraw UB$ from your bank into your pockets.
 * `starboard` - have users add a star emoji to put the messages in a starboard channel.

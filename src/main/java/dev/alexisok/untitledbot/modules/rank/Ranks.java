@@ -14,6 +14,7 @@ import dev.alexisok.untitledbot.modules.rank.xpcommands.Shop;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -155,7 +156,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         
         try {
             int s = message.getMentionedMembers().size();
-            User target = s == 1 ? message.getMentionedMembers().get(0).getUser() : Main.jda.getUserById(args[1]);
+            Member target = s == 1 ? message.getMentionedMembers().get(0) : message.getGuild().getMemberById(args[1]);
             assert target != null;
             xp = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-xp");
             lv = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-level");
@@ -188,7 +189,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         
         if (lv == null || xp == null) {
             eb.setColor(Color.RED);
-            eb.addField("Error", "Looks like the level or XP is null..... this is awkward.....", false);
+            eb.addField("Ranking", "Could not get the rank of this user.  Have they talked in this server before?", false);
             return eb.build();
         }
         

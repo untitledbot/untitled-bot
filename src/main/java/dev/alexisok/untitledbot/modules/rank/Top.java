@@ -30,6 +30,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import static dev.alexisok.untitledbot.modules.rank.xpcommands.Shop.*;
+import static dev.alexisok.untitledbot.modules.rank.xpcommands.Shop.BANK_VAULT_NAME;
+import static dev.alexisok.untitledbot.modules.vault.Vault.getUserDataLocalOrDefault;
+import static java.lang.Long.*;
+
 /**
  * Gets the users in the guild with the most XP.
  * 
@@ -116,7 +121,7 @@ public final class Top extends UBPlugin {
         
         if(epochOldString == null) return false;
         
-        long epochPrevious = Long.parseLong(epochOldString);
+        long epochPrevious = parseLong(epochOldString);
         long epochCurrent  = Instant.now().getEpochSecond();
     
         return epochCurrent - epochPrevious <= TIME_BETWEEN_COMMAND_IN_SECONDS;
@@ -156,11 +161,17 @@ public final class Top extends UBPlugin {
         map.forEach((s, l) -> {
             if(i.get() >= 10)
                 return;
-            User u = Main.jda.getGuildById(guildID).getMemberById(s).getUser();
-            if(u == null /*|| u.isBot()*/)
+            
+            User u;
+            
+            try {
+                u = Main.jda.getGuildById(guildID).getMemberById(s).getUser();
+            } catch(Throwable ignored) {return;}
+            
+            if(u.isBot())
                 return;
             try {
-                new FileOutputStream("./tmp/" + s + ".png").getChannel().transferFrom(Channels.newChannel(new URL(u.getEffectiveAvatarUrl()).openStream()), 0, Long.MAX_VALUE);
+                new FileOutputStream("./tmp/" + s + ".png").getChannel().transferFrom(Channels.newChannel(new URL(u.getEffectiveAvatarUrl()).openStream()), 0, MAX_VALUE);
                 gtd.drawImage(
                         ImageIO.read(new File("./tmp/" + s + ".png")).getScaledInstance(64, 64, Image.SCALE_FAST),
                         10, y.get(), null);
@@ -169,14 +180,10 @@ public final class Top extends UBPlugin {
                 gtd.setFont(new Font(font, Font.PLAIN, 30));
                 gtd.setColor(new Color(255, 255, 255, 255));
                 gtd.drawString(u.getName() + "#" + u.getDiscriminator(), 80, y.get() - 80);
-                long currencyTotal = Long.parseLong(Vault.getUserDataLocalOrDefault(u.getId(), guildID, Shop.CURRENCY_VAULT_NAME, "0")) + Long.parseLong(Vault.getUserDataLocalOrDefault(u.getId(), guildID, Shop.BANK_VAULT_NAME, "0")); 
-//                gtd.drawString(String.format("Level %d         %d / %d XP        UB$%d",
-//                        Ranks.getLevelForXP(l),
-//                        Ranks.getLevelForXPRemainder(l),
-//                        Ranks.xpNeededForLevel(Ranks.getLevelForXP(l)),
-//                        currencyTotal),
-//                        80,
-//                        y.get() - 42);
+                long currencyTotal = 
+                        parseLong(getUserDataLocalOrDefault(u.getId(), guildID, CURRENCY_VAULT_NAME, "0"))
+                      + parseLong(getUserDataLocalOrDefault(u.getId(), guildID, BANK_VAULT_NAME, "0"));
+                
                 gtd.drawString("Level " + Ranks.getLevelForXP(l), 80, y.get() - 42);
                 gtd.drawString(String.format("%d / %d XP",
                         Ranks.getLevelForXPRemainder(l),
@@ -185,8 +192,8 @@ public final class Top extends UBPlugin {
                         y.get() - 42);
                 gtd.drawString("UB$" + currencyTotal, 575, y.get() - 42);
                 gtd.setColor(new Color(255, 255, 255, 120));
-                if(i.get() <= 9)
-                    gtd.fillRect(10, y.get() - 20, 790, 3);
+                if(i.get() <= Math.min(map.size() - 1, 9))
+                    gtd.fillRect(10, y.get() - 20, 780, 3);
                 new File("./tmp/" + s + ".png").delete();
             } catch(Exception ignored) {ignored.printStackTrace();}
         });
