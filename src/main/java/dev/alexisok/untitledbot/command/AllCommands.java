@@ -49,7 +49,12 @@ public class AllCommands extends UBPlugin {
                                     "`profile` - get the profile of another user.\n" +
                                     "`caps` - change a string to all capital letters.\n" +
                                     "`lowercase` - change a string to all lowercase letters.\n" +
-                                    "`alternate-case` - MaKe A mEsSaGe ChAnGe EaCh LeTtEr CaPiTaLiZaTiOn.");
+                                    "`mock` - MaKe A mEsSaGe ChAnGe EaCh LeTtEr CaPiTaLiZaTiOn.\n" +
+                                           "`source` - get the source code for the bot.\n" +
+                                           "`which` - get the package for a command.\n" +
+                                           "`permissions` - get the permissions of a specific user or yourself.\n" +
+                                           "`remind` - have the bot dm you a reminder.\n" +
+                                           "`rot13` - run a string through rot13.\n");
         Manual.setHelpPage("moderation", "\n" +
                                     "`log-channel` - set the logging channel.(adm)\n" +
                                     "`add-log` - add a log type to the log channel.(adm)\n" +
@@ -63,13 +68,17 @@ public class AllCommands extends UBPlugin {
                                     "`8ball` - simulate a magic 8 ball.\n" +
                                     "`ship` - ship two users (was asked to add this).\n" +
                                     "`20` - roll a twenty sided die.\n" +
-                                    "`owo` - owofy a stwing of text,,,");
+                                    "`owo` - owofy a stwing of text,,,\n" +
+                                          "`cat` - get a cat fact.\n");
         Manual.setHelpPage("econ", "\n" +
                                     "`bal` - get the balance of yourself or another user.\n" +
                                     "`work` - get UB$\n" +
                                     "`steal` - get or lose UB$ depending on who you target.\n" +
                                     "`shop` - the shop.\n" +
-                                    "`inv` - list your inventory.");
+                                    "`inv` - list your inventory.\n" +
+                                           "`pay` - pay a user UB$.\n" +
+                                           "`bet` - coinflip command.\n" +
+                                           "`deposit` and `withdraw`, put/take money between the bank.");
         Manual.setHelpPage("reactions", "\n" +
                                     "`hug` - hug another user (or yourself)...\n" +
                                     "`ayaya` - react with ayaya (or something else).\n" +
