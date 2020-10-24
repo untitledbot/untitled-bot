@@ -55,7 +55,7 @@ public final class RankSettings extends UBPlugin {
                     TextChannel setChannel;
                     try {
                         setChannel = message.getMentionedChannels().get(0);
-                        if(!setChannel.canTalk())
+                        if(!setChannel.canTalk() || !setChannel.getGuild().getId().equals(message.getGuild().getId()))
                             throw new Exception();
                         if(!message.getGuild().getTextChannels().contains(setChannel))
                             throw new Exception();
