@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.modules.starboard.Starboard;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -98,6 +99,7 @@ public final class ConfigHandle extends UBPlugin {
                                       "You can run this command again if you want to change the configuration.\n", false);
         eb.setColor(Color.GREEN);
         BotClass.nullifyPrefixCacheSpecific(message.getGuild().getId());
+        Starboard.voidCacheForGuild(message.getGuild().getId());
         return eb.build();
     }
     

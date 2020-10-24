@@ -32,20 +32,16 @@ public final class Steal extends UBPlugin {
         int min = Integer.parseInt(Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "steal.limit.minimum", "50"));
         int max = Integer.parseInt(Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "steal.limit.maximum", "300"));
         int chance = Integer.parseInt(Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "steal.chance", "50"));
-        int timeout = Integer.parseInt(Vault.getUserDataLocalOrDefault(message.getAuthor().getId(), message.getGuild().getId(), "steal.cooldown", "86400"));
+        int timeout = Integer.parseInt(Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "steal.cooldown", "86400"));
         
         if(isRateLimit(message.getAuthor().getId(), message.getGuild().getId(), timeout)) {
             eb.addField("Steal", String.format("You are being rate limited!\n" +
-                                                       "Please try again in %s hours, or have a moderator change this limit with the `config` command.",
-                    rateLimitTimeHours(message.getAuthor().getId(),
-                            message.getGuild().getId(),
-                            timeout
-                    )
-            ), false);
+                                                       "Please try again in %.2f hours or have a moderator change the ratelimit with the `config` command.",
+                    rateLimitTimeHours(message.getAuthor().getId(), message.getGuild().getId(), timeout)), false);
             eb.setColor(Color.RED);
             return eb.build();
         }
-    
+        
         User m;
         
         try {
@@ -146,7 +142,7 @@ public final class Steal extends UBPlugin {
      * @param guildID the ID of the guild.
      */
     private static void setRateLimiter(String userID, String guildID) {
-        Vault.storeUserDataLocal(userID, guildID, "work.cooldown", String.valueOf(Instant.now().getEpochSecond()));
+        Vault.storeUserDataLocal(userID, guildID, "steal.cooldown", String.valueOf(Instant.now().getEpochSecond()));
     }
     
     /**
@@ -170,7 +166,7 @@ public final class Steal extends UBPlugin {
      * @return the time left for rate-limit in seconds.
      */
     private static double rateLimitTime(String userID, String guildID) {
-        String a = Vault.getUserDataLocal(userID, guildID, "work.cooldown");
+        String a = Vault.getUserDataLocal(userID, guildID, "steal.cooldown");
         return a == null || a.isEmpty() ? 0.0 : Double.parseDouble(a) + 0.0;
     }
 }

@@ -14,6 +14,7 @@ import dev.alexisok.untitledbot.modules.rank.xpcommands.Shop;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -71,7 +72,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         new Daily().onRegister();
         new Shop().onRegister();
         Manual.setHelpPage("rank-top", "Get the top user ranks for the guild.\n" +
-                                               "Usage: `top [amnt]`");
+                                               "Usage: `top`");
         Manual.setHelpPage("rank", "Get your (or another user's) rank.\nUsage: `rank [user @ | user ID]`");
         Manual.setHelpPage("rank-total", "Get the total amount of experience of yourself or another user.\n" +
                                                  "Usage: rank-total [user @]");
@@ -103,6 +104,45 @@ public final class Ranks extends UBPlugin implements MessageHook {
         return XP_REQUIRED_FOR_LEVEL_UP[i - 1];
     }
     
+    /**
+     * Get the level from xp provided
+     * @param XP the XP provided
+     * @return the level
+     */
+    public static int getLevelForXP(long XP) {
+        long current = XP;
+        int i = 1;
+        try {
+            while (current >= XP_REQUIRED_FOR_LEVEL_UP[i]) {
+                current -= XP_REQUIRED_FOR_LEVEL_UP[i];
+                i++;
+            }
+        } catch(ArrayIndexOutOfBoundsException ignored) {
+            return 100;
+        }
+        return i;
+    }
+    
+    
+    /**
+     * Get the remainder of {@link #getLevelForXP(long)}
+     * @param XP the XP provided
+     * @return the remainder
+     */
+    public static long getLevelForXPRemainder(long XP) {
+        long current = XP;
+        int i = 1;
+        try {
+            while (current >= XP_REQUIRED_FOR_LEVEL_UP[i]) {
+                current -= XP_REQUIRED_FOR_LEVEL_UP[i];
+                i++;
+            }
+        } catch(ArrayIndexOutOfBoundsException ignored) {
+            return Long.MAX_VALUE;
+        }
+        return current;
+    }
+    
     @SuppressWarnings("DuplicatedCode")
     @Nullable
     @Override
@@ -124,7 +164,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         
         try {
             int s = message.getMentionedMembers().size();
-            User target = s == 1 ? message.getMentionedMembers().get(0).getUser() : Main.jda.getUserById(args[1]);
+            Member target = s == 1 ? message.getMentionedMembers().get(0) : message.getGuild().getMemberById(args[1]);
             assert target != null;
             xp = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-xp");
             lv = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-level");
@@ -157,7 +197,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         
         if (lv == null || xp == null) {
             eb.setColor(Color.RED);
-            eb.addField("Error", "Looks like the level or XP is null..... this is awkward.....", false);
+            eb.addField("Ranking", "Could not get the rank of this user.  Have they talked in this server before?", false);
             return eb.build();
         }
         
@@ -166,7 +206,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         eb.setColor(Color.GREEN);
         if(!other) {
             try {
-                File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong(), false));
+                File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong()));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
                 return null;
             } catch(InsufficientPermissionException | NullPointerException | IOException | FontFormatException e) {
@@ -190,7 +230,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
             try {
                 int size = message.getMentionedMembers().size();
                 User target = size == 1 ? message.getMentionedMembers().get(0).getUser() : Main.jda.getUserById(args[1]);
-                File f = Objects.requireNonNull(RankImageRender.render(Objects.requireNonNull(target).getId(), message.getGuild().getId(), message.getIdLong(), true));
+                File f = Objects.requireNonNull(RankImageRender.render(Objects.requireNonNull(target).getId(), message.getGuild().getId(), message.getIdLong()));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
                 return null;
             } catch(InsufficientPermissionException | NullPointerException ignored2) {
@@ -227,7 +267,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
             return;
         
         //do not do rank stuffs if there is a command
-        if(m.getContentRaw().startsWith(BotClass.getPrefix(mre.getGuild().getId())))
+        if(m.getContentRaw().startsWith(BotClass.getPrefix(mre.getGuild().getId(), null)))
             return;
         
         //was 3 to 5
@@ -252,7 +292,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         long currentXP = Long.parseLong(xpstr);
         int currentLv = Integer.parseInt(lvstr);
     
-        if (currentLv > 99 && currentXP >= Long.MAX_VALUE - 10L) return;
+        if (currentLv > 99 && currentXP >= Long.MAX_VALUE - 1000L) return;
         
         if(DoubleXPTime.boostAmount != 1)
             DoubleXPTime.totalXPFromBoost = DoubleXPTime.totalXPFromBoost.add(new BigInteger(String.valueOf(randAdd)));
@@ -269,7 +309,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
                 if(rankToReward != null && !rankToReward.equals("none")) {
                     try {
                         m.getGuild().addRoleToMember(m.getAuthor().getId(), Objects.requireNonNull(m.getGuild().getRoleById(rankToReward))).queue();
-                        roleMessage = String.format("You have also been awarded rank %s!!!", Objects.requireNonNull(m.getGuild().getRoleById(rankToReward)).getName());
+                        roleMessage = String.format("You have also been awarded the role %s!!!", Objects.requireNonNull(m.getGuild().getRoleById(rankToReward)).getName());
                     } catch(Throwable ignored) {
                         try {
                             roleMessage = String.format("I would also assign you rank %s, but I don't have access to it!", Objects.requireNonNull(m.getGuild().getRoleById(rankToReward)).getName());

@@ -11,10 +11,20 @@ final class VaultOperation {
     //not private
     String userID, guildID, dataKey, dataValue;
     
+    VaultCompletion vc;
+    
     VaultOperation(String userID, String guildID, String dataKey, String dataValue) {
         this.userID = userID;
         this.guildID = guildID;
         this.dataKey = dataKey;
         this.dataValue = dataValue;
+    }
+    
+    VaultOperation(String userID, String guildID, String dataKey, String dataValue, VaultCompletion vc) {
+        this.userID = userID;
+        this.guildID = guildID;
+        this.dataKey = dataKey;
+        this.dataValue = dataValue;
+        this.vc = vc;
     }
 }

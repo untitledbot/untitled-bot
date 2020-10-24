@@ -1,7 +1,6 @@
 package dev.alexisok.untitledbot.command;
 
 import dev.alexisok.untitledbot.Main;
-import dev.alexisok.untitledbot.annotation.ToBeRemoved;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -10,14 +9,16 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.CheckReturnValue;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * This is where all commands are registered.  To register the command, you must do the following:
@@ -50,13 +51,58 @@ public class CommandRegistrar {
 	//the hook registrar.
 	private static final ArrayList<MessageHook> HOOK_REGISTRAR = new ArrayList<>();
 	
+	//command, cooldown in seconds
+	private static final HashMap<String, String> COOLDOWN = new HashMap<>();
+	
 	private static long commandsSent = 0L;
+	
+	static {
+		Properties p = new Properties();
+		try {
+			p.load(new FileInputStream("./cooldowns.properties"));
+			p.forEach((key, value) -> COOLDOWN.put(key.toString(), value.toString()));
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Get the cooldown of a command
+	 * @param commandName the name of the command as the user executes it.
+	 * @return the cooldown or -1 if the command does not exist/does not have a cooldown.
+	 */
+	@Contract(pure = true)
+	public static String getCommandCooldown(@NotNull String commandName) {
+		return COOLDOWN.getOrDefault(commandName, "-1");
+	}
+	
+	/**
+	 * Set the cooldown of a specific command.
+	 * @param commandName the name of the command as the user executes it.
+	 * @param time the time in seconds of the cooldown.
+	 */
+	public static void setCommandCooldown(@NotNull String commandName, String time) {
+		COOLDOWN.put(commandName, time);
+		storeCommandCooldown();
+	}
+	
+	private static void storeCommandCooldown() {
+		Properties p = new Properties();
+		try {
+			p.load(new FileInputStream("./cooldowns.properties"));
+			p.putAll(COOLDOWN);
+			p.store(new FileOutputStream("./cooldowns.properties"), "#cooldown");
+		} catch(IOException ignored) {
+			Logger.critical("Could not save cooldown to properties file!", -1, false);
+		}
+	}
 	
 	/**
 	 * Get the size of the register.  Includes alias commands.
 	 * 
 	 * @return the size of the registrar.
 	 */
+	@Contract(pure = true)
 	public static int registrarSize() {
 		return REGISTRAR.size();
 	}
@@ -65,6 +111,7 @@ public class CommandRegistrar {
 	 * Get the total amount of commands sent while the bot was active.
 	 * @return the amount of commands sent through this bot.
 	 */
+	@Contract(pure = true)
 	public static long getTotalCommands() {
 		return commandsSent;
 	}
@@ -75,10 +122,10 @@ public class CommandRegistrar {
 	 * The {@code permission} parameter is here for legacy reasons, but it may change in future releases.
 	 * 
 	 * @param commandName the name of the command.  Must match {@code ^[a-z0-9_-]*$} (alphanumerical
-	 *                    lowercase only plus underscores and hyphens).   
+	 *                    lowercase only plus underscores and hyphens).
 	 * @param permission If the permission node is {@code admin}, users will need the Discord administrator permission
-	 *                   to execute the command, or {@code owner} for the owner of the bot.  Any other nodes will throw an exception.<br>
-	 *                   Use {@link CommandRegistrar#register(String, Command)} to register a command that everyone can run.    
+	 *                   to execute the command, or {@code owner} for the owner of the bot.  Any other nodes will be ignored.<br>
+	 *                   Use {@link CommandRegistrar#register(String, Command)} to register a command that everyone can run.
 	 *                   <br>
 	 *                   Special cases: you can pass "admin" as the string name to require the user to
 	 *                   require the user to have administrator or a role with administrator.
@@ -86,16 +133,14 @@ public class CommandRegistrar {
 	 *                will be executed when the command is called.
 	 * @throws IllegalArgumentException if the command does not match the regex.
 	 */
-	public static void register(@NotNull String commandName, String permission, @NotNull Command command)
+	public static void register(@NotNull String commandName, @NotNull String permission, @NotNull Command command)
 			throws IllegalArgumentException {
 		
 		if(REGISTRAR.containsKey(commandName))
-			return;
+			throw new CommandAlreadyRegisteredException();
 		
 		if(!commandName.matches("^[a-z0-9_-]*$"))
 			throw new IllegalArgumentException("Command does not match regex!");
-		if(!permission.matches("^[a-z]([a-z][.]?)+[a-z]$") && !permission.equals("admin") && !permission.equals("owner")) //this took too long to make...
-			throw new IllegalArgumentException("Command permission does not match regex!");
 		
 		REGISTRAR.put(commandName, command);
 		PERMS_REGISTRAR.put(commandName, permission);
@@ -134,7 +179,9 @@ public class CommandRegistrar {
 	 * @param m the {@link Message}   
 	 * @return the return embed.  Returns {@code null} if the command was not found (or if the command returns null by itself).
 	 */
-	public static @Nullable MessageEmbed runCommand(@NotNull String commandName, @NotNull String[] args, @NotNull Message m) {
+	@Nullable
+	@CheckReturnValue
+	public static MessageEmbed runCommand(@NotNull String commandName, @NotNull String[] args, @NotNull Message m) {
 		
 		commandsSent++;
 		
@@ -185,6 +232,7 @@ public class CommandRegistrar {
 	 * @param command the command to check
 	 * @return true if the command is registered, false otherwise.
 	 */
+	@Contract(pure = true)
 	public static boolean hasCommand(String command) {
 		return REGISTRAR.containsKey(command);
 	}
@@ -192,10 +240,14 @@ public class CommandRegistrar {
 	/**
 	 * Get the permission node of a command.
 	 * 
+	 * As of 1.3.22, this is unused.
+	 * 
 	 * @param command the command
 	 * @return the permission node, {@code null} if it is not registered.
 	 */
-	public static @Nullable String getCommandPermissionNode(String command) {
+	@Nullable
+	@Contract(pure = true)
+	public static String getCommandPermissionNode(String command) {
 		if(!hasCommand(command))
 			return null;
 		return PERMS_REGISTRAR.get(command);
@@ -219,22 +271,6 @@ public class CommandRegistrar {
 	public static void registerAlias(@NotNull String command, @NotNull String... aliases) {
 		Arrays.stream(aliases).forEachOrdered(alias -> register(alias, PERMS_REGISTRAR.get(command), REGISTRAR.get(command)));
 		Arrays.stream(aliases).forEachOrdered(alias -> Manual.setHelpPage(alias, Manual.getHelpPagesRaw(command)));
-	}
-	
-	/**
-	 * 
-	 * This method is obsolete, aliases now inherit their 
-	 * 
-	 * @deprecated since 1.3.8
-	 * @see CommandRegistrar#registerAlias(String, String...)
-	 * @param originalCommand the command to copy off of
-	 * @param aliases the alias command
-	 */
-	@Deprecated
-	@ToBeRemoved("1.4")
-	public static void registerAliasManual(@NotNull String originalCommand, @NotNull String...aliases) {
-		for(String alias : aliases)
-			Manual.setHelpPage(alias, Manual.getHelpPagesRaw(originalCommand));
 	}
 	
 	/**
@@ -265,6 +301,18 @@ public class CommandRegistrar {
 	 */
 	public static void registerHook(MessageHook mh) {
 		HOOK_REGISTRAR.add(mh);
+	}
+	
+	/**
+	 * Get the {@link Class} of a command.
+	 * @param command the command to get
+	 * @return the Class
+	 */
+	@Nullable
+	@CheckReturnValue
+	@Contract(pure = true)
+	public static Class<? extends Command> getClassOfCommand(String command) {
+		return REGISTRAR.get(command).getClass();
 	}
 	
 	

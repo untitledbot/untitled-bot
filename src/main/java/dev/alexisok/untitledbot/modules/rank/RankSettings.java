@@ -48,7 +48,7 @@ public final class RankSettings extends UBPlugin {
                     Vault.storeUserDataLocal(null, message.getGuild().getId(), "ranks-broadcast.rankup", "current");
                     eb.setColor(Color.GREEN);
                     eb.addField("Ranking",
-                            "Level up announcements have been set to the current channel.",
+                            "Level up messages will be sent to the channel where a user levels up.",
                             false);
                     return eb.build();
                 case "channel": //specific channel
@@ -56,6 +56,8 @@ public final class RankSettings extends UBPlugin {
                     try {
                         setChannel = message.getMentionedChannels().get(0);
                         if(!setChannel.canTalk() || !setChannel.getGuild().getId().equals(message.getGuild().getId()))
+                            throw new Exception();
+                        if(!message.getGuild().getTextChannels().contains(setChannel))
                             throw new Exception();
                     } catch(Exception ignored) {
                         eb.setColor(Color.RED);
@@ -66,7 +68,7 @@ public final class RankSettings extends UBPlugin {
                     Vault.storeUserDataLocal(null, message.getGuild().getId(), "ranks-broadcast.rankup", "channel");
                     Vault.storeUserDataLocal(null, message.getGuild().getId(), "ranks-broadcast.rankup.channel", setChannel.getId());
                     eb.addField("Ranking", "Level up announcements have been set to channel <#"
-                                                   + setChannel.getId() 
+                                                   + setChannel.getId()
                                                    + ">.", false);
                     eb.setColor(Color.GREEN);
                     return eb.build();
@@ -76,7 +78,7 @@ public final class RankSettings extends UBPlugin {
                     eb.setColor(Color.GREEN);
                     return eb.build();
                 default:
-                    eb.addField("Ranking", "Usage: `rank-settings announce-level-up <current | channel | dm | none>`\n\n" +
+                    eb.addField("Ranking", "Usage: `rank-settings announce-level-up <current | channel | none>`\n\n" +
                                                    "`current` - the channel where the user levels up.\n" +
                                                    "`channel <channel #>` - a specific channel to send the level up message.\n" +
                                                    "`none` - do not do level up messages (does NOT stop the rank module).\n", false);

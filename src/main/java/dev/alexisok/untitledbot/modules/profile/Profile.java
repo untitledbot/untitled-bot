@@ -44,7 +44,7 @@ public final class Profile extends UBPlugin {
         }
         
         try {
-            File f = Objects.requireNonNull(RankImageRender.render(u.getId(), message.getGuild().getId(), message.getIdLong(), another));
+            File f = Objects.requireNonNull(RankImageRender.render(u.getId(), message.getGuild().getId(), message.getIdLong()));
             message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
         } catch(Throwable ignored){}
         

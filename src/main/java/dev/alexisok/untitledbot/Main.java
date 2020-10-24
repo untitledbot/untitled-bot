@@ -2,16 +2,15 @@ package dev.alexisok.untitledbot;
 
 import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.logging.Logger;
-import dev.alexisok.untitledbot.modules.cron.Sender;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
+import dev.alexisok.untitledbot.modules.starboard.Starboard;
 import dev.alexisok.untitledbot.modules.vault.Vault;
-import dev.alexisok.untitledbot.plugin.PluginLoader;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +21,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
+
+import static net.dv8tion.jda.api.requests.GatewayIntent.*;
+import static net.dv8tion.jda.api.utils.cache.CacheFlag.*;
 
 /**
  *
@@ -36,7 +38,7 @@ import java.util.*;
  */
 public final class Main {
     
-    public static final String VERSION = "1.3.21.1";
+    public static final String VERSION = "1.3.22";
     public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
     public static final String DATA_PATH;
     public static final String PREFIX;
@@ -108,21 +110,6 @@ public final class Main {
         
         TOP_GG_TOKEN = secretsTemp;
         
-        //register RAM statistics
-        
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    Files.write(Paths.get(String.format("%s/%s", STATS_DIR, DAY_FOR_STATS)),
-                            ramStats().getBytes(),
-                            StandardOpenOption.APPEND);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        
         API = new DiscordBotListAPI.Builder()
                       .token(TOP_GG_TOKEN)
                       .botId("730135989863055472")
@@ -132,31 +119,22 @@ public final class Main {
             TimerTask updateServerCountTask = new TimerTask() {
                 @Override
                 public void run() {
+                    Logger.log("Updating Top.GG stats...");
                     API.setStats(jda.getGuilds().size());
                 }
             };
             
-            Logger.log("Updating Top.GG stats...");
             //delay the first schedule by 20 seconds and update every 20 minutes
             new Timer().schedule(updateServerCountTask, 20000L, 1200000L);
         }
         
-        new Timer().schedule(task, 1000L, 5000L);
-        try {new File(String.format("%s/%s", STATS_DIR, DAY_FOR_STATS)).createNewFile();} catch (IOException e) {e.printStackTrace();}
-    }
-    
-    /**
-     * Get the stats of ram for the timer task in the static block
-     * will be run every 5 seconds
-     * @return the ram stats
-     */
-    @NotNull
-    private static String ramStats() {
-        String returnString = String.format("%n%s%n", new Date().toString());
-        returnString += String.format("Free: %d%n", Runtime.getRuntime().freeMemory() / 1024 / 1024);
-        returnString += String.format("Total: %d%n", Runtime.getRuntime().totalMemory() / 1024 / 1024);
-        
-        return returnString;
+        try {
+            File cooldown = new File("./cooldowns.properties");
+            if(!cooldown.exists())
+                cooldown.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     private static void setDefaultProps(@NotNull Properties p) {
@@ -179,16 +157,10 @@ public final class Main {
     @SuppressWarnings("deprecation")
     public static void main(@NotNull String[] args) {
         
-        checkArgs(args.clone());
-        
         Logger.log("Starting untitled bot " + VERSION + ".");
         Logger.log("Starting in location " + System.getProperty("user.dir"));
         
         String token;
-        
-        Logger.log("Loading plugins...");
-        PluginLoader.loadPlugins();
-        Logger.log("Plugin loading done.");
         
         Logger.log("Installing VAULT scheduler...");
         Vault.operationScheduler();
@@ -197,21 +169,17 @@ public final class Main {
         try {
             token = args[0];
         } catch(ArrayIndexOutOfBoundsException ignored) {
-            System.out.println("Please input your token (CTRL + V or CTRL + SHIFT + V on some terminals):");
-            try {
-                token = Arrays.toString(System.console().readPassword());
-            } catch(NullPointerException ignored2) {
-                System.out.println("WARNING: defaulting to plaintext input!");
-                token = new Scanner(System.in).nextLine();
-            }
+            Logger.critical("Could not read a token from the first argument!", 5, true);
+            return;
         }
         
         try {
             //message reactions may be used for a future release
             jda = new JDABuilder(token)
-                          .enableIntents(GatewayIntent.GUILD_MESSAGE_REACTIONS)
-                          .setMemberCachePolicy(MemberCachePolicy.ALL)
-                          .addEventListeners(new ModHook(), new BotClass(), new Sender())
+                          .disableCache(ACTIVITY, CLIENT_STATUS, MEMBER_OVERRIDES, EMOTE)
+                          .enableIntents(GUILD_MESSAGE_REACTIONS, GUILD_MEMBERS, GUILD_MESSAGES)
+                          .setMemberCachePolicy(MemberCachePolicy.ONLINE)
+                          .addEventListeners(new ModHook(), new BotClass(), new Starboard())
                           .build();
             jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help"));
             
@@ -223,27 +191,6 @@ public final class Main {
         CoreCommands.registerCoreCommands();
         CoreCommands.registerModules();
         
-    }
-    
-    /**
-     * Check the arguments.  The arguments have their own method because
-     * I feel as if it is cleaner to do it this way than to have
-     * everything be done in the main method.
-     *
-     * @param args arguments
-     */
-    private static void checkArgs(@NotNull String[] args) {
-        
-        for(int i = 0; i < args.length; i++) {
-            args[i] = args[i].toLowerCase();
-        }
-        
-        for(String s : args) {
-            if ("--version".equals(s)) {
-                System.out.println("v" + VERSION);
-                System.exit(0);
-            }
-        }
     }
     
     /**

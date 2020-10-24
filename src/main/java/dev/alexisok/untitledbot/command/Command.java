@@ -2,6 +2,7 @@ package dev.alexisok.untitledbot.command;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,6 +27,7 @@ public interface Command {
 	 *                (such as their Discord snowflake ID)
 	 */
 	@Nullable
+	@Contract(pure = true)
 	MessageEmbed onCommand(String[] args, @NotNull Message message);
 	
 }

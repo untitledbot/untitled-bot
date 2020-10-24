@@ -20,13 +20,22 @@ import org.jetbrains.annotations.Nullable;
 public final class Uppercase extends UBPlugin {
     
     @Override
-    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
-        EmbedBuilder eb = new EmbedBuilder();
-        EmbedDefaults.setEmbedDefaults(eb, message);
-        
-        eb.addField("UPPERCASE", String.join(" ", ArrayUtils.remove(args, 0)).toUpperCase(), false);
-        
-        return eb.build();
+    public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
+        try {
+            if (args.length == 1) {
+                message.getChannel().getHistoryBefore(message.getId(), 1)
+                        .queue(t -> {
+                            try {
+                                message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().toUpperCase())).queue();
+                            } catch(Throwable ignored){}
+                        });
+            } else {
+                message.getChannel().sendMessage((String.join(" ", ArrayUtils.remove(args, 0)).toUpperCase())).queue();
+            }
+        } catch(Throwable ignored) {
+            message.getChannel().sendMessage("Cannot mock the previous message as it either had no text or the text is in an embed.").queue();
+        }
+        return null;
     }
     
     @Override

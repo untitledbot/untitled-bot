@@ -10,25 +10,32 @@ import dev.alexisok.untitledbot.modules.basic.brainfreak.BrainFreak;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.Lowercase;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.ToggleCase;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.Uppercase;
+import dev.alexisok.untitledbot.modules.basic.catfact.CatFact;
+import dev.alexisok.untitledbot.modules.basic.datamod.UserDataMod;
 import dev.alexisok.untitledbot.modules.basic.discordCommand.Discord;
 import dev.alexisok.untitledbot.modules.basic.eightball.EightBall;
 import dev.alexisok.untitledbot.modules.basic.help.Help;
 import dev.alexisok.untitledbot.modules.basic.owo.Owo;
+import dev.alexisok.untitledbot.modules.basic.permission.PermissionsCommand;
 import dev.alexisok.untitledbot.modules.basic.ping.Ping;
 import dev.alexisok.untitledbot.modules.basic.prefix.Prefix;
+import dev.alexisok.untitledbot.modules.basic.remind.Remind;
 import dev.alexisok.untitledbot.modules.basic.report.BugReport;
 import dev.alexisok.untitledbot.modules.basic.reverse.Reverse;
+import dev.alexisok.untitledbot.modules.basic.rot13.ROT13;
 import dev.alexisok.untitledbot.modules.basic.ship.Ship;
+import dev.alexisok.untitledbot.modules.basic.shutdown.Shutdown;
+import dev.alexisok.untitledbot.modules.basic.source.Source;
 import dev.alexisok.untitledbot.modules.basic.status.Status;
-import dev.alexisok.untitledbot.modules.basic.time.TimeCommand;
 import dev.alexisok.untitledbot.modules.basic.timestamp.TimeStamp;
 import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
 import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
 import dev.alexisok.untitledbot.modules.basic.userinfo.UserInfo;
 import dev.alexisok.untitledbot.modules.basic.vote.Vote;
 import dev.alexisok.untitledbot.modules.config.ConfigHandle;
-import dev.alexisok.untitledbot.modules.config.ConfigTokens;
-import dev.alexisok.untitledbot.modules.eco.Balance;
+import dev.alexisok.untitledbot.modules.eco.*;
+import dev.alexisok.untitledbot.modules.noprefix.Exit;
+import dev.alexisok.untitledbot.modules.noprefix.NoPrefix;
 import dev.alexisok.untitledbot.modules.profile.Profile;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleGet;
@@ -40,7 +47,7 @@ import dev.alexisok.untitledbot.modules.reactions.Dis;
 import dev.alexisok.untitledbot.modules.reactions.Hide;
 import dev.alexisok.untitledbot.modules.reactions.Hug;
 import dev.alexisok.untitledbot.modules.reward.VoteReward;
-import dev.alexisok.untitledbot.modules.rpg.RPGManager;
+import dev.alexisok.untitledbot.modules.starboard.StarboardHandle;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -88,7 +95,7 @@ public final class CoreCommands {
                                           "╔╗╔╦═╬╗╔╬╗╔╣║╔══╦═╝║  ║╚═╦═╩╗╔╝\n" +
                                           "║║║║╔╗╣║╠╣║║║║║═╣╔╗╠══╣╔╗║╔╗║║\n" +
                                           "║╚╝║║║║╚╣║╚╣╚╣║═╣╚╝╠══╣╚╝║╚╝║╚╗\n" +
-                                          "╚══╩╝╚╩═╩╩═╩═╩══╩══╝  ╚══╩══╩═╝" +
+                                          "╚══╩╝╚╩═╩╩═╩═╩══╩══╝  ╚══╩══╩═╝\n" +
                                           "```" +
                                           "Hello!  I am a bot made by AlexIsOK!  I do many things (you can see the full list with" +
                                           " the 'commands' command) and I am constantly improving as well!  If you have any suggestions," +
@@ -108,8 +115,17 @@ public final class CoreCommands {
             EmbedBuilder eb = new EmbedBuilder();
             EmbedDefaults.setEmbedDefaults(eb, message);
             eb.setColor(Color.CYAN);
-            eb.addField("title", "works i think <a:blob:751578995904217198>", false);
+            eb.addField("title", "works i think", false);
             return eb.build();
+        });
+        
+        //cooldown command
+        CommandRegistrar.register("cooldown", "owner", (args, message) -> {
+            if(args.length == 2)
+                return new EmbedBuilder().addField("its " + CommandRegistrar.getCommandCooldown(args[1]), "a", false).build();
+            EmbedBuilder eb = new EmbedBuilder();
+            CommandRegistrar.setCommandCooldown(args[1], (args[2]));
+            return eb.addField("done i guess", ".", false).build();
         });
         
         Logger.log("Core commands have been registered.");
@@ -145,7 +161,6 @@ public final class CoreCommands {
         new EightBall().onRegister();
         new AtSomeone().onRegister();
         new Ranks().onRegister();
-        new RPGManager().onRegister();
         new TwentyDice().onRegister();
         new Ship().onRegister();
         new GetUserData().onRegister();
@@ -181,6 +196,25 @@ public final class CoreCommands {
         new Uppercase().onRegister();
         new Lowercase().onRegister();
         new ToggleCase().onRegister();
+        
+        //1.3.22 commands
+        new UserDataMod().onRegister();
+        new ROT13().onRegister();
+        new CatFact().onRegister();
+        new Deposit().onRegister();
+        new Withdraw().onRegister();
+        new Pay().onRegister();
+        new StarboardHandle().onRegister();
+        new Bet().onRegister();
+        new Which().onRegister();
+        new Source().onRegister();
+        new NoPrefix().onRegister();
+        new Exit().onRegister();
+        new Remind().onRegister();
+        new PermissionsCommand().onRegister();
+        new Shutdown().onRegister();
+        
+//      new RPGCommand().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

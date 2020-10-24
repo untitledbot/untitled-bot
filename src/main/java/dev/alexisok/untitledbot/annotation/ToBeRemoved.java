@@ -16,8 +16,9 @@ import static java.lang.annotation.ElementType.*;
  * @author AlexIsOK
  * @since 0.0.1
  */
-@Documented
 @Inherited
+@Documented
+@SuppressWarnings("unused")
 @Retention(RetentionPolicy.SOURCE)
 @Target({CONSTRUCTOR, FIELD, METHOD, ANNOTATION_TYPE, TYPE})
 public @interface ToBeRemoved {

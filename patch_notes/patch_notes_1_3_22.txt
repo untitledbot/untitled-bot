@@ -1,0 +1,42 @@
+
+had a lot of things i wanted to add and the rpg is still being worked on just not in this repo
+
+new things:
+* `usrdatamod` - modify user data (owner only)
+* `pay` and `give` - give a user UB$.
+* `bet` - bet UB$ (not a real currency btw before i get sued).
+* `deposit` - deposit UB$ into your bank where it cannot be stolen.
+* `withdraw` - withdraw UB$ from your bank into your pockets.
+* `starboard` - have users add a star emoji to put the messages in a starboard channel.
+* `catfact` or `cat` - get a catfact.
+* custom profile backgrounds are available to anyone who joins the server and asks for one, though they must be approved.
+* `rot13` - run a string through ROT13.
+* `source` and `github` - link to the github page.
+* `which` - get the package of a command.
+* `cooldown <command>` - set a cooldown for a command.
+* `permissions [@user]` - get the guild permissions for a user.
+* `remind <time> <unit> <message...>` - have the bot dm you a reminder.
+
+changes:
+* `rank` command now has a default background instead a plain colour.
+* `top` command now actually looks niceish.
+* `top` command will only get the top 10 members due to limitations of image generating.
+* `info` command is now readable to non-developers.
+* `rob` is now an alias to `steal`
+* `rank-settings announce-level-up current` is no longer ambiguous.
+* `ui` is now an alias of `userinfo` and `info`.
+* `mock` is now an alias of `toggle-case`.
+* `toggle-case`, `caps`, and `lowercase` now accepts no arguments to use the previous message as input.
+* `timestamp` no longer produces an embed.
+
+dev changes:
+* removed a lot of stuff that was marked as deprecated and to be removed.  removed some other stuff as well.
+* cleaned up some things i guess.
+
+bug fixes:
+* `top` command won't respond if you try to get more than 20 or so members.
+* `rank-role` wouldn't allow assigning of roles for level 100.
+* `steal` now waits the cooldown amount.
+* `data` now gives your data for servers that were deleted or that the bot is no longer in.
+* `caps`, `toggle-case`, and `lowercase` can now display 2000 characters.
+* `prefix` is now much more strict about what characters qualify as a prefix.
