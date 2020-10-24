@@ -47,7 +47,7 @@ public final class Main {
     
     private static final String TOP_GG_TOKEN;
     
-    public static final DiscordBotListAPI API;
+    public static DiscordBotListAPI API;
     
     static {
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
@@ -105,23 +105,28 @@ public final class Main {
         
         TOP_GG_TOKEN = secretsTemp;
         
-        API = new DiscordBotListAPI.Builder()
-                      .token(TOP_GG_TOKEN)
-                      .botId("730135989863055472")
-                      .build();
-        
-        if(!TOP_GG_TOKEN.equals("none")) {
-            TimerTask updateServerCountTask = new TimerTask() {
-                @Override
-                public void run() {
-                    Logger.log("Updating Top.GG stats...");
-                    API.setStats(jda.getGuilds().size());
-                }
-            };
+        Thread t = new Thread(() -> {
             
-            //delay the first schedule by 20 seconds and update every 20 minutes
-            new Timer().schedule(updateServerCountTask, 20000L, 1200000L);
-        }
+            if(!TOP_GG_TOKEN.equals("none")) {
+                API = new DiscordBotListAPI.Builder()
+                    .token(TOP_GG_TOKEN)
+                    .botId("730135989863055472")
+                    .build();
+                
+                TimerTask updateServerCountTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Logger.log("Updating Top.GG stats...");
+                        API.setStats(jda.getGuilds().size());
+                    }
+                };
+                
+                //delay the first schedule by 20 seconds and update every 20 minutes
+                new Timer().schedule(updateServerCountTask, 20000L, 1200000L);
+            }
+        });
+    
+        t.start();
         
         try {
             File cooldown = new File("./cooldowns.properties");

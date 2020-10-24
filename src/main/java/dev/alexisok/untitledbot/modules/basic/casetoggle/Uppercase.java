@@ -26,7 +26,7 @@ public final class Uppercase extends UBPlugin {
                 message.getChannel().getHistoryBefore(message.getId(), 1)
                         .queue(t -> {
                             try {
-                                message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().toUpperCase())).queue();
+                                message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().replaceAll("<@[0-9]{5,64}>", "<user>").toUpperCase())).queue();
                             } catch(Throwable ignored){}
                         });
             } else {

@@ -180,17 +180,12 @@ public final class Top extends UBPlugin {
                 gtd.setFont(new Font(font, Font.PLAIN, 30));
                 gtd.setColor(new Color(255, 255, 255, 255));
                 gtd.drawString(u.getName() + "#" + u.getDiscriminator(), 80, y.get() - 80);
-                long currencyTotal = 
-                        parseLong(getUserDataLocalOrDefault(u.getId(), guildID, CURRENCY_VAULT_NAME, "0"))
-                      + parseLong(getUserDataLocalOrDefault(u.getId(), guildID, BANK_VAULT_NAME, "0"));
-                
                 gtd.drawString("Level " + Ranks.getLevelForXP(l), 80, y.get() - 42);
                 gtd.drawString(String.format("%s / %s XP",
                         getBetterNameOtherThanJustWhateverIdk(Ranks.getLevelForXPRemainder(l)),
                         getBetterNameOtherThanJustWhateverIdk(Ranks.xpNeededForLevel(Ranks.getLevelForXP(l)))),
                         275,
                         y.get() - 42);
-                gtd.drawString("UB$" + currencyTotal, 575, y.get() - 42);
                 gtd.setColor(new Color(255, 255, 255, 120));
                 if(i.get() <= Math.min(map.size() - 1, 9))
                     gtd.fillRect(10, y.get() - 20, 780, 3);
@@ -218,13 +213,21 @@ public final class Top extends UBPlugin {
      */
     @NotNull
     @Contract(pure = true)
-    private static synchronized String getBetterNameOtherThanJustWhateverIdk(long data) {
+    public static synchronized String getBetterNameOtherThanJustWhateverIdk(long data) {
         
         String returnString = String.valueOf(data);
         
         if(data >= 1000) returnString = String.format("%.2fK", (double) data / 1000.0);
         
         if(data >= 1000000) returnString = String.format("%.2fM", (double) data / 1000000.0);
+        
+        if(data >= 1000000000) returnString = String.format("%.2fB", (double) data / 1000000000.0);
+        
+        if(data >= 1000000000000L) returnString = String.format("%.2fT", (double) data / 1000000000000.0);
+        
+        if(data >= 1000000000000000L) returnString = String.format("%.2fQd", (double) data / 1000000000000000.0);
+        
+        if(data >= 1000000000000000000L) returnString = String.format("%.2fQt", (double) data / 1000000000000000000.0);
         
         return returnString;
     }
