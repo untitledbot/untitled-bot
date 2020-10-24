@@ -103,6 +103,37 @@ public final class Ranks extends UBPlugin implements MessageHook {
         return XP_REQUIRED_FOR_LEVEL_UP[i - 1];
     }
     
+    /**
+     * Get the level from xp provided
+     * @param XP the XP provided
+     * @return the level
+     */
+    public static int getLevelForXP(long XP) {
+        long current = XP;
+        int i = 1;
+        while(current >= XP_REQUIRED_FOR_LEVEL_UP[i]) {
+            current -= XP_REQUIRED_FOR_LEVEL_UP[i];
+            i++;
+        }
+        return i;
+    }
+    
+    
+    /**
+     * Get the remainder of {@link #getLevelForXP(long)}
+     * @param XP the XP provided
+     * @return the remainder
+     */
+    public static long getLevelForXPRemainder(long XP) {
+        long current = XP;
+        int i = 1;
+        while(current >= XP_REQUIRED_FOR_LEVEL_UP[i]) {
+            current -= XP_REQUIRED_FOR_LEVEL_UP[i];
+            i++;
+        }
+        return current;
+    }
+    
     @SuppressWarnings("DuplicatedCode")
     @Nullable
     @Override
@@ -252,7 +283,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         long currentXP = Long.parseLong(xpstr);
         int currentLv = Integer.parseInt(lvstr);
     
-        if (currentLv > 99 && currentXP >= Long.MAX_VALUE - 10L) return;
+        if (currentLv > 99 && currentXP >= Long.MAX_VALUE - 1000L) return;
         
         if(DoubleXPTime.boostAmount != 1)
             DoubleXPTime.totalXPFromBoost = DoubleXPTime.totalXPFromBoost.add(new BigInteger(String.valueOf(randAdd)));

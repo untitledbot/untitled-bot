@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.starboard;
 
+import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
@@ -41,7 +42,7 @@ public final class StarboardHandle extends UBPlugin {
         switch(args[1]) {
             case "enable":
                 Vault.storeUserDataLocal(null, message.getGuild().getId(), "starboard", "true");
-                eb.addField("Starboard", "The starboard has been enabled!  Set the channel using `starboard channel <channel #>` if you " +
+                eb.addField("Starboard", "The starboard has been enabled!  Set the channel using `starboard channel #channel` if you " +
                                                  "haven't already.", false);
                 eb.setColor(Color.GREEN);
                 return eb.build();
@@ -53,13 +54,15 @@ public final class StarboardHandle extends UBPlugin {
             case "channel":
                 if(message.getMentionedChannels().size() != 1) {
                     eb.addField("Starboard", "Please specify a channel to send the messages to.\n" +
-                                                     "Usage: `starboard channel <channel #>`", false);
+                                                     "Usage: `starboard channel #channel`", false);
                     eb.setColor(Color.RED);
                     return eb.build();
                 }
-                TextChannel tc = message.getMentionedChannels().get(0);
                 
-                if(tc == null || !message.getGuild().getId().equals(tc.getGuild().getId())) {
+                //make it so that channels not in the specified guild cannot be used
+                TextChannel tc = message.getGuild().getTextChannelById(message.getMentionedChannels().get(0).getId());
+                
+                if(tc == null) {
                     eb.addField("Starboard", "Hm... I can't seem to find that channel, please make sure I have access to it " +
                                                      "and can speak in it.", false);
                     eb.setColor(Color.RED);

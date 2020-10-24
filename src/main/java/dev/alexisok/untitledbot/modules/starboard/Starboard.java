@@ -83,9 +83,7 @@ public final class Starboard extends ListenerAdapter {
                         }
                     });
                 }
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
+            } catch (Throwable ignored) {}
         }
     }
     

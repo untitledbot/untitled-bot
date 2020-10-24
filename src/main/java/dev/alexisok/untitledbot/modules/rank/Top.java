@@ -2,21 +2,32 @@ package dev.alexisok.untitledbot.modules.rank;
 
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
+import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
+import dev.alexisok.untitledbot.modules.rank.xpcommands.Shop;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.CheckReturnValue;
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.channels.Channels;
 import java.time.Instant;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -27,14 +38,14 @@ import java.util.stream.Collectors;
  */
 public final class Top extends UBPlugin {
     
-    private static final long TIME_BETWEEN_COMMAND_IN_SECONDS = 300;
+    //10 minutes due to high cpu usage
+    private static final long TIME_BETWEEN_COMMAND_IN_SECONDS = 600;
     
     @Override
     public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
-    
-    
+        
         if(isRateLimit(message.getGuild().getId())) {
             eb.setColor(Color.RED);
             eb.addField("Rate limited!", String.format("To reduce server load, this command can only be run every %d minutes.",
@@ -43,13 +54,8 @@ public final class Top extends UBPlugin {
             return eb.build();
         }
         
-        int amountToList = 10;
-        
         LinkedHashMap<String, Long> topXP = new LinkedHashMap<>(new LinkedHashMap<>());
-    
-        EmbedBuilder eb2 = new EmbedBuilder();
-        EmbedDefaults.setEmbedDefaults(eb2, message);
-    
+        
         for(File s : new File(Main.DATA_PATH + "/" + message.getGuild().getId() + "/").listFiles()) {
             try {
                 
@@ -61,40 +67,26 @@ public final class Top extends UBPlugin {
                 
             } catch(Exception ignored) {}
         }
-    
-        eb2.addField("Rank top", "Fetching the top " + amountToList + " users in this guild...", false);
         
         topXP = sortHashMap(topXP);
-        
-        ArrayList<String> addStr = new ArrayList<>();
-        
-        int i = 0;
-        for(Map.Entry<String, Long> a : topXP.entrySet()) {
-            if(i >= amountToList)
-                break;
-            i++;
-            User u = Main.jda.getUserById(a.getKey());
-            addStr.add(String.format("%s - %s XP (level %s)%n",
-                    u == null ? "<@" + a.getKey() + ">" : u.getName() + "#" + u.getDiscriminator(),
-                    a.getValue(),
-                    Vault.getUserDataLocal(a.getKey(), message.getGuild().getId(), "ranks-level")));
+        try {
+            //the rendered image
+            File imageToSend = Objects.requireNonNull(render(topXP, message.getIdLong(), message.getGuild().getName(), message.getGuild().getId()));
+            //send and then delete the image when it has sent
+            message.getChannel().sendFile(imageToSend).queue(done -> imageToSend.delete());
+            setRateLimiter(message.getGuild().getId());
+        } catch(IOException | NullPointerException ignored) {
+            message.getChannel().sendMessage("Could not send the rank top!").queue();
         }
-        
-        StringBuilder addStringReturn = new StringBuilder();
-        
-        for(String s : addStr) addStringReturn.append(s);
-        
-        setRateLimiter(message.getGuild().getId());
-        
-        eb2.setColor(Color.GREEN);
-        
-        eb2.addField("===TOP RANKINGS===", addStringReturn.toString(), false);
-        
-        message.getChannel().sendMessage(eb2.build()).queue();
         
         return null;
     }
     
+    /**
+     * Sort the hashmap and return a {@link LinkedHashMap}
+     * @param hm unsorted hashmap
+     * @return the sorted hashmap
+     */
     @NotNull
     @Contract(pure = true)
     private static LinkedHashMap<String, Long> sortHashMap(@NotNull HashMap<String, Long> hm) {
@@ -117,6 +109,9 @@ public final class Top extends UBPlugin {
      * @return true if there is a rate limit, false otherwise.
      */
     private static boolean isRateLimit(String guildID) {
+        //testing server
+        if(guildID.equals("696529468247769149"))
+            return false;
         String epochOldString = Vault.getUserDataLocal(null, guildID, "top.ratelimit");
         
         if(epochOldString == null) return false;
@@ -130,4 +125,109 @@ public final class Top extends UBPlugin {
     private static void setRateLimiter(String guildID) {
         Vault.storeUserDataLocal(null, guildID, "top.ratelimit", String.valueOf(Instant.now().getEpochSecond()));
     }
+    
+    @Nullable
+    @CheckReturnValue
+    @Contract(pure = true)
+    public static File render(@NotNull LinkedHashMap<String, Long> map, long uniqueID, @NotNull String guildName, @NotNull String guildID) throws UserDataCouldNotBeObtainedException, IOException {
+        
+        final int IMAGE_WIDTH  =  800;
+        final int IMAGE_HEIGHT = 1200;
+        
+        BufferedImage bi = new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
+        
+        Graphics2D gtd = bi.createGraphics();
+        
+        gtd.drawImage(ImageIO.read(new File("./rs/top_bg.png")), 0, 0, null);
+        
+        //username and discriminator
+        String font = "Serif";
+        gtd.setFont(new Font(font, Font.BOLD, 36));
+        gtd.setColor(Color.WHITE);
+        guildName = "===" + guildName + "===";
+        int length = gtd.getFontMetrics(new Font(font, Font.PLAIN, 36)).stringWidth(guildName);
+        //draw the guild name centered
+        gtd.drawString(guildName, IMAGE_WIDTH - (length / 2) - (IMAGE_WIDTH / 2), 50);
+        gtd.setColor(new Color(221, 255, 192, 255));
+        
+        AtomicInteger i = new AtomicInteger(0);
+        AtomicInteger y = new AtomicInteger(70);
+        int incr = 102;
+        map.forEach((s, l) -> {
+            if(i.get() >= 10)
+                return;
+            User u = Main.jda.getGuildById(guildID).getMemberById(s).getUser();
+            if(u == null /*|| u.isBot()*/)
+                return;
+            try {
+                new FileOutputStream("./tmp/" + s + ".png").getChannel().transferFrom(Channels.newChannel(new URL(u.getEffectiveAvatarUrl()).openStream()), 0, Long.MAX_VALUE);
+                gtd.drawImage(
+                        ImageIO.read(new File("./tmp/" + s + ".png")).getScaledInstance(64, 64, Image.SCALE_FAST),
+                        10, y.get(), null);
+                y.addAndGet(incr);
+                i.getAndIncrement();
+                gtd.setFont(new Font(font, Font.PLAIN, 30));
+                gtd.setColor(new Color(255, 255, 255, 255));
+                gtd.drawString(u.getName() + "#" + u.getDiscriminator(), 80, y.get() - 80);
+                long currencyTotal = Long.parseLong(Vault.getUserDataLocalOrDefault(u.getId(), guildID, Shop.CURRENCY_VAULT_NAME, "0")) + Long.parseLong(Vault.getUserDataLocalOrDefault(u.getId(), guildID, Shop.BANK_VAULT_NAME, "0")); 
+//                gtd.drawString(String.format("Level %d         %d / %d XP        UB$%d",
+//                        Ranks.getLevelForXP(l),
+//                        Ranks.getLevelForXPRemainder(l),
+//                        Ranks.xpNeededForLevel(Ranks.getLevelForXP(l)),
+//                        currencyTotal),
+//                        80,
+//                        y.get() - 42);
+                gtd.drawString("Level " + Ranks.getLevelForXP(l), 80, y.get() - 42);
+                gtd.drawString(String.format("%d / %d XP",
+                        Ranks.getLevelForXPRemainder(l),
+                        Ranks.xpNeededForLevel(Ranks.getLevelForXP(l))),
+                        275,
+                        y.get() - 42);
+                gtd.drawString("UB$" + currencyTotal, 575, y.get() - 42);
+                gtd.setColor(new Color(255, 255, 255, 120));
+                if(i.get() <= 9)
+                    gtd.fillRect(10, y.get() - 20, 790, 3);
+                new File("./tmp/" + s + ".png").delete();
+            } catch(Exception ignored) {ignored.printStackTrace();}
+        });
+        
+//        //balance
+//        gtd.setFont(new Font(font, Font.PLAIN, 26));
+//        gtd.drawString("Balance: UB$" + balanceAsDisplay, 30, 80);
+//        gtd.drawString("In Bank: UB$" + bankBalAsDisplay, 30, 120);
+//        
+//        //level numbers (x / y XP)
+//        gtd.drawString(String.format("%s / %s XP", currentAsDisplay, maximumAsDisplay), 30, 200);
+//        gtd.drawString(String.format("%sLevel %d%s", rank != 100 ? "    " : "", rank, rank == 100 ? " (MAX)" : ""), 555, 200);
+//        
+//        //progressbar for level (outline)
+//        gtd.setColor(Color.GRAY);
+//        gtd.fillRoundRect(30, 220, 700, 32, 32, 32);
+//        
+//        //fill width double
+//        double fillWD = (((double) current / (double) (maximum)));
+//        
+//        //fill width pixels
+//        int fillW = (int) ((700.0) * (fillWD));
+//        
+//        //fill the progress bar
+//        gtd.setColor(Color.GREEN);
+//        gtd.fillRoundRect(30, 220, fillW < 20 ? 0 : fillW, 32, 32, 32);
+//        
+//        new FileOutputStream("./tmp/" + u.getId() + ".png").getChannel().transferFrom(Channels.newChannel(new URL(u.getEffectiveAvatarUrl()).openStream()), 0, Long.MAX_VALUE);
+//        
+//        gtd.drawImage((ImageIO.read(new File("./tmp/" + u.getId() + ".png"))).getScaledInstance(128, 128, Image.SCALE_FAST), 660, 10, null);
+//        
+//        new File("./tmp/" + u.getId() + ".png").delete();
+        
+        //save the image.
+        try {
+            ImageIO.write(bi, "png", new File(String.format("./tmp/rank/%d.png", uniqueID)));
+            return new File(String.format("./tmp/rank/%d.png", uniqueID));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
 }

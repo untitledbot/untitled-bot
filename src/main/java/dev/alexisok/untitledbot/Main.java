@@ -137,20 +137,6 @@ public final class Main {
         }
     }
     
-    /**
-     * Get the stats of ram for the timer task in the static block
-     * will be run every 5 seconds
-     * @return the ram stats
-     */
-    @NotNull
-    private static String ramStats() {
-        String returnString = String.format("%n%s%n", new Date().toString());
-        returnString += String.format("Free: %d%n", Runtime.getRuntime().freeMemory() / 1024 / 1024);
-        returnString += String.format("Total: %d%n", Runtime.getRuntime().totalMemory() / 1024 / 1024);
-        
-        return returnString;
-    }
-    
     private static void setDefaultProps(@NotNull Properties p) {
         p.setProperty("configVersion", "1.3.8");
         p.setProperty("dataPath", "./usrdata/");
@@ -192,7 +178,7 @@ public final class Main {
             jda = new JDABuilder(token)
                           .disableCache(ACTIVITY, CLIENT_STATUS, MEMBER_OVERRIDES, EMOTE)
                           .enableIntents(GUILD_MESSAGE_REACTIONS, GUILD_MEMBERS, GUILD_MESSAGES)
-                          .setMemberCachePolicy(MemberCachePolicy.NONE)
+                          .setMemberCachePolicy(MemberCachePolicy.ONLINE)
                           .addEventListeners(new ModHook(), new BotClass(), new Starboard())
                           .build();
             jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help"));

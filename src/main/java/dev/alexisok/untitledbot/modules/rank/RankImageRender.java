@@ -1,10 +1,13 @@
 package dev.alexisok.untitledbot.modules.rank;
 
 import dev.alexisok.untitledbot.Main;
+import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Shop;
 import dev.alexisok.untitledbot.modules.vault.Vault;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
@@ -14,8 +17,14 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -28,6 +37,8 @@ public final class RankImageRender {
     
     private RankImageRender(){}
     
+    private static final String[] FONTS = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+    
     static {
         Logger.log("Created tmp rank directory?  " + new File("./tmp/rank/").mkdirs());
         Logger.log("If this is false, it probably means the directory already exists.  If the directory doesn't exist, make sure" +
@@ -36,6 +47,7 @@ public final class RankImageRender {
             Logger.debug("Font " + fn + " is registered.");
         }
         Logger.debug("Done listing fonts.");
+        
     }
     
     /**
@@ -121,19 +133,17 @@ public final class RankImageRender {
             gtd.drawImage((ImageIO.read(new File("rs/" + userID + ".png"))), 0, 0, null);
         } catch(Exception ignored) {
             //non-contributors get a default background
-            gtd.setColor(Color.BLACK);
-            gtd.fillRect(0, 0, width, height);
+            gtd.drawImage((ImageIO.read(new File("rs/default.png"))), 0, 0, null);
         }
         
         //username and discriminator
-        Font f = Font.createFont(Font.PLAIN, new File("./font.ttf"));
-        GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(f);
-        gtd.setFont(f);
+        String font = "Serif";
+        gtd.setFont(new Font(font, Font.PLAIN, 36));
         gtd.setColor(Color.WHITE);
         gtd.drawString("" + name + "#" + discriminator, 30, 50);
         
         //balance
-        gtd.setFont(f);
+        gtd.setFont(new Font(font, Font.PLAIN, 26));
         gtd.drawString("Balance: UB$" + balanceAsDisplay, 30, 80);
         gtd.drawString("In Bank: UB$" + bankBalAsDisplay, 30, 120);
         
@@ -154,6 +164,12 @@ public final class RankImageRender {
         //fill the progress bar
         gtd.setColor(Color.GREEN);
         gtd.fillRoundRect(30, 220, fillW < 20 ? 0 : fillW, 32, 32, 32);
+        
+        new FileOutputStream("./tmp/" + u.getId() + ".png").getChannel().transferFrom(Channels.newChannel(new URL(u.getEffectiveAvatarUrl()).openStream()), 0, Long.MAX_VALUE);
+        
+        gtd.drawImage((ImageIO.read(new File("./tmp/" + u.getId() + ".png"))).getScaledInstance(128, 128, Image.SCALE_FAST), 660, 10, null);
+        
+        new File("./tmp/" + u.getId() + ".png").delete();
         
         //save the image.
         try {

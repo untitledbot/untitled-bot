@@ -51,7 +51,7 @@ public final class Bet extends UBPlugin {
                 return eb.build();
             }
             if(moneyBank < amount) {
-                eb.addField("Bet", String.format("To bet %d, you need that amount in your bank!%nYou have %d in your bank, use the " +
+                eb.addField("Bet", String.format("To bet UB$%d, you need that amount in your bank!%nYou have UB$%d in your bank, use the " +
                                                          "`deposit` command to deposit money into your bank.", amount, moneyBank), false);
                 eb.setColor(Color.RED);
                 return eb.build();
@@ -67,11 +67,11 @@ public final class Bet extends UBPlugin {
         }
         
         if(new Random(message.getIdLong()).nextBoolean()) {
-            eb.addField("Bet", String.format("You bet %d and got %d in return!\nYou now have %d.", amount, amount * 2, moneyBank + amount), false);
+            eb.addField("Bet", String.format("You bet UB$%d and got UB$%d in return!\nYou now have UB$%d.", amount, amount * 2, moneyBank + amount), false);
             eb.setColor(Color.GREEN);
             moneyBank += (amount * 2);
         } else {
-            eb.addField("Bet", String.format("You bet %d but lost it!\nYou now have %d.", amount, moneyBank - amount), false);
+            eb.addField("Bet", String.format("You bet UB$%d but lost it!\nYou now have UB$%d in your bank.", amount, moneyBank - amount), false);
             eb.setColor(Color.RED);
             moneyBank -= amount;
         }

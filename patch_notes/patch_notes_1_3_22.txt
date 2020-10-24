@@ -9,7 +9,7 @@ new things:
 * `withdraw` - withdraw UB$ from your bank into your pockets.
 * `starboard` - have users add a star emoji to put the messages in a starboard channel.
 * `catfact` or `cat` - get a catfact.
-* there are now free profile backgrounds for all users, available on the site https://untitled-bot.xyz/backgrounds.htmlTODO
+* there are now free profile backgrounds for all users, available on the site https://untitled-bot.xyz/backgrounds.html.TODO
 * `set-background` - to set a background from one of the images on the site.TODO
 * custom profile backgrounds are available to anyone who joins the server and asks for one, though they must be approved.
 * `rot13` - run a string through ROT13.
@@ -20,7 +20,8 @@ new things:
 * `remind <time> <unit> <message...>` - have the bot dm you a reminder.
 
 changes:
-* `top` command now actually looks niceish.TODO
+* `rank` command now has a default background instead a plain colour.
+* `top` command now actually looks niceish.
 * `top` command will only get the top 10 members due to limitations of image generating.
 * `info` command is now readable to non-developers.
 * `rob` is now an alias to `steal`
@@ -34,13 +35,11 @@ dev changes:
 * removed a lot of stuff that was marked as deprecated and to be removed.  removed some other stuff as well.
 * cleaned up some things i guess.
 * touching the shutdown file now stops accepting new commands but waits 10s for other commands to finish.TODO
-* VAULT get/set data now will execute an interface when it gets or sets the data.TODO
 
 bug fixes:
-* `top` command won't respond if you try to get more than 20 or so members.TODO
+* `top` command won't respond if you try to get more than 20 or so members.
 * `rank-role` wouldn't allow assigning of roles for level 100.TODO
 * `steal` now waits the cooldown amount.TODO
 * `data` now gives your data for servers that were deleted or that the bot is no longer in.
 * `caps`, `toggle-case`, and `lowercase` can now display 2000 characters.TODO
-* logger will no longer @mention a user that left as it won't display for most users.TODO
 * `prefix` is now much more strict about what characters qualify as a prefix.TODO
