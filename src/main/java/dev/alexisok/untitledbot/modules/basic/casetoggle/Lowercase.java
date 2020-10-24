@@ -16,14 +16,24 @@ import org.jetbrains.annotations.Nullable;
  * @since 1.3.21
  */
 public final class Lowercase extends UBPlugin {
+    
     @Override
-    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
-        EmbedBuilder eb = new EmbedBuilder();
-        EmbedDefaults.setEmbedDefaults(eb, message);
-        
-        eb.addField("lowercase", String.join(" ", ArrayUtils.remove(args, 0)).toLowerCase(), false);
-        
-        return eb.build();
+    public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
+        try {
+            if (args.length == 1) {
+                message.getChannel().getHistoryBefore(message.getId(), 1)
+                        .queue(t -> {
+                            try {
+                                message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().toLowerCase())).queue();
+                            } catch(Throwable ignored){}
+                        });
+            } else {
+                message.getChannel().sendMessage((String.join(" ", ArrayUtils.remove(args, 0)).toLowerCase())).queue();
+            }
+        } catch(Throwable ignored) {
+            message.getChannel().sendMessage("Cannot mock the previous message as it either had no text or the text is in an embed.").queue();
+        }
+        return null;
     }
     
     @Override

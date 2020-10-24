@@ -24,7 +24,11 @@ public final class ToggleCase extends UBPlugin {
         try {
             if (args.length == 1) {
                 message.getChannel().getHistoryBefore(message.getId(), 1)
-                        .queue(t -> message.getChannel().sendMessage(alternate(t.getRetrievedHistory().get(0).getContentRaw())).queue());
+                        .queue(t -> {
+                            try {
+                                message.getChannel().sendMessage(alternate(t.getRetrievedHistory().get(0).getContentRaw().toLowerCase())).queue();
+                            } catch(Throwable ignored){}
+                        });
             } else {
                 message.getChannel().sendMessage(alternate(String.join(" ", ArrayUtils.remove(args, 0)).toLowerCase())).queue();
             }
