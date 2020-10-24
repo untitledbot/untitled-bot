@@ -19,10 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -199,23 +196,30 @@ public final class BotClass extends ListenerAdapter {
 		//args...
 		String[] args = message.split(" ");
 		
-		//execute a command and return the message it provides
-		try {
-			if(!CommandRegistrar.getCommandCooldown(args[0]).equals("-1")) {
-				long currentTime = Long.parseLong(Vault.getUserDataLocalOrDefault(event.getAuthor().getId(), null, "cooldown." + args[0], "0"));
-				if(currentTime > Instant.now().toEpochMilli() / 1000) {
-					event.getChannel().sendMessage("The command `" + args[0] + "` is on a cooldown.  Please wait " + (currentTime - Instant.now().toEpochMilli() / 1000) + " more seconds.").queue();
-					return;
+		new Timer().schedule(new TimerTask() {
+			@Override
+			public void run() {
+				//execute a command and return the message it provides
+				try {
+					
+					if(!CommandRegistrar.getCommandCooldown(args[0]).equals("-1")) {
+						long currentTime = Long.parseLong(Vault.getUserDataLocalOrDefault(event.getAuthor().getId(), null, "cooldown." + args[0], "0"));
+						if(currentTime > Instant.now().toEpochMilli() / 1000) {
+							event.getChannel().sendMessage("The command `" + args[0] + "` is on a cooldown.  Please wait " + (currentTime - Instant.now().toEpochMilli() / 1000) + " more seconds.").queue();
+							return;
+						}
+						Vault.storeUserDataLocal(event.getAuthor().getId(), null, "cooldown." + args[0], CommandRegistrar.getCommandCooldown(args[0]) + (Instant.now().toEpochMilli() / 1000));
+					}
+					event.getChannel()
+							.sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
+							.queue();
+				} catch(NullPointerException ignored) { //this returns null if the command does not exist.
+				} catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
+					Logger.debug("Could not send a message to a channel.");
 				}
-				Vault.storeUserDataLocal(event.getAuthor().getId(), null, "cooldown." + args[0], CommandRegistrar.getCommandCooldown(args[0]) + (Instant.now().toEpochMilli() / 1000));
 			}
-			event.getChannel()
-					.sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
-					.queue();
-		} catch(NullPointerException ignored) { //this returns null if the command does not exist.
-		} catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
-			Logger.debug("Could not send a message to a channel.");
-		}
+		}, 0);
+		
 		
 		//needs to be caught to avoid flooding logs.
 	}

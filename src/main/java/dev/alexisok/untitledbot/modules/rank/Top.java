@@ -185,9 +185,9 @@ public final class Top extends UBPlugin {
                       + parseLong(getUserDataLocalOrDefault(u.getId(), guildID, BANK_VAULT_NAME, "0"));
                 
                 gtd.drawString("Level " + Ranks.getLevelForXP(l), 80, y.get() - 42);
-                gtd.drawString(String.format("%d / %d XP",
-                        Ranks.getLevelForXPRemainder(l),
-                        Ranks.xpNeededForLevel(Ranks.getLevelForXP(l))),
+                gtd.drawString(String.format("%s / %s XP",
+                        getBetterNameOtherThanJustWhateverIdk(Ranks.getLevelForXPRemainder(l)),
+                        getBetterNameOtherThanJustWhateverIdk(Ranks.xpNeededForLevel(Ranks.getLevelForXP(l)))),
                         275,
                         y.get() - 42);
                 gtd.drawString("UB$" + currencyTotal, 575, y.get() - 42);
@@ -198,35 +198,6 @@ public final class Top extends UBPlugin {
             } catch(Exception ignored) {ignored.printStackTrace();}
         });
         
-//        //balance
-//        gtd.setFont(new Font(font, Font.PLAIN, 26));
-//        gtd.drawString("Balance: UB$" + balanceAsDisplay, 30, 80);
-//        gtd.drawString("In Bank: UB$" + bankBalAsDisplay, 30, 120);
-//        
-//        //level numbers (x / y XP)
-//        gtd.drawString(String.format("%s / %s XP", currentAsDisplay, maximumAsDisplay), 30, 200);
-//        gtd.drawString(String.format("%sLevel %d%s", rank != 100 ? "    " : "", rank, rank == 100 ? " (MAX)" : ""), 555, 200);
-//        
-//        //progressbar for level (outline)
-//        gtd.setColor(Color.GRAY);
-//        gtd.fillRoundRect(30, 220, 700, 32, 32, 32);
-//        
-//        //fill width double
-//        double fillWD = (((double) current / (double) (maximum)));
-//        
-//        //fill width pixels
-//        int fillW = (int) ((700.0) * (fillWD));
-//        
-//        //fill the progress bar
-//        gtd.setColor(Color.GREEN);
-//        gtd.fillRoundRect(30, 220, fillW < 20 ? 0 : fillW, 32, 32, 32);
-//        
-//        new FileOutputStream("./tmp/" + u.getId() + ".png").getChannel().transferFrom(Channels.newChannel(new URL(u.getEffectiveAvatarUrl()).openStream()), 0, Long.MAX_VALUE);
-//        
-//        gtd.drawImage((ImageIO.read(new File("./tmp/" + u.getId() + ".png"))).getScaledInstance(128, 128, Image.SCALE_FAST), 660, 10, null);
-//        
-//        new File("./tmp/" + u.getId() + ".png").delete();
-        
         //save the image.
         try {
             ImageIO.write(bi, "png", new File(String.format("./tmp/rank/%d.png", uniqueID)));
@@ -235,6 +206,27 @@ public final class Top extends UBPlugin {
             e.printStackTrace();
             return null;
         }
+    }
+    
+    /**
+     * Make a string better looking
+     * so 1000 -> 1.00k
+     * 1000000 -> 1.00m
+     * 
+     * @param data the input string
+     * @return the new string
+     */
+    @NotNull
+    @Contract(pure = true)
+    private static synchronized String getBetterNameOtherThanJustWhateverIdk(long data) {
+        
+        String returnString = String.valueOf(data);
+        
+        if(data >= 1000) returnString = String.format("%.2fK", (double) data / 1000.0);
+        
+        if(data >= 1000000) returnString = String.format("%.2fM", (double) data / 1000000.0);
+        
+        return returnString;
     }
     
 }
