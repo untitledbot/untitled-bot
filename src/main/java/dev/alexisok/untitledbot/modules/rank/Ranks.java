@@ -112,9 +112,13 @@ public final class Ranks extends UBPlugin implements MessageHook {
     public static int getLevelForXP(long XP) {
         long current = XP;
         int i = 1;
-        while(current >= XP_REQUIRED_FOR_LEVEL_UP[i]) {
-            current -= XP_REQUIRED_FOR_LEVEL_UP[i];
-            i++;
+        try {
+            while (current >= XP_REQUIRED_FOR_LEVEL_UP[i]) {
+                current -= XP_REQUIRED_FOR_LEVEL_UP[i];
+                i++;
+            }
+        } catch(ArrayIndexOutOfBoundsException ignored) {
+            return 100;
         }
         return i;
     }
@@ -128,9 +132,13 @@ public final class Ranks extends UBPlugin implements MessageHook {
     public static long getLevelForXPRemainder(long XP) {
         long current = XP;
         int i = 1;
-        while(current >= XP_REQUIRED_FOR_LEVEL_UP[i]) {
-            current -= XP_REQUIRED_FOR_LEVEL_UP[i];
-            i++;
+        try {
+            while (current >= XP_REQUIRED_FOR_LEVEL_UP[i]) {
+                current -= XP_REQUIRED_FOR_LEVEL_UP[i];
+                i++;
+            }
+        } catch(ArrayIndexOutOfBoundsException ignored) {
+            return Long.MAX_VALUE;
         }
         return current;
     }
@@ -301,7 +309,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
                 if(rankToReward != null && !rankToReward.equals("none")) {
                     try {
                         m.getGuild().addRoleToMember(m.getAuthor().getId(), Objects.requireNonNull(m.getGuild().getRoleById(rankToReward))).queue();
-                        roleMessage = String.format("You have also been awarded rank %s!!!", Objects.requireNonNull(m.getGuild().getRoleById(rankToReward)).getName());
+                        roleMessage = String.format("You have also been awarded the role %s!!!", Objects.requireNonNull(m.getGuild().getRoleById(rankToReward)).getName());
                     } catch(Throwable ignored) {
                         try {
                             roleMessage = String.format("I would also assign you rank %s, but I don't have access to it!", Objects.requireNonNull(m.getGuild().getRoleById(rankToReward)).getName());

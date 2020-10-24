@@ -37,7 +37,7 @@ public class RankRoleSet extends UBPlugin {
             return eb.build();
         }
         try {
-            if(Integer.parseInt(args[1]) >= 100 || Integer.parseInt(args[1]) <= 0)
+            if(Integer.parseInt(args[1]) > 100 || Integer.parseInt(args[1]) <= 0)
                 throw new NumberFormatException();
         } catch(NumberFormatException ignored) {
             eb.addField("Error", "The first argument must be a number between 1 and 100 (inclusive)", false);
