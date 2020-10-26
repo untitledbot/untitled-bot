@@ -107,13 +107,13 @@ public final class RankImageRender {
         }
         
         //shorten the string up a bit if it's over 1k
-        String currentAsDisplay = current >= 1000 ? String.format("%.2fk", current / 1000.0) : "" + current;
+        String currentAsDisplay = Top.getBetterNameOtherThanJustWhateverIdk(current);
         
         String maximumAsDisplay;
         
         //shorten the string up a bit if it's over 1k
         if(maximum != -1)
-            maximumAsDisplay = maximum >= 1000 ? String.format("%.2fk", maximum / 1000.0) : "" + maximum;
+            maximumAsDisplay = Top.getBetterNameOtherThanJustWhateverIdk(maximum);
         else
             maximumAsDisplay = "\u221E"; //infinity symbol
         
