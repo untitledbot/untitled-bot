@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.jetbrains.annotations.Contract;
@@ -47,7 +48,7 @@ public final class Main {
     
     private static final String TOP_GG_TOKEN;
     
-    public static final DiscordBotListAPI API;
+    public static DiscordBotListAPI API;
     
     static {
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
@@ -105,31 +106,29 @@ public final class Main {
         
         TOP_GG_TOKEN = secretsTemp;
         
-        API = new DiscordBotListAPI.Builder()
-                      .token(TOP_GG_TOKEN)
-                      .botId("730135989863055472")
-                      .build();
-        
-        if(!TOP_GG_TOKEN.equals("none")) {
-            TimerTask updateServerCountTask = new TimerTask() {
-                @Override
-                public void run() {
-                    Logger.log("Updating Top.GG stats...");
-                    API.setStats(jda.getGuilds().size());
-                }
-            };
+        Thread t = new Thread(() -> {
             
-            //delay the first schedule by 20 seconds and update every 20 minutes
-            new Timer().schedule(updateServerCountTask, 20000L, 1200000L);
-        }
-        
-        try {
-            File cooldown = new File("./cooldowns.properties");
-            if(!cooldown.exists())
-                cooldown.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            if(!TOP_GG_TOKEN.equals("none")) {
+                API = new DiscordBotListAPI.Builder()
+                    .token(TOP_GG_TOKEN)
+                    .botId("730135989863055472")
+                    .build();
+                
+                TimerTask updateServerCountTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Logger.log("Updating Top.GG stats...");
+                        API.setStats(jda.getGuilds().size());
+                        Logger.log("Done updating stats.");
+                    }
+                };
+                
+                //delay the first schedule by 20 seconds and update every 20 minutes
+                new Timer().schedule(updateServerCountTask, 20000L, 1200000L);
+            }
+        });
+    
+        t.start();
     }
     
     private static void setDefaultProps(@NotNull Properties p) {
@@ -191,7 +190,7 @@ public final class Main {
     /**
      * Return the resulting properties location of a specific user
      * given their user ID and guild ID.  Having a bunch of other things relying on this
-     * is good as it is much easier to change it.  If you are getting the properties locaation
+     * is good as it is much easier to change it.  If you are getting the properties location
      * of the user, then go through here.
      *
      *

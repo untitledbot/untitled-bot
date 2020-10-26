@@ -19,10 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.awt.*;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Class that hooks on to the {@link dev.alexisok.untitledbot.BotClass#onGenericEvent(GenericEvent)}
@@ -32,6 +29,8 @@ import java.util.Objects;
  * @since 0.0.1
  */
 public final class ModHook extends ListenerAdapter {
+    
+    private static final HashMap<String, ArrayList<LogTypes>> LOG_CACHE = new HashMap<>();
     
     @Override
     public void onReady(@NotNull ReadyEvent re) {
@@ -70,8 +69,11 @@ public final class ModHook extends ListenerAdapter {
      * @param lt the log type
      * @return true if it does or false otherwise
      */
-    private static boolean ch(String guildID, LogTypes lt) {
+    private static synchronized boolean ch(String guildID, LogTypes lt) {
         try {
+            if(!LOG_CACHE.containsKey(guildID)) {
+                LOG_CACHE.put(guildID, new ArrayList<>());
+            }
             String channelID = Vault.getUserDataLocal(null, guildID, "log.channel");
             if(channelID == null || channelID.equals("null"))
                 return false;

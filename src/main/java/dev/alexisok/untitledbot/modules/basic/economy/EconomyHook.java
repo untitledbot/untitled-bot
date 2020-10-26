@@ -2,7 +2,7 @@ package dev.alexisok.untitledbot.modules.basic.economy;
 
 import dev.alexisok.untitledbot.command.MessageHook;
 import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 /**
  * Economy class that hooks on to the other class.
@@ -13,12 +13,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public final class EconomyHook implements MessageHook {
     
     @Override
-    public void onMessage(MessageReceivedEvent m) {
-        if(!m.isFromGuild())
-            return;
-        
-        UpdateMoney.update(m.getMember().getId(), m.getGuild().getId());
-    }
+    public void onMessage(GuildMessageReceivedEvent m) {}
     
     
     //unused...

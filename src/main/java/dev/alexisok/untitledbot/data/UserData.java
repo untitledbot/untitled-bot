@@ -31,7 +31,7 @@ public final class UserData {
 	 * @param userID the discord snowflake of the user.
 	 * @param guildID the discord snowflake of the guild.   
 	 */
-	public static void checkUserExists(String userID, String guildID) {
+	public static synchronized void checkUserExists(String userID, String guildID) {
 		if(!new File(Main.parsePropertiesLocation(userID, guildID)).exists())
 			createUserProfile(userID, guildID);
 	}
@@ -42,7 +42,7 @@ public final class UserData {
 	 * @param userID the discord snowflake of the user.
 	 * @param guildID the discord snowflake of the guild.   
 	 */
-	private static void createUserProfile(String userID, String guildID) {
+	private static synchronized void createUserProfile(String userID, String guildID) {
 		Logger.log("Creating a user profile for user <@" + userID + "> in " + guildID);
 		try {
 			//create the guild directory if it does not exist

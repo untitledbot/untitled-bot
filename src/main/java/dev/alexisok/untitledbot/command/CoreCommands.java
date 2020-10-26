@@ -34,6 +34,7 @@ import dev.alexisok.untitledbot.modules.basic.userinfo.UserInfo;
 import dev.alexisok.untitledbot.modules.basic.vote.Vote;
 import dev.alexisok.untitledbot.modules.config.ConfigHandle;
 import dev.alexisok.untitledbot.modules.eco.*;
+import dev.alexisok.untitledbot.modules.eval.Eval;
 import dev.alexisok.untitledbot.modules.noprefix.Exit;
 import dev.alexisok.untitledbot.modules.noprefix.NoPrefix;
 import dev.alexisok.untitledbot.modules.profile.Profile;
@@ -213,6 +214,7 @@ public final class CoreCommands {
         new Remind().onRegister();
         new PermissionsCommand().onRegister();
         new Shutdown().onRegister();
+        new Eval().onRegister();
         
 //      new RPGCommand().onRegister();
         Logger.log("Modules have been registered.");

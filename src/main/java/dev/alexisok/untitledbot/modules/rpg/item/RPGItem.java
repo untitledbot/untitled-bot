@@ -57,7 +57,7 @@ public final class RPGItem {
     @Getter
     private final int maximumItemCount;
     
-    @Getter@Setter
+    @Getter
     private final ItemUses use;
     
     @Getter@Setter

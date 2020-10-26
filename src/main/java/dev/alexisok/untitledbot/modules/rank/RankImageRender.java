@@ -37,8 +37,6 @@ public final class RankImageRender {
     
     private RankImageRender(){}
     
-    private static final String[] FONTS = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-    
     static {
         Logger.log("Created tmp rank directory?  " + new File("./tmp/rank/").mkdirs());
         Logger.log("If this is false, it probably means the directory already exists.  If the directory doesn't exist, make sure" +
@@ -65,7 +63,7 @@ public final class RankImageRender {
     @Nullable
     @CheckReturnValue
     @Contract(pure = true)
-    public static File render(String userID, String guildID, long uniqueID) throws UserDataCouldNotBeObtainedException, IOException, FontFormatException {
+    public static File render(String userID, String guildID, long uniqueID) throws UserDataCouldNotBeObtainedException, IOException {
         
         User u = Main.jda.getUserById(userID);
         
@@ -137,7 +135,7 @@ public final class RankImageRender {
         }
         
         //username and discriminator
-        String font = "Serif";
+        String font = "Ubuntu";
         gtd.setFont(new Font(font, Font.PLAIN, 36));
         gtd.setColor(Color.WHITE);
         gtd.drawString("" + name + "#" + discriminator, 30, 50);

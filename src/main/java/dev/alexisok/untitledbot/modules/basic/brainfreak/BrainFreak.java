@@ -73,5 +73,6 @@ public final class BrainFreak extends UBPlugin {
                                                 "Example: `brainfuck ++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.`\n" +
                                                 "\n" +
                                                 "Note: the brainfuck code must be in one word, anything after a space will be recognized as input.");
+        CommandRegistrar.registerAlias("brainfuck", "bf", "brainz");
     }
 }

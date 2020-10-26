@@ -24,14 +24,14 @@ public final class Lowercase extends UBPlugin {
                 message.getChannel().getHistoryBefore(message.getId(), 1)
                         .queue(t -> {
                             try {
-                                message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().toLowerCase())).queue();
+                                message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().replaceAll("<@[0-9]{5,64}>", "<user>").toLowerCase())).queue();
                             } catch(Throwable ignored){}
                         });
             } else {
                 message.getChannel().sendMessage((String.join(" ", ArrayUtils.remove(args, 0)).toLowerCase())).queue();
             }
         } catch(Throwable ignored) {
-            message.getChannel().sendMessage("Cannot mock the previous message as it either had no text or the text is in an embed.").queue();
+            message.getChannel().sendMessage("Cannot do lowercase on the previous message.").queue();
         }
         return null;
     }
