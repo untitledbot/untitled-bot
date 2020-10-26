@@ -17,7 +17,7 @@ import java.awt.*;
  * Handles the `starboard` command.
  * 
  * @author AlexIsOK
- * @since 1.4.0
+ * @since 1.3.22
  */
 public final class StarboardHandle extends UBPlugin {
     

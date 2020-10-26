@@ -53,6 +53,13 @@ public final class Starboard extends ListenerAdapter {
     public static synchronized void voidCacheForGuild(String guildID) {
         STARBOARD_ENABLED_CACHE.remove(guildID);
     }
+
+    /**
+     * Void the entire cache without using guild IDs.
+     */
+    public static synchronized void voidAllCache() {
+        STARBOARD_ENABLED_CACHE.clear();
+    }
     
     @Override
     public synchronized void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent e) {

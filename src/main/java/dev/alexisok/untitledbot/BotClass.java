@@ -142,6 +142,10 @@ public final class BotClass extends ListenerAdapter {
         return NO_PREFIX.remove(userID);
     }
 
+    public static void voidPrefixCache() {
+        PREFIX_CACHE.clear();
+    }
+
     /**
      * This is messy...
      * @param event the mre
