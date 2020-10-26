@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -64,9 +65,8 @@ public final class Status extends UBPlugin {
         returnString += "       Processors: " + Runtime.getRuntime().availableProcessors() + "\n";
         returnString += " Total disk space: " + (totalSpace / 1024 / 1024 / 1024) + " GB\n";
         returnString += "Usable disk space: " + (usableSpace / 1024 / 1024 / 1024) + " GB\n";
-        returnString += " Vault queue size: " + Vault.vaultQueueSize() + "\n";
         returnString += "             Ping: " + Main.jda.getGatewayPing() + " ms\n";
-        returnString += "           Uptime: " + ManagementFactory.getRuntimeMXBean().getUptime() + " ms\n";
+        returnString += "           Uptime: " + Uptime.humanReadable() + "\n";
         returnString += "  Commands issued: " + CommandRegistrar.getTotalCommands() + "\n";
         returnString += "   Total messages: " + BotClass.getMessagesSentTotal() + "\n";
         returnString += "          Servers: " + guilds + "\n";

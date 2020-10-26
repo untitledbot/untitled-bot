@@ -19,7 +19,11 @@ import java.util.concurrent.TimeUnit;
  * @since 1.3
  */
 public final class Uptime extends UBPlugin {
-    
+
+    public static String humanReadable() {
+        return String.format("%.3f days", ManagementFactory.getRuntimeMXBean().getUptime() / 86400000.0);
+    }
+
     @Override
     public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();

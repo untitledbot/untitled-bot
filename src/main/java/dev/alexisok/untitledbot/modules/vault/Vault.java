@@ -3,10 +3,8 @@ package dev.alexisok.untitledbot.modules.vault;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
-import dev.alexisok.untitledbot.logging.Logger;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.*;
@@ -32,70 +30,7 @@ public final class Vault {
     
     private static final HashMap<String, String> DEFAULT_DATA = new HashMap<>();
     
-    private static final ArrayList<VaultOperation> OPERATIONS = new ArrayList<>();
-    
-    private static boolean running = false;
-    
-    /**
-     * Nested class for the operations to finish up.
-     */
-    public static class OperationHook extends Thread {
-        @Override
-        public synchronized void run() {
-            Logger.log("Cleaning up...");
-            Logger.log("VAULT: there are " + OPERATIONS.size() + " items left in the queue.");
-            
-            while(OPERATIONS.size() != 0) {
-                if(running)
-                    return;
-                running = true;
-    
-                try {
-                    VaultOperation va = OPERATIONS.get(0);
-                    OPERATIONS.remove(0);
-                    storeUserDataPiped(va);
-                } catch(Throwable t) {
-                    t.printStackTrace();
-                }
-                running = false;
-            }
-        }
-    }
-    
-    public static long vaultQueueSize() {
-        return OPERATIONS.size();
-    }
-    
-    /**
-     * Register the operation scheduler.
-     * THIS SHOULD NOT BE RUN BY ANYTHING BUT THE MAIN METHOD.
-     */
-    public static synchronized void operationScheduler() {
-        Thread t = new OperationHook();
-        Runtime.getRuntime().addShutdownHook(t);
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                if(running)
-                    return;
-                if(OPERATIONS.size() == 0)
-                    return;
-                running = true;
-                synchronized(this) {
-                    try {
-                        VaultOperation va = OPERATIONS.get(0);
-                        OPERATIONS.remove(0);
-                        storeUserDataPiped(va);
-                    } catch (Throwable t) {
-                        t.printStackTrace();
-                    }
-                    running = false;
-                }
-            }
-        };
-    
-        new Timer().schedule(task, 0L, 20); //20 ms
-    }
+    private static final Object TIMER = new Object();
     
     /**
      * Get a new {@link HashMap} that has the same data as the default data.
@@ -103,7 +38,7 @@ public final class Vault {
      */
     @NotNull
     @Contract(pure = true)
-    public static synchronized HashMap<String, String> getDefaultData() {
+    public static HashMap<String, String> getDefaultData() {
         return new HashMap<>(DEFAULT_DATA);
     }
     
@@ -112,7 +47,7 @@ public final class Vault {
      * @param key the key.
      * @param data the data.
      */
-    public static synchronized void addDefault(String key, String data) {
+    public static void addDefault(String key, String data) {
         DEFAULT_DATA.put(key, data);
     }
     
@@ -125,44 +60,19 @@ public final class Vault {
      * @param dataValue the data that will be stored under the key.
      * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
-    public static synchronized void storeUserDataLocal(String userID, String guildID, @NotNull String dataKey, @NotNull String dataValue)
-            throws UserDataCouldNotBeObtainedException {
-        if(!shutdownFileInPlace())
-            OPERATIONS.add(new VaultOperation(userID, guildID, dataKey, dataValue));
-        else {
-            //noinspection ResultOfMethodCallIgnored
-            new File("shutdown.ub").delete();
-            long time = System.currentTimeMillis();
-            while(OPERATIONS.size() != 0) {
-                if(time > System.currentTimeMillis() + 10000L)
-                    break;
+    public static void storeUserDataLocal(String userID, String guildID, @NotNull String dataKey, @NotNull String dataValue) throws UserDataCouldNotBeObtainedException {
+        synchronized(TIMER) {
+            UserData.checkUserExists(userID, guildID);
+            Properties p = new Properties();
+            try {
+                p.load(new FileReader(Main.parsePropertiesLocation(userID, guildID)));
+                p.setProperty(dataKey, dataValue);
+                p.store(new FileOutputStream(Main.parsePropertiesLocation(userID, guildID)), "");
+            } catch (IOException e) {
+                e.printStackTrace();
+                //to be caught and reported to the end user over Discord.
+                throw new UserDataCouldNotBeObtainedException();
             }
-            Runtime.getRuntime().exit(0);
-        }
-    }
-    
-    /**
-     * @return true if the shutdown file exists.
-     */
-    private static synchronized boolean shutdownFileInPlace() {
-        return new File("shutdown.ub").exists();
-    }
-    
-    /**
-     * Piped data
-     * @param ve the vault operation
-     */
-    private static synchronized void storeUserDataPiped(@NotNull VaultOperation ve) {
-        UserData.checkUserExists(ve.userID, ve.guildID);
-        Properties p = new Properties();
-        try {
-            p.load(new FileReader(Main.parsePropertiesLocation(ve.userID, ve.guildID)));
-            p.setProperty(ve.dataKey, ve.dataValue);
-            p.store(new FileOutputStream(Main.parsePropertiesLocation(ve.userID, ve.guildID)), "");
-        } catch (IOException e) {
-            e.printStackTrace();
-            //to be caught and reported to the end user over Discord.
-            throw new UserDataCouldNotBeObtainedException();
         }
     }
     
@@ -175,17 +85,17 @@ public final class Vault {
      * @see Properties#getProperty(String)
      * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
-    @Nullable
-    @Contract(pure = true)
-    public static synchronized String getUserDataLocal(String userID, String guildID, @NotNull String dataKey) throws UserDataCouldNotBeObtainedException {
-        UserData.checkUserExists(userID, guildID);
-        Properties p = new Properties();
-        try {
-            p.load(new FileReader(Main.parsePropertiesLocation(userID, guildID)));
-            return p.getProperty(dataKey);
-        } catch(IOException e) {
-            e.printStackTrace();
-            throw new UserDataCouldNotBeObtainedException();
+    public static String getUserDataLocal(String userID, String guildID, @NotNull String dataKey) throws UserDataCouldNotBeObtainedException {
+        synchronized(TIMER) {
+            UserData.checkUserExists(userID, guildID);
+            Properties p = new Properties();
+            try {
+                p.load(new FileReader(Main.parsePropertiesLocation(userID, guildID)));
+                return p.getProperty(dataKey);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new UserDataCouldNotBeObtainedException();
+            }
         }
     }
     
@@ -196,23 +106,21 @@ public final class Vault {
      * @param guildID the guild ID.
      * @param dataKey the key to use to get the data.
      * @param defaultValue value to be returned if the key was not found.
-     * @return the user's data, or {@code defaultValue} if it was not found.
      * @see Properties#getProperty(String)
      * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
-    @NotNull
-    @Contract(pure = true)
     public static String getUserDataLocalOrDefault(String userID, String guildID, @NotNull String dataKey, @NotNull String defaultValue)
             throws UserDataCouldNotBeObtainedException {
-        while(OPERATIONS.size() != 0 || running); //this is so bad i hate myself for writing it
-        UserData.checkUserExists(userID, guildID);
-        Properties p = new Properties();
-        try {
-            p.load(new FileReader(Main.parsePropertiesLocation(userID, guildID)));
-            return p.getProperty(dataKey, defaultValue);
-        } catch(IOException e) {
-            e.printStackTrace();
-            throw new UserDataCouldNotBeObtainedException();
+        synchronized(TIMER) {
+            UserData.checkUserExists(userID, guildID);
+            Properties p = new Properties();
+            try {
+                p.load(new FileReader(Main.parsePropertiesLocation(userID, guildID)));
+                return p.getProperty(dataKey, defaultValue);
+            } catch(IOException e) {
+                e.printStackTrace();
+                throw new UserDataCouldNotBeObtainedException();
+            }
         }
     }
     
