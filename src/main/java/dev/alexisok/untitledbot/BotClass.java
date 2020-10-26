@@ -5,11 +5,11 @@ import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
@@ -18,7 +18,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -51,6 +50,8 @@ public final class BotClass extends ListenerAdapter {
 	public static final ArrayList<String> BLACKLIST = new ArrayList<>();
 	
 	private static final transient ArrayList<String> NO_PREFIX = new ArrayList<>();
+	
+	private static final transient Timer TIMER = new Timer();
 	
 	private static final MessageEmbed JOIN_MESSAGE = new EmbedBuilder().addField("untitled-bot",
 			"\n```" +
@@ -146,13 +147,15 @@ public final class BotClass extends ListenerAdapter {
 	 * @param event the mre
 	 */
 	@Override
-	public final void onMessageReceived(@Nonnull MessageReceivedEvent event) {
+	public final void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
+		
+		Logger.debug("A message was received");
 		
 		messagesSentTotal++;
 		
 		CommandRegistrar.runMessageHooks(event);
 		
-		if(!event.isFromGuild() || event.getAuthor().isBot() || event.isWebhookMessage())
+		if(event.getAuthor().isBot() || event.isWebhookMessage())
 			return;
 		
 		if(BLACKLIST.contains(event.getAuthor().getId()))
@@ -190,32 +193,27 @@ public final class BotClass extends ListenerAdapter {
 		message = message.substring(prefix.length());
 		
 		//replace all "  " with " "
-		while(message.contains("  "))
-			message = message.replaceAll(" {2}", " ");
+		if(message.contains("  ")) {
+			do message = message.replaceAll(" {2}", " ");
+			while(message.contains("  "));
+		}
 		
 		//args...
 		String[] args = message.split(" ");
 		
-		new Timer().schedule(new TimerTask() {
+		TIMER.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				//execute a command and return the message it provides
 				try {
-					
-					if(!CommandRegistrar.getCommandCooldown(args[0]).equals("-1")) {
-						long currentTime = Long.parseLong(Vault.getUserDataLocalOrDefault(event.getAuthor().getId(), null, "cooldown." + args[0], "0"));
-						if(currentTime > Instant.now().toEpochMilli() / 1000) {
-							event.getChannel().sendMessage("The command `" + args[0] + "` is on a cooldown.  Please wait " + (currentTime - Instant.now().toEpochMilli() / 1000) + " more seconds.").queue();
-							return;
-						}
-						Vault.storeUserDataLocal(event.getAuthor().getId(), null, "cooldown." + args[0], CommandRegistrar.getCommandCooldown(args[0]) + (Instant.now().toEpochMilli() / 1000));
-					}
 					event.getChannel()
 							.sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
 							.queue();
 				} catch(NullPointerException ignored) { //this returns null if the command does not exist.
 				} catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
 					Logger.debug("Could not send a message to a channel.");
+				} catch(Throwable t) {
+					t.printStackTrace();
 				}
 			}
 		}, 0);
@@ -224,7 +222,7 @@ public final class BotClass extends ListenerAdapter {
 		//needs to be caught to avoid flooding logs.
 	}
 	
-	@Override public final void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {}
+	
 	@Override public final void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent event) {}
 	
 	@Override

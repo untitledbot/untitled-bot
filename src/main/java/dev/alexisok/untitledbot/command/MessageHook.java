@@ -1,7 +1,7 @@
 package dev.alexisok.untitledbot.command;
 
 import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 /**
  * 
@@ -19,7 +19,7 @@ public interface MessageHook {
      * Triggered when ANY message is sent that the bot can see.
      * @param m the mre
      */
-    void onMessage(MessageReceivedEvent m);
+    void onMessage(GuildMessageReceivedEvent m);
     
     /**
      * on literally any event i think

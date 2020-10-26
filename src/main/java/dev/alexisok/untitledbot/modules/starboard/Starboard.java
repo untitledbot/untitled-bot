@@ -50,12 +50,12 @@ public final class Starboard extends ListenerAdapter {
      * Void the starboard cache for a guild in case it is updated.
      * @param guildID the guild ID
      */
-    public static void voidCacheForGuild(String guildID) {
+    public static synchronized void voidCacheForGuild(String guildID) {
         STARBOARD_ENABLED_CACHE.remove(guildID);
     }
     
     @Override
-    public void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent e) {
+    public synchronized void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent e) {
         boolean shouldRun;
         if(!STARBOARD_ENABLED_CACHE.containsKey(e.getGuild().getBannerId())) {
             shouldRun = Vault.getUserDataLocalOrDefault(null, e.getGuild().getId(), "starboard", "false").equals("true");
@@ -91,7 +91,7 @@ public final class Starboard extends ListenerAdapter {
      * "Pin" a message to the starboard.
      * @param guildID the ID of the guild.
      */
-    private static void pinMessage(@NotNull String guildID, @NotNull Message linkedMessage) {
+    private static synchronized void pinMessage(@NotNull String guildID, @NotNull Message linkedMessage) {
         
         try {
             if(FileUtils.readFileToString(new File(STARBOARD_DIR + linkedMessage.getGuild().getId() + ".star"), StandardCharsets.UTF_8).contains(linkedMessage.getId()))
@@ -142,7 +142,7 @@ public final class Starboard extends ListenerAdapter {
         } catch(Throwable ignored) {}
     }
     
-    private static void addMessageIDToFile(@NotNull Message m) {
+    private static synchronized void addMessageIDToFile(@NotNull Message m) {
         File f = new File(STARBOARD_DIR + m.getGuild().getId() + ".star");
         try {
             if(!f.exists()) {

@@ -19,7 +19,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -256,7 +256,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
     }
     
     @Override
-    public void onMessage(@NotNull MessageReceivedEvent mre) {
+    public void onMessage(GuildMessageReceivedEvent mre) {
         
         //no bots
         if(mre.getAuthor().isBot())

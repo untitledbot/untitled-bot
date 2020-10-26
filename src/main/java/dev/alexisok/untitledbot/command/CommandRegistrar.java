@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -290,7 +291,7 @@ public class CommandRegistrar {
 	 * @see MessageHook
 	 * @see dev.alexisok.untitledbot.modules.rank.Ranks
 	 */
-	public static void runMessageHooks(MessageReceivedEvent event) {
+	public static void runMessageHooks(GuildMessageReceivedEvent event) {
 		for(MessageHook mh : HOOK_REGISTRAR)
 			mh.onMessage(event);
 	}

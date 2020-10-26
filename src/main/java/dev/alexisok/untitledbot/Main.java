@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.jetbrains.annotations.Contract;
@@ -118,6 +119,7 @@ public final class Main {
                     public void run() {
                         Logger.log("Updating Top.GG stats...");
                         API.setStats(jda.getGuilds().size());
+                        Logger.log("Done updating stats.");
                     }
                 };
                 
@@ -127,14 +129,6 @@ public final class Main {
         });
     
         t.start();
-        
-        try {
-            File cooldown = new File("./cooldowns.properties");
-            if(!cooldown.exists())
-                cooldown.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
     
     private static void setDefaultProps(@NotNull Properties p) {
@@ -196,7 +190,7 @@ public final class Main {
     /**
      * Return the resulting properties location of a specific user
      * given their user ID and guild ID.  Having a bunch of other things relying on this
-     * is good as it is much easier to change it.  If you are getting the properties locaation
+     * is good as it is much easier to change it.  If you are getting the properties location
      * of the user, then go through here.
      *
      *

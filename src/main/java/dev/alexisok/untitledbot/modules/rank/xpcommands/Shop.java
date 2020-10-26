@@ -143,7 +143,7 @@ public final class Shop extends UBPlugin {
                 
                 return eb.build();
                 
-            } catch(ArrayIndexOutOfBoundsException ignored) {
+            } catch(RuntimeException ignored) {
                 eb.addField("Shop", "Usage: `shop buy <item name>`", false);
                 eb.setColor(Color.RED);
                 
