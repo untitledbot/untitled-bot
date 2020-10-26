@@ -147,9 +147,7 @@ public final class BotClass extends ListenerAdapter {
      * @param event the mre
      */
     @Override
-    public final void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
-
-        Logger.debug("A message was received");
+    public final synchronized void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
 
         messagesSentTotal++;
 
@@ -212,12 +210,13 @@ public final class BotClass extends ListenerAdapter {
         } catch(Throwable t) {
             t.printStackTrace();
         }
-        
-        //needs to be caught to avoid flooding logs.
     }
 
 
-    @Override public final void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent event) {}
+    @Override public final void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent e) {
+        e.getAuthor().openPrivateChannel().queue(a -> a.sendMessage("Hello!  To use untitled-bot, type `>help` in a server I'm in to get started.\n" +
+                "If you changed the prefix, simply type @untitled-bot in the server to get my prefix.").queue());
+    }
 
     @Override
     public void onGenericEvent(@Nonnull GenericEvent event) {
