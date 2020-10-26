@@ -156,10 +156,6 @@ public final class Main {
         
         String token;
         
-        Logger.log("Installing VAULT scheduler...");
-        Vault.operationScheduler();
-        Logger.log("Installed.");
-        
         try {
             token = args[0];
         } catch(ArrayIndexOutOfBoundsException ignored) {
@@ -170,7 +166,7 @@ public final class Main {
         try {
             //message reactions may be used for a future release
             jda = new JDABuilder(token)
-                          .disableCache(ACTIVITY, CLIENT_STATUS, MEMBER_OVERRIDES, EMOTE)
+                          .enableCache(ACTIVITY, CLIENT_STATUS, MEMBER_OVERRIDES, EMOTE)
                           .enableIntents(GUILD_MESSAGE_REACTIONS, GUILD_MEMBERS, GUILD_MESSAGES)
                           .setMemberCachePolicy(MemberCachePolicy.ONLINE)
                           .addEventListeners(new ModHook(), new BotClass(), new Starboard())

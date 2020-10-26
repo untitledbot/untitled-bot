@@ -209,7 +209,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
                 File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong()));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
                 return null;
-            } catch(InsufficientPermissionException | NullPointerException | IOException | FontFormatException e) {
+            } catch(InsufficientPermissionException | NullPointerException | IOException e) {
                 e.printStackTrace();
                 try {
                     eb.addField("Ranking",
@@ -248,7 +248,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
                                     "Exp:   " + xp + "\n",
                             false);
                 }
-            } catch (FontFormatException | IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
