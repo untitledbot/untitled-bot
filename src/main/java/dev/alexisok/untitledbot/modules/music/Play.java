@@ -17,7 +17,7 @@ import java.awt.*;
  * 
  * @see MusicCommands
  * @author AlexIsOK
- * @since 1.0.1
+ * @since 1.0.1 (made) 1.3.22 (fully implemented)
  */
 public final class Play extends UBPlugin {
     
@@ -35,7 +35,6 @@ public final class Play extends UBPlugin {
         if(args.length == 1) {
             eb.addField("Music Player", "Usage: play <URL | search query>", false);
             eb.setColor(Color.RED);
-            
             return eb.build();
         }
         
@@ -46,6 +45,7 @@ public final class Play extends UBPlugin {
     public void onRegister() {
         Manual.setHelpPage("play", "Play a song from a supported site, or search if no URL is provided.\n" +
                                            "Usage: play <URL | search query>\n" +
-                                           "URL must be a fully qualified URL, for example: https://example.com/watch?v=abcdefg\n");
+                                           "URL must be a fully qualified URL, for example: https://youtube.com/watch?v=dQw4w9WgXcQ or " +
+                "a video ID (dQw4w9WgXcQ)\n");
     }
 }

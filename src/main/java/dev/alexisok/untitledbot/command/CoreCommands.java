@@ -37,6 +37,8 @@ import dev.alexisok.untitledbot.modules.cache.VoidCache;
 import dev.alexisok.untitledbot.modules.config.ConfigHandle;
 import dev.alexisok.untitledbot.modules.eco.*;
 import dev.alexisok.untitledbot.modules.eval.Eval;
+import dev.alexisok.untitledbot.modules.music.MusicCommands;
+import dev.alexisok.untitledbot.modules.music.Play;
 import dev.alexisok.untitledbot.modules.noprefix.Exit;
 import dev.alexisok.untitledbot.modules.noprefix.NoPrefix;
 import dev.alexisok.untitledbot.modules.profile.Profile;
@@ -219,6 +221,8 @@ public final class CoreCommands {
         new Eval().onRegister();
         new VoidCache().onRegister();
         new Stack().onRegister();
+        
+        MusicCommands.registerMusicCommands();
         
 //      new RPGCommand().onRegister();
         Logger.log("Modules have been registered.");
