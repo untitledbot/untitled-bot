@@ -2,6 +2,7 @@ package dev.alexisok.untitledbot.modules.music;
 
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.modules.music.player.MusicPlayer;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -37,6 +38,8 @@ public final class Play extends UBPlugin {
             eb.setColor(Color.RED);
             return eb.build();
         }
+        
+        
         
         return null;
     }
