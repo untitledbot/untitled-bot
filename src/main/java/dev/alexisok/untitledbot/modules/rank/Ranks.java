@@ -30,7 +30,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -42,7 +42,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public final class Ranks extends UBPlugin implements MessageHook {
     
     //0th element is level one
-    private static final long[] XP_REQUIRED_FOR_LEVEL_UP = new long[100];
+    //1664510 is max value because using this formula level 1024 goes over ((2^63) - 1)
+    private static final long[] XP_REQUIRED_FOR_LEVEL_UP = new long[65535];
 //                                                                   {50, 100, 125, 150, 200, 250, 400, 500, 700, 900, 1000,
 //                                                                   1250, 1500, 2000, 2500, 3000, 3500, 4000, 5000, 6000,
 //                                                                   7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000,
@@ -53,9 +54,15 @@ public final class Ranks extends UBPlugin implements MessageHook {
     
     static {
         for(int i = 0; i < XP_REQUIRED_FOR_LEVEL_UP.length; i++) {
-            XP_REQUIRED_FOR_LEVEL_UP[i] = (long) ((Math.pow(i, 3) * 2) + 250L);
+            XP_REQUIRED_FOR_LEVEL_UP[i] = (long) ((Math.pow(i, 3) * 2L) + 250L);
         }
     }
+    
+    //since xp always starts at 0 and ends at 1 through 10, just store the max value here.
+    private static final HashMap<String, Integer> XP_PER_MESSAGE_CACHE = new HashMap<>();
+    
+    //multiplier per message, values are 0.5x, 0.75x, 1x, 1.25x, 1.5x, 1.75x, 2x, 2.25x, 2.5x, 2.75x, 3x.
+    private static final HashMap<String, Float> MULTIPLIER_CACHE = new HashMap<>();
     
     @Override
     public void onStartup() {
@@ -97,9 +104,9 @@ public final class Ranks extends UBPlugin implements MessageHook {
     @CheckForSigned
     @CheckReturnValue
     public static long xpNeededForLevel(int i) {
-        if(i == 0 || i > 100)
-            throw new IllegalArgumentException("\"i\" must be between 1 and 100 (inclusive)");
-        if(i == 100)
+        if(i == 0 || i > 65535)
+            throw new IllegalArgumentException("\"i\" must be between 1 and 65535 (inclusive)");
+        if(i == 300)
             return -1;
         return XP_REQUIRED_FOR_LEVEL_UP[i - 1];
     }
@@ -118,7 +125,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
                 i++;
             }
         } catch(ArrayIndexOutOfBoundsException ignored) {
-            return 100;
+            return 300;
         }
         return i;
     }
@@ -177,32 +184,13 @@ public final class Ranks extends UBPlugin implements MessageHook {
             lv = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks-level");
         }
         
-        if(lv == null || xp == null) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            try {
-                int size = message.getMentionedMembers().size();
-                User target = size == 1 ? message.getMentionedMembers().get(0).getUser() : Main.jda.getUserById(args[1]);
-                assert target != null;
-                xp = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-xp");
-                lv = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-level");
-                other = true;
-            } catch(Exception ignored) {
-                xp = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks-xp");
-                lv = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks-level");
-            }
-        }
-        
         if (lv == null || xp == null) {
             eb.setColor(Color.RED);
             eb.addField("Ranking", "Could not get the rank of this user.  Have they talked in this server before?", false);
             return eb.build();
         }
         
-        if(lv.equalsIgnoreCase("100")) lv = "MAX (100)";
+        if(lv.equalsIgnoreCase("65535")) lv = "MAX (65535)";
     
         eb.setColor(Color.GREEN);
         if(!other) {
@@ -272,7 +260,10 @@ public final class Ranks extends UBPlugin implements MessageHook {
             return;
         
         //was 3 to 5
-        long randomAmount = ThreadLocalRandom.current().nextLong(0, 7 * DoubleXPTime.boostAmount);
+        long randomAmount = ThreadLocalRandom.current().nextLong(0,
+                ((1 + Long.parseLong(Vault.getUserDataLocal(m.getAuthor().getId(),
+                        m.getGuild().getId(),
+                        "ranks-level"))) * DoubleXPTime.boostAmount));
         if(randomAmount != 0)
             doLevelStuff(m, randomAmount);
     }
@@ -293,7 +284,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         long currentXP = Long.parseLong(xpstr);
         int currentLv = Integer.parseInt(lvstr);
     
-        if (currentLv > 99 && currentXP >= Long.MAX_VALUE - 1000L) return;
+        if (currentLv > 65535 || currentXP >= Long.MAX_VALUE - 1000L) return;
         
         if(DoubleXPTime.boostAmount != 1)
             DoubleXPTime.totalXPFromBoost = DoubleXPTime.totalXPFromBoost.add(new BigInteger(String.valueOf(randAdd)));
@@ -301,7 +292,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         currentXP += randAdd;
         
         //check level up
-        if(currentLv != 100 && currentXP >= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1]) {
+        if(currentLv != 65535 && currentXP >= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1]) {
             currentXP -= XP_REQUIRED_FOR_LEVEL_UP[currentLv - 1];
             currentLv++;
             try {

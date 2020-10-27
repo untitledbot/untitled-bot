@@ -15,8 +15,11 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.CheckReturnValue;
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -50,6 +53,22 @@ public final class RankImageRender {
     
     /**
      * Render the image.
+     *
+     * It is highly encouraged that the file is deleted after it is sent to Discord, either by
+     * the program or by a cron.
+     *
+     * @param userID the ID of the user.
+     * @param guildID the ID of the guild.
+     * @param uniqueID a unique ID to give the file, usually the ID of the message.  Prevents collision.
+     * @return the file where it is stored, or {@code null} if it could not be rendered.
+     * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
+     */
+    public static File render(String userID, String guildID, long uniqueID) throws UserDataCouldNotBeObtainedException, IOException {
+        return render(userID, guildID, uniqueID, false);
+    }
+    
+    /**
+     * Render the image.
      * 
      * It is highly encouraged that the file is deleted after it is sent to Discord, either by
      * the program or by a cron.
@@ -57,13 +76,14 @@ public final class RankImageRender {
      * @param userID the ID of the user.
      * @param guildID the ID of the guild.
      * @param uniqueID a unique ID to give the file, usually the ID of the message.  Prevents collision.
+     * @param flip flip the image around
      * @return the file where it is stored, or {@code null} if it could not be rendered.
      * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
     @Nullable
     @CheckReturnValue
     @Contract(pure = true)
-    public static File render(String userID, String guildID, long uniqueID) throws UserDataCouldNotBeObtainedException, IOException {
+    public static File render(String userID, String guildID, long uniqueID, boolean flip) throws UserDataCouldNotBeObtainedException, IOException {
         
         User u = Main.jda.getUserById(userID);
         
@@ -98,22 +118,22 @@ public final class RankImageRender {
             discriminator = u.getDiscriminator();
             String balStr = Vault.getUserDataLocalOrDefault(userID, guildID, Shop.CURRENCY_VAULT_NAME, "0");
             balance = Long.parseLong(balStr != null ? balStr : "0");
-            balanceAsDisplay = new DecimalFormat("#,###").format(balance);
+            balanceAsDisplay = Top.getBetterNameOtherThanJustWhateverIdk(balance);
             String bankStr = Vault.getUserDataLocalOrDefault(userID, guildID, Shop.BANK_VAULT_NAME, "0");
             bankBal = Long.parseLong(bankStr != null ? bankStr : "0");
-            bankBalAsDisplay = new DecimalFormat("#,###").format(bankBal);
+            bankBalAsDisplay = Top.getBetterNameOtherThanJustWhateverIdk(bankBal);
         } catch(NullPointerException e) {
             e.printStackTrace();
             return null;
         }
         //shorten the string up a bit if it's over 1k
-        String currentAsDisplay = "1";// Top.getBetterNameOtherThanJustWhateverIdk(current);
+        String currentAsDisplay = Top.getBetterNameOtherThanJustWhateverIdk(current);
         
         String maximumAsDisplay;
         
         //shorten the string up a bit if it's over 1k
         if(maximum != -1)
-            maximumAsDisplay = "1";//Top.getBetterNameOtherThanJustWhateverIdk(maximum);
+            maximumAsDisplay = Top.getBetterNameOtherThanJustWhateverIdk(maximum);
         else
             maximumAsDisplay = "\u221E"; //infinity symbol
         
@@ -124,8 +144,6 @@ public final class RankImageRender {
         BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         
         Graphics2D gtd = bi.createGraphics();
-        
-        
         try {
             //if the user is a contributor, add their image here.
             gtd.drawImage((ImageIO.read(new File("rs/" + userID + ".png"))), 0, 0, null);
@@ -147,10 +165,10 @@ public final class RankImageRender {
         
         //level numbers (x / y XP)
         gtd.drawString(String.format("%s / %s XP", currentAsDisplay, maximumAsDisplay), 30, 200);
-        gtd.drawString(String.format("%sLevel %d%s", rank != 100 ? "    " : "", rank, rank == 100 ? " (MAX)" : ""), 555, 200);
+        gtd.drawString(String.format("%sLevel %d%s", rank != 65535 ? "    " : "", rank, rank == 65535 ? " (MAX)" : ""), 555, 200);
         
         //progressbar for level (outline)
-        gtd.setColor(Color.WHITE);
+        gtd.setColor(Color.GRAY);
         gtd.fillRoundRect(30, 220, 700, 32, 32, 32);
         
         //fill width double
@@ -173,6 +191,19 @@ public final class RankImageRender {
         try {
             File returnFile = new File(String.format("./tmp/rank/%d.png", uniqueID));
             ImageIO.write(bi, "png", returnFile);
+            //flip the image 180 degrees if the user does "rnak" or one of its aliases
+            if(flip) {
+                File file = new File(returnFile.getAbsolutePath() + "flip.png");
+                FileInputStream fis = new FileInputStream(returnFile);
+                BufferedImage bufferedImage = ImageIO.read(fis);
+                AffineTransform tx = AffineTransform.getScaleInstance(-1, -1);
+                tx.translate(-bufferedImage.getWidth(null), -bufferedImage.getHeight(null));
+                AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+                bufferedImage = op.filter(bufferedImage, null);
+                ImageIO.write(bufferedImage, "png", file);
+                returnFile.delete();
+                return file;
+            }
             return returnFile;
         } catch (IOException e) {
             e.printStackTrace();

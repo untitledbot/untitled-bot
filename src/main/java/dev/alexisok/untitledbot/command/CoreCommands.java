@@ -7,6 +7,7 @@ import dev.alexisok.untitledbot.modules.basic.avatar.Avatar;
 import dev.alexisok.untitledbot.modules.basic.ayaya.AYAYA;
 import dev.alexisok.untitledbot.modules.basic.blacklist.Blacklist;
 import dev.alexisok.untitledbot.modules.basic.brainfreak.BrainFreak;
+import dev.alexisok.untitledbot.modules.basic.cache.CacheInfo;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.Lowercase;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.ToggleCase;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.Uppercase;
@@ -43,6 +44,7 @@ import dev.alexisok.untitledbot.modules.noprefix.Exit;
 import dev.alexisok.untitledbot.modules.noprefix.NoPrefix;
 import dev.alexisok.untitledbot.modules.profile.Profile;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
+import dev.alexisok.untitledbot.modules.rank.Rnak;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleGet;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleSet;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Inventory;
@@ -221,6 +223,8 @@ public final class CoreCommands {
         new Eval().onRegister();
         new VoidCache().onRegister();
         new Stack().onRegister();
+        new CacheInfo().onRegister();
+        new Rnak().onRegister();
         
         MusicCommands.registerMusicCommands();
         

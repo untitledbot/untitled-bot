@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
@@ -48,7 +49,9 @@ public final class BotClass extends ListenerAdapter {
     
     public static final ArrayList<String> BLACKLIST = new ArrayList<>();
     
-    private static final transient ArrayList<String> NO_PREFIX = new ArrayList<>();
+    private static final ArrayList<String> NO_PREFIX = new ArrayList<>();
+    
+    private static final HashMap<String, Message> LAST_COMMAND = new HashMap<>();
     
     private static final MessageEmbed JOIN_MESSAGE = new EmbedBuilder().addField("untitled-bot",
             "\n```" +
@@ -124,7 +127,7 @@ public final class BotClass extends ListenerAdapter {
      * @param userID the ID of the user as a String.
      * @return {@code true} if the user was added, {@code false} if they were already added.
      */
-    public static boolean addToNoPrefix(@NotNull String userID) {
+    public static synchronized boolean addToNoPrefix(@NotNull String userID) {
         if(NO_PREFIX.contains(userID))
             return false;
         return NO_PREFIX.add(userID);
@@ -139,7 +142,7 @@ public final class BotClass extends ListenerAdapter {
         return NO_PREFIX.remove(userID);
     }
     
-    public static void voidPrefixCache() {
+    public static synchronized void voidPrefixCache() {
         PREFIX_CACHE.clear();
     }
     
@@ -164,6 +167,23 @@ public final class BotClass extends ListenerAdapter {
         String prefix = getPrefix(event.getGuild().getId(), event.getAuthor().getId());
         
         String message = event.getMessage().getContentRaw();
+        
+        if(message.equals("!!")) {
+            try {
+                message = LAST_COMMAND.get(event.getAuthor().getId()).getContentRaw();
+                message = message.substring(prefix.length());
+                if (message.contains("  ")) {
+                    do {
+                        message = message.replaceAll(" {2}", " ");
+                    } while (message.contains("  "));
+                }
+                String[] args = message.split(" ");
+                event.getChannel()
+                        .sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, LAST_COMMAND.get(event.getAuthor().getId())))))
+                        .queue();
+            } catch(Throwable ignored){}
+            return;
+        }
         
         if(message.startsWith(prefix + " "))
             message = message.replaceFirst(prefix + " ", prefix);
@@ -190,7 +210,7 @@ public final class BotClass extends ListenerAdapter {
             return;
         
         message = message.substring(prefix.length());
-    
+        
         //replace all "  " with " "
         if(message.contains("  ")) {
             do message = message.replaceAll(" {2}", " ");
@@ -202,6 +222,7 @@ public final class BotClass extends ListenerAdapter {
     
         //execute a command and return the message it provides
         try {
+            LAST_COMMAND.put(event.getAuthor().getId(), event.getMessage());
             event.getChannel()
                     .sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
                     .queue();
