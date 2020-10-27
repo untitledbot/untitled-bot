@@ -34,8 +34,6 @@ public final class Status extends UBPlugin {
         TimerTask t = new TimerTask() {
             @Override
             public void run() {
-                //not the best idea to put this here but might as well.
-                //i've been seeing high memory usage, and i'm not sure if this is related or not.
                 updateStatsString();
             }
         };
@@ -43,8 +41,6 @@ public final class Status extends UBPlugin {
     }
     
     private static void forceUpdate() {
-        //not the best idea to put this here but might as well.
-        //i've been seeing high memory usage, and i'm not sure if this is related or not.
         updateStatsString();
     }
     
@@ -73,6 +69,9 @@ public final class Status extends UBPlugin {
         returnString += "            Roles: " + roles +  "\n";
         returnString += "           Humans: " + users +  "\n";
         returnString += "             Bots: " + bots +   "\n";
+        returnString += "     Cached users: " + Main.jda.getUserCache().size() + "\n";
+        returnString += "   Cached servers: " + Main.jda.getGuildCache().size() + "\n";
+        returnString += "  Cached channels: " + Main.jda.getTextChannelCache().size() + "\n";
         returnString += "    Text channels: " + texts +  "\n";
         returnString += "   Voice channels: " + voice +  "\n";
         returnString += "        UBPlugins: " + CommandRegistrar.registrarSize() + "\n";
@@ -92,7 +91,8 @@ public final class Status extends UBPlugin {
             forceUpdate();
         
         eb.setColor(Color.GREEN);
-        eb.addField("Status", stats, true);
+        eb.setTitle("Status");
+        eb.setDescription(stats);
         return eb.build();
     }
     

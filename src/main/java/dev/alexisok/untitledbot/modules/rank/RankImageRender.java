@@ -42,7 +42,7 @@ public final class RankImageRender {
         Logger.log("If this is false, it probably means the directory already exists.  If the directory doesn't exist, make sure" +
                            " that the bot has write permissions in the current directory.");
         for(String fn : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
-            Logger.debug("Font " + fn + " is registered.");
+//            Logger.debug("Font " + fn + " is registered.");
         }
         Logger.debug("Done listing fonts.");
         
@@ -96,24 +96,24 @@ public final class RankImageRender {
             maximum = Ranks.xpNeededForLevel(rank);
             name = Objects.requireNonNull(u).getName();
             discriminator = u.getDiscriminator();
-            String balStr = Vault.getUserDataLocal(userID, guildID, Shop.CURRENCY_VAULT_NAME);
+            String balStr = Vault.getUserDataLocalOrDefault(userID, guildID, Shop.CURRENCY_VAULT_NAME, "0");
             balance = Long.parseLong(balStr != null ? balStr : "0");
             balanceAsDisplay = new DecimalFormat("#,###").format(balance);
-            String bankStr = Vault.getUserDataLocal(userID, guildID, Shop.BANK_VAULT_NAME);
+            String bankStr = Vault.getUserDataLocalOrDefault(userID, guildID, Shop.BANK_VAULT_NAME, "0");
             bankBal = Long.parseLong(bankStr != null ? bankStr : "0");
             bankBalAsDisplay = new DecimalFormat("#,###").format(bankBal);
-        } catch(NullPointerException ignored) {
+        } catch(NullPointerException e) {
+            e.printStackTrace();
             return null;
         }
-        
         //shorten the string up a bit if it's over 1k
-        String currentAsDisplay = current >= 1000 ? String.format("%.2fk", current / 1000.0) : "" + current;
+        String currentAsDisplay = "1";// Top.getBetterNameOtherThanJustWhateverIdk(current);
         
         String maximumAsDisplay;
         
         //shorten the string up a bit if it's over 1k
         if(maximum != -1)
-            maximumAsDisplay = maximum >= 1000 ? String.format("%.2fk", maximum / 1000.0) : "" + maximum;
+            maximumAsDisplay = "1";//Top.getBetterNameOtherThanJustWhateverIdk(maximum);
         else
             maximumAsDisplay = "\u221E"; //infinity symbol
         
@@ -150,7 +150,7 @@ public final class RankImageRender {
         gtd.drawString(String.format("%sLevel %d%s", rank != 100 ? "    " : "", rank, rank == 100 ? " (MAX)" : ""), 555, 200);
         
         //progressbar for level (outline)
-        gtd.setColor(Color.GRAY);
+        gtd.setColor(Color.WHITE);
         gtd.fillRoundRect(30, 220, 700, 32, 32, 32);
         
         //fill width double
@@ -171,8 +171,9 @@ public final class RankImageRender {
         
         //save the image.
         try {
-            ImageIO.write(bi, "png", new File(String.format("./tmp/rank/%d.png", uniqueID)));
-            return new File(String.format("./tmp/rank/%d.png", uniqueID));
+            File returnFile = new File(String.format("./tmp/rank/%d.png", uniqueID));
+            ImageIO.write(bi, "png", returnFile);
+            return returnFile;
         } catch (IOException e) {
             e.printStackTrace();
             return null;

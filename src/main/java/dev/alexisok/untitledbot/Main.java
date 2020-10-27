@@ -4,13 +4,13 @@ import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import dev.alexisok.untitledbot.modules.starboard.Starboard;
-import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -148,7 +148,6 @@ public final class Main {
      *             other arguments not listed in this methods JavaDoc will
      *             be ignored.
      */
-    @SuppressWarnings("deprecation")
     public static void main(@NotNull String[] args) {
         
         Logger.log("Starting untitled bot " + VERSION + ".");
@@ -165,12 +164,12 @@ public final class Main {
         
         try {
             //message reactions may be used for a future release
-            jda = new JDABuilder(token)
-                          .enableCache(ACTIVITY, CLIENT_STATUS, MEMBER_OVERRIDES, EMOTE)
-                          .enableIntents(GUILD_MESSAGE_REACTIONS, GUILD_MEMBERS, GUILD_MESSAGES)
-                          .setMemberCachePolicy(MemberCachePolicy.ONLINE)
-                          .addEventListeners(new ModHook(), new BotClass(), new Starboard())
-                          .build();
+            jda = JDABuilder.create(GUILD_MESSAGE_REACTIONS, GUILD_MESSAGES, GUILD_EMOJIS, GUILD_MEMBERS)
+                    .setToken(token)
+                    .enableCache(MEMBER_OVERRIDES, EMOTE)
+                    .setMemberCachePolicy(MemberCachePolicy.ALL)
+                    .addEventListeners(new ModHook(), new BotClass(), new Starboard())
+                    .build();
             jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help"));
             
         } catch(LoginException e) {
