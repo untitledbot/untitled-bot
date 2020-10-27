@@ -2,20 +2,20 @@
 
 untitled-bot is a multi-purpose bot that
 has a lot of room for customization.  You can self-host it as well.
-
 [![Discord Bots](https://top.gg/api/widget/730135989863055472.svg)](https://top.gg/bot/730135989863055472)
 <br>
 ![Version](https://img.shields.io/badge/version-1.3-blue)
 [![GitHub issues](https://img.shields.io/github/issues/AlexIsOK/untitled-bot)](https://github.com/AlexIsOK/untitled-bot/issues)
 [![GitHub license](https://img.shields.io/github/license/AlexIsOK/untitled-bot)](https://github.com/AlexIsOK/untitled-bot/blob/master/LICENSE.txt)
+
 ---
 
-### Invite
+## Invite
 You can invite untitled-bot to your server instantly using
 <a href="https://discord.com/oauth2/authorize?client_id=730135989863055472&scope=bot&permissions=3460160">
 this link</a>.
 
-### Features
+## Features
 * Level/rank module.
 * Logging
 * Starboard
@@ -23,7 +23,7 @@ this link</a>.
 * Much, much more, see below :)
 
 ---
-### Discord server
+## Discord server
 You can join the untitled-bot discord server [here](https://alexisok.dev/ub/discord.html).
 
 # Commands
