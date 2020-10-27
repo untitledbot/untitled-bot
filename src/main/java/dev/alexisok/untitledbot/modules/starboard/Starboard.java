@@ -5,7 +5,6 @@ import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -18,7 +17,6 @@ import javax.annotation.Nonnull;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -127,14 +125,14 @@ public final class Starboard extends ListenerAdapter {
         message = message.substring(0, Math.min(message.length(), 1999)); //1999 to be safe
         
         if(linkedMessage.getEmbeds().size() != 0) {
-            java.util.List<MessageEmbed.Field> fields = linkedMessage.getEmbeds().get(0).getFields();
             String description = linkedMessage.getEmbeds().get(0).getDescription();
             if(description != null && description.length() != 0) {
                 message = description;
             }
             
-        } else
-            eb.setDescription(message);
+        }
+        
+        eb.setDescription(message);
         
         eb.setTimestamp(linkedMessage.getTimeCreated());
         eb.setColor(Color.BLUE);

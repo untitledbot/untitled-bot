@@ -103,9 +103,16 @@ public final class UserInfo extends UBPlugin {
                             g.getBoosters().size(), g.getBoostCount(), g.getBoostTier().getKey()), false);
             eb.setThumbnail(message.getGuild().getIconUrl());
             return eb.build();
-        } else if(message.getMentionedMembers().size() == 1) {
+        } else if(message.getMentionedMembers().size() == 1 || args.length == 2) {
             //member info
-            Member u = message.getMentionedMembers().get(0);
+            java.util.List<Member> mentioned = message.getMentionedMembers();
+            Member u = mentioned.size() != 0 ? mentioned.get(0) : message.getGuild().getMemberById(args[1]);
+
+            if(u == null) {
+                eb.addField("Info", "Could not find a user by that mention or ID.", false);
+                eb.setColor(Color.RED);
+                return eb.build();
+            }
             
             eb.setThumbnail(u.getUser().getAvatarUrl());
             String highestRole = "None";

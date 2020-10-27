@@ -205,7 +205,7 @@ public class CommandRegistrar {
 		EmbedDefaults.setEmbedDefaults(eb, m);
 		
 		if(permissionNode.equalsIgnoreCase("owner")) {
-			eb.addField("", "This command can only be run by the owner of the bot.", false);
+			eb.setDescription("This command can only be run by the owner of the bot.");
 			eb.setColor(Color.RED);
 			return eb.build();
 		}
@@ -215,7 +215,7 @@ public class CommandRegistrar {
 			return REGISTRAR.get(commandName).onCommand(args, m);
 		
 		if(permissionNode.equalsIgnoreCase("admin")) {
-			eb.addField("", "This command requires the administrator permission on Discord.", false);
+			eb.setDescription("This command requires the administrator permission on Discord.");
 			eb.setColor(Color.RED);
 			return eb.build();
 		}

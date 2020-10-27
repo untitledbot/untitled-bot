@@ -165,6 +165,9 @@ public final class Ranks extends UBPlugin implements MessageHook {
         try {
             int s = message.getMentionedMembers().size();
             Member target = s == 1 ? message.getMentionedMembers().get(0) : message.getGuild().getMemberById(args[1]);
+            if(target == null) {
+                target = message.getGuild().getMembersByEffectiveName(args[1], true).get(0);
+            }
             assert target != null;
             xp = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-xp");
             lv = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-level");
@@ -173,9 +176,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
             xp = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks-xp");
             lv = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks-level");
         }
-    
         
-    
         if(lv == null || xp == null) {
             try {
                 Thread.sleep(50);

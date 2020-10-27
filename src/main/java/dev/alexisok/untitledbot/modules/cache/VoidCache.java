@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.starboard.Starboard;
 import dev.alexisok.untitledbot.modules.starboard.StarboardHandle;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
@@ -24,6 +25,7 @@ public final class VoidCache extends UBPlugin {
     public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
+        Logger.log("Voiding the cache.");
 
         Starboard.voidAllCache();
         BotClass.voidPrefixCache();

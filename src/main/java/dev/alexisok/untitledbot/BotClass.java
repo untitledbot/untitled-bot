@@ -5,7 +5,6 @@ import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
@@ -31,28 +30,26 @@ import java.util.concurrent.TimeUnit;
  * @since 0.0.1
  */
 public final class BotClass extends ListenerAdapter {
-
+    
     /**
      * Only allow package-private instances of this class.
      */
     BotClass() {}
-
+    
     {
         Logger.log("new instance of BotClass created:  " + this.toString());
     }
-
+    
     private static long messagesSentTotal = 0L;
-
+    
     public static long getMessagesSentTotal() {
         return messagesSentTotal;
     }
-
+    
     public static final ArrayList<String> BLACKLIST = new ArrayList<>();
-
+    
     private static final transient ArrayList<String> NO_PREFIX = new ArrayList<>();
-
-    private static final transient Timer TIMER = new Timer();
-
+    
     private static final MessageEmbed JOIN_MESSAGE = new EmbedBuilder().addField("untitled-bot",
             "\n```" +
                     "      ╔╗ ╔╗╔╗     ╔╗  ╔╗    ╔╗\n" +
@@ -67,10 +64,10 @@ public final class BotClass extends ListenerAdapter {
                     "For help with the bot, use `" + Main.PREFIX + "help`\n" +
                     "The website for the bot is [here](https://untitled-bot.xyz), and the " +
                     "official support server is [here](https://discord.gg/vSWgQ9a).", false).build();
-
+    
     //cache for server prefixes
     private static final HashMap<String, String> PREFIX_CACHE = new HashMap<>();
-
+    
     /**
      * Nullify the prefix cache for a specific guild.
      * @param guildID the ID of the guild.
@@ -78,7 +75,7 @@ public final class BotClass extends ListenerAdapter {
     public static void nullifyPrefixCacheSpecific(@NotNull String guildID) {
         PREFIX_CACHE.remove(guildID);
     }
-
+    
     /**
      * Update the cached prefix for a guild.
      * @param guildID the ID of the guild as a String
@@ -89,7 +86,7 @@ public final class BotClass extends ListenerAdapter {
         PREFIX_CACHE.put(guildID, prefix);
         Logger.debug("Prefix cache updated.");
     }
-
+    
     /**
      * Get the prefix of a guild if it is cached.
      *
@@ -117,10 +114,10 @@ public final class BotClass extends ListenerAdapter {
         } else {
             prefix = PREFIX_CACHE.get(guildID);
         }
-
+        
         return prefix == null ? ">" : prefix;
     }
-
+    
     /**
      * Add a user to the no-prefix list.
      *
@@ -132,7 +129,7 @@ public final class BotClass extends ListenerAdapter {
             return false;
         return NO_PREFIX.add(userID);
     }
-
+    
     /**
      * Removes a user from the no-prefix list.
      * @param userID the ID of the user as a String.
@@ -141,41 +138,41 @@ public final class BotClass extends ListenerAdapter {
     public static synchronized boolean removeFromNoPrefix(@NotNull String userID) {
         return NO_PREFIX.remove(userID);
     }
-
+    
     public static void voidPrefixCache() {
         PREFIX_CACHE.clear();
     }
-
+    
     /**
      * This is messy...
      * @param event the mre
      */
     @Override
     public final synchronized void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
-
+        
         messagesSentTotal++;
-
+        
         CommandRegistrar.runMessageHooks(event);
-
+        
         if(event.getAuthor().isBot() || event.isWebhookMessage())
             return;
-
+        
         if(BLACKLIST.contains(event.getAuthor().getId()))
             return;
-
+        
         //get the prefix of the guild
         String prefix = getPrefix(event.getGuild().getId(), event.getAuthor().getId());
-
+        
         String message = event.getMessage().getContentRaw();
-
+        
         if(message.startsWith(prefix + " "))
             message = message.replaceFirst(prefix + " ", prefix);
-
+        
         try {
             //if the message is @untitled-bot
             if(event.getMessage().getMentionedMembers().get(0).getId().equals("730135989863055472")
                     && message.split(" ").length == 1) {
-
+                
                 if(prefix.equals(""))
                     event.getChannel().sendMessage("You seem to be in the NoPrefix:TM: mode, to exit, simply say `exit`.").queue();
                 else
@@ -188,21 +185,21 @@ public final class BotClass extends ListenerAdapter {
                 return;
             }
         } catch(IndexOutOfBoundsException ignored) {}
-
+        
         if(!event.getMessage().getContentRaw().startsWith(prefix) || event.getMessage().getContentRaw().equals(prefix))
             return;
-
+        
         message = message.substring(prefix.length());
-
+    
         //replace all "  " with " "
         if(message.contains("  ")) {
             do message = message.replaceAll(" {2}", " ");
             while(message.contains("  "));
         }
-
+    
         //args...
         String[] args = message.split(" ");
-
+    
         //execute a command and return the message it provides
         try {
             event.getChannel()
@@ -215,24 +212,36 @@ public final class BotClass extends ListenerAdapter {
             t.printStackTrace();
         }
     }
-
-
-    @Override public final void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent e) {
-        e.getAuthor().openPrivateChannel().queue(a -> a.sendMessage("Hello!  To use untitled-bot, type `>help` in a server I'm in to get started.\n" +
-                "If you changed the prefix, simply type @untitled-bot in the server to get my prefix.").queue());
+    
+    
+    private static final MessageEmbed onPrivateMessage;
+    
+    static {
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setDescription("Hello!  To use untitled-bot, type `>help` in a server I'm in to get started.\n" +
+                "If you changed the prefix, simply type @untitled-bot in the server to get my prefix.\n\nFor help with the bot, feel free to join the" +
+                " [official server](https://alexisok.dev/ub/discord.html).");
+        onPrivateMessage = eb.build();
     }
-
+    
+    @Override public final void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent e) {
+        if(!e.getAuthor().getId().equals(Main.jda.getSelfUser().getId())) {
+            
+            e.getAuthor().openPrivateChannel().queue(a -> a.sendMessage(onPrivateMessage).queue());
+        }
+    }
+    
     @Override
     public void onGenericEvent(@Nonnull GenericEvent event) {
         CommandRegistrar.runGenericListeners(event);
     }
-
+    
     @Override
     public void onGuildJoin(@Nonnull GuildJoinEvent e) {
         List<TextChannel> ch = e.getGuild().getTextChannels();
-
+        
         boolean found = false;
-
+        
         try {
             for(TextChannel tc : ch) {
                 if(tc.getName().contains("bot")) {
@@ -251,5 +260,5 @@ public final class BotClass extends ListenerAdapter {
             }
         }
     }
-
+    
 }
