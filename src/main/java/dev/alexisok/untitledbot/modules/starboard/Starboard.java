@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -57,6 +58,13 @@ public final class Starboard extends ListenerAdapter {
      */
     public static synchronized void voidAllCache() {
         STARBOARD_ENABLED_CACHE.clear();
+    }
+    
+    
+    @NotNull
+    @Contract(pure = true)
+    private static synchronized String getDiscordLink(@NotNull String guildID, @NotNull String channelID, @NotNull String messageID) {
+        return String.format("https://discord.com/channels/%s/%s/%s", guildID, channelID, messageID);
     }
     
     @Override
@@ -136,7 +144,14 @@ public final class Starboard extends ListenerAdapter {
         
         eb.setTimestamp(linkedMessage.getTimeCreated());
         eb.setColor(Color.BLUE);
-        eb.setTitle(linkedMessage.getAuthor().getName() + "#" + linkedMessage.getAuthor().getDiscriminator());
+        eb.setTitle( //set the title to the authors name and then link it to the message
+                linkedMessage.getAuthor().getName() + "#" + linkedMessage.getAuthor().getDiscriminator(),
+                getDiscordLink (
+                        linkedMessage.getGuild().getId(),
+                        linkedMessage.getChannel().getId(),
+                        linkedMessage.getId()
+                )
+        );
         eb.setFooter("\n\n\n" + linkedMessage.getAuthor().getName(), linkedMessage.getAuthor().getAvatarUrl());
         
         try {
