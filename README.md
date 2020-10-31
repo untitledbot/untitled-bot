@@ -5,8 +5,8 @@ has a lot of room for customization.  You can self-host it as well.
 [![Discord Bots](https://top.gg/api/widget/730135989863055472.svg)](https://top.gg/bot/730135989863055472)
 <br>
 ![Version](https://img.shields.io/badge/version-1.3-blue)
-[![GitHub issues](https://img.shields.io/github/issues/AlexIsOK/untitled-bot)](https://github.com/AlexIsOK/untitled-bot/issues)
-[![GitHub license](https://img.shields.io/github/license/AlexIsOK/untitled-bot)](https://github.com/AlexIsOK/untitled-bot/blob/master/LICENSE.txt)
+[![GitHub issues](https://img.shields.io/github/issues/AlexIsOK/untitled-bot)](https://github.com/untitledbot/untitled-bot/issues)
+[![GitHub license](https://img.shields.io/github/license/AlexIsOK/untitled-bot)](https://github.com/untitledbot/untitled-bot/blob/master/LICENSE.txt)
 
 ---
 

@@ -29,7 +29,7 @@ public final class Source extends UBPlugin {
         EmbedDefaults.setEmbedDefaults(eb, message);
         
         eb.addField("Source", "Source code for the bot:\n" +
-                                      "https://github.com/alexisok/untitled-bot", false);
+                                      "https://github.com/untitledbot/untitled-bot", false);
         eb.setColor(Color.GREEN);
         return eb.build();
     }

@@ -69,7 +69,8 @@ public class AllCommands extends UBPlugin {
                                     "`ship` - ship two users (was asked to add this).\n" +
                                     "`20` - roll a twenty sided die.\n" +
                                     "`owo` - owofy a stwing of text,,,\n" +
-                                          "`cat` - get a cat fact.\n");
+                                          "`cat` - get a cat fact." +
+                "`aol` - a legendary tale of the spider lenny vs the wizard lenny.....\n");
         Manual.setHelpPage("econ", "\n" +
                                     "`bal` - get the balance of yourself or another user.\n" +
                                     "`work` - get UB$\n" +
@@ -98,9 +99,9 @@ public class AllCommands extends UBPlugin {
 //                                                     "If you would like to see another command added, or more features " +
 //                                                     "on this bot, please [join the Discord server](https://discord.gg/vSWgQ9a) :)", false);
         
-        eb.addField("", String.format("**[Discord Server](%s) | [GitHub](%s) | [Vote on Top.GG](%s)**",
+        eb.addField("", String.format("**[Support Server](%s) | [GitHub](%s) | [Vote on Top.GG](%s)**",
                 "https://alexisok.dev/ub/discord.html", //DO NOT CHANGE TO XYZ SITE
-                "https://github.com/alexisok/untitled-bot",
+                "https://github.com/untitledbot/untitled-bot",
                 "https://top.gg/bot/730135989863055472/vote"), false);
         
         HELP_MESSAGE = eb.build();

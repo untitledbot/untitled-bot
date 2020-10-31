@@ -40,7 +40,7 @@ public class Which extends UBPlugin {
     
         eb.addField("Which",
                 String.format("Package of %s is %s%n" +
-                                      "[Source code for %s](https://github.com/AlexIsOK/untitled-bot/tree/master/src/main/java/%s.java)",
+                                      "[Source code for %s](https://github.com/untitledbot/untitled-bot/tree/master/src/main/java/%s.java)",
                         args[1],
                         clazz.getName().split("\\$")[0], //$ to escape lambda functions
                         clazz.getSimpleName().split("\\$")[0],

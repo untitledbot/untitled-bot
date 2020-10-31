@@ -101,7 +101,7 @@ public final class Work extends UBPlugin {
     public void onRegister() {
         
         //use "UB$%s" for the place of the money earned.
-        RESPONSES.add("You work as a developer for [untitled-bot](https://github.com/alexisok/untitled-bot) and make UB$%s.");
+        RESPONSES.add("You work as a developer for [untitled-bot](https://github.com/untitledbot/untitled-bot) and make UB$%s.");
         RESPONSES.add("You make UB$%s making a Minecraft Lets Play series.");
         RESPONSES.add("You get your Discord bot verified and earn UB$%s from donations.");
         RESPONSES.add("You set your Discord profile picture to an anime girl and get UB$%s in donations.");

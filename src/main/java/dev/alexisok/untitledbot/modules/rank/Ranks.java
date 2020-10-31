@@ -78,7 +78,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         CommandRegistrar.register("rank-settings", "admin", new RankSettings());
         new Daily().onRegister();
         new Shop().onRegister();
-        Manual.setHelpPage("rank-top", "Get the top user ranks for the guild.\n" +
+        Manual.setHelpPage("rank-top", "Get the top user ranks for the server.\n" +
                                                "Usage: `top`");
         Manual.setHelpPage("rank", "Get your (or another user's) rank.\nUsage: `rank [user @ | user ID]`");
         Manual.setHelpPage("rank-total", "Get the total amount of experience of yourself or another user.\n" +
@@ -88,7 +88,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
                                                     "Current settings:\n" +
                                                     "\tannounce-xp-boost <true | false>\n" +
                                                     "\tannounce-level-up <current | channel <channel #> | none>\n");
-        CommandRegistrar.registerAlias("rank-top", "ranktop", "leaderboard", "top", "ranklist");
+        CommandRegistrar.registerAlias("rank-top", "ranktop", "leaderboard", "top", "ranklist", "bottom");
         CommandRegistrar.registerAlias("rank", "level");
         Vault.addDefault("ranks-xp", "0");
         Vault.addDefault("ranks-level", "1");
@@ -171,15 +171,18 @@ public final class Ranks extends UBPlugin implements MessageHook {
         
         try {
             int s = message.getMentionedMembers().size();
-            Member target = s == 1 ? message.getMentionedMembers().get(0) : message.getGuild().getMemberById(args[1]);
+            Member target = s == 1 ? message.getMentionedMembers().get(0) : null;
             if(target == null) {
-                target = message.getGuild().getMembersByEffectiveName(args[1], true).get(0);
+                target = message.getGuild().getMembersByName(args[1], true).get(0);
+            }
+            if(target == null) {
+                target = message.getGuild().getMemberById(args[1]);
             }
             assert target != null;
             xp = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-xp");
             lv = Vault.getUserDataLocal(target.getId(), message.getGuild().getId(), "ranks-level");
             other = true;
-        } catch(Exception ignored) {
+        } catch(Throwable ignored) {
             xp = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks-xp");
             lv = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "ranks-level");
         }
@@ -259,23 +262,23 @@ public final class Ranks extends UBPlugin implements MessageHook {
         if(m.getContentRaw().startsWith(BotClass.getPrefix(mre.getGuild().getId(), null)))
             return;
         
-        //was 3 to 5
-        long randomAmount = ThreadLocalRandom.current().nextLong(0,
-                ((1 + Long.parseLong(Vault.getUserDataLocal(m.getAuthor().getId(),
-                        m.getGuild().getId(),
-                        "ranks-level"))) * DoubleXPTime.boostAmount));
+        long randomAmount = 0L;
+        try {
+            //was 3 to 5
+            randomAmount = ThreadLocalRandom.current().nextLong(0,
+                    ((1 + Long.parseLong(Vault.getUserDataLocalOrDefault(m.getAuthor().getId(),
+                            m.getGuild().getId(),
+                            "ranks-level", "1"))) * DoubleXPTime.boostAmount));
+        } catch(Throwable ignored) {
+            Logger.log("Error: there was an error with boost amount for user " + mre.getAuthor().getId() + " in guild " + mre.getGuild().getId());
+        }
         if(randomAmount != 0)
             doLevelStuff(m, randomAmount);
     }
     
     public static void doLevelStuff(@NotNull Message m, long randAdd) {
-        String xpstr = Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks-xp");
-        String lvstr = Vault.getUserDataLocal(m.getAuthor().getId(), m.getGuild().getId(), "ranks-level");
-        
-        if (lvstr == null || xpstr == null) {
-            xpstr = "0";
-            lvstr = "1";
-        }
+        String xpstr = Vault.getUserDataLocalOrDefault(m.getAuthor().getId(), m.getGuild().getId(), "ranks-xp", "0");
+        String lvstr = Vault.getUserDataLocalOrDefault(m.getAuthor().getId(), m.getGuild().getId(), "ranks-level", "1");
         
         //make sure the user is not level 0
         if(lvstr.equals("0"))
@@ -304,7 +307,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
                         roleMessage = String.format("You have also been awarded the role %s!!!", Objects.requireNonNull(m.getGuild().getRoleById(rankToReward)).getName());
                     } catch(Throwable ignored) {
                         try {
-                            roleMessage = String.format("I would also assign you rank %s, but I don't have access to it!", Objects.requireNonNull(m.getGuild().getRoleById(rankToReward)).getName());
+                            roleMessage = String.format("I would also assign you role %s, but I don't have access to it!", Objects.requireNonNull(m.getGuild().getRoleById(rankToReward)).getName());
                         } catch(Throwable ignored2) {
                             roleMessage = String.format("I would assign you the role for level %d but there was an error getting the role name!  Was it deleted?", currentLv);
                         }
@@ -324,8 +327,6 @@ public final class Ranks extends UBPlugin implements MessageHook {
                     Objects.requireNonNull(Main.jda.getTextChannelById(Objects.requireNonNull(Vault.getUserDataLocal(null, m.getGuild().getId(), "ranks-broadcast.rankup.channel"))))
                             .sendMessage(String.format("%s has leveled up to level %d!%n%s", m.getAuthor().getName(), currentLv, roleMessage))
                             .queue();
-                } else if(shouldSendPhase2.equalsIgnoreCase("none")) {
-                    throw new UserDataFileCouldNotBeCreatedException("nothing 2");
                 }
                 
                 //if all else fails, don't do anything.

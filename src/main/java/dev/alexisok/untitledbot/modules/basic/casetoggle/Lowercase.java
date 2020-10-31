@@ -24,7 +24,8 @@ public final class Lowercase extends UBPlugin {
                 message.getChannel().getHistoryBefore(message.getId(), 1)
                         .queue(t -> {
                             try {
-                                if(message.mentionsEveryone()) {
+                                if(message.mentionsEveryone() || message.getContentRaw().contains("@everyone")
+                                        || message.getContentRaw().contains("@here")) {
                                     message.getChannel().sendMessage("Haha nerd nice try").queue();
                                 }
                                 message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().toLowerCase())).queue();

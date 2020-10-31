@@ -106,12 +106,16 @@ public final class UserInfo extends UBPlugin {
         } else if(message.getMentionedMembers().size() == 1 || args.length == 2) {
             //member info
             java.util.List<Member> mentioned = message.getMentionedMembers();
-            Member u = mentioned.size() != 0 ? mentioned.get(0) : message.getGuild().getMemberById(args[1]);
+            Member u = mentioned.size() != 0 ? mentioned.get(0) : null;
             
             if(u == null) {
                 try {
                     u = message.getGuild().getMembersByName(args[1], true).get(0);
                 } catch(Throwable ignored) {}
+            }
+            
+            if(u == null) {
+                u = message.getGuild().getMemberById(args[1]);
             }
             
             if(u == null) {
@@ -138,7 +142,7 @@ public final class UserInfo extends UBPlugin {
             
             eb.addField("**Member**", String.format("Name: %s%nJoin date: %s%nHighest role: %s%n" +
                                                             "Top 10 roles: %n%s%nFor permissions, do `permissions <user>`",
-                    u.getNickname(), u.getTimeJoined(), highestRole, roles
+                    u.getEffectiveName(), u.getTimeJoined(), highestRole, roles
             ), false);
             
             eb.addField("**User**", String.format("Name: %s%nCreation date: %s%nBot: %s%nID: %s%n",
