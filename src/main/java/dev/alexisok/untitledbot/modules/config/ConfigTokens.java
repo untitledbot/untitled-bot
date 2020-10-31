@@ -83,7 +83,7 @@ public final class ConfigTokens {
         addValue("workMin", "100", "work.limit.minimum", "REGEX", "[0-9]{1,4}");
         addValue("workMax", "500", "work.limit.maximum", "REGEX", "[0-9]{1,4}");
         addValue("workTimeout", "86400", "work.cooldown", "REGEX", "[0-9]{2,5}");
-        addValue("prefix", ">", "guild.prefix", "REGEX", ".{1,5}");
+        addValue("prefix", ">", "guild.prefix", "REGEX", "[\\x21-\\x7E]{1,5}");
         addValue("stealMin", "50", "steal.limit.minimum", "REGEX", "[0-9]{1,5}");
         addValue("stealMax", "300", "steal.limit.maximum", "REGEX", "[0-9]{1,5}");
         addValue("stealChance", "50", "steal.chance", "REGEX", "[0-9]{1,2}");

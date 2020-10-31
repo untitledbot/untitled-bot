@@ -9,6 +9,8 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+
 import static java.util.concurrent.TimeUnit.*;
 
 /**
@@ -28,22 +30,29 @@ public final class Hide extends UBPlugin {
             "\u252C\u2534\u252C\u2534\u252C\u2534\u252C\u2534\u252C\u2534\u252C\u2534",
     };
     
+    private static final ArrayList<String> WATCHING = new ArrayList<>();
+    
     @Override
     public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         
-        //i encourage you to not ask questions and pretend you never saw this
-        if(message.getGuild().getSelfMember().getPermissions().contains(Permission.MESSAGE_WRITE))
-            message
-                    .getChannel()
-                    .sendMessage(PHASES[0]) //this is hurting my eyes and my head, but then again i wrote this on two hours of sleep
-                    .queueAfter(0, NANOSECONDS, msg -> msg.editMessage(PHASES[1])
-                        .queueAfter(1, SECONDS, msg2 -> msg2.editMessage(PHASES[2]) //at least it works...
-                            .queueAfter(1, SECONDS, msg3 -> msg3.editMessage(PHASES[3])
-                                .queueAfter(1, SECONDS, msg4 -> msg4.editMessage(PHASES[4]) //right?
-                                    .queueAfter(1, SECONDS, msg5 -> msg5.editMessage(PHASES[5]) //.....right..?
-                                        .queueAfter(1, SECONDS)))))); //maybe...
+        if(WATCHING.contains(message.getGuild().getId())) {
+            return null;
+        }
         
-        //no embeds for you
+        //i encourage you to not ask questions and pretend you never saw this
+        if(message.getGuild().getSelfMember().getPermissions().contains(Permission.MESSAGE_WRITE)) {
+            WATCHING.add(message.getGuild().getId());
+            message.getChannel()
+                   .sendMessage(PHASES[0]) //this is hurting my eyes and my head, but then again i wrote this on two hours of sleep
+                   .queueAfter(0, NANOSECONDS, msg -> msg.editMessage(PHASES[1])
+                           .queueAfter(1, SECONDS, msg2 -> msg2.editMessage(PHASES[2]) //at least it works...
+                                   .queueAfter(1, SECONDS, msg3 -> msg3.editMessage(PHASES[3])
+                                           .queueAfter(1, SECONDS, msg4 -> msg4.editMessage(PHASES[4]) //right?
+                                                   .queueAfter(1, SECONDS, msg5 -> msg5.editMessage(PHASES[5]) //.....right..?
+                                                           .queueAfter(1, SECONDS, end -> WATCHING.remove(end.getGuild().getId()))))))); //maybe...
+            
+        }
+        
         return null;
     }
     

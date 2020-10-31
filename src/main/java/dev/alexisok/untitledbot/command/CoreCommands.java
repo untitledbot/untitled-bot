@@ -50,6 +50,7 @@ import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleSet;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Inventory;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Steal;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Work;
+import dev.alexisok.untitledbot.modules.reactions.AttackOnLenny;
 import dev.alexisok.untitledbot.modules.reactions.Dis;
 import dev.alexisok.untitledbot.modules.reactions.Hide;
 import dev.alexisok.untitledbot.modules.reactions.Hug;
@@ -225,8 +226,9 @@ public final class CoreCommands {
         new Stack().onRegister();
         new CacheInfo().onRegister();
         new Rnak().onRegister();
+        new AttackOnLenny().onRegister();
         
-        MusicCommands.registerMusicCommands();
+//        MusicCommands.registerMusicCommands();
         
 //      new RPGCommand().onRegister();
         Logger.log("Modules have been registered.");

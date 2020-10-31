@@ -20,7 +20,10 @@ import java.io.*;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static dev.alexisok.untitledbot.logging.Logger.debug;
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;
+import static net.dv8tion.jda.api.utils.MemberCachePolicy.OWNER;
+import static net.dv8tion.jda.api.utils.MemberCachePolicy.VOICE;
 import static net.dv8tion.jda.api.utils.cache.CacheFlag.*;
 
 /**
@@ -36,7 +39,7 @@ import static net.dv8tion.jda.api.utils.cache.CacheFlag.*;
  */
 public final class Main {
     
-    public static final String VERSION = "1.3.22";
+    public static final String VERSION = "1.3.23";
     public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
     public static final String DATA_PATH;
     public static final String PREFIX;
@@ -51,12 +54,14 @@ public final class Main {
     public static DiscordBotListAPI API;
     
     static {
+        debug("Installing shutdown hook");
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
         String DEFAULT_PREFIX1;
         //temp for final string
         String DATA_PATH1;
         String OWNER_ID1;
         boolean DEBUG1;
+        debug("Starting to do the config stuffs");
         try {
             
             Properties p = new Properties();
@@ -82,6 +87,7 @@ public final class Main {
             OWNER_ID1 = "0";
             DEBUG1 = false;
         }
+        debug("Done with config stuff");
         //create the directory if it doesn't
         //already exist.
         //noinspection ResultOfMethodCallIgnored
@@ -167,7 +173,7 @@ public final class Main {
             jda = JDABuilder.create(GUILD_MESSAGE_REACTIONS, GUILD_MESSAGES, GUILD_EMOJIS, GUILD_MEMBERS)
                     .setToken(token)
                     .enableCache(MEMBER_OVERRIDES, EMOTE)
-                    .setMemberCachePolicy(MemberCachePolicy.ALL)
+                    .setMemberCachePolicy(MemberCachePolicy.ONLINE.and(OWNER).and(VOICE))
                     .addEventListeners(new ModHook(), new BotClass(), new Starboard())
                     .build();
             jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help"));

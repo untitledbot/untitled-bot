@@ -107,7 +107,13 @@ public final class UserInfo extends UBPlugin {
             //member info
             java.util.List<Member> mentioned = message.getMentionedMembers();
             Member u = mentioned.size() != 0 ? mentioned.get(0) : message.getGuild().getMemberById(args[1]);
-
+            
+            if(u == null) {
+                try {
+                    u = message.getGuild().getMembersByName(args[1], true).get(0);
+                } catch(Throwable ignored) {}
+            }
+            
             if(u == null) {
                 eb.addField("Info", "Could not find a user by that mention or ID.", false);
                 eb.setColor(Color.RED);
@@ -136,7 +142,7 @@ public final class UserInfo extends UBPlugin {
             ), false);
             
             eb.addField("**User**", String.format("Name: %s%nCreation date: %s%nBot: %s%nID: %s%n",
-                    u.getUser().getName() + u.getUser().getDiscriminator(), u.getUser().getTimeCreated().toString(), u.getUser().isBot(),
+                    u.getUser().getName() + "#" + u.getUser().getDiscriminator(), u.getUser().getTimeCreated().toString(), u.getUser().isBot(),
                     u.getId()), false);
     
             String boostingSince = "Not boosting";

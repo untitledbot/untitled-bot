@@ -145,13 +145,14 @@ public final class Starboard extends ListenerAdapter {
         eb.setTimestamp(linkedMessage.getTimeCreated());
         eb.setColor(Color.BLUE);
         eb.setTitle( //set the title to the authors name and then link it to the message
-                linkedMessage.getAuthor().getName() + "#" + linkedMessage.getAuthor().getDiscriminator(),
+                linkedMessage.getAuthor().getName() + "#" + linkedMessage.getAuthor().getDiscriminator()
+        );
+        eb.addField("", "[Message Link](" +
                 getDiscordLink (
                         linkedMessage.getGuild().getId(),
                         linkedMessage.getChannel().getId(),
                         linkedMessage.getId()
-                )
-        );
+                ) + ")", false);
         eb.setFooter("\n\n\n" + linkedMessage.getAuthor().getName(), linkedMessage.getAuthor().getAvatarUrl());
         
         try {

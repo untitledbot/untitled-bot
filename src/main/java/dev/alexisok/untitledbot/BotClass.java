@@ -245,7 +245,8 @@ public final class BotClass extends ListenerAdapter {
         onPrivateMessage = eb.build();
     }
     
-    @Override public final void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent e) {
+    @Override
+    public final void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent e) {
         if(!e.getAuthor().getId().equals(Main.jda.getSelfUser().getId())) {
             
             e.getAuthor().openPrivateChannel().queue(a -> a.sendMessage(onPrivateMessage).queue());

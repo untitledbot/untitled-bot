@@ -24,7 +24,10 @@ public final class Lowercase extends UBPlugin {
                 message.getChannel().getHistoryBefore(message.getId(), 1)
                         .queue(t -> {
                             try {
-                                message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().replaceAll("<@[0-9]{5,64}>", "<user>").toLowerCase())).queue();
+                                if(message.mentionsEveryone()) {
+                                    message.getChannel().sendMessage("Haha nerd nice try").queue();
+                                }
+                                message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().toLowerCase())).queue();
                             } catch(Throwable ignored){}
                         });
             } else {
