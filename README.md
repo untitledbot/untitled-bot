@@ -1,7 +1,7 @@
 # untitled-bot
 
-untitled-bot is a multi-purpose bot that
-has a lot of room for customization and about 100 commands.
+untitled-bot is a multi-purpose Discord bot that
+has a lot of room for customization and more than 50 commands.<br>
 [![Discord Bots](https://top.gg/api/widget/730135989863055472.svg)](https://top.gg/bot/730135989863055472)
 <br>
 ![Version](https://img.shields.io/badge/version-1.3-blue)
@@ -20,13 +20,13 @@ The source code is for transparency and contributions.  This bot is not easy to 
 to only listen assuming the bot ID of untitled-bot.
 
 That being said, you can try to self host, but you may not add your self-hosted bot to any bot lists or monetize it.
-Additionally, you must make your bot private so only you can add it to servers.
 
 ## Features
-* Level/rank module.
+* Level/rank module
 * Logging
 * Starboard
 * Level roles
+* Image manipulation / meme generation
 * Much, much more, see below :)
 
 ---
@@ -89,6 +89,32 @@ You can join the untitled-bot discord server [here](https://alexisok.dev/ub/disc
 <dd>> <code>ayaya</code> - I encourage you to not ask questions about this command.</dd><br>
 <dd>> <code>hide</code> - hide behind a wall.</dd><br>
 <dd>> <code>dis</code> - short for disappointed, display ಠ_ಠ</dd><br>
+<dd>> <code>aol</code> - Attack on Lenny short film.</dd><br>
+
+<h2>Image filter/generation</h2>
+<h3>NOTE: Please upload an image to manipulate or @ mention another, otherwise it will use your avatar.</h3>
+<dd>> <code>magik</code> - LITERALLY CORRUPTS THE IMAGE (not literally).</dd><br>
+<dd>> <code>blur</code> - blur an image.</dd><br>
+<dd>> <code>deepfry</code> - deepfry an image.</dd><br>
+<dd>> <code>invert</code> - invert an image.</dd><br>
+<dd>> <code>jpeg</code> - make an image higher quality.</dd><br>
+<dd>> <code>pixelate</code> - make an image pixelated.</dd><br>
+<dd>> <code>sepia</code> - idk what this does but it looks cool.</dd><br>
+<dd>> <code>wide</code> - make an image T H I C C.</dd><br>
+<dd>> <code>charcoal</code> - make an image look like charcoal.</dd><br>
+<dd>> <code>explode</code> - kaboom.</dd><br>
+<dd>> <code>implode</code> - reverse kaboom.</dd><br>
+<dd>> <code>sketch</code> - make an image look like it was sketched.</dd><br>
+<dd>> <code>spread</code> - spread ALL the pixels.</dd><br>
+<dd>> <code>swirl</code> - whszoosh.</dd><br>
+<dd>> <code>wave</code> - wewewewew.</dd><br>
+
+<h2>Meme generation</h2>
+<dd>> <code>achievement</code> - generate a Minecraft achievement.</dd><br>
+<dd>> <code>joke</code> - generate an "Am I A Joke To You" meme.</dd><br>
+<dd>> <code>bad</code> - stock photo man points at image and says "BAD".</dd><br>
+<dd>> <code>scroll</code> - generate a "Scroll of Truth" meme.</dd><br>
+<dd>> <code>call</code> - the meme where Tom picks up the phone and calls someone.</dd><br>
 </dl>
 
 ### Contributing

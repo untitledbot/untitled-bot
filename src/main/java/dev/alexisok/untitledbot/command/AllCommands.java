@@ -97,11 +97,6 @@ public class AllCommands extends UBPlugin {
                 "`pixelate` - make image pixelate\n" +
                 "`sepia` - listen it was on alexflipnote api idk what it does\n" +
                 "`wide` - T H I C C image\n" +
-                "`achievement` - generate a fake MC achievement\n" +
-                "`joke` - generate an 'Am I a joke to you?' meme\n" +
-                "`bad` - generate a 'Bad.' meme\n" +
-                "`scroll` - generate a 'Scroll of Truth' meme\n" +
-                "`call` - generate a meme where tom calls someone\n" +
                 "`charcoal` - make an image look like charcoal\n" +
                 "`explode` - kaboom\n" +
                 "`implode` - implode an image\n" +
@@ -110,6 +105,13 @@ public class AllCommands extends UBPlugin {
                 "`swirl` - whszoosh\n" +
                 "`wave` - wewewewew");
         
+        Manual.setHelpPage("meme", "\n" +
+                "`achievement` - generate a fake MC achievement\n" +
+                "`joke` - generate an 'Am I a joke to you?' meme\n" +
+                "`bad` - generate a 'Bad.' meme\n" +
+                "`scroll` - generate a 'Scroll of Truth' meme\n" +
+                "`call` - generate a meme where tom calls someone\n");
+        
         eb.addField("All commands", "Please use one of the following commands for help:\n" +
                                             "`help leveling` - leveling and rank commands.\n" +
                                             "`help util` - utilities.\n" +
@@ -117,7 +119,8 @@ public class AllCommands extends UBPlugin {
                                             "`help fun` - fun commands.\n" +
                                             "`help econ` - economy commands.\n" +
                                             "`help reactions` - GIF or text reactions.\n" +
-                                            "`help image` - image manipulation / meme generation", false);
+                                            "`help image` - image manipulation\n" +
+                                            "`help meme` - meme generation.", false);
         
 //        eb.addField("Want something added?", "\n" +
 //                                                     "If you would like to see another command added, or more features " +
