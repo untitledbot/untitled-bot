@@ -2,6 +2,8 @@ package dev.alexisok.untitledbot.command;
 
 import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.alexflipnote.api.*;
+import dev.alexisok.untitledbot.modules.alexflipnote.api.filter.*;
 import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
 import dev.alexisok.untitledbot.modules.basic.avatar.Avatar;
 import dev.alexisok.untitledbot.modules.basic.ayaya.AYAYA;
@@ -225,6 +227,21 @@ public final class CoreCommands {
         new Rnak().onRegister();
         new AttackOnLenny().onRegister();
         new RoleCount().onRegister();
+        
+        //alex flipnote api
+        new AmIAJoke().onRegister();
+        new Bad().onRegister();
+        new TomCall().onRegister();
+        new Magik().onRegister();
+        new Scroll().onRegister();
+        new Deepfry().onRegister();
+        new Invert().onRegister();
+        new Blur().onRegister();
+        new Sepia().onRegister();
+        new JPEG().onRegister();
+        new Wide().onRegister();
+        new Pixelate().onRegister();
+        new Achievement().onRegister();
         
 //        MusicCommands.registerMusicCommands();
         
