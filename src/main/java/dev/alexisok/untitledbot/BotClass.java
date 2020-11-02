@@ -71,6 +71,8 @@ public final class BotClass extends ListenerAdapter {
     //cache for server prefixes
     private static final HashMap<String, String> PREFIX_CACHE = new HashMap<>();
     
+    private static final Timer TIMER = new Timer();
+    
     /**
      * Nullify the prefix cache for a specific guild.
      * @param guildID the ID of the guild.
@@ -178,9 +180,14 @@ public final class BotClass extends ListenerAdapter {
                     } while (message.contains("  "));
                 }
                 String[] args = message.split(" ");
-                event.getChannel()
-                        .sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, LAST_COMMAND.get(event.getAuthor().getId())))))
-                        .queue();
+                TIMER.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        event.getChannel()
+                                .sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, LAST_COMMAND.get(event.getAuthor().getId())))))
+                                .queue();
+                    }
+                }, 0);
             } catch(Throwable ignored){}
             return;
         }
@@ -196,12 +203,17 @@ public final class BotClass extends ListenerAdapter {
                 if(prefix.equals(""))
                     event.getChannel().sendMessage("You seem to be in the NoPrefix:TM: mode, to exit, simply say `exit`.").queue();
                 else
-                    event.getChannel()
-                            .sendMessage(String.format("Hello!  My prefix for this guild is `%s`.%n" +
-                                    "For a full list of commands, use `%shelp` or `%s help`.%n" +
-                                    "The default prefix is `>` and can be set by an administrator " +
-                                    "on this server by using the `prefix` command.", prefix, prefix, prefix))
-                            .queue();
+                    TIMER.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            event.getChannel()
+                                    .sendMessage(String.format("Hello!  My prefix for this guild is `%s`.%n" +
+                                            "For a full list of commands, use `%shelp` or `%s help`.%n" +
+                                            "The default prefix is `>` and can be set by an administrator " +
+                                            "on this server by using the `prefix` command.", prefix, prefix, prefix))
+                                    .queue();
+                        }
+                    }, 0);
                 return;
             }
         } catch(IndexOutOfBoundsException ignored) {}

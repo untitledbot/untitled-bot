@@ -40,7 +40,7 @@ public class Scroll extends UBPlugin {
         if(text.length() >= 60)
             text = text.substring(text.length() - 60);
         try {
-            message.getChannel().sendTyping();
+            message.getChannel().sendTyping().queue();
             String uri = DoImageThingFlip.download("https://api.alexflipnote.dev/scroll?text=" + text, message.getId());
             message.getChannel().sendFile(new File(uri)).queue(a -> {
                 new File(uri).delete();

@@ -35,7 +35,7 @@ public final class Achievement extends UBPlugin {
                     .replace("\n", "")
                     .replace("&", "");
             try {
-                message.getChannel().sendTyping();
+                message.getChannel().sendTyping().queue();
                 String uri = DoImageThingFlip.download("https://api.alexflipnote.dev/achievement?text=" + text + "&icon=" + item, message.getId());
                 message.getChannel().sendFile(new File(uri)).queue(a -> {
                     new File(uri).delete();

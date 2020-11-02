@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.apiuseless;
 
+import dev.alexisok.untitledbot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -8,6 +9,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,47 +45,55 @@ public final class DoImageThingUseless {
         
         //jda handles stopping typing
         message.getChannel().sendTyping().queue();
-        
-        if(message.getAttachments().size() == 1) {
-            if (!message.getAttachments().get(0).isImage()) {
-                eb.setTitle("Error");
-                eb.setDescription("Please attach an *image* for the file to use.");
-                return eb.build();
-            }
-            
-//            message.getChannel().sendFile();
-            
-            String returnString = download(
-                    String.format(
-                        "https://useless-api--vierofernando.repl.co/" + relativePath,
-                        message.getAttachments().get(0).getUrl()),
-                        message.getId()
-            );
-            
-            message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
-            
-            return null;
-        } else if(message.getMentionedMembers().size() == 1) {
-            Member m = message.getGuild().getMemberById(message.getMentionedMembers().get(0).getId());
-            if(m != null) {
+
+        try {
+            if(message.getAttachments().size() == 1) {
+                if (!message.getAttachments().get(0).isImage()) {
+                    eb.setTitle("Error");
+                    eb.setDescription("Please attach an *image* for the file to use.");
+                    return eb.build();
+                }
+                
+    //            message.getChannel().sendFile();
+                
                 String returnString = download(
                         String.format(
-                                "https://useless-api--vierofernando.repl.co/" + relativePath,
-                                m.getUser().getEffectiveAvatarUrl()),
-                        message.getId()
+                            "https://useless-api--vierofernando.repl.co/" + relativePath,
+                            message.getAttachments().get(0).getUrl()),
+                            message.getId()
                 );
+                
                 message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
+                
                 return null;
+            } else if(message.getMentionedMembers().size() == 1) {
+                Member m = message.getGuild().getMemberById(message.getMentionedMembers().get(0).getId());
+                if(m != null) {
+                    String returnString = download(
+                            String.format(
+                                    "https://useless-api--vierofernando.repl.co/" + relativePath,
+                                    m.getUser().getEffectiveAvatarUrl()),
+                            message.getId()
+                    );
+                    message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
+                    return null;
+                }
             }
+            String returnString = download(
+                    String.format(
+                            "https://useless-api--vierofernando.repl.co/" + relativePath,
+                            deAnimate(message.getAuthor().getEffectiveAvatarUrl())
+                    ),
+                    message.getId()
+            );
+            message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
+        } catch(Throwable ignored) {
+            return new
+                    EmbedBuilder()
+                    .addField("Error", "The API for useless-api might be offline, please try again later.", false)
+                    .setColor(Color.RED)
+                    .build();
         }
-        String returnString = download(
-                String.format(
-                        "https://useless-api--vierofernando.repl.co/" + relativePath,
-                        deAnimate(message.getAuthor().getEffectiveAvatarUrl())
-                ),
-                message.getId()
-        );
-        message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
         return null;
     }
 
@@ -98,6 +110,7 @@ public final class DoImageThingUseless {
     @Nullable
     @Contract(pure = true)
     private static synchronized String download(@NotNull String urlStr, @NotNull String uniqueID) {
+        Logger.debug("Downloading " + urlStr);
         URL url;
         try {
             url = new URL(urlStr);

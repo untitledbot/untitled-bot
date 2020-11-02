@@ -35,7 +35,7 @@ public final class TomCall extends UBPlugin {
         args = Arrays.copyOfRange(args, 1, args.length);
         String text = String.join("%20", args).replace("\n", "");
         try {
-            message.getChannel().sendTyping();
+            message.getChannel().sendTyping().queue();
             String uri = DoImageThingFlip.download("https://api.alexflipnote.dev/calling?text=" + text, message.getId());
             message.getChannel().sendFile(new File(uri)).queue(a -> {
                 new File(uri).delete();
