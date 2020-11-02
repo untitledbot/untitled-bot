@@ -25,15 +25,11 @@ import java.nio.channels.Channels;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static dev.alexisok.untitledbot.modules.rank.xpcommands.Shop.*;
-import static dev.alexisok.untitledbot.modules.rank.xpcommands.Shop.BANK_VAULT_NAME;
-import static dev.alexisok.untitledbot.modules.vault.Vault.getUserDataLocalOrDefault;
 import static java.lang.Long.*;
 
 /**
@@ -181,7 +177,7 @@ public final class Top extends UBPlugin {
                 gtd.setColor(new Color(255, 255, 255, 255));
                 gtd.drawString(u.getName() + "#" + u.getDiscriminator(), 80, y.get() - 80);
                 gtd.drawString("Level " + Ranks.getLevelForXP(l), 80, y.get() - 42);
-                if(Vault.getUserDataLocal(s, guildID, "ranks-level").equals("100"))
+                if(Vault.getUserDataLocal(s, guildID, "ranks-level").equals("65536"))
                     gtd.drawString("\u221E / \u221E",
                             275,
                             y.get() - 42);

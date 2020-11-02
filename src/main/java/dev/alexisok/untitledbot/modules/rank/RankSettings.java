@@ -31,16 +31,6 @@ public final class RankSettings extends UBPlugin {
             return eb.build();
         }
         
-        if(args[1].equalsIgnoreCase("announce-xp-boost")) {
-            boolean enable = Boolean.parseBoolean(args[2]);
-            Vault.storeUserDataLocal(null, message.getGuild().getId(), "ranks-broadcast.boost", String.valueOf(enable));
-            
-            eb.setColor(Color.GREEN);
-            eb.addField("Ranking", "XP boost broadcasts have been set to `" + enable + "`.", false);
-            
-            return eb.build();
-        }
-        
         if(args[1].equalsIgnoreCase("announce-level-up")) {
             args[2] = args[2].toLowerCase();
             switch(args[2]) {
@@ -88,7 +78,11 @@ public final class RankSettings extends UBPlugin {
         }
         
         eb.setColor(Color.RED);
-        eb.addField("Ranking", "See `help rank-settings` for specific keys.", false);
+        eb.addField("Ranking", "The only available option as of now is to change level up messages.\n" +
+                "Usage: `rank-settings announce-level-up <current | channel | none>`\n\n" +
+                "`current` - the channel where the user levels up.\n" +
+                "`channel <channel #>` - a specific channel to send the level up message.\n" +
+                "`none` - do not do level up messages (does NOT stop the rank module, only disables level up messages).\n", false);
         
         return eb.build();
     }
