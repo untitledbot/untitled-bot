@@ -39,6 +39,6 @@ public class Rnak extends UBPlugin {
         Manual.setHelpPage("rnak", "`]DI resu | @ resu[` knar :egasU\n" +
                 ".knar )s'resu rehtona ro( ruoy teG\n\n\n" +
                 "Inspired by the `rnak` command for Darling by 14ROVI.");
-        CommandRegistrar.registerAlias("rnak", "rakn", "rnk", "wank");
+        CommandRegistrar.registerAlias("rnak", "rakn", "rnk", "knar");
     }
 }
