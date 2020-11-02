@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.alexflipnote.api.*;
 import dev.alexisok.untitledbot.modules.alexflipnote.api.filter.*;
+import dev.alexisok.untitledbot.modules.apiuseless.*;
 import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
 import dev.alexisok.untitledbot.modules.basic.avatar.Avatar;
 import dev.alexisok.untitledbot.modules.basic.ayaya.AYAYA;
@@ -242,6 +243,15 @@ public final class CoreCommands {
         new Wide().onRegister();
         new Pixelate().onRegister();
         new Achievement().onRegister();
+        
+        new Implode().onRegister();
+        new Wave().onRegister();
+        new Swirl().onRegister();
+        new Charcoal().onRegister();
+        new Sketch().onRegister();
+        new Spread().onRegister();
+        new Glitch().onRegister();
+        new Explode().onRegister();
         
 //        MusicCommands.registerMusicCommands();
         

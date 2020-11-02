@@ -1,4 +1,4 @@
-package dev.alexisok.untitledbot.modules.alexflipnote.api;
+package dev.alexisok.untitledbot.modules.apiuseless;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -21,15 +21,15 @@ import java.nio.file.StandardCopyOption;
  * @author AlexIsOK
  * @since 1.3.23
  */
-public final class DoImageThingFlip {
-    
-    private DoImageThingFlip(){}
+public final class DoImageThingUseless {
+
+    private DoImageThingUseless(){}
 
     /**
      * Generate a {@link net.dv8tion.jda.api.entities.MessageEmbed} with the provided information.
      *
-     * @param relativePath the path as it appears relative to https://api.alexflipnote.dev/
-     *                     Example: {@code bad?image=%s}
+     * @param relativePath the path as it appears relative to https://useless-api--vierofernando.repl.co/
+     *                     Example: {@code implode?image=%s}
      * @param eb the base embed builder
      * @param message the {@link Message} that was sent.
      * @return the message embed ready to send
@@ -38,35 +38,35 @@ public final class DoImageThingFlip {
                                                           @NotNull EmbedBuilder eb,
                                                           @NotNull Message message,
                                                           @NotNull String[] args) {
-
+        
         //jda handles stopping typing
         message.getChannel().sendTyping().queue();
-
+        
         if(message.getAttachments().size() == 1) {
             if (!message.getAttachments().get(0).isImage()) {
                 eb.setTitle("Error");
                 eb.setDescription("Please attach an *image* for the file to use.");
                 return eb.build();
             }
-
+            
 //            message.getChannel().sendFile();
-
+            
             String returnString = download(
                     String.format(
-                            "https://api.alexflipnote.dev/" + relativePath,
-                            message.getAttachments().get(0).getUrl()),
-                    message.getId()
+                        "https://useless-api--vierofernando.repl.co/" + relativePath,
+                        message.getAttachments().get(0).getUrl()),
+                        message.getId()
             );
-
+            
             message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
-
+            
             return null;
         } else if(message.getMentionedMembers().size() == 1) {
             Member m = message.getGuild().getMemberById(message.getMentionedMembers().get(0).getId());
             if(m != null) {
                 String returnString = download(
                         String.format(
-                                "https://api.alexflipnote.dev/" + relativePath,
+                                "https://useless-api--vierofernando.repl.co/" + relativePath,
                                 m.getUser().getEffectiveAvatarUrl()),
                         message.getId()
                 );
@@ -76,7 +76,7 @@ public final class DoImageThingFlip {
         }
         String returnString = download(
                 String.format(
-                        "https://api.alexflipnote.dev/" + relativePath,
+                        "https://useless-api--vierofernando.repl.co/" + relativePath,
                         deAnimate(message.getAuthor().getEffectiveAvatarUrl())
                 ),
                 message.getId()
@@ -90,10 +90,11 @@ public final class DoImageThingFlip {
      * @param animatedURL the URL that is animated
      * @return the non-animated URL
      */
+    @NotNull
     private static String deAnimate(@NotNull String animatedURL) {
         return animatedURL.replace("a_", "").replace("gif", "png");
     }
-
+    
     @Nullable
     @Contract(pure = true)
     private static synchronized String download(@NotNull String urlStr, @NotNull String uniqueID) {
@@ -110,4 +111,5 @@ public final class DoImageThingFlip {
         }
         return "./tmp/" + uniqueID + ".png";
     }
+
 }

@@ -1,7 +1,7 @@
 # untitled-bot
 
 untitled-bot is a multi-purpose bot that
-has a lot of room for customization.  You can self-host it as well.
+has a lot of room for customization and about 100 commands.
 [![Discord Bots](https://top.gg/api/widget/730135989863055472.svg)](https://top.gg/bot/730135989863055472)
 <br>
 ![Version](https://img.shields.io/badge/version-1.3-blue)
@@ -14,6 +14,13 @@ has a lot of room for customization.  You can self-host it as well.
 You can invite untitled-bot to your server instantly using
 <a href="https://discord.com/oauth2/authorize?client_id=730135989863055472&scope=bot&permissions=3460160">
 this link</a>.
+
+## About self-hosting
+The source code is for transparency and contributions.  This bot is not easy to self-host as most of the files are hard-coded
+to only listen assuming the bot ID of untitled-bot.
+
+That being said, you can try to self host, but you may not add your self-hosted bot to any bot lists or monetize it.
+Additionally, you must make your bot private so only you can add it to servers.
 
 ## Features
 * Level/rank module.

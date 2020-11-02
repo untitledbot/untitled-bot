@@ -87,13 +87,37 @@ public class AllCommands extends UBPlugin {
                                     "`aol` - attack on lenny.\n" +
                                     "");
         
+        Manual.setHelpPage("image", "\n" +
+                "NOTE: please upload an image to manipulate or @mention another user, otherwise it will use your avatar.\n" +
+                "`magik` - LITERALLY CORRUPTS images (not literally)\n" +
+                "`blur` - blur an image\n" +
+                "`deepfry` - deepfry an image\n" +
+                "`invert` - invert an image\n" +
+                "`jpeg` - make image jpeg\n" +
+                "`pixelate` - make image pixelate\n" +
+                "`sepia` - listen it was on alexflipnote api idk what it does\n" +
+                "`wide` - T H I C C image\n" +
+                "`achievement` - generate a fake MC achievement\n" +
+                "`joke` - generate an 'Am I a joke to you?' meme\n" +
+                "`bad` - generate a 'Bad.' meme\n" +
+                "`scroll` - generate a 'Scroll of Truth' meme\n" +
+                "`call` - generate a meme where tom calls someone\n" +
+                "`charcoal` - make an image look like charcoal\n" +
+                "`explode` - kaboom\n" +
+                "`implode` - implode an image\n" +
+                "`sketch` - make an image look like it was sketched\n" +
+                "`spread` - spread ALL the pixels\n" +
+                "`swirl` - whszoosh\n" +
+                "`wave` - wewewewew");
+        
         eb.addField("All commands", "Please use one of the following commands for help:\n" +
                                             "`help leveling` - leveling and rank commands.\n" +
                                             "`help util` - utilities.\n" +
                                             "`help moderation` - moderation and logging commands.\n" +
                                             "`help fun` - fun commands.\n" +
                                             "`help econ` - economy commands.\n" +
-                                            "`help reactions` - GIF or text reactions.", false);
+                                            "`help reactions` - GIF or text reactions.\n" +
+                                            "`help image` - image manipulation / meme generation", false);
         
 //        eb.addField("Want something added?", "\n" +
 //                                                     "If you would like to see another command added, or more features " +

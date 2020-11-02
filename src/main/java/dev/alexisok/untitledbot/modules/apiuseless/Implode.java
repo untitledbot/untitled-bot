@@ -1,4 +1,4 @@
-package dev.alexisok.untitledbot.modules.alexflipnote.api.filter;
+package dev.alexisok.untitledbot.modules.apiuseless;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
@@ -11,26 +11,25 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Magik filter
- * 
  * @author AlexIsOK
  * @since 1.3.23
  */
-public final class Magik extends UBPlugin {
+public final class Implode extends UBPlugin {
+    
     @Override
     public synchronized @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
-        
-        return DoImageThingFlip.generateImage("/filter/magik?image=%s", eb, message, args);
+
+        return DoImageThingUseless.generateImage("/implode?amount=0.8image=%s", eb, message, args);
     }
 
     @Override
     public void onRegister() {
-        CommandRegistrar.register("magik", this);
-        Manual.setHelpPage("magik", "this is probably the only reason why you should invite this bot to a server.\n" +
-                "API: https://api.alexflipnote.dev/\n" +
-                "Usage: `magik <image, @user, or blank for your avatar>`");
-        CommandRegistrar.registerAlias("magik", "magic");
+        CommandRegistrar.register("implode", this);
+        Manual.setHelpPage("implode", "Implode an image\n" +
+                "API: https://useless-api--vierofernando.repl.co/\n" +
+                "Usage: `implode <image, @user, or blank for your avatar>`");
+        CommandRegistrar.registerAlias("implode", "greg");
     }
 }
