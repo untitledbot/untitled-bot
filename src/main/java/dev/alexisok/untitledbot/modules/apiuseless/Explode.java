@@ -20,8 +20,8 @@ public final class Explode extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        //explode is implode with a value of -0.5
-        return DoImageThingUseless.generateImage("/implode?amount=-0.8&image=%s", eb, message, args);
+        //explode is implode with a negative value
+        return DoImageThingUseless.generateImage("/implode?amount=-1.0&image=%s", eb, message, args);
     }
 
     @Override

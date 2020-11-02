@@ -21,7 +21,7 @@ public final class Implode extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
 
-        return DoImageThingUseless.generateImage("/implode?amount=0.8image=%s", eb, message, args);
+        return DoImageThingUseless.generateImage("/implode?amount=1.0&image=%s", eb, message, args);
     }
 
     @Override
