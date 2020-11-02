@@ -96,7 +96,7 @@ public final class DoImageThingFlip {
 
     @Nullable
     @Contract(pure = true)
-    private static synchronized String download(@NotNull String urlStr, @NotNull String uniqueID) {
+    protected static synchronized String download(@NotNull String urlStr, @NotNull String uniqueID) {
         URL url;
         try {
             url = new URL(urlStr);

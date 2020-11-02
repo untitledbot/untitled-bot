@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.io.File;
 import java.util.Arrays;
 
 /**
@@ -34,10 +35,15 @@ public final class TomCall extends UBPlugin {
         args = Arrays.copyOfRange(args, 1, args.length);
         String text = String.join("%20", args).replace("\n", "");
         try {
-            eb.setImage("https://api.alexflipnote.dev/calling?text=" + text);
+            message.getChannel().sendTyping();
+            String uri = DoImageThingFlip.download("https://api.alexflipnote.dev/calling?text=" + text, message.getId());
+            message.getChannel().sendFile(new File(uri)).queue(a -> {
+                new File(uri).delete();
+            });
+            return null;
         } catch(IllegalArgumentException ignored) {
             eb.addField("Error", String.format("You literally broke the bot into %d pieces.", Long.MAX_VALUE), false);
-        }
+        } catch(NullPointerException ignored) {}
         return eb.build();
     }
 

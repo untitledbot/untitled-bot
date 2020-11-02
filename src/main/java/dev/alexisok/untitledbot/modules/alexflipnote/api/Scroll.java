@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.io.File;
 import java.util.Arrays;
 
 /**
@@ -39,7 +40,12 @@ public class Scroll extends UBPlugin {
         if(text.length() >= 60)
             text = text.substring(text.length() - 60);
         try {
-            eb.setImage("https://api.alexflipnote.dev/scroll?text=" + text);
+            message.getChannel().sendTyping();
+            String uri = DoImageThingFlip.download("https://api.alexflipnote.dev/scroll?text=" + text, message.getId());
+            message.getChannel().sendFile(new File(uri)).queue(a -> {
+                new File(uri).delete();
+            });
+            return null;
         } catch(IllegalArgumentException ignored) {
             eb.addField("Error", String.format("You literally broke the bot into %d pieces.", Long.MAX_VALUE), false);
         }

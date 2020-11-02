@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.Arrays;
 
 /**
@@ -34,7 +35,12 @@ public final class Achievement extends UBPlugin {
                     .replace("\n", "")
                     .replace("&", "");
             try {
-                eb.setImage("https://api.alexflipnote.dev/achievement?text=" + text + "&icon=" + item);
+                message.getChannel().sendTyping();
+                String uri = DoImageThingFlip.download("https://api.alexflipnote.dev/achievement?text=" + text + "&icon=" + item, message.getId());
+                message.getChannel().sendFile(new File(uri)).queue(a -> {
+                    new File(uri).delete();
+                });
+                return null;
             } catch(IllegalArgumentException ignored) {
                 eb.addField("Error", String.format("You literally broke the bot into %d pieces.", Long.MAX_VALUE), false);
             }
@@ -50,7 +56,7 @@ public final class Achievement extends UBPlugin {
         CommandRegistrar.register("achievement", this);
         Manual.setHelpPage("achievement", "Generate a Minecraft achievement image.\n" +
                 "API: https://api.alexflipnote.dev/\n" +
-                "Usage: `achievement <icon number> <text>`");
+                "Usage: `achievement <icon number 1-50> <text>`");
         CommandRegistrar.registerAlias("achievement", "advancement", "ach");
     }
 }
