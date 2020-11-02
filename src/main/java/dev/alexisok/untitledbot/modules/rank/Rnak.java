@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.Objects;
 
 /**
@@ -23,7 +24,8 @@ public class Rnak extends UBPlugin {
     @Override
     public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         try {
-            message.getChannel().sendFile(Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong(), true))).queue();
+            File f = RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong(), true);
+            message.getChannel().sendFile(Objects.requireNonNull(f)).queue(r -> f.delete());
         } catch(Throwable t) {
             t.printStackTrace();
             message.getChannel().sendMessage("bot did an oopsie").queue();
