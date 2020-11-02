@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.basic.casetoggle;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -24,15 +25,23 @@ public final class Lowercase extends UBPlugin {
                 message.getChannel().getHistoryBefore(message.getId(), 1)
                         .queue(t -> {
                             try {
-                                if(message.mentionsEveryone() || message.getContentRaw().contains("@everyone")
-                                        || message.getContentRaw().contains("@here")) {
+                                Message m = t.getRetrievedHistory().get(0);
+                                String content = m.getContentRaw().toLowerCase();
+                                if(m.mentionsEveryone() || content.contains("@everyone")
+                                        || content.contains("@here")) {
                                     message.getChannel().sendMessage("Haha nerd nice try").queue();
+                                    return;
                                 }
                                 message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().toLowerCase())).queue();
                             } catch(Throwable ignored){}
                         });
             } else {
-                message.getChannel().sendMessage((String.join(" ", ArrayUtils.remove(args, 0)).toLowerCase())).queue();
+                String content = String.join(" ", ArrayUtils.remove(args, 0)).toLowerCase();
+                if(content.contains("@everyone") || content.contains("@here")) {
+                    message.getChannel().sendMessage("Haha nerd nice try").queue();
+                    return null;
+                }
+                message.getChannel().sendMessage(content).queue();
             }
         } catch(Throwable ignored) {
             message.getChannel().sendMessage("Cannot do lowercase on the previous message.").queue();
@@ -44,5 +53,6 @@ public final class Lowercase extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("lowercase", this);
         Manual.setHelpPage("lowercase", "make everything lowercase i think");
+        CommandRegistrar.registerAlias("lowercase", "lc");
     }
 }
