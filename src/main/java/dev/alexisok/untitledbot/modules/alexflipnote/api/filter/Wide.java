@@ -30,5 +30,6 @@ public class Wide extends UBPlugin {
         Manual.setHelpPage("wide", "T H I C C\n" +
                 "API: https://api.alexflipnote.dev/\n" +
                 "Usage: `wide <image, @user, or blank for your avatar>`");
+        CommandRegistrar.registerAlias("wide", "thicc", "thick");
     }
 }
