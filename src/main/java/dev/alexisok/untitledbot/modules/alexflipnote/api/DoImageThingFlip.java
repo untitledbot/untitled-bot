@@ -101,6 +101,26 @@ public final class DoImageThingFlip {
                 message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
             });
             return null;
+        } else if(args.length >= 2) { //other matches (id, nickname, username)
+            Member m = null;
+            if(args[1].matches("^[0-9]")) {
+                m = message.getGuild().getMemberCache().getElementById(args[1]);
+            }
+            if(m == null) {
+                try {
+                    m = message.getGuild().getMemberCache().getElementsByNickname(args[1], true).get(0);
+                } catch(IndexOutOfBoundsException ignored) {}
+            }
+            if(m != null) {
+                String returnString = download(
+                        String.format(
+                                "https://api.alexflipnote.dev/" + relativePath,
+                                m.getUser().getEffectiveAvatarUrl()),
+                        message.getId()
+                );
+                message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
+                return null;
+            }
         }
         String returnString = download(
                 String.format(

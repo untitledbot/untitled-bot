@@ -46,10 +46,10 @@ public final class DoImageThingUseless {
         
         //jda handles stopping typing
         message.getChannel().sendTyping().queue();
-
+        
         try {
-            if(message.getAttachments().size() == 1) {
-                if (!message.getAttachments().get(0).isImage()) {
+            if(message.getAttachments().size() == 1) { //attachment
+                if(!message.getAttachments().get(0).isImage()) {
                     eb.setTitle("Error");
                     eb.setDescription("Please attach an *image* for the file to use.");
                     return eb.build();
@@ -67,7 +67,7 @@ public final class DoImageThingUseless {
                 message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
                 
                 return null;
-            } else if(message.getMentionedMembers().size() == 1) {
+            } else if(message.getMentionedMembers().size() == 1) { //mention
                 Member m = message.getGuild().getMemberById(message.getMentionedMembers().get(0).getId());
                 if(m != null) {
                     String returnString = download(
@@ -79,7 +79,7 @@ public final class DoImageThingUseless {
                     message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
                     return null;
                 }
-            } else if(args.length == 2 && args[1].matches("^[\\^]{1,20}")) {
+            } else if(args.length == 2 && args[1].matches("^[\\^]{1,20}")) { //amount of ^ characters
                 message.getChannel().getHistoryBefore(message, args[1].length()).queue(complete -> {
                     Message m = complete.getRetrievedHistory().get(args[1].length() - 1);
                     List<Message.Attachment> attachments = m.getAttachments();
@@ -105,6 +105,26 @@ public final class DoImageThingUseless {
                     message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
                 });
                 return null;
+            } else if(args.length >= 2) { //other matches (id, nickname, username)
+                Member m = null;
+                if(args[1].matches("^[0-9]")) {
+                    m = message.getGuild().getMemberCache().getElementById(args[1]);
+                }
+                if(m == null) {
+                    try {
+                        m = message.getGuild().getMemberCache().getElementsByNickname(args[1], true).get(0);
+                    } catch(IndexOutOfBoundsException ignored) {}
+                }
+                if(m != null) {
+                    String returnString = download(
+                            String.format(
+                                    "https://useless-api--vierofernando.repl.co/" + relativePath,
+                                    m.getUser().getEffectiveAvatarUrl()),
+                            message.getId()
+                    );
+                    message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
+                    return null;
+                }
             }
             String returnString = download(
                     String.format(
