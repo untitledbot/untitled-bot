@@ -28,7 +28,8 @@ public class JPEG extends UBPlugin {
         CommandRegistrar.register("jpeg", this);
         Manual.setHelpPage("jpeg", "Make an image a JPEG... sort of...\n" +
                 "API: https://api.alexflipnote.dev/\n" +
-                "Usage: `jpegify <image, @user, or blank for your avatar>`");
+                "Usage: `jpegify <image, @user, or blank for your avatar>`" +
+                "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
         CommandRegistrar.registerAlias("jpeg", "jpegify", "jpg");
     }
 }

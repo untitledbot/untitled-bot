@@ -27,6 +27,7 @@ public final class Glitch extends UBPlugin {
         CommandRegistrar.register("glitch", this);
         Manual.setHelpPage("glitch", "Glitches an image.\n\n" +
                 "API: https://useless-api--vierofernando.repl.co/\n" +
-                "Usage: `glitch <image, @user, or blank for your avatar>`");
+                "Usage: `glitch <image, @user, or blank for your avatar>`" +
+                "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
     }
 }

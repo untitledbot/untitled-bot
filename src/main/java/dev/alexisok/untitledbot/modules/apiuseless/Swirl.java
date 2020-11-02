@@ -27,6 +27,7 @@ public final class Swirl extends UBPlugin {
         CommandRegistrar.register("swirl", this);
         Manual.setHelpPage("swirl", "Swirls an image i guess\n" +
                 "API: https://useless-api--vierofernando.repl.co/\n" +
-                "Usage: `swirl <image, @user, or blank for your avatar>`");
+                "Usage: `swirl <image, @user, or blank for your avatar>`" +
+                "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
     }
 }

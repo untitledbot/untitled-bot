@@ -32,7 +32,8 @@ public final class AmIAJoke extends UBPlugin {
         CommandRegistrar.register("am-i-a-joke", this);
         Manual.setHelpPage("am-i-a-joke", "Generate an 'Am I A Joke' meme.\n" +
                 "API: https://api.alexflipnote.dev/\n" +
-                "Usage: `joke <image, @user, or blank for your avatar>`");
+                "Usage: `joke <image, @user, or blank for your avatar>`" +
+                "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
         CommandRegistrar.registerAlias("am-i-a-joke", "joke");
     }
 }

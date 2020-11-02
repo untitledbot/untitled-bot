@@ -27,6 +27,7 @@ public final class Charcoal extends UBPlugin {
         CommandRegistrar.register("charcoal", this);
         Manual.setHelpPage("charcoal", "Make an image look like charcoal\n" +
                 "API: https://useless-api--vierofernando.repl.co/\n" +
-                "Usage: `charcoal <image, @user, or blank for your avatar>`");
+                "Usage: `charcoal <image, @user, or blank for your avatar>`" +
+                "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
     }
 }

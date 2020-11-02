@@ -30,6 +30,7 @@ public final class Bad extends UBPlugin {
         CommandRegistrar.register("bad", this);
         Manual.setHelpPage("bad", "Generate a 'bad' meme.\n" +
                 "API: https://api.alexflipnote.dev/\n" +
-                "Usage: `bad <image, @user, or blank for your avatar>`");
+                "Usage: `bad <image, @user, or blank for your avatar>`" +
+                "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
     }
 }

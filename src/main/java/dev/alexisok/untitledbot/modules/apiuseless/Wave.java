@@ -27,6 +27,7 @@ public final class Wave extends UBPlugin {
         CommandRegistrar.register("wave", this);
         Manual.setHelpPage("wave", "wosh\n" +
                 "API: https://useless-api--vierofernando.repl.co/\n" +
-                "Usage: `wave <image, @user, or blank for your avatar>`");
+                "Usage: `wave <image, @user, or blank for your avatar>`" +
+                "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
     }
 }

@@ -30,7 +30,8 @@ public final class Magik extends UBPlugin {
         CommandRegistrar.register("magik", this);
         Manual.setHelpPage("magik", "this is probably the only reason why you should invite this bot to a server.\n" +
                 "API: https://api.alexflipnote.dev/\n" +
-                "Usage: `magik <image, @user, or blank for your avatar>`");
-        CommandRegistrar.registerAlias("magik", "magic");
+                "Usage: `magik <image, @user, or blank for your avatar>`" +
+                "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
+        CommandRegistrar.registerAlias("magik", "magic", "majik");
     }
 }

@@ -29,7 +29,8 @@ public final class Explode extends UBPlugin {
         CommandRegistrar.register("explode", this);
         Manual.setHelpPage("explode", "Explode an image\n" +
                 "API: https://useless-api--vierofernando.repl.co/\n" +
-                "Usage: `explode <image, @user, or blank for your avatar>`");
+                "Usage: `explode <image, @user, or blank for your avatar>`" +
+                "You can also use 1 to 20 `^` character(s) to get an image from X messages above.");
         CommandRegistrar.registerAlias("explode", "oliy");
     }
 }

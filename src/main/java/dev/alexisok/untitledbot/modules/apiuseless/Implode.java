@@ -29,7 +29,8 @@ public final class Implode extends UBPlugin {
         CommandRegistrar.register("implode", this);
         Manual.setHelpPage("implode", "Implode an image\n" +
                 "API: https://useless-api--vierofernando.repl.co/\n" +
-                "Usage: `implode <image, @user, or blank for your avatar>`");
+                "Usage: `implode <image, @user, or blank for your avatar>`\n" +
+                "You can also use 1 to 20 `^` character(s) to get an image from X messages above.");
         CommandRegistrar.registerAlias("implode", "greg");
     }
 }

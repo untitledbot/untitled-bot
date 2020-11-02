@@ -27,6 +27,7 @@ public class Spread extends UBPlugin {
         CommandRegistrar.register("spread", this);
         Manual.setHelpPage("spread", "Spread the image pixels\n" +
                 "API: https://useless-api--vierofernando.repl.co/\n" +
-                "Usage: `spread <image, @user, or blank for your avatar>`");
+                "Usage: `spread <image, @user, or blank for your avatar>`" +
+                "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
     }
 }

@@ -20,6 +20,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 /**
  * @author AlexIsOK
@@ -78,6 +79,32 @@ public final class DoImageThingUseless {
                     message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
                     return null;
                 }
+            } else if(args.length == 2 && args[1].matches("^[\\^]{1,20}")) {
+                message.getChannel().getHistoryBefore(message, args[1].length()).queue(complete -> {
+                    Message m = complete.getRetrievedHistory().get(args[1].length() - 1);
+                    List<Message.Attachment> attachments = m.getAttachments();
+                    if(attachments.size() == 0) {
+                        String returnString = download(
+                                String.format(
+                                        "https://api.alexflipnote.dev/" + relativePath,
+                                        deAnimate(m.getAuthor().getEffectiveAvatarUrl())),
+                                message.getId()
+                        );
+
+                        message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
+                        return;
+                    }
+
+                    String returnString = download(
+                            String.format(
+                                    "https://api.alexflipnote.dev/" + relativePath,
+                                    m.getAttachments().get(0).getUrl()),
+                            message.getId()
+                    );
+
+                    message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
+                });
+                return null;
             }
             String returnString = download(
                     String.format(

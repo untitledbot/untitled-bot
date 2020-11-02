@@ -29,7 +29,8 @@ public class Wide extends UBPlugin {
         CommandRegistrar.register("wide", this);
         Manual.setHelpPage("wide", "T H I C C\n" +
                 "API: https://api.alexflipnote.dev/\n" +
-                "Usage: `wide <image, @user, or blank for your avatar>`");
+                "Usage: `wide <image, @user, or blank for your avatar>`" +
+                "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
         CommandRegistrar.registerAlias("wide", "thicc", "thick");
     }
 }

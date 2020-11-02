@@ -28,6 +28,7 @@ public final class Sepia extends UBPlugin {
         CommandRegistrar.register("sepia", this);
         Manual.setHelpPage("sepia", "Run an image through a sepia filter.\n" +
                 "API: https://api.alexflipnote.dev/\n" +
-                "Usage: `sepia <image, @user, or blank for your avatar>`");
+                "Usage: `sepia <image, @user, or blank for your avatar>`" +
+                "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
     }
 }

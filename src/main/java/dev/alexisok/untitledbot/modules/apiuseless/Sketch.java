@@ -29,6 +29,7 @@ public final class Sketch extends UBPlugin {
         CommandRegistrar.register("sketch", this);
         Manual.setHelpPage("sketch", "Make an image look like it was sketched\n" +
                 "API: https://useless-api--vierofernando.repl.co/\n" +
-                "Usage: `sketch <image, @user, or blank for your avatar>`");
+                "Usage: `sketch <image, @user, or blank for your avatar>`" +
+                "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
     }
 }

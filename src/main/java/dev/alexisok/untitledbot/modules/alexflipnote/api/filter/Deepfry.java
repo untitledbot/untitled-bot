@@ -28,7 +28,8 @@ public final class Deepfry extends UBPlugin {
         CommandRegistrar.register("deepfry", this);
         Manual.setHelpPage("deepfry", "Deepfry an image.\n" +
                 "API: https://api.alexflipnote.dev/\n" +
-                "Usage: `deepfry <image, @user, or blank for your avatar>`");
+                "Usage: `deepfry <image, @user, or blank for your avatar>`" +
+                "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
         CommandRegistrar.registerAlias("deepfry", "yum"); //yum because i don't want to get slapped with a dmca notice
     }
 }
