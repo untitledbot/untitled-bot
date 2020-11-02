@@ -3,7 +3,7 @@ package dev.alexisok.untitledbot.modules.alexflipnote.api.filter;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
-import dev.alexisok.untitledbot.modules.alexflipnote.api.DoImageThing;
+import dev.alexisok.untitledbot.modules.alexflipnote.api.DoImageThingFlip;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -20,7 +20,7 @@ public class JPEG extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
 
-        return DoImageThing.generateImage("/filter/jpegify?image=%s", eb, message, args);
+        return DoImageThingFlip.generateImage("/filter/jpegify?image=%s", eb, message, args);
     }
 
     @Override

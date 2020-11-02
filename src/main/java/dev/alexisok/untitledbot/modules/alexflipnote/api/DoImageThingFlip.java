@@ -10,9 +10,9 @@ import org.jetbrains.annotations.NotNull;
  * @author AlexIsOK
  * @since 1.3.23
  */
-public final class DoImageThing {
+public final class DoImageThingFlip {
     
-    private DoImageThing(){}
+    private DoImageThingFlip(){}
 
     /**
      * Generate a {@link net.dv8tion.jda.api.entities.MessageEmbed} with the provided information.

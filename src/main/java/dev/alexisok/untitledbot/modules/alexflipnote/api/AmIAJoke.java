@@ -24,7 +24,7 @@ public final class AmIAJoke extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        return DoImageThing.generateImage("/amiajoke?image=%s", eb, message, args);
+        return DoImageThingFlip.generateImage("/amiajoke?image=%s", eb, message, args);
     }
     
     @Override
