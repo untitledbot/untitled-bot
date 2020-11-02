@@ -221,7 +221,13 @@ public final class Ranks extends UBPlugin implements MessageHook {
         } else {
             try {
                 int size = message.getMentionedMembers().size();
-                User target = size == 1 ? message.getMentionedMembers().get(0).getUser() : Main.jda.getUserById(args[1]);
+                User target = size == 1 ? message.getMentionedMembers().get(0).getUser() : null;
+                try {
+                    if(target == null)
+                        target = message.getGuild().getMembersByEffectiveName(args[1], true).get(0).getUser();
+                } catch(Throwable ignored) {}
+                if(target == null)
+                    target = Main.jda.getUserById(args[1]);
                 File f = Objects.requireNonNull(RankImageRender.render(Objects.requireNonNull(target).getId(), message.getGuild().getId(), message.getIdLong()));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
                 return null;

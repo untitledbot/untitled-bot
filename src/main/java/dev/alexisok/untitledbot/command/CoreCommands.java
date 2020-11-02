@@ -23,6 +23,7 @@ import dev.alexisok.untitledbot.modules.basic.prefix.Prefix;
 import dev.alexisok.untitledbot.modules.basic.remind.Remind;
 import dev.alexisok.untitledbot.modules.basic.report.BugReport;
 import dev.alexisok.untitledbot.modules.basic.reverse.Reverse;
+import dev.alexisok.untitledbot.modules.basic.roleCount.RoleCount;
 import dev.alexisok.untitledbot.modules.basic.rot13.ROT13;
 import dev.alexisok.untitledbot.modules.basic.ship.Ship;
 import dev.alexisok.untitledbot.modules.basic.shutdown.Shutdown;
@@ -38,8 +39,6 @@ import dev.alexisok.untitledbot.modules.cache.VoidCache;
 import dev.alexisok.untitledbot.modules.config.ConfigHandle;
 import dev.alexisok.untitledbot.modules.eco.*;
 import dev.alexisok.untitledbot.modules.eval.Eval;
-import dev.alexisok.untitledbot.modules.music.MusicCommands;
-import dev.alexisok.untitledbot.modules.music.Play;
 import dev.alexisok.untitledbot.modules.noprefix.Exit;
 import dev.alexisok.untitledbot.modules.noprefix.NoPrefix;
 import dev.alexisok.untitledbot.modules.profile.Profile;
@@ -53,7 +52,6 @@ import dev.alexisok.untitledbot.modules.rank.xpcommands.Work;
 import dev.alexisok.untitledbot.modules.reactions.AttackOnLenny;
 import dev.alexisok.untitledbot.modules.reactions.Dis;
 import dev.alexisok.untitledbot.modules.reactions.Hide;
-import dev.alexisok.untitledbot.modules.reactions.Hug;
 import dev.alexisok.untitledbot.modules.reward.VoteReward;
 import dev.alexisok.untitledbot.modules.starboard.StarboardHandle;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -181,7 +179,6 @@ public final class CoreCommands {
         new Uptime().onRegister();
         new UserInfo().onRegister();
         new Owo().onRegister();
-        new Hug().onRegister();
         new Avatar().onRegister();
         new AYAYA().onRegister();
         new Dis().onRegister();
@@ -227,6 +224,7 @@ public final class CoreCommands {
         new CacheInfo().onRegister();
         new Rnak().onRegister();
         new AttackOnLenny().onRegister();
+        new RoleCount().onRegister();
         
 //        MusicCommands.registerMusicCommands();
         

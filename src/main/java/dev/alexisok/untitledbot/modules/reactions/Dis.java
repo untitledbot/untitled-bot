@@ -38,6 +38,6 @@ public final class Dis extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("disappointed", this);
         Manual.setHelpPage("disappointed", "display ಠ_ಠ");
-        CommandRegistrar.registerAlias("disappointed", "dis");
+        CommandRegistrar.registerAlias("disappointed", "dis", "icantbelieveyouvedonethis");
     }
 }

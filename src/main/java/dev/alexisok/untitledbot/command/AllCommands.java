@@ -47,8 +47,8 @@ public class AllCommands extends UBPlugin {
                                     "`reverse` - reverse a string.\n" +
                                     "`config` - easy configuration for the bot.(adm)\n" +
                                     "`profile` - get the profile of another user.\n" +
-                                    "`caps` - change a string to all capital letters.\n" +
-                                    "`lowercase` - change a string to all lowercase letters.\n" +
+                                    "`caps` - make a message all capital letters.\n" +
+                                    "`lowercase` - make a message all lowercase letters.\n" +
                                     "`mock` - MaKe A mEsSaGe ChAnGe EaCh LeTtEr CaPiTaLiZaTiOn.\n" +
                                            "`source` - get the source code for the bot.\n" +
                                            "`which` - get the package for a command.\n" +
@@ -63,10 +63,10 @@ public class AllCommands extends UBPlugin {
                                     "`get-log` - list what's being logged.");
         Manual.setHelpPage("fun", "\n" +
                                     "`someone` - mention a random user without pinging them.\n" +
-                                    "`brainfuck` - run brainfuck code" +
+                                    "`bf` - run brainf*** code" +
                                     " (yes, [it is a real thing](https://en.wikipedia.org/wiki/Brainfuck)).\n" +
                                     "`8ball` - simulate a magic 8 ball.\n" +
-                                    "`ship` - ship two users (was asked to add this).\n" +
+                                    "`ship` - ship two users (user requested!).\n" +
                                     "`20` - roll a twenty sided die.\n" +
                                     "`owo` - owofy a stwing of text,,,\n" +
                                           "`cat` - get a cat fact." +
@@ -81,10 +81,10 @@ public class AllCommands extends UBPlugin {
                                            "`bet` - coinflip command.\n" +
                                            "`deposit` and `withdraw`, put/take money between the bank.");
         Manual.setHelpPage("reactions", "\n" +
-                                    "`hug` - hug another user (or yourself)...\n" +
                                     "`ayaya` - react with ayaya (or something else).\n" +
                                     "`hide` - hide behind a wall.\n" +
                                     "`dis` - display ಠ_ಠ\n" +
+                                    "`aol` - attack on lenny.\n" +
                                     "");
         
         eb.addField("All commands", "Please use one of the following commands for help:\n" +
