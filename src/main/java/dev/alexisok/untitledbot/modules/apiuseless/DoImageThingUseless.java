@@ -86,7 +86,7 @@ public final class DoImageThingUseless {
                     if(attachments.size() == 0) {
                         String returnString = download(
                                 String.format(
-                                        "https://api.alexflipnote.dev/" + relativePath,
+                                        "https://useless-api--vierofernando.repl.co/" + relativePath,
                                         deAnimate(m.getAuthor().getEffectiveAvatarUrl())),
                                 message.getId()
                         );
@@ -97,7 +97,7 @@ public final class DoImageThingUseless {
 
                     String returnString = download(
                             String.format(
-                                    "https://api.alexflipnote.dev/" + relativePath,
+                                    "https://useless-api--vierofernando.repl.co/" + relativePath,
                                     m.getAttachments().get(0).getUrl()),
                             message.getId()
                     );
