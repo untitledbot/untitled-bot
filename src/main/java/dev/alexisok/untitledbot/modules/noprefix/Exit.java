@@ -47,7 +47,7 @@ public final class Exit extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("exit", "owner", this);
+        CommandRegistrar.register("exit", this);
         Manual.setHelpPage("exit", "Exit the no-prefix mode.");
     }
 }
