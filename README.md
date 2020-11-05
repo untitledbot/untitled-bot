@@ -56,7 +56,6 @@ You can join the untitled-bot discord server [here](https://alexisok.dev/ub/disc
 <dd>> <code>discord</code> - get an invite link for the Discord support server.</dd><br>
 <dd>> <code>vote</code> - vote for the bot on <a href="https://top.gg">Top.GG</a>.</dd><br>
 <dd>> <code>ping</code> - get the ping of the bot.</dd><br>
-<dd>> <code>inv</code> - list your inventory.</dd><br>
 <dd>> <code>reverse</code> - reverse a string.</dd><br>
 <dd>> <code>config</code> - easy configuration for the bot.</dd><br>
 <dd>> <code>profile</code> - get the profile of another user.</dd><br>
@@ -77,7 +76,6 @@ You can join the untitled-bot discord server [here](https://alexisok.dev/ub/disc
 
 <h2>Fun</h2>
 <dd>> <code>someone</code> - mention a random user without pinging them.</dd><br>
-<dd>> <code>brainfuck</code> - run <a href="https://en.wikipedia.org/wiki/Brainfuck">brainf***</a> code.</dd><br>
 <dd>> <code>8ball</code> - simulate an 8 ball.</dd><br>
 <dd>> <code>ship</code> - ship two different server members (user requested).</dd><br>
 <dd>> <code>20</code> - roll a twenty-sided die.</dd><br>
