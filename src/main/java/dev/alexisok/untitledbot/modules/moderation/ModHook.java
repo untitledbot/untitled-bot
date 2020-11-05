@@ -22,6 +22,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.events.role.*;
 import net.dv8tion.jda.api.events.role.update.*;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -42,7 +43,16 @@ public final class ModHook extends ListenerAdapter {
     
     //message id, message
     private static final HashMap<String, Message> MESSAGE_CACHE = new HashMap<>();
-    
+
+    /**
+     * Get the size of the message cache.
+     * @return the size of the message cache
+     */
+    @Contract(pure = true)
+    public static int getMessageCacheSize() {
+        return MESSAGE_CACHE.size();
+    }
+
     @Override
     public void onReady(@NotNull ReadyEvent re) {
         CommandRegistrar.register("log-channel", "admin", new SetLogChannel());
