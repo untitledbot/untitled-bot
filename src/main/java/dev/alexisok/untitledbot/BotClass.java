@@ -216,21 +216,22 @@ public final class BotClass extends ListenerAdapter {
         String[] args = message.split(" ");
     
         //execute a command and return the message it provides
-        try {
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
                     event.getChannel()
                             .sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
                             .queue();
+                } catch(NullPointerException ignored) { //this returns null if the command does not exist.
+                } catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
+                    Logger.debug("Could not send a message to a channel.");
+                } catch(Throwable t) {
+                    t.printStackTrace();
                 }
-            }, 0);
-        } catch(NullPointerException ignored) { //this returns null if the command does not exist.
-        } catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
-            Logger.debug("Could not send a message to a channel.");
-        } catch(Throwable t) {
-            t.printStackTrace();
-        }
+            }
+        }, 0);
+        
     }
     
     
