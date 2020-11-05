@@ -119,6 +119,9 @@ public final class ModHook extends ListenerAdapter {
     
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent e) {
+        //webhook messages cause a lot of problems
+        if(e.isWebhookMessage())
+            return;
         MESSAGE_CACHE.put(e.getMessageId(), e.getMessage());
     }
     
