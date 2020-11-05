@@ -190,7 +190,7 @@ public final class Shop extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("shop", this);
+//        CommandRegistrar.register("shop", this);
         ITEMS.add(new ShopItem("RPG Item I", 1000, "A claimable item for when the RPG releases (low-tier random item).  Can be used once the RPG is out.", 1, 10));
         ITEMS.add(new ShopItem("RPG Item II", 20000, "A claimable item for when the RPG releases (mid-tier random item).  Can be used once the RPG is out.", 2, 5));
         ITEMS.add(new ShopItem("RPG Item III", 500000, "A claimable item for when the RPG releases (high-tier random item).  Can be used once the RPG is out.", 3, 3));
@@ -199,15 +199,15 @@ public final class Shop extends UBPlugin {
         
         ITEMS.add(new ShopItem("Moderator Role on the Support Server", Long.MAX_VALUE, "Gives you the \"moderator\" role on the support server.", 5));
         
-        Manual.setHelpPage("shop", "" +
-                                           "Available sub-commands:\n" +
-                                           "```\n" +
-                                           "list - list all available items.\n" +
-                                           "buy <item name> - buy a specific item.\n" +
-                                           "```" +
-                                           "\n\n" +
+//        Manual.setHelpPage("shop", "" +
+//                                           "Available sub-commands:\n" +
+//                                           "```\n" +
+//                                           "list - list all available items.\n" +
+//                                           "buy <item name> - buy a specific item.\n" +
+//                                           "```" +
+//                                           "\n\n" +
 //                                           "Note: all items are purchased with your xp in this guild, use the `rank` command to see your XP and level." +
-                                           "\n\n" +
-                                           "All purchases are non-refundable and are delivered immediately.");
+//                                           "\n\n" +
+//                                           "All purchases are non-refundable and are delivered immediately.");
     }
 }

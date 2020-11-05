@@ -9,7 +9,6 @@ import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
 import dev.alexisok.untitledbot.modules.basic.avatar.Avatar;
 import dev.alexisok.untitledbot.modules.basic.ayaya.AYAYA;
 import dev.alexisok.untitledbot.modules.basic.blacklist.Blacklist;
-import dev.alexisok.untitledbot.modules.basic.brainfreak.BrainFreak;
 import dev.alexisok.untitledbot.modules.basic.cache.CacheInfo;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.Lowercase;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.ToggleCase;
@@ -174,7 +173,7 @@ public final class CoreCommands {
         new Ship().onRegister();
         new GetUserData().onRegister();
         new Prefix().onRegister();
-        new BrainFreak().onRegister();
+//        new BrainFreak().onRegister();
         new TimeStamp().onRegister();
         new AllCommands().onRegister();
         new Help().onRegister();
@@ -252,6 +251,7 @@ public final class CoreCommands {
         new Spread().onRegister();
         new Glitch().onRegister();
         new Explode().onRegister();
+        new Emboss().onRegister();
         
 //        MusicCommands.registerMusicCommands();
         

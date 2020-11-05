@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -19,6 +20,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -51,8 +55,6 @@ public final class BotClass extends ListenerAdapter {
     
     private static final ArrayList<String> NO_PREFIX = new ArrayList<>();
     
-    private static final HashMap<String, Message> LAST_COMMAND = new HashMap<>();
-    
     private static final MessageEmbed JOIN_MESSAGE = new EmbedBuilder().addField("untitled-bot",
             "\n```" +
                     "      ╔╗ ╔╗╔╗     ╔╗  ╔╗    ╔╗\n" +
@@ -71,7 +73,7 @@ public final class BotClass extends ListenerAdapter {
     //cache for server prefixes
     private static final HashMap<String, String> PREFIX_CACHE = new HashMap<>();
     
-    private static final Timer TIMER = new Timer();
+    private static final Timer TIMER = new Timer(true);
     
     /**
      * Nullify the prefix cache for a specific guild.
@@ -165,32 +167,13 @@ public final class BotClass extends ListenerAdapter {
         if(BLACKLIST.contains(event.getAuthor().getId()))
             return;
         
+        if(!event.getChannel().canTalk())
+            return;
+        
         //get the prefix of the guild
         String prefix = getPrefix(event.getGuild().getId(), event.getAuthor().getId());
         
         String message = event.getMessage().getContentRaw();
-        
-        if(message.equals("!!")) {
-            try {
-                message = LAST_COMMAND.get(event.getAuthor().getId()).getContentRaw();
-                message = message.substring(prefix.length());
-                if (message.contains("  ")) {
-                    do {
-                        message = message.replaceAll(" {2}", " ");
-                    } while (message.contains("  "));
-                }
-                String[] args = message.split(" ");
-                TIMER.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        event.getChannel()
-                                .sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, LAST_COMMAND.get(event.getAuthor().getId())))))
-                                .queue();
-                    }
-                }, 0);
-            } catch(Throwable ignored){}
-            return;
-        }
         
         if(message.startsWith(prefix + " "))
             message = message.replaceFirst(prefix + " ", prefix);
@@ -203,7 +186,7 @@ public final class BotClass extends ListenerAdapter {
                 if(prefix.equals(""))
                     event.getChannel().sendMessage("You seem to be in the NoPrefix:TM: mode, to exit, simply say `exit`.").queue();
                 else
-                    TIMER.schedule(new TimerTask() {
+                    new Timer().schedule(new TimerTask() {
                         @Override
                         public void run() {
                             event.getChannel()
@@ -234,10 +217,14 @@ public final class BotClass extends ListenerAdapter {
     
         //execute a command and return the message it provides
         try {
-            LAST_COMMAND.put(event.getAuthor().getId(), event.getMessage());
-            event.getChannel()
-                    .sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
-                    .queue();
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    event.getChannel()
+                            .sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
+                            .queue();
+                }
+            }, 0);
         } catch(NullPointerException ignored) { //this returns null if the command does not exist.
         } catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
             Logger.debug("Could not send a message to a channel.");
@@ -259,7 +246,7 @@ public final class BotClass extends ListenerAdapter {
     
     @Override
     public final void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent e) {
-        if(!e.getAuthor().getId().equals(Main.jda.getSelfUser().getId())) {
+        if(!e.getAuthor().getId().equals("730135989863055472")) {
             
             e.getAuthor().openPrivateChannel().queue(a -> a.sendMessage(onPrivateMessage).queue());
         }

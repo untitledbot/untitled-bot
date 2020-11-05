@@ -26,7 +26,7 @@ public final class VoidCache extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         Logger.log("Voiding the cache.");
-
+        
         Starboard.voidAllCache();
         BotClass.voidPrefixCache();
         

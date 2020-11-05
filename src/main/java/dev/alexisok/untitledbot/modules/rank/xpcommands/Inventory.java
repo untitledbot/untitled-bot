@@ -55,7 +55,7 @@ public final class Inventory extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("inv", this);
-        Manual.setHelpPage("inv", "Get your inventory.  You cannon get the inventory of another user.");
+//        CommandRegistrar.register("inv", this);
+//        Manual.setHelpPage("inv", "Get your inventory.  You cannon get the inventory of another user.");
     }
 }

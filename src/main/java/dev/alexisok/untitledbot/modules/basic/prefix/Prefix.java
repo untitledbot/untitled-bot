@@ -55,7 +55,9 @@ public final class Prefix extends UBPlugin {
         Vault.storeUserDataLocal(null, message.getGuild().getId(), "guild.prefix", prefix);
         
         eb.setColor(Color.GREEN);
-        eb.addField("Prefix", String.format("Prefix changed to `%s`.  You can mention the bot to get the server prefix.", prefix), false);
+        eb.addField("Prefix", String.format("Prefix changed to `%s`, you can use " +
+                "commands through `%scommand` or `%s command`.  You can also mention the bot to get the server prefix.",
+                prefix, prefix, prefix), false);
         BotClass.updateGuildPrefix(message.getGuild().getId(), prefix);
         return eb.build();
     }

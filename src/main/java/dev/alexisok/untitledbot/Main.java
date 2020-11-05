@@ -174,7 +174,7 @@ public final class Main {
                     .setMemberCachePolicy(MemberCachePolicy.ONLINE.and(OWNER).and(VOICE))
                     .addEventListeners(new ModHook(), new BotClass(), new Starboard())
                     .build();
-            jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help"));
+            jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.STREAMING, "https://untitled-bot.xyz"));
             
         } catch(LoginException e) {
             e.printStackTrace();

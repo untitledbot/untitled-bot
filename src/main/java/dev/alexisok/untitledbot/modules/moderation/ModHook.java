@@ -1,18 +1,27 @@
 package dev.alexisok.untitledbot.modules.moderation;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.moderation.logging.*;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.*;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.*;
 import net.dv8tion.jda.api.events.guild.member.*;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
+import net.dv8tion.jda.api.events.guild.override.GenericPermissionOverrideEvent;
 import net.dv8tion.jda.api.events.guild.voice.*;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.events.role.*;
 import net.dv8tion.jda.api.events.role.update.*;
+import net.dv8tion.jda.api.events.user.update.UserUpdateAvatarEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +40,9 @@ import java.util.*;
 public final class ModHook extends ListenerAdapter {
     
     private static final HashMap<String, ArrayList<LogTypes>> LOG_CACHE = new HashMap<>();
+    
+    //message id, message
+    private static final HashMap<String, Message> MESSAGE_CACHE = new HashMap<>();
     
     @Override
     public void onReady(@NotNull ReadyEvent re) {
@@ -105,7 +117,98 @@ public final class ModHook extends ListenerAdapter {
         }
     }
     
+    @Override
+    public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent e) {
+        MESSAGE_CACHE.put(e.getMessageId(), e.getMessage());
+    }
     
+    @Override
+    public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent e) {
+        String guildID = e.getGuild().getId();
+        if(!ch(guildID, LogTypes.MESSAGE_UPDATE))
+            return;
+        
+        if(e.getMessage().getEmbeds().size() != 0)
+            return;
+        
+        EmbedBuilder eb = new EmbedBuilder();
+        
+        eb.setTitle("Message updated.  Old content:");
+        if(!MESSAGE_CACHE.containsKey(e.getMessageId())) {
+            eb.setDescription(""); //nothing
+        } else
+            eb.setDescription(MESSAGE_CACHE.get(e.getMessageId()).getContentRaw());
+        
+        String[] content = new String[2];
+        
+        //to avoid npe
+        Arrays.fill(content, "");
+        
+        if(e.getMessage().getContentRaw().length() > 1024) {
+            Iterable<String> s = Splitter.fixedLength(1024).split(e.getMessage().getContentRaw());
+            content = Iterables.toArray(s, String.class);
+        } else {
+            content[0] = e.getMessage().getContentRaw();
+        }
+        
+        eb.addField("New content:", content[0], false);
+        if(content[1].length() != 0)
+            eb.addField("", content[1], false);
+        
+        eb.addField("Info:", String.format("" +
+                "Original time sent: %s%n" +
+                "Time edited: %s%n" +
+                "Message ID: %s%n" +
+                "Message channel: %s%n" +
+                "[Link](%s)%n",
+                e.getMessage().getTimeCreated().toString().replace("T", " ").split("\\.")[0],
+                e.getMessage().getTimeEdited().toString().replace("T", " ").split("\\.")[0],
+                e.getMessageId(),
+                e.getChannel().getAsMention(),
+                e.getMessage().getJumpUrl()), false);
+        MESSAGE_CACHE.put(e.getMessageId(), e.getMessage());
+        eb.setColor(Color.YELLOW);
+        eb.setTimestamp(Instant.now());
+        lc(guildID).sendMessage(eb.build()).queue();
+    }
+
+    @Override
+    public void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent e) {
+        String guildID = e.getGuild().getId();
+        if(!ch(guildID, LogTypes.MESSAGE_UPDATE))
+            return;
+        
+        Message deleted = MESSAGE_CACHE.get(e.getMessageId());
+        
+        if(deleted.getEmbeds().size() != 0)
+            return;
+        
+        EmbedBuilder eb = new EmbedBuilder();
+        
+        eb.setTitle("Message deleted.  Old content:");
+        eb.setDescription(deleted.getContentRaw());
+        
+        eb.addField("Info:", String.format("" +
+                        "Original time sent: %s%n" +
+                        "Time deleted: %s%n" +
+                        "Message ID: %s%n" +
+                        "Message channel: %s%n" +
+                deleted.getTimeCreated().toString().replace("T", " ").split("\\.")[0],
+                new Date().toString().replace("T", " ").split("\\.")[0],
+                e.getMessageId(),
+                e.getChannel().getAsMention()), false);
+        MESSAGE_CACHE.remove(e.getMessageId());
+        eb.setColor(Color.RED);
+        eb.setTimestamp(Instant.now());
+        lc(guildID).sendMessage(eb.build()).queue();
+    }
+    
+//    //handle images and stuff
+//        if(e.getMessage().getAttachments().size() != 0) {
+//
+//    }
+
+
     /**
      * Get the log channel from the guild ID
      * @param guildID the guild ID

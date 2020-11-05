@@ -5,6 +5,9 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
+import org.apache.commons.lang3.ArrayUtils;
+import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,15 +24,23 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * @author AlexIsOK
  * @since 1.3.23
  */
 public final class DoImageThingUseless {
-
+    
     private DoImageThingUseless(){}
-
+    
+    @RegExp
+    private static final String CDN_REGEX = "(.*?)(cdn|media).(discordapp.(com|net)/)(.*?)";
+    
+    @RegExp
+    private static final String PROXY_REGEX = "" +
+            "(http(s)?://images-ext-[0-9]{1,2}.(discordapp.(com|net))/external/(.*?)https/(cdn|media).(discordapp.(com|net)/)(.*?))";
+    
     /**
      * Generate a {@link net.dv8tion.jda.api.entities.MessageEmbed} with the provided information.
      *
@@ -69,7 +80,7 @@ public final class DoImageThingUseless {
                 return null;
             } else if(message.getMentionedMembers().size() == 1) { //mention
                 Member m = message.getGuild().getMemberById(message.getMentionedMembers().get(0).getId());
-                if(m != null) {
+                if (m != null) {
                     String returnString = download(
                             String.format(
                                     "https://useless-api--vierofernando.repl.co/" + relativePath,
@@ -79,6 +90,56 @@ public final class DoImageThingUseless {
                     message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
                     return null;
                 }
+            } else if(args.length == 2 && args[1].matches(Message.JUMP_URL_PATTERN.pattern())) { //message link
+                String[] split = args[1].split("/");
+                TextChannel tc = message.getGuild().getTextChannelById(split[split.length - 2]);
+                a: if (tc != null) {
+                    Message m = tc.getHistory().getMessageById(split[split.length - 1]);
+                    List<Message.Attachment> attachments = m.getAttachments();
+                    if (attachments.size() == 0) {
+                        String returnString = download(
+                                String.format(
+                                        "https://useless-api--vierofernando.repl.co/" + relativePath,
+                                        deAnimate(m.getAuthor().getEffectiveAvatarUrl())),
+                                message.getId()
+                        );
+
+                        message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
+                        break a;
+                    }
+
+                    String returnString = download(
+                            String.format(
+                                    "https://useless-api--vierofernando.repl.co/" + relativePath,
+                                    m.getAttachments().get(0).getUrl()),
+                            message.getId()
+                    );
+
+                    message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
+                    return null;
+                }
+            } else if(args.length == 2 && args[1].matches(CDN_REGEX)) {
+                String returnString = download(
+                        String.format(
+                                "https://useless-api--vierofernando.repl.co/" + relativePath,
+                                args[1]),
+                        message.getId()
+                );
+
+                message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
+                return null;
+            } else if(args.length == 2 && args[1].matches(PROXY_REGEX)) {
+                Logger.debug(args[1]);
+                Logger.debug(deProxy(args[1]));
+                String returnString = download(
+                        String.format(
+                                "https://useless-api--vierofernando.repl.co/" + relativePath,
+                                deProxy(args[1])
+                        ),
+                        message.getId()
+                );
+                message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
+                return null;
             } else if(args.length == 2 && args[1].matches("^[\\^]{1,20}")) { //amount of ^ characters
                 message.getChannel().getHistoryBefore(message, args[1].length()).queue(complete -> {
                     Message m = complete.getRetrievedHistory().get(args[1].length() - 1);
@@ -143,7 +204,18 @@ public final class DoImageThingUseless {
         }
         return null;
     }
-
+    
+    @NotNull
+    @Contract(pure = true)
+    private static String deProxy(@NotNull String proxiedURL) {
+        String[] args = proxiedURL.split("/");
+        for(int i = 0; i < args.length; i++) {
+            if(args[i].equals("https"))
+                ArrayUtils.shift(args, i);
+        }
+        return String.join("/", args);
+    }
+    
     /**
      * Removes an animated avatar
      * @param animatedURL the URL that is animated
