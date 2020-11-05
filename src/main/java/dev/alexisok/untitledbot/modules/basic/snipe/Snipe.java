@@ -1,15 +1,22 @@
 package dev.alexisok.untitledbot.modules.basic.snipe;
 
-import com.google.common.cache.Cache;
-import dev.alexisok.untitledbot.command.EmbedDefaults;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.MessageHook;
+import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,30 +24,71 @@ import java.util.HashMap;
  * @author AlexIsOK
  * @since 1.3.22
  */
-public final class Snipe extends UBPlugin {
+public final class Snipe extends UBPlugin implements MessageHook {
     
-    private static final HashMap<String, Boolean> ENABLED_CACHE = new HashMap<>();
+    //channel id, message id
+    private static final HashMap<String, String> SNIPE_CACHE = new HashMap<>();
     
-    @Override
-    public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
-        EmbedBuilder eb = new EmbedBuilder();
-        EmbedDefaults.setEmbedDefaults(eb, message);
-        
-        if(!ENABLED_CACHE.containsKey(message.getGuild().getId()))
-            ENABLED_CACHE.put(message.getGuild().getId(),
-                    Boolean.parseBoolean(Vault.getUserDataLocalOrDefault(null,
-                            message.getGuild().getId(),
-                            "snipe.enabled",
-                            "false")));
-        
-        if(!ENABLED_CACHE.get(message.getGuild().getId()).equals("true")) {
-            eb.setTitle("Snipe");
-            eb.setDescription("The server does not have the `snipe` command enabled.  Please have a " +
-                    "server administrator use the (dashboard)[DASHLINK] " +
-                    "to enable it.");//TODO
-            return eb.build();
-        }
-        return null;
+    {
+        CommandRegistrar.registerHook(this);
     }
     
+    @Override
+    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
+        EmbedBuilder eb = new EmbedBuilder();
+
+        TextChannel target = message.getMentionedChannels().size() == 1 ? message.getMentionedChannels().get(0) : message.getTextChannel();
+        
+        if(!SNIPE_CACHE.containsKey(target.getId())) {
+            eb.setTitle("Snipe");
+            eb.setDescription("No message to snipe.");
+            eb.setColor(Color.RED);
+            return eb.build();
+        }
+        
+        Message sniped = ModHook.getMessageByID(SNIPE_CACHE.get(target.getId()));
+        
+        if(sniped == null) {
+            eb.setTitle("Snipe");
+            eb.setDescription("No message to snipe.");
+            eb.setColor(Color.RED);
+            return eb.build();
+        }
+        
+        if(sniped.getContentRaw().contains("discord.gg")) {
+            eb.addField("Snipe", "Sniped message might contain an invite link!", false);
+            return eb.build();
+        }
+        
+        eb.setTitle("Snipe");
+        eb.setDescription(sniped.getContentRaw());
+        
+        eb.addField("Info", String.format("" +
+                "Sent by %s (%s)%n" +
+                "ID: %s%n" +
+                "" +
+                "%nNote: the message has been removed from the snipe cache.",
+                sniped.getAuthor().getAsMention(), sniped.getAuthor().getAsTag(),
+                sniped.getAuthor().getId()), false);
+        eb.setColor(Color.RED);
+        SNIPE_CACHE.remove(message.getId());
+        return eb.build();
+    }
+    
+    @Override
+    public void onMessage(GuildMessageReceivedEvent m) {}
+    
+    @Override
+    public void onAnyEvent(GenericEvent e) {
+        if(e instanceof GuildMessageDeleteEvent) {
+            GuildMessageDeleteEvent a = (GuildMessageDeleteEvent) e;
+            SNIPE_CACHE.put(a.getChannel().getId(), a.getMessageId());
+        }
+    }
+
+    @Override
+    public void onRegister() {
+        CommandRegistrar.register("snipe", this);
+        Manual.setHelpPage("snipe", "Get the last deleted message in this channel or another.");
+    }
 }

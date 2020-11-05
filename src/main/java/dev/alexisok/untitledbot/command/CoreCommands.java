@@ -29,6 +29,7 @@ import dev.alexisok.untitledbot.modules.basic.roleCount.RoleCount;
 import dev.alexisok.untitledbot.modules.basic.rot13.ROT13;
 import dev.alexisok.untitledbot.modules.basic.ship.Ship;
 import dev.alexisok.untitledbot.modules.basic.shutdown.Shutdown;
+import dev.alexisok.untitledbot.modules.basic.snipe.Snipe;
 import dev.alexisok.untitledbot.modules.basic.source.Source;
 import dev.alexisok.untitledbot.modules.basic.stack.Stack;
 import dev.alexisok.untitledbot.modules.basic.status.Status;
@@ -253,6 +254,7 @@ public final class CoreCommands {
         new Explode().onRegister();
         new Emboss().onRegister();
         
+        new Snipe().onRegister();
 //        MusicCommands.registerMusicCommands();
         
 //      new RPGCommand().onRegister();

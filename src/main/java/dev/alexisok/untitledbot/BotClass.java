@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
@@ -54,6 +55,9 @@ public final class BotClass extends ListenerAdapter {
     public static final ArrayList<String> BLACKLIST = new ArrayList<>();
     
     private static final ArrayList<String> NO_PREFIX = new ArrayList<>();
+    
+    //message id, bot msg id reply
+    private static final HashMap<String, Message> DELETE_THIS_CACHE = new HashMap<>();
     
     private static final MessageEmbed JOIN_MESSAGE = new EmbedBuilder().addField("untitled-bot",
             "\n```" +
@@ -194,7 +198,9 @@ public final class BotClass extends ListenerAdapter {
                                             "For a full list of commands, use `%shelp` or `%s help`.%n" +
                                             "The default prefix is `>` and can be set by an administrator " +
                                             "on this server by using the `prefix` command.", prefix, prefix, prefix))
-                                    .queue();
+                                    .queue(r -> {
+                                        DELETE_THIS_CACHE.put(event.getMessageId(), r);
+                                    });
                         }
                     }, 0);
                 return;
@@ -233,8 +239,18 @@ public final class BotClass extends ListenerAdapter {
         }, 0);
         
     }
-    
-    
+
+    /**
+     * 
+     * @param event
+     */
+    @Override
+    public void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event) {
+        if(DELETE_THIS_CACHE.containsKey(event.getMessageId())) {
+            DELETE_THIS_CACHE.get(event.getMessageId()).delete().queue();
+        }
+    }
+
     private static final MessageEmbed onPrivateMessage;
     
     static {

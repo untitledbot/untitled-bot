@@ -24,6 +24,7 @@ import net.dv8tion.jda.api.events.role.update.*;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -51,6 +52,12 @@ public final class ModHook extends ListenerAdapter {
     @Contract(pure = true)
     public static int getMessageCacheSize() {
         return MESSAGE_CACHE.size();
+    }
+    
+    @Nullable
+    @Contract(pure = true)
+    public static Message getMessageByID(@NotNull String ID) {
+        return MESSAGE_CACHE.get(ID);
     }
 
     @Override
@@ -220,7 +227,6 @@ public final class ModHook extends ListenerAdapter {
                 new Date().toString().replace("T", " ").split("\\.")[0],
                 e.getMessageId(),
                 e.getChannel().getAsMention()), false);
-        MESSAGE_CACHE.remove(e.getMessageId());
         eb.setColor(Color.RED);
         eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
