@@ -1,10 +1,13 @@
 package dev.alexisok.untitledbot.modules.alexflipnote.api;
 
+import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.apiuseless.DoImageThingUseless;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import org.apache.commons.lang3.ArrayUtils;
 import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -175,7 +178,18 @@ public final class DoImageThingFlip {
         message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
         return null;
     }
-
+    
+    @NotNull
+    @Contract(pure = true)
+    private static String deProxy(@NotNull String proxiedURL) {
+        String[] args = proxiedURL.split("/");
+        for(int i = 0; i < args.length; i++) {
+            if(args[i].equals("https"))
+                ArrayUtils.shift(args, i);
+        }
+        return String.join("/", args);
+    }
+    
     /**
      * Removes an animated avatar
      * @param animatedURL the URL that is animated

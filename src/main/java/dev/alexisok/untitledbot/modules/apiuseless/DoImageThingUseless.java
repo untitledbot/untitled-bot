@@ -38,7 +38,7 @@ public final class DoImageThingUseless {
     private static final String CDN_REGEX = "(.*?)(cdn|media).(discordapp.(com|net)/)(.*?)";
     
     @RegExp
-    private static final String PROXY_REGEX = "" +
+    public static final String PROXY_REGEX = "" +
             "(http(s)?://images-ext-[0-9]{1,2}.(discordapp.(com|net))/external/(.*?)https/(cdn|media).(discordapp.(com|net)/)(.*?))";
     
     /**

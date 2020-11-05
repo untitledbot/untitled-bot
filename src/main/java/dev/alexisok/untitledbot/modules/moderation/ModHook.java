@@ -11,6 +11,8 @@ import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.*;
+import net.dv8tion.jda.api.events.guild.GuildBanEvent;
+import net.dv8tion.jda.api.events.guild.GuildUnbanEvent;
 import net.dv8tion.jda.api.events.guild.member.*;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.events.guild.voice.*;
@@ -369,6 +371,43 @@ public final class ModHook extends ListenerAdapter {
         eb.setColor(Color.YELLOW);
         eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
+    }
+
+    @Override
+    public void onGuildBan(@NotNull GuildBanEvent e) {
+        String guildID = e.getGuild().getId();
+        
+        if(!ch(guildID, LogTypes.GUILD_MEMBER_BAN))
+            return;
+        
+        EmbedBuilder eb = new EmbedBuilder();
+        
+        eb.addField("Logger", "Server member banned!\n" +
+                "User: " + e.getUser().getAsMention() + ", " + e.getUser().getAsTag() + "\n" +
+                "ID: " + e.getUser().getId() + "\n", false);
+        eb.setTimestamp(Instant.now());
+        eb.setColor(Color.RED);
+        lc(guildID).sendMessage(eb.build()).queue();
+    }
+    
+    
+    @Override
+    public void onGuildUnban(@NotNull GuildUnbanEvent e) {
+        String guildID = e.getGuild().getId();
+        
+        if(!ch(guildID, LogTypes.GUILD_MEMBER_UNBAN))
+            return;
+        
+        EmbedBuilder eb = new EmbedBuilder();
+        
+        eb.addField("Logger", "Server member un-banned!\n" +
+                "User: " + e.getUser().getAsMention() + ", " + e.getUser().getAsTag() + "\n" +
+                "ID: " + e.getUser().getId() + "\n", false);
+        eb.setTimestamp(Instant.now());
+        eb.setColor(Color.GREEN);
+        
+        lc(guildID).sendMessage(eb.build()).queue();
+        
     }
     
     @Override
