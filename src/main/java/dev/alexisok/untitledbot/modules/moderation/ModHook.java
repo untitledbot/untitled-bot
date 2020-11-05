@@ -180,10 +180,21 @@ public final class ModHook extends ListenerAdapter {
         
         Message deleted = MESSAGE_CACHE.get(e.getMessageId());
         
+        EmbedBuilder eb = new EmbedBuilder();
+        
+        if(deleted == null) {
+            eb.addField("Message deleted", "Old content not recoverable.", false);
+            eb.setColor(Color.RED);
+            eb.addField("Message info:", "" +
+                    "Sent in: " + e.getChannel().getAsMention() + "\n" +
+                    "ID: " + e.getMessageId(), false);
+            
+            lc(guildID).sendMessage(eb.build()).queue();
+            return;
+        }
+        
         if(deleted.getEmbeds().size() != 0)
             return;
-        
-        EmbedBuilder eb = new EmbedBuilder();
         
         eb.setTitle("Message deleted.  Old content:");
         eb.setDescription(deleted.getContentRaw());
@@ -192,7 +203,7 @@ public final class ModHook extends ListenerAdapter {
                         "Original time sent: %s%n" +
                         "Time deleted: %s%n" +
                         "Message ID: %s%n" +
-                        "Message channel: %s%n" +
+                        "Message channel: %s%n",
                 deleted.getTimeCreated().toString().replace("T", " ").split("\\.")[0],
                 new Date().toString().replace("T", " ").split("\\.")[0],
                 e.getMessageId(),
