@@ -47,11 +47,6 @@ public final class Status extends UBPlugin {
     private static void updateStatsString() {
         Runtime.getRuntime().gc();
         long guilds = Main.jda.getGuilds().size();
-        long roles  = Main.jda.getRoles().size();
-        long users = Main.jda.getUsers().stream().filter(user -> !user.isBot()).count();
-        long bots = Main.jda.getUsers().stream().filter(User::isBot).count();
-        long texts  = Main.jda.getTextChannels().size();
-        long voice  = Main.jda.getVoiceChannels().size();
         long usableSpace = new File(Main.DATA_PATH).getUsableSpace();
         long totalSpace  = new File(Main.DATA_PATH).getTotalSpace();
         String returnString = "```";
@@ -66,14 +61,9 @@ public final class Status extends UBPlugin {
         returnString += "  Commands issued: " + CommandRegistrar.getTotalCommands() + "\n";
         returnString += "   Total messages: " + BotClass.getMessagesSentTotal() + "\n";
         returnString += "          Servers: " + guilds + "\n";
-        returnString += "            Roles: " + roles +  "\n";
-        returnString += "           Humans: " + users +  "\n";
-        returnString += "             Bots: " + bots +   "\n";
         returnString += "     Cached users: " + Main.jda.getUserCache().size() + "\n";
         returnString += "   Cached servers: " + Main.jda.getGuildCache().size() + "\n";
         returnString += "  Cached channels: " + Main.jda.getTextChannelCache().size() + "\n";
-        returnString += "    Text channels: " + texts +  "\n";
-        returnString += "   Voice channels: " + voice +  "\n";
         returnString += "        UBPlugins: " + CommandRegistrar.registrarSize() + "\n";
         returnString += "```";
         returnString += "(note: this only updates once every three minutes).";

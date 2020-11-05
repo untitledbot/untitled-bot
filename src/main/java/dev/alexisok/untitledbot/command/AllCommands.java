@@ -63,8 +63,6 @@ public class AllCommands extends UBPlugin {
             "`get-log` - list what's being logged.");
         Manual.setHelpPage("fun", "\n" +
             "`someone` - mention a random user without pinging them.\n" +
-            "`bf` - run brainf*** code" +
-            " (yes, [it is a real thing](https://en.wikipedia.org/wiki/Brainfuck)).\n" +
             "`8ball` - simulate a magic 8 ball.\n" +
             "`ship` - ship two users (user requested!).\n" +
             "`20` - roll a twenty sided die.\n" +

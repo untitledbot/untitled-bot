@@ -228,7 +228,7 @@ public final class BotClass extends ListenerAdapter {
                 try {
                     event.getChannel()
                             .sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
-                            .queue();
+                            .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r));
                 } catch(NullPointerException ignored) { //this returns null if the command does not exist.
                 } catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
                     Logger.debug("Could not send a message to a channel.");
@@ -247,6 +247,7 @@ public final class BotClass extends ListenerAdapter {
     @Override
     public void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event) {
         if(DELETE_THIS_CACHE.containsKey(event.getMessageId())) {
+            Logger.debug("Deleting message");
             DELETE_THIS_CACHE.get(event.getMessageId()).delete().queue();
         }
     }

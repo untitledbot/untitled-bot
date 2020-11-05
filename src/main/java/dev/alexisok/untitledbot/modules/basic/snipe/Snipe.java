@@ -54,6 +54,7 @@ public final class Snipe extends UBPlugin implements MessageHook {
             eb.setColor(Color.RED);
             return eb.build();
         }
+        SNIPE_CACHE.remove(target.getId());
         
         if(sniped.getContentRaw().contains("discord.gg")) {
             eb.addField("Snipe", "Sniped message might contain an invite link!", false);
@@ -71,7 +72,6 @@ public final class Snipe extends UBPlugin implements MessageHook {
                 sniped.getAuthor().getAsMention(), sniped.getAuthor().getAsTag(),
                 sniped.getAuthor().getId()), false);
         eb.setColor(Color.RED);
-        SNIPE_CACHE.remove(message.getId());
         return eb.build();
     }
     
