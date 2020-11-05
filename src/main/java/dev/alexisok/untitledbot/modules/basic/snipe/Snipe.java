@@ -56,7 +56,7 @@ public final class Snipe extends UBPlugin implements MessageHook {
         }
         SNIPE_CACHE.remove(target.getId());
         
-        if(sniped.getContentRaw().contains("discord.gg")) {
+        if(sniped.getContentRaw().matches("\\bdiscord(.|\\\\.)gg")) {
             eb.addField("Snipe", "Sniped message might contain an invite link!", false);
             return eb.build();
         }
