@@ -6,9 +6,7 @@ import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
@@ -286,8 +284,33 @@ public final class BotClass extends ListenerAdapter {
         CommandRegistrar.runGenericListeners(event);
     }
     
+    private static void onJoin(@NotNull Guild g) {
+        User owner;
+        String ownerTag = "ERROR";
+        String ownerID = "ERROR";
+        try {
+            owner = Objects.requireNonNull(g.getOwner()).getUser();
+            ownerID = owner.getId();
+            ownerTag = owner.getAsTag();
+        } catch(NullPointerException ignored) {}
+        Main.jda.getTextChannelById(774205271282810911L).sendMessage(
+                new EmbedBuilder().addField("Guild joined!", String.format("" +
+                        "Name: %s%n" +
+                        "Creation time: %s%n" +
+                        "ID: %s%n" +
+                        "Members: %s%n" +
+                        "Owner tag: %s%n" +
+                        "Owner ID: %s%n",
+                        g.getName(), g.getTimeCreated().toString(),
+                        g.getId(), g.getMembers().size(),
+                        ownerTag,
+                        ownerID), false).build()
+        ).queue();
+    }
+    
     @Override
     public void onGuildJoin(@Nonnull GuildJoinEvent e) {
+        onJoin(e.getGuild());
         List<TextChannel> ch = e.getGuild().getTextChannels();
         
         boolean found = false;
