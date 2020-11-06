@@ -1,16 +1,20 @@
 package dev.alexisok.untitledbot.modules.basic.roleCount;
 
+import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Get a list of roles in the server or the amount of members with a role
@@ -59,8 +63,16 @@ public final class RoleCount extends UBPlugin {
         
         if(r == null) {
             try {
-                r = message.getGuild().getRolesByName(args[1], true).get(0);
-            } catch(IndexOutOfBoundsException ignored) {} //if the role couldn't be found
+                String[] argsTmp = args.clone(); //make sure to clone
+                String search = String.join(" ", Arrays.stream(argsTmp)
+                        .skip(1)
+                        .toArray(String[]::new));
+                Logger.debug("Searching for role name " + search);
+                r = message.getGuild().getRolesByName(search, true).get(0);
+            } catch(IndexOutOfBoundsException e) {
+                if(Main.DEBUG)
+                    e.printStackTrace();
+            } //if the role couldn't be found
         }
         
         if(r == null) {
