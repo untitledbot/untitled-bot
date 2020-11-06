@@ -47,6 +47,7 @@ public final class Top extends UBPlugin {
     
     @Override
     public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
+        message.getChannel().sendTyping().queue();
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
