@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.basic.remind;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
@@ -83,7 +84,9 @@ public final class Remind extends UBPlugin {
                 String.valueOf((Instant.now().toEpochMilli() / 1000) + unit.toSeconds(duration)));
         Logger.debug("Timer being set...");
         message.getAuthor().openPrivateChannel().queue(a -> {
-            a.sendMessage("Here is your reminder from <#" + message.getChannel().getId() + ">:\n" + StringUtils.left(messageToSend, 1950)).queueAfter(unit.toSeconds(duration), TimeUnit.SECONDS);
+            a.sendMessage("Here is your reminder from <#" + message.getChannel().getId() + ">:\n" + StringUtils.left(messageToSend, 1950)).queueAfter(unit.toSeconds(duration), TimeUnit.SECONDS,
+                    r -> BotClass.addToDeleteCache(message.getId(), r)
+            );
         });
         
         eb.addField("Remind", "Your message has been queued!  It will send on the designated time.", false);

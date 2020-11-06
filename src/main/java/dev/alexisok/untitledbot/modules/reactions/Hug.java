@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.reactions;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -24,7 +25,7 @@ public final class Hug extends UBPlugin {
     public @Nullable MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
         
         message.getChannel().sendMessage("The hug message has been disabled.\n" +
-                "If you still see this on a bot list, please let me know.").queue();
+                "If you still see this on a bot list, please let me know.").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         
         return null;
     }

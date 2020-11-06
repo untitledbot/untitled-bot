@@ -328,11 +328,11 @@ public final class Ranks extends UBPlugin implements MessageHook {
                     m
                             .getChannel()
                             .sendMessage(String.format("Nice %s!  You have leveled up to level %d!%n%s", m.getAuthor().getName(), currentLv, roleMessage))
-                            .queue();
+                            .queue(r -> BotClass.addToDeleteCache(m.getId(), r));
                 } else if(shouldSendPhase2.equalsIgnoreCase("channel")) {
                     Objects.requireNonNull(Main.jda.getTextChannelById(Objects.requireNonNull(Vault.getUserDataLocal(null, m.getGuild().getId(), "ranks-broadcast.rankup.channel"))))
                             .sendMessage(String.format("%s has leveled up to level %d!%n%s", m.getAuthor().getName(), currentLv, roleMessage))
-                            .queue();
+                            .queue(r -> BotClass.addToDeleteCache(m.getId(), r));
                 }
                 
                 //if all else fails, don't do anything.

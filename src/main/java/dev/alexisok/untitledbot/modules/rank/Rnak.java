@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.rank;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
@@ -28,7 +29,7 @@ public class Rnak extends UBPlugin {
             message.getChannel().sendFile(Objects.requireNonNull(f)).queue(r -> f.delete());
         } catch(Throwable t) {
             t.printStackTrace();
-            message.getChannel().sendMessage("bot did an oopsie").queue();
+            message.getChannel().sendMessage("bot did an oopsie").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         }
         return null;
     }

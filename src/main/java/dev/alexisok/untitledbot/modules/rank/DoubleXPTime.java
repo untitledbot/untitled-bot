@@ -22,6 +22,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author AlexIsOK
  * @since 1.3
  */
+@Deprecated
 public class DoubleXPTime {
     
     private static final String DISABLE_MESSAGE = "(Turn this message off with `rank-settings announce-xp-boost false`)";
@@ -70,39 +71,9 @@ public class DoubleXPTime {
         thing(eb);
     }
     
+    @Deprecated
     private static void thing(EmbedBuilder eb) {
-        for(Guild g : Main.jda.getGuilds()) {
-            try {
-                
-                //filter out guilds that have oped-out
-                String shouldBroadcast = Vault.getUserDataLocal(null, g.getId(), "ranks-broadcast.boost");
-                if(shouldBroadcast != null) {
-                    if(shouldBroadcast.equalsIgnoreCase("false"))
-                        continue;
-                }
-                
-                //look for a bot channel
-                boolean found = false;
-                for(TextChannel tc : g.getTextChannels()) {
-                    if (tc.canTalk() && tc.getName().contains("bot")) {
-                        found = true;
-                        tc.sendMessage(eb.build()).queue();
-                        break;
-                    }
-                }
-                
-                //generic channel
-                try {
-                    if (!found) {
-                        //default channel could be null
-                        if (Objects.requireNonNull(g.getDefaultChannel()).canTalk())
-                            g.getDefaultChannel().sendMessage(eb.build()).queue();
-                    }
-                } catch(NullPointerException ignored){} //in case default channel is null
-            } catch(Throwable t) {
-                t.printStackTrace();
-            }
-        }
+        
     }
     
     private static void endDTBroadcast() {

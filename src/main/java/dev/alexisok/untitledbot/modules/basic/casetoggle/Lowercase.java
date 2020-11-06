@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.basic.casetoggle;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
@@ -29,22 +30,22 @@ public final class Lowercase extends UBPlugin {
                                 String content = m.getContentRaw().toLowerCase();
                                 if(m.mentionsEveryone() || content.contains("@everyone")
                                         || content.contains("@here")) {
-                                    message.getChannel().sendMessage("Haha nerd nice try").queue();
+                                    message.getChannel().sendMessage("Haha nerd nice try").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
                                     return;
                                 }
-                                message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().toLowerCase())).queue();
+                                message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().toLowerCase())).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
                             } catch(Throwable ignored){}
                         });
             } else {
                 String content = String.join(" ", ArrayUtils.remove(args, 0)).toLowerCase();
                 if(content.contains("@everyone") || content.contains("@here")) {
-                    message.getChannel().sendMessage("Haha nerd nice try").queue();
+                    message.getChannel().sendMessage("Haha nerd nice try").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
                     return null;
                 }
-                message.getChannel().sendMessage(content).queue();
+                message.getChannel().sendMessage(content).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
             }
         } catch(Throwable ignored) {
-            message.getChannel().sendMessage("Cannot do lowercase on the previous message.").queue();
+            message.getChannel().sendMessage("Cannot do lowercase on the previous message.").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         }
         return null;
     }

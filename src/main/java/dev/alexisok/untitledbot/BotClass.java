@@ -58,6 +58,15 @@ public final class BotClass extends ListenerAdapter {
     
     //message id, bot msg id reply
     private static final HashMap<String, Message> DELETE_THIS_CACHE = new HashMap<>();
+
+    /**
+     * For methods that do not send messages through traditional means.
+     * @param messageID the ID of the user's message.
+     * @param reply the bots reply to the message.
+     */
+    public static void addToDeleteCache(@NotNull String messageID, @NotNull Message reply) {
+        DELETE_THIS_CACHE.put(messageID, reply);
+    }
     
     private static final MessageEmbed JOIN_MESSAGE = new EmbedBuilder().addField("untitled-bot",
             "\n```" +
@@ -266,7 +275,9 @@ public final class BotClass extends ListenerAdapter {
     public final void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent e) {
         if(!e.getAuthor().getId().equals("730135989863055472")) {
             
-            e.getAuthor().openPrivateChannel().queue(a -> a.sendMessage(onPrivateMessage).queue());
+            e.getAuthor().openPrivateChannel().queue(a -> a.sendMessage(onPrivateMessage).queue(
+                    r -> BotClass.addToDeleteCache(e.getMessage().getId(), r)
+            ));
         }
     }
     

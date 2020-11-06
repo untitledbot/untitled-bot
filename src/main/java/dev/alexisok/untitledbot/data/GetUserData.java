@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.data;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
@@ -46,7 +47,9 @@ public final class GetUserData extends UBPlugin {
                 message.getAuthor().openPrivateChannel().queue((channel) -> channel.sendMessage("Error: you have hit " +
                                                                                                         "the rate limit for getting " +
                                                                                                         "your data.  Please try again " +
-                                                                                                        "in a day or so.").queue());
+                                                                                                        "in a day or so.").queue(
+                        r -> BotClass.addToDeleteCache(message.getId(), r)
+                ));
                 return null;
             }
             

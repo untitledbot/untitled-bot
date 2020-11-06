@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.reactions;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
@@ -29,7 +30,7 @@ public final class Dis extends UBPlugin {
     @Contract(pure = true)
     public MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
         try {
-            message.getChannel().sendMessage(FACE).queue();
+            message.getChannel().sendMessage(FACE).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         } catch (InsufficientPermissionException ignored) {}
         return null;
     }

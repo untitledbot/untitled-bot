@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.rank;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
@@ -78,7 +79,7 @@ public final class Top extends UBPlugin {
             message.getChannel().sendFile(imageToSend).queue();
             setRateLimiter(message.getGuild().getId());
         } catch(IOException | NullPointerException ignored) {
-            message.getChannel().sendMessage("Could not send the rank top!").queue();
+            message.getChannel().sendMessage("Could not send the rank top!").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         }
         
         return null;

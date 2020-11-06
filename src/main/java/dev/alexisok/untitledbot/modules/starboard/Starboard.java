@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.starboard;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
@@ -198,6 +199,7 @@ public final class Starboard extends ListenerAdapter {
         
         try {
             tc.sendMessage(b.build()).queue(consumer -> {
+                BotClass.addToDeleteCache(linkedMessage.getId(), consumer);
                 TO_UPDATE_CACHE.put(linkedMessage.getId(), consumer);
                 addMessageIDToFile(consumer);
                 consumer.addReaction("U+2B50").queue();

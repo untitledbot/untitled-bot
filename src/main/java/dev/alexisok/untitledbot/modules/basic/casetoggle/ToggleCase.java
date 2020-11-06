@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.basic.casetoggle;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
@@ -27,16 +28,16 @@ public final class ToggleCase extends UBPlugin {
                         .queue(t -> {
                             try {
                                 if(message.mentionsEveryone()) {
-                                    message.getChannel().sendMessage("Haha nerd nice try").queue();
+                                    message.getChannel().sendMessage("Haha nerd nice try").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
                                 }
-                                message.getChannel().sendMessage(alternate(t.getRetrievedHistory().get(0).getContentRaw().replaceAll("<@[0-9]{5,64}>", "<user>").toLowerCase())).queue();
+                                message.getChannel().sendMessage(alternate(t.getRetrievedHistory().get(0).getContentRaw().replaceAll("<@[0-9]{5,64}>", "<user>").toLowerCase())).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
                             } catch(Throwable ignored){}
                         });
             } else {
-                message.getChannel().sendMessage(alternate(String.join(" ", ArrayUtils.remove(args, 0)).toLowerCase())).queue();
+                message.getChannel().sendMessage(alternate(String.join(" ", ArrayUtils.remove(args, 0)).toLowerCase())).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
             }
         } catch(Throwable ignored) {
-            message.getChannel().sendMessage("Cannot mock the previous message as it either had no text or the text is in an embed.").queue();
+            message.getChannel().sendMessage("Cannot mock the previous message as it either had no text or the text is in an embed.").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         }
         return null;
     }

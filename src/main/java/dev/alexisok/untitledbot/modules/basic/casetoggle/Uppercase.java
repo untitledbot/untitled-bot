@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.basic.casetoggle;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
@@ -27,16 +28,16 @@ public final class Uppercase extends UBPlugin {
                         .queue(t -> {
                             try {
                                 if(message.mentionsEveryone()) {
-                                    message.getChannel().sendMessage("Haha nerd nice try").queue();
+                                    message.getChannel().sendMessage("Haha nerd nice try").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
                                 }
-                                message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().toUpperCase())).queue();
+                                message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().toUpperCase())).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
                             } catch(Throwable ignored){}
                         });
             } else {
-                message.getChannel().sendMessage((String.join(" ", ArrayUtils.remove(args, 0)).toUpperCase())).queue();
+                message.getChannel().sendMessage((String.join(" ", ArrayUtils.remove(args, 0)).toUpperCase())).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
             }
         } catch(Throwable ignored) {
-            message.getChannel().sendMessage("Cannot uppercase the previous message as it either had no text or the text is in an embed.").queue();
+            message.getChannel().sendMessage("Cannot uppercase the previous message as it either had no text or the text is in an embed.").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         }
         return null;
     }

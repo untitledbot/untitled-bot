@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.reward;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
@@ -70,7 +71,7 @@ public final class VoteReward extends UBPlugin {
                             false);
                     eb.setColor(Color.BLUE);
                 }
-                try {message.getChannel().sendMessage(eb.build()).queue();} catch (InsufficientPermissionException ignored) {
+                try {message.getChannel().sendMessage(eb.build()).queue(r -> BotClass.addToDeleteCache(message.getId(), r));} catch (InsufficientPermissionException ignored) {
                     Logger.debug("Could not send a vote reward message to a channel.");
                 }
             });
@@ -146,7 +147,7 @@ public final class VoteReward extends UBPlugin {
                         ) + reward
                 )
         );
-        try {message.getChannel().sendMessage(eb.build()).queue();} catch (Exception e) {
+        try {message.getChannel().sendMessage(eb.build()).queue(r -> BotClass.addToDeleteCache(message.getId(), r));} catch (Exception e) {
             e.printStackTrace();
             Logger.debug("Could not send a vote reward message to a channel.");
         }

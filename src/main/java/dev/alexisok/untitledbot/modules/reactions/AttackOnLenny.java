@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.reactions;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
@@ -28,7 +29,7 @@ public final class AttackOnLenny extends UBPlugin {
         if(!WATCHING.contains(message.getGuild().getId())) {
             WATCHING.add(message.getGuild().getId());
         } else {
-            message.getChannel().sendMessage("You are already watching an epic battle!!!").queue();
+            message.getChannel().sendMessage("You are already watching an epic battle!!!").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
             return null;
         }
         message.getChannel().sendMessage("HAHA I AM SUPER POWERFUL SPIDER LENNY CANNOT BE DEFEATED\n" +

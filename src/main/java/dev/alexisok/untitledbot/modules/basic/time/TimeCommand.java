@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.basic.time;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
@@ -30,7 +31,7 @@ public final class TimeCommand extends UBPlugin {
         long end = System.currentTimeMillis();
         
         try {
-            message.getChannel().sendMessage(String.format("Command took %dms.", end - current)).queue();
+            message.getChannel().sendMessage(String.format("Command took %dms.", end - current)).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         } catch(Throwable ignored) {}
         
         return returnEmbed;

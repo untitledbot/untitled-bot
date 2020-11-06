@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.basic.timestamp;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
@@ -31,7 +32,7 @@ public final class TimeStamp extends UBPlugin {
         if(args.length == 1) {
             message.getChannel().sendMessage("This server was created:\n" +
                                              "" + new Date(((message.getGuild().getIdLong() >> 22) + 1420070400000L)) + "\n" +
-                                                          "Other timestamps: `timestamp [user @ | channel # | Discord snowflake]`").queue();
+                                                          "Other timestamps: `timestamp [user @ | channel # | Discord snowflake]`").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
             return null;
         }
         
@@ -52,11 +53,11 @@ public final class TimeStamp extends UBPlugin {
             message.getChannel().sendMessage("Usage: `timestamp [snowflake ID | user @ | channel #]`" +
                                              "\n" +
                                              "To enable ID copying, see " +
-                                             "support.discord.com/hc/en-us/articles/206346498").queue();
+                                             "support.discord.com/hc/en-us/articles/206346498").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
             return null;
         }
         
-        message.getChannel().sendMessage("Provided timestamp was created:\n" + new Date(time).toString()).queue();
+        message.getChannel().sendMessage("Provided timestamp was created:\n" + new Date(time).toString()).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         return null;
     }
     
