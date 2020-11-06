@@ -1,6 +1,5 @@
 package dev.alexisok.untitledbot.modules.basic.atsomeone;
 
-import dev.alexisok.untitledbot.annotation.Finished;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
@@ -25,7 +24,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author AlexIsOK
  * @since 0.0.1
  */
-@Finished(since="0.0.1")
 public final class AtSomeone extends UBPlugin {
     
     @Override
