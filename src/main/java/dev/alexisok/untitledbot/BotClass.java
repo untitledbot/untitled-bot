@@ -304,7 +304,8 @@ public final class BotClass extends ListenerAdapter {
                         g.getName(), g.getTimeCreated().toString(),
                         g.getId(), g.getMembers().size(),
                         ownerTag,
-                        ownerID), false).build()
+                        ownerID), false)
+                        .setThumbnail(g.getIconUrl()).build()
         ).queue();
     }
     
