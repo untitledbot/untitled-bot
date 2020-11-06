@@ -2,8 +2,10 @@ package dev.alexisok.untitledbot.modules.starboard;
 
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -37,6 +39,9 @@ public final class Starboard extends ListenerAdapter {
     private static final HashMap<String, Boolean> STARBOARD_ENABLED_CACHE = new HashMap<>();
     
     private static final String STARBOARD_DIR = "./stars/";
+    
+    //message ID, message sent
+    private static final HashMap<String, Message> TO_UPDATE_CACHE = new HashMap<>();
     
     static {
         Logger.log("Checking to see if the stars directory exists...");
@@ -77,6 +82,36 @@ public final class Starboard extends ListenerAdapter {
             shouldRun = STARBOARD_ENABLED_CACHE.getOrDefault(e.getGuild().getId(), false);
         }
         
+        Logger.debug("Attempting to use the starboard...");
+        
+        if(TO_UPDATE_CACHE.containsKey(e.getMessageId())) {
+            Message original = ModHook.getMessageByID(e.getMessageId());
+            Logger.debug("Updating starboard message...");
+            Message old = TO_UPDATE_CACHE.get(e.getMessageId());
+            if(e.getReactionEmote().isEmoji() && e.getReactionEmote().getEmoji().equals("\u2B50")) {
+                e.getChannel().retrieveMessageById(e.getMessageId()).queue(consumer -> {
+                    //remove any reactions from the List that are not :star: (does not remove them on Discord)
+                    ArrayList<MessageReaction> reactions = new ArrayList<>(consumer.getReactions());
+                    reactions.removeIf(messageReaction1 -> !messageReaction1.getReactionEmote().getEmoji().equals("\u2B50"));
+                    String emojiToAdd = "\u2B50";
+                    if(!reactions.get(0).hasCount())
+                        return;
+                    int count = reactions.get(0).getCount();
+                    if(count > 6)
+                        emojiToAdd = "\uD83C\uDF1F";
+                    if(count > 12)
+                        emojiToAdd = "\u2728";
+                    if(count > 18)
+                        emojiToAdd = "\uD83D\uDCAB";
+                    old.editMessage(
+                            new MessageBuilder().setEmbed(old.getEmbeds().get(0))
+                                    .setContent(emojiToAdd + " " + count).build()
+                    ).queue();
+                });
+            }
+            return;
+        }
+        
         if(shouldRun) {
             try {
                 //oh no
@@ -92,7 +127,7 @@ public final class Starboard extends ListenerAdapter {
                         //check conditions
                         if(reactions.get(0).getCount() >= count) {
                             //pin the message...
-                            e.getChannel().retrieveMessageById(e.getMessageId()).queue(consumer1 -> pinMessage(e.getGuild().getId(), consumer1));
+                            e.getChannel().retrieveMessageById(e.getMessageId()).queue(consumer1 -> pinMessage(e.getGuild().getId(), consumer1, count));
                         }
                     });
                 }
@@ -103,8 +138,10 @@ public final class Starboard extends ListenerAdapter {
     /**
      * "Pin" a message to the starboard.
      * @param guildID the ID of the guild.
+     * @param linkedMessage the message to be pinned
+     * @param count the amount of :star: emotes.
      */
-    private static synchronized void pinMessage(@NotNull String guildID, @NotNull Message linkedMessage) {
+    private static synchronized void pinMessage(@NotNull String guildID, @NotNull Message linkedMessage, int count) {
         
         try {
             if(FileUtils.readFileToString(new File(STARBOARD_DIR + linkedMessage.getGuild().getId() + ".star"), StandardCharsets.UTF_8).contains(linkedMessage.getId()))
@@ -155,8 +192,13 @@ public final class Starboard extends ListenerAdapter {
                 ) + ")", false);
         eb.setFooter("\n\n\n" + linkedMessage.getAuthor().getName(), linkedMessage.getAuthor().getAvatarUrl());
         
+        MessageBuilder b = new MessageBuilder();
+        b.setContent("\u2B50 " + count);
+        b.setEmbed(eb.build());
+        
         try {
-            tc.sendMessage(eb.build()).queue(consumer -> {
+            tc.sendMessage(b.build()).queue(consumer -> {
+                TO_UPDATE_CACHE.put(linkedMessage.getId(), consumer);
                 addMessageIDToFile(consumer);
                 consumer.addReaction("U+2B50").queue();
             });
