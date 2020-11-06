@@ -283,7 +283,15 @@ public final class BotClass extends ListenerAdapter {
     public void onGenericEvent(@Nonnull GenericEvent event) {
         CommandRegistrar.runGenericListeners(event);
     }
-    
+
+    /**
+     * It was pointed out to me that this could be useful.
+     * Sometimes there are bad guilds that wouldn't be reported
+     * otherwise and that they could be sort of filtered here.
+     * 
+     * Existing guilds won't be looked at, but this will be.
+     * @param g the guild
+     */
     private static void onJoin(@NotNull Guild g) {
         User owner;
         String ownerTag = "ERROR";
