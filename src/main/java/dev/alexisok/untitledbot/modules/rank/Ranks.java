@@ -106,7 +106,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
     public static long xpNeededForLevel(int i) {
         if(i == 0 || i > 65535)
             throw new IllegalArgumentException("\"i\" must be between 1 and 65535 (inclusive)");
-        if(i == 300)
+        if(i == 65535)
             return -1;
         return XP_REQUIRED_FOR_LEVEL_UP[i - 1];
     }

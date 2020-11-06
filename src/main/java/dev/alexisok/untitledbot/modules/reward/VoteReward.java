@@ -32,8 +32,15 @@ public final class VoteReward extends UBPlugin {
     
     private static final long XP_TO_GIVE = 1000L;
     
+    @Nullable
     @Override
-    public @Nullable MessageEmbed onCommand(String @NotNull [] args, @NotNull Message message) {
+    public MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
+        
+        if(true) {
+            message.getChannel().sendMessage("Sorry " + message.getAuthor().getAsMention() + ", but this command has been disabled.\n" +
+                    "It may come back online soon, but I can't promise anything.").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
+            return null;
+        }
         
         if(args.length == 2) {
             if(args[1].equals("override")) {
