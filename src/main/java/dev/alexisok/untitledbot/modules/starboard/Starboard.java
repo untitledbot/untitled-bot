@@ -76,14 +76,13 @@ public final class Starboard extends ListenerAdapter {
     @Override
     public synchronized void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent e) {
         boolean shouldRun;
-        if(!STARBOARD_ENABLED_CACHE.containsKey(e.getGuild().getBannerId())) {
+        if(!STARBOARD_ENABLED_CACHE.containsKey(e.getGuild().getId())) {
             shouldRun = Vault.getUserDataLocalOrDefault(null, e.getGuild().getId(), "starboard", "false").equals("true");
             STARBOARD_ENABLED_CACHE.put(e.getGuild().getId(), shouldRun);
         } else {
             shouldRun = STARBOARD_ENABLED_CACHE.getOrDefault(e.getGuild().getId(), false);
         }
         
-        Logger.debug("Attempting to use the starboard...");
         
         if(TO_UPDATE_CACHE.containsKey(e.getMessageId())) {
             Message original = ModHook.getMessageByID(e.getMessageId());
@@ -124,6 +123,7 @@ public final class Starboard extends ListenerAdapter {
                     e.getChannel().retrieveMessageById(e.getMessageId()).queue(consumer -> {
                         //remove any reactions from the List that are not :star: (does not remove them on Discord)
                         ArrayList<MessageReaction> reactions = new ArrayList<>(consumer.getReactions());
+                        reactions.removeIf(messageReaction1 -> !messageReaction1.getReactionEmote().isEmoji());
                         reactions.removeIf(messageReaction1 -> !messageReaction1.getReactionEmote().getEmoji().equals("\u2B50"));
                         //check conditions
                         if(reactions.get(0).getCount() >= count) {
