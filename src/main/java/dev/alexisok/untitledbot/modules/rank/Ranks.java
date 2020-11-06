@@ -154,7 +154,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
     @Nullable
     @Override
     public MessageEmbed onCommand(String[] args, @NotNull Message message) {
-        
+        message.getChannel().sendTyping().queue();
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
