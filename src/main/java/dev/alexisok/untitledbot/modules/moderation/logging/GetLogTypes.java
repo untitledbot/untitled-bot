@@ -43,7 +43,7 @@ public final class GetLogTypes extends UBPlugin implements Command {
         eb.setColor(Color.GREEN);
         eb.addField(
                 "Logging",
-                "Current policies for this guild:\n" + s
+                "Current policies for this server:\n" + s
                                                               .replace(",", "\n")
                                                               .replace("_", " ")
                                                               .toLowerCase(),

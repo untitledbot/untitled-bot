@@ -37,4 +37,8 @@ public final class TrackScheduler extends AudioEventAdapter {
         if(endReason.mayStartNext)
             this.nextTrack();
     }
+    
+    public BlockingQueue<AudioTrack> getQueue() {
+        return new LinkedBlockingQueue<>(this.queue);
+    }
 }

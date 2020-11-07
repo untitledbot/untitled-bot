@@ -22,7 +22,7 @@ public final class AudioHandler implements AudioSendHandler {
     
     public AudioHandler(@NotNull AudioPlayer player) {
         this.player = player;
-        this.buff = ByteBuffer.allocate(1024);
+        this.buff = ByteBuffer.allocate(4096);
         this.maf = new MutableAudioFrame();
         this.maf.setBuffer(buff);
     }

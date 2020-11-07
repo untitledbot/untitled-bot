@@ -113,6 +113,14 @@ You can join the untitled-bot discord server [here](https://alexisok.dev/ub/disc
 <dd>> <code>bad</code> - stock photo man points at image and says "BAD".</dd><br>
 <dd>> <code>scroll</code> - generate a "Scroll of Truth" meme.</dd><br>
 <dd>> <code>call</code> - the meme where Tom picks up the phone and calls someone.</dd><br>
+
+<h2>Music commands</h2>
+<dd>> <code>play</code>Play a YouTube video (YT search not supported YET).</dd><br>
+<dd>> <code>stop</code>stop the player and clear the queue.</dd><br>
+<dd>> <code>skip</code>skip the currently playing song.</dd><br>
+<dd>> <code>queue</code>list the queue of upcoming songs.</dd><br>
+<dd>> <code>np</code>get the currently playing song.</dd><br>
+<dd>> <code>pause</code>pause/unpause the currently playing song.</dd><br>
 </dl>
 
 ### Contributing

@@ -101,7 +101,7 @@ public class AllCommands extends UBPlugin {
             "`spread` - spread ALL the pixels\n" +
             "`swirl` - whszoosh\n" +
             "`wave` - wewewewew\n" +
-            "`emboss` - idk what this does");
+            "`emboss` - does... things.");
         
         Manual.setHelpPage("meme", "\n" +
             "`achievement` - generate a fake MC achievement\n" +
@@ -109,6 +109,14 @@ public class AllCommands extends UBPlugin {
             "`bad` - generate a 'Bad.' meme\n" +
             "`scroll` - generate a 'Scroll of Truth' meme\n" +
             "`call` - generate a meme where tom calls someone\n");
+        
+        Manual.setHelpPage("music", "\n" +
+            "`play` - play a YouTube video (will support searching YT soon!)\n" +
+            "`stop` - stop the player and clear the queue.\n" +
+            "`skip` - skip the currently playing song.\n" +
+            "`queue` - list the queue of upcoming songs.\n" +
+            "`np` - get the now playing songs." +
+            "`pause` - pause/unpause the songs.");
         
         eb.addField("All commands", "Please use one of the following commands for help:\n" +
             "`>help leveling` - leveling and rank commands.\n" +
@@ -118,7 +126,8 @@ public class AllCommands extends UBPlugin {
             "`>help econ` - economy commands.\n" +
             "`>help reactions` - GIF or text reactions.\n" +
             "`>help image` - image manipulation\n" +
-            "`>help meme` - meme generation.\n\n" +
+            "`>help meme` - meme generation.\n" +
+            "`>help music` - music commands.\n\n" +
             "To change the prefix of the bot, use `>prefix`", false);
         
 //        eb.addField("Want something added?", "\n" +

@@ -180,8 +180,8 @@ public final class ModHook extends ListenerAdapter {
                 "Message ID: %s%n" +
                 "Message channel: %s%n" +
                 "[Link](%s)%n",
-                e.getMessage().getTimeCreated().toString().replace("T", " ").split("\\.")[0],
-                e.getMessage().getTimeEdited().toString().replace("T", " ").split("\\.")[0],
+                e.getMessage().getTimeCreated(),
+                e.getMessage().getTimeEdited(),
                 e.getMessageId(),
                 e.getChannel().getAsMention(),
                 e.getMessage().getJumpUrl()), false);

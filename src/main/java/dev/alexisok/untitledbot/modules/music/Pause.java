@@ -25,13 +25,15 @@ public class Pause extends UBPlugin {
         
         if(MusicKernel.INSTANCE.isPaused(message.getGuild())) {
             MusicKernel.INSTANCE.pause(message.getGuild(), false);
-            eb.addField("Pause", "The player has been unpaused.", false);
+            eb.addField("untitled-bot", "The player has been unpaused.\n" +
+                    "Use the `pause` command to pause it again.", false);
             eb.setColor(Color.RED);
             return eb.build();
         }
         
         MusicKernel.INSTANCE.pause(message.getGuild(), true);
-        eb.addField("Pause", "The player has been paused.", false);
+        eb.addField("untitled-bot", "The player has been paused.\n" +
+                "Use the `resume` command to unpause it.", false);
         return eb.build();
     }
     
@@ -39,6 +41,6 @@ public class Pause extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("pause", this);
         Manual.setHelpPage("pause", "Pause the currently playing track.");
-        CommandRegistrar.registerAlias("ps");
+        CommandRegistrar.registerAlias("pause", "ps", "unpause", "resume");
     }
 }

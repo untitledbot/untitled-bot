@@ -264,6 +264,8 @@ public final class CoreCommands {
         new IsPlaying().onRegister();
         new Skip().onRegister();
         new Volume().onRegister();
+        new NowPlaying().onRegister();
+        new Queue().onRegister();
         
         new Bruh().onRegister();
         Logger.log("Modules have been registered.");

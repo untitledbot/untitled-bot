@@ -27,7 +27,7 @@ public final class CacheInfo extends UBPlugin {
                 "Cached users: %d%n" +
                 "Cached text channels: %d%n" +
                 "Cached voice channels: %d%n" +
-                "Cached guilds: %d%n" +
+                "Cached servers: %d%n" +
                 "Cached roles: %d%n" +
                 "Cached messages: %d%n",
                 message.getGuild().getMemberCache().size(),

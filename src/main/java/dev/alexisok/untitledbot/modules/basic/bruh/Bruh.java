@@ -21,7 +21,7 @@ public final class Bruh extends UBPlugin {
     public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
-        eb.setImage("https://media.tenor.co/videos/25e417157623e1bd620f794abae87964/mp4");
+        eb.setImage("https://tenor.com/view/bruh-seriously-bro-shutup-come-gif-14409930");
         return eb.build();
     }
 

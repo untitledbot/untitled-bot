@@ -3,12 +3,14 @@ package dev.alexisok.untitledbot;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.music.MusicKernel;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
@@ -201,7 +203,7 @@ public final class BotClass extends ListenerAdapter {
                         @Override
                         public void run() {
                             event.getChannel()
-                                    .sendMessage(String.format("Hello!  My prefix for this guild is `%s`.%n" +
+                                    .sendMessage(String.format("Hello!  My prefix for this server is `%s`.%n" +
                                             "For a full list of commands, use `%shelp` or `%s help`.%n" +
                                             "The default prefix is `>` and can be set by an administrator " +
                                             "on this server by using the `prefix` command.", prefix, prefix, prefix))
@@ -343,4 +345,8 @@ public final class BotClass extends ListenerAdapter {
         }
     }
     
+    @Override
+    public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
+        MusicKernel.INSTANCE.onUserLeaveVC(event.getChannelLeft());
+    }
 }
