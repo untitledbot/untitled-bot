@@ -93,7 +93,6 @@ public final class Ranks extends UBPlugin implements MessageHook {
         Vault.addDefault("ranks-xp", "0");
         Vault.addDefault("ranks-level", "1");
         
-        DoubleXPTime.installer();
     }
     
     /**
@@ -274,7 +273,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
             randomAmount = ThreadLocalRandom.current().nextLong(0,
                     ((1 + Long.parseLong(Vault.getUserDataLocalOrDefault(m.getAuthor().getId(),
                             m.getGuild().getId(),
-                            "ranks-level", "1"))) * DoubleXPTime.boostAmount));
+                            "ranks-level", "1")))));
         } catch(Throwable ignored) {
             Logger.log("Error: there was an error with boost amount for user " + mre.getAuthor().getId() + " in guild " + mre.getGuild().getId());
         }
@@ -294,9 +293,6 @@ public final class Ranks extends UBPlugin implements MessageHook {
         int currentLv = Integer.parseInt(lvstr);
     
         if (currentLv > 65535 || currentXP >= Long.MAX_VALUE - 1000L) return;
-        
-        if(DoubleXPTime.boostAmount != 1)
-            DoubleXPTime.totalXPFromBoost = DoubleXPTime.totalXPFromBoost.add(new BigInteger(String.valueOf(randAdd)));
         
         currentXP += randAdd;
         
