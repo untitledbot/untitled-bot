@@ -64,10 +64,8 @@ public final class Work extends UBPlugin {
         
         long amount = ThreadLocalRandom.current().nextLong(min, max + 1);
         
-        if((current + (amount * 5)) > Long.MAX_VALUE - 2000L || current + (amount * 5) < -10) {
+        if((current + (amount * 5)) > Long.MAX_VALUE - 2000L) {
             eb.addField("Work", String.format("I would give you %d but you have the maximum amount of money!", amount), false);
-            if(current < -10)
-                current = Long.MAX_VALUE - 2000L;
             eb.setColor(Color.YELLOW);
             return eb.build();
         }
