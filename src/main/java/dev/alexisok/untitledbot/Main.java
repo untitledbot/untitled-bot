@@ -4,6 +4,8 @@ import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import dev.alexisok.untitledbot.modules.starboard.Starboard;
+import io.netty.util.internal.logging.Log4J2LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -12,6 +14,7 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.sonatype.aether.impl.internal.Slf4jLogger;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;
@@ -167,15 +170,15 @@ public final class Main {
         }
         
         try {
+            
             //message reactions may be used for a future release
-            jda = JDABuilder.create(GUILD_MESSAGE_REACTIONS, GUILD_MESSAGES, GUILD_EMOJIS, GUILD_MEMBERS)
+            jda = JDABuilder.create(GUILD_MESSAGE_REACTIONS, GUILD_MESSAGES, GUILD_EMOJIS, GUILD_MEMBERS, GUILD_VOICE_STATES)
                     .setToken(token)
                     .enableCache(MEMBER_OVERRIDES, EMOTE)
                     .setMemberCachePolicy(MemberCachePolicy.ONLINE.and(OWNER).and(VOICE))
                     .addEventListeners(new ModHook(), new BotClass(), new Starboard())
                     .build();
             jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.STREAMING, "https://untitled-bot.xyz"));
-            
         } catch(LoginException e) {
             e.printStackTrace();
             Logger.critical("Could not login to Discord!", 1);

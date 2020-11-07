@@ -9,6 +9,7 @@ import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
 import dev.alexisok.untitledbot.modules.basic.avatar.Avatar;
 import dev.alexisok.untitledbot.modules.basic.ayaya.AYAYA;
 import dev.alexisok.untitledbot.modules.basic.blacklist.Blacklist;
+import dev.alexisok.untitledbot.modules.basic.bruh.Bruh;
 import dev.alexisok.untitledbot.modules.basic.cache.CacheInfo;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.Lowercase;
 import dev.alexisok.untitledbot.modules.basic.casetoggle.ToggleCase;
@@ -42,6 +43,7 @@ import dev.alexisok.untitledbot.modules.cache.VoidCache;
 import dev.alexisok.untitledbot.modules.config.ConfigHandle;
 import dev.alexisok.untitledbot.modules.eco.*;
 import dev.alexisok.untitledbot.modules.eval.Eval;
+import dev.alexisok.untitledbot.modules.music.*;
 import dev.alexisok.untitledbot.modules.noprefix.Exit;
 import dev.alexisok.untitledbot.modules.noprefix.NoPrefix;
 import dev.alexisok.untitledbot.modules.profile.Profile;
@@ -254,10 +256,16 @@ public final class CoreCommands {
         new Explode().onRegister();
         new Emboss().onRegister();
         
+        //music
         new Snipe().onRegister();
-//        MusicCommands.registerMusicCommands();
+        new Play().onRegister();
+        new Stop().onRegister();
+        new Pause().onRegister();
+        new IsPlaying().onRegister();
+        new Skip().onRegister();
+        new Volume().onRegister();
         
-//      new RPGCommand().onRegister();
+        new Bruh().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

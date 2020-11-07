@@ -73,7 +73,6 @@ public class AllCommands extends UBPlugin {
             "`bal` - get the balance of yourself or another user.\n" +
             "`work` - get UB$\n" +
             "`steal` - get or lose UB$ depending on who you target.\n" +
-            "`shop` - the shop.\n" +
             "`inv` - list your inventory.\n" +
             "`pay` - pay a user UB$.\n" +
             "`bet` - coinflip command.\n" +

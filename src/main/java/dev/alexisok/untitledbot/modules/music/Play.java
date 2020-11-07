@@ -1,51 +1,41 @@
 package dev.alexisok.untitledbot.modules.music;
 
-import dev.alexisok.untitledbot.command.EmbedDefaults;
+import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import org.intellij.lang.annotations.RegExp;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
-
 /**
- * Play command.
+ * Plays music through the bot.
  * 
- * @see MusicCommands
+ * This might need some tlc with sharding and multi-threading.
+ * 
  * @author AlexIsOK
- * @since 1.0.1 (made) 1.3.22 (fully implemented)
+ * @since 1.3.23
  */
-public final class Play extends UBPlugin {
+public class Play extends UBPlugin {
     
-    /**
-     * Adapted from https://stackoverflow.com/a/6904504
-     */
-    @RegExp
-    public static final String YOUTUBE_VIDEO_REGEX = "(?:youtube\\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\\.be/)([^\"&?/\\s]{11})";
     
+    
+    @Nullable
     @Override
-    public @Nullable MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
-        EmbedBuilder eb = new EmbedBuilder();
-        EmbedDefaults.setEmbedDefaults(eb, message);
-        
-        if(args.length == 1) {
-            eb.addField("Music Player", "Usage: play <URL | search query>", false);
-            eb.setColor(Color.RED);
-            return eb.build();
+    public MessageEmbed onCommand(String[] args, @NotNull Message message) {
+        for(VoiceChannel vc : message.getGuild().getVoiceChannels()) {
+            if(vc.getMembers().contains(message.getMember())) {
+                MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), args[1], vc);
+            }
         }
-        
         return null;
     }
     
     @Override
     public void onRegister() {
-        Manual.setHelpPage("play", "Play a song from a supported site, or search if no URL is provided.\n" +
-                                           "Usage: play <URL | search query>\n" +
-                                           "URL must be a fully qualified URL, for example: https://youtube.com/watch?v=dQw4w9WgXcQ or " +
-                "a video ID (dQw4w9WgXcQ)\n");
+        CommandRegistrar.register("play", this);
+        Manual.setHelpPage("play", "Play a song from a URL or search YouTube.");
+        CommandRegistrar.registerAlias("play");
     }
 }
