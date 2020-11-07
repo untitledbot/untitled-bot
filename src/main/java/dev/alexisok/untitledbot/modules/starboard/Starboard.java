@@ -85,13 +85,13 @@ public final class Starboard extends ListenerAdapter {
         
         
         if(TO_UPDATE_CACHE.containsKey(e.getMessageId())) {
-            Message original = ModHook.getMessageByID(e.getMessageId());
             Logger.debug("Updating starboard message...");
             Message old = TO_UPDATE_CACHE.get(e.getMessageId());
             if(e.getReactionEmote().isEmoji() && e.getReactionEmote().getEmoji().equals("\u2B50")) {
                 e.getChannel().retrieveMessageById(e.getMessageId()).queue(consumer -> {
                     //remove any reactions from the List that are not :star: (does not remove them on Discord)
                     ArrayList<MessageReaction> reactions = new ArrayList<>(consumer.getReactions());
+                    reactions.removeIf(messageReaction1 -> !messageReaction1.getReactionEmote().isEmoji());
                     reactions.removeIf(messageReaction1 -> !messageReaction1.getReactionEmote().getEmoji().equals("\u2B50"));
                     String emojiToAdd = "\u2B50";
                     if(!reactions.get(0).hasCount())
