@@ -177,7 +177,7 @@ public class MusicKernel {
         
         for(Member m : vc.getMembers()) {
             
-            if(m.getUser().getId().equals("716035864123408404"))
+            if(m.getUser().getId().equals("730135989863055472"))
                 hasSelf = true;
             
             if(m.getUser().isBot())
