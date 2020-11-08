@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.music;
 
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
@@ -24,9 +25,9 @@ public final class Skip extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        MusicKernel.INSTANCE.skip(message.getGuild());
+        AudioTrack t = MusicKernel.INSTANCE.skip(message.getGuild());
         
-        eb.addField("Skip", "Le track has been skipped", false);
+        eb.addField("Skip", "The track " + t.getInfo().title + " has been skipped.", false);
         eb.setColor(Color.GREEN);
         return eb.build();
     }

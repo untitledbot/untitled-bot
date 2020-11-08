@@ -24,8 +24,9 @@ public final class Queue extends UBPlugin {
         EmbedDefaults.setEmbedDefaults(eb, message);
         
         StringBuilder queue = new StringBuilder();
-        int i = 1;
+        int i = 0;
         for(AudioTrack t : MusicKernel.INSTANCE.queue(message.getGuild())) {
+            i++;
             String format = escapeDiscordMarkdown(i + ": " + t.getInfo().title + "\n");
             if((queue + format).length() > 2048)
                 break;

@@ -30,6 +30,8 @@ public class MusicKernel {
     
     public static final MusicKernel INSTANCE;
     
+    private static final int MAX_SONGS_PER_GUILD = 200;
+    
     static {
         INSTANCE = new MusicKernel();
     }
@@ -54,7 +56,7 @@ public class MusicKernel {
             public void trackLoaded(@NotNull AudioTrack track) {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setTimestamp(new Date().toInstant());
-                eb.addField("Play", "The track " + track.getInfo().title + " has been added to the queue!", false);
+                eb.addField("Play", "\u25B6\uFE0F The track " + track.getInfo().title + " has been added to the queue!", false);
                 eb.setColor(Color.GREEN);
                 channel.sendMessage(eb.build()).queue();
                 play(channel.getGuild(),requestedVC, mm, track);
@@ -67,8 +69,23 @@ public class MusicKernel {
                 eb.setColor(Color.GREEN);
                 AudioTrack first = playlist.getSelectedTrack();
                 
+                int queueSize = INSTANCE.musicManagers.get(channel.getGuild().getId()).scheduler.getQueue().size();
+                
+                if(queueSize + playlist.getTracks().size() >= MAX_SONGS_PER_GUILD) {
+                    eb.addField("Play", "Error loading playlist; playlist is either over 200 videos or " +
+                            "the queue would overflow past 200", false);
+                    eb.setColor(Color.RED);
+                    channel.sendMessage(eb.build()).queue();
+                    return;
+                }
+                
                 if (first == null) {
                     first = playlist.getTracks().get(0);
+                }
+                
+                //TODO reverse this for loop if there are problems loading playlists in the correct order.
+                for(AudioTrack playlistItem : playlist.getTracks()) {
+                    mm.scheduler.queue(playlistItem);
                 }
                 
                 eb.addField("Play", String.format("Adding %s to the queue.%n" +
@@ -78,12 +95,13 @@ public class MusicKernel {
             
             @Override
             public void noMatches() {
-                channel.sendMessage(String.format("I couldn't find any results for %s...", trackURL)).queue();
+                
             }
             
             @Override
             public void loadFailed(@NotNull FriendlyException exception) {
                 channel.sendMessage(String.format("Could not play the requested song!%nIf this happens again, please report this.")).queue();
+                exception.printStackTrace();
             }
             
         });
@@ -116,8 +134,10 @@ public class MusicKernel {
         g.getAudioManager().closeAudioConnection();
     }
     
-    public synchronized void skip(@NotNull Guild g) {
+    public synchronized AudioTrack skip(@NotNull Guild g) {
+        AudioTrack currentTrack = this.musicManagers.get(g.getId()).player.getPlayingTrack();
         this.musicManagers.get(g.getId()).scheduler.nextTrack();
+        return currentTrack;
     }
 
     /**

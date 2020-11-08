@@ -134,10 +134,10 @@ public class AllCommands extends UBPlugin {
 //                                                     "If you would like to see another command added, or more features " +
 //                                                     "on this bot, please [join the Discord server](https://discord.gg/vSWgQ9a) :)", false);
         
-        eb.addField("", String.format("**[Support Server](%s) | [GitHub](%s) | [Vote on Top.GG](%s)**",
+        eb.addField("", String.format("**[Support Server](%s) | [GitHub](%s) | [Official Site](%s)**",
                 "https://alexisok.dev/ub/discord.html", //DO NOT CHANGE TO XYZ SITE
                 "https://github.com/untitledbot/untitled-bot",
-                "https://top.gg/bot/730135989863055472/vote"), false);
+                "https://untitled-bot.xyz/"), false);
         
         HELP_MESSAGE = eb.build();
     }
