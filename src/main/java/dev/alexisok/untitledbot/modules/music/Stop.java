@@ -20,7 +20,7 @@ public final class Stop extends UBPlugin {
 
     @Override
     public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
-        
+        MusicKernel.INSTANCE.setLast(message.getGuild().getId(), message.getTextChannel());
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         

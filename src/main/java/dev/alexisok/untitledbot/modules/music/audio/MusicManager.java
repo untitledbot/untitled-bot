@@ -13,9 +13,9 @@ public final class MusicManager {
     public final AudioPlayer player;
     public final TrackScheduler scheduler;
     
-    public MusicManager(@NotNull AudioPlayerManager manager) {
+    public MusicManager(@NotNull AudioPlayerManager manager, @NotNull String guildID) {
         this.player = manager.createPlayer();
-        this.scheduler = new TrackScheduler(this.player);
+        this.scheduler = new TrackScheduler(this.player, guildID);
         this.player.addListener(scheduler);
     }
     

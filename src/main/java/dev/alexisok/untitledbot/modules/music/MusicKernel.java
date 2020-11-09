@@ -7,14 +7,15 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import dev.alexisok.untitledbot.command.EmbedDefaults;
+import dev.alexisok.untitledbot.Main;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.music.audio.MusicManager;
+import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.*;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.Date;
@@ -32,14 +33,69 @@ public class MusicKernel {
     
     private static final int MAX_SONGS_PER_GUILD = 200;
     
+    private static final HashMap<String, @Nullable Role> DJ_ROLE_CACHE;
+    
+    private static final String DJ_ROLE_VAULT_NAME = "dj.id";
+    
     static {
         INSTANCE = new MusicKernel();
+        DJ_ROLE_CACHE = new HashMap<>();
+    }
+    
+    {
+        lastChannels = new HashMap<>();
+    }
+
+    /**
+     * Get the DJ role for a specific guild
+     * @param guildID the guild ID
+     * @return the DJ role
+     */
+    @Nullable
+    @Contract(pure = true)
+    public static synchronized Role getDJRole(@NotNull String guildID) {
+        if(!DJ_ROLE_CACHE.containsKey(guildID))
+            updateCache(guildID);
+        
+        return DJ_ROLE_CACHE.getOrDefault(guildID, null);
+    }
+    
+    public static synchronized void setDJRole(@NotNull String guildID, Role r) {
+        DJ_ROLE_CACHE.put(guildID, r);
+        Vault.storeUserDataLocal(null, guildID, DJ_ROLE_VAULT_NAME, r == null ? "null" : r.getId());
+    }
+    
+    private static synchronized void updateCache(@NotNull String guildID) {
+        String roleID = Vault.getUserDataLocal(null, guildID, DJ_ROLE_VAULT_NAME);
+        
+        if(roleID == null)
+            return;
+
+        Logger.debug("Updating DJ cache to include " + roleID + " for " + guildID);
+        
+        //do not check for null
+        DJ_ROLE_CACHE.put(guildID, Main.jda.getRoleById(roleID));
+    }
+    
+    /**
+     * Send a message to a guild when the next track is starting.
+     * @param guildID the id of the guild
+     * @param track the track
+     */
+    public synchronized void onNext(@NotNull String guildID, @NotNull AudioTrack track) {
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setTitle("\u25B6\uFE0F Now Playing", track.getInfo().uri);
+        eb.addField(NowPlaying.escapeDiscordMarkdown(track.getInfo().title),
+                "By " + NowPlaying.escapeDiscordMarkdown(track.getInfo().author), false);
+        this.lastChannels.get(guildID).sendMessage(eb.build()).queue();
     }
     
     private final AudioPlayerManager playerManager;
     
     //guild id, music manager
     private final HashMap<String, MusicManager> musicManagers;
+    
+    private final HashMap<String, TextChannel> lastChannels;
     
     private MusicKernel() {
         this.musicManagers = new HashMap<>();
@@ -56,7 +112,8 @@ public class MusicKernel {
             public void trackLoaded(@NotNull AudioTrack track) {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setTimestamp(new Date().toInstant());
-                eb.addField("Play", "\u25B6\uFE0F The track " + track.getInfo().title + " has been added to the queue!", false);
+                eb.addField("Play", String.format("▶ The track **%s** has been added to the queue!",
+                        NowPlaying.escapeDiscordMarkdown(track.getInfo().title)), false);
                 eb.setColor(Color.GREEN);
                 channel.sendMessage(eb.build()).queue();
                 play(channel.getGuild(),requestedVC, mm, track);
@@ -88,14 +145,16 @@ public class MusicKernel {
                     mm.scheduler.queue(playlistItem);
                 }
                 
-                eb.addField("Play", String.format("Adding %s to the queue.%n" +
-                        "Note: added playlist %s as well.", first.getInfo().title, playlist.getName()), false);
+                eb.addField("Play", String.format("Adding **%s** to the queue.%n" +
+                        "Note: added playlist **%s** as well.",
+                        NowPlaying.escapeDiscordMarkdown(first.getInfo().title),
+                        NowPlaying.escapeDiscordMarkdown(playlist.getName())), false);
                 play(channel.getGuild(), requestedVC, mm, first);
             }
             
             @Override
             public void noMatches() {
-                
+                channel.sendMessage("No results were found for the song, please try a different query.").queue();
             }
             
             @Override
@@ -120,7 +179,14 @@ public class MusicKernel {
             return;
         g.getAudioManager().openAudioConnection(vc);
     }
-    
+
+    /**
+     * Get the queue of songs.
+     * @param g the guild
+     * @return the queued songs.
+     */
+    @Nullable
+    @Contract(pure = true)
     public synchronized AudioTrack[] queue(@NotNull Guild g) {
         return this.musicManagers.get(g.getId()).scheduler.getQueue().toArray(new AudioTrack[0]);
     }
@@ -130,10 +196,18 @@ public class MusicKernel {
      * @param g the guild
      */
     public synchronized void stop(@NotNull Guild g) {
+        this.musicManagers.get(g.getId()).scheduler.clear();
         this.musicManagers.get(g.getId()).player.destroy();
         g.getAudioManager().closeAudioConnection();
     }
-    
+
+    /**
+     * Skip a track for a guild.
+     * @param g the guild.
+     * @return the skipped track.
+     */
+    @Contract
+    @Nullable
     public synchronized AudioTrack skip(@NotNull Guild g) {
         AudioTrack currentTrack = this.musicManagers.get(g.getId()).player.getPlayingTrack();
         this.musicManagers.get(g.getId()).scheduler.nextTrack();
@@ -148,7 +222,13 @@ public class MusicKernel {
     public synchronized void pause(@NotNull Guild g, boolean state) {
         this.musicManagers.get(g.getId()).player.setPaused(state);
     }
-    
+
+    /**
+     * Get the now playing track for a guild.
+     * @param g the guild.
+     * @return the now playing track.
+     */
+    @Contract(pure = true)
     public synchronized AudioTrack nowPlaying(@NotNull Guild g) {
         return this.musicManagers.get(g.getId()).player.getPlayingTrack();
     }
@@ -158,19 +238,33 @@ public class MusicKernel {
      * @param g the guild
      * @return the pause state
      */
+    @Contract(pure = true)
     public synchronized boolean isPaused(@NotNull Guild g) {
         return this.musicManagers.get(g.getId()).player.isPaused();
     }
-    
+
+    /**
+     * Debug
+     * @param g the guild
+     * @return true if the player for this guild is playing
+     */
+    @Contract(pure = true)
     public synchronized boolean isPlaying(@NotNull Guild g) {
         return this.musicManagers.get(g.getId()).player.getPlayingTrack() != null;
     }
     
+    /**
+     * Get the current music manager.
+     * @param guild the guild
+     * @return the current music manager by guild ID
+     */
+    @NotNull
+    @Contract(pure = true)
     private synchronized MusicManager getAudioPlayer(@NotNull Guild guild) {
         MusicManager mm = this.musicManagers.get(guild.getId());
         
         if(mm == null) {
-            mm = new MusicManager(this.playerManager);
+            mm = new MusicManager(this.playerManager, guild.getId());
             this.musicManagers.put(guild.getId(), mm);
         }
         
@@ -193,12 +287,8 @@ public class MusicKernel {
             return;
         
         boolean user = false;
-        boolean hasSelf = false;
         
         for(Member m : vc.getMembers()) {
-            
-            if(m.getUser().getId().equals("730135989863055472"))
-                hasSelf = true;
             
             if(m.getUser().isBot())
                 continue;
@@ -206,10 +296,52 @@ public class MusicKernel {
             user = true;
         }
         
-        if(!user && hasSelf) {
-            //the same as running the "stop" command.
-            this.stop(vc.getGuild());
+        //if there are no humans left in the voice channel
+        if(!user) {
+            //the same as running the "pause" command.
+            this.pause(vc.getGuild(), true);
+            this.lastChannels.get(vc.getGuild().getId()).sendMessage("The player has been paused as " +
+                    "all users have left the voice channel.").queue();
         }
     }
+
+    /**
+     * Run when the queue has ended.
+     * @param guildID the ID of the guild.
+     */
+    public void onQueueEnd(String guildID) {
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setTitle("Music Player");
+        eb.addField("Music Player", "The queue is empty, use the `play` command to play a song.", false);
+        this.lastChannels.get(guildID).sendMessage(eb.build()).queue();
+    }
+
+    /**
+     * Set the last channel.
+     * 
+     * This is used so the bot will send the next playing song/leave message to this channel.
+     * 
+     * @param guildID the ID of the guild.
+     * @param tc the text channel to send to.
+     */
+    public void setLast(@NotNull String guildID, @NotNull TextChannel tc) {
+        this.lastChannels.put(guildID, tc);
+    }
     
+    /**
+     * Get the amount of currently playing music players
+     * @return the amount of currently playing music players
+     */
+    @Contract(pure = true)
+    public int getPlayers() {
+        return this.musicManagers.size();
+    }
+
+    /**
+     * Join a voice channel.
+     * @param vc the voice channel to join.
+     */
+    public void join(@NotNull VoiceChannel vc) {
+        vc.getGuild().getAudioManager().openAudioConnection(vc);
+    }
 }

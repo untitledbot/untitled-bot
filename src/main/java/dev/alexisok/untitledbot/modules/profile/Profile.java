@@ -31,16 +31,12 @@ public final class Profile extends UBPlugin {
         
         User u;
         
-        boolean another;
-        
         try {
             u = args[1].matches("[0-9]+")
                              ? Objects.requireNonNull(Main.jda.getUserById(args[1]))
                              : message.getMentionedMembers().get(0).getUser();
-            another = true;
         } catch(Throwable t) {
             u = message.getAuthor();
-            another = false;
         }
         
         try {
@@ -56,6 +52,6 @@ public final class Profile extends UBPlugin {
         CommandRegistrar.register("profile", this);
         Manual.setHelpPage("profile", "Get your user profile or another user's profile.\n" +
                                               "Usage: `profile [user @ | user ID]`");
-        CommandRegistrar.registerAlias("profile", "prof", "p");
+        CommandRegistrar.registerAlias("profile", "prof");
     }
 }

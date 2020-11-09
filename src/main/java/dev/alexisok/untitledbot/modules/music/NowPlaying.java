@@ -33,7 +33,7 @@ public final class NowPlaying extends UBPlugin {
         String title = MusicKernel.INSTANCE.nowPlaying(message.getGuild()).getInfo().title;
         String author = MusicKernel.INSTANCE.nowPlaying(message.getGuild()).getInfo().author;
         String url = MusicKernel.INSTANCE.nowPlaying(message.getGuild()).getInfo().uri;
-        
+        eb.setTitle("Now Playing", url);
         eb.addField("Now Playing", String.format("" +
                 "Playing **%s** by %s%n" +
                 "Time: %d:%s / %d:%s%n",
@@ -47,7 +47,7 @@ public final class NowPlaying extends UBPlugin {
         return eb.build();
     }
     
-    private static String escapeDiscordMarkdown(@NotNull String toEscape) {
+    public static String escapeDiscordMarkdown(@NotNull String toEscape) {
         toEscape = toEscape.replaceAll("\\*", "\\*");
         toEscape = toEscape.replaceAll("_", "\\_");
         toEscape = toEscape.replaceAll("\\|", "\\|");

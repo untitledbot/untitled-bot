@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
@@ -20,22 +19,31 @@ import java.awt.*;
 public final class Skip extends UBPlugin {
     
     @Override
-    public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
-
+    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
+        MusicKernel.INSTANCE.setLast(message.getGuild().getId(), message.getTextChannel());
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
-        
         AudioTrack t = MusicKernel.INSTANCE.skip(message.getGuild());
         
-        eb.addField("Skip", "The track " + t.getInfo().title + " has been skipped.", false);
-        eb.setColor(Color.GREEN);
+        if(t != null)
+            eb.addField("Skip", "The track " + t.getInfo().title + " has been skipped.", false).setColor(Color.GREEN);
+        else
+            eb.addField("Skip", "Nothing to skip...", false).setColor(Color.RED);
+        
         return eb.build();
+    }
+    
+    private static int getOrDefault(String[] args) {
+        return args.length == 2 ? args[1].matches("[0-9]{1,3}") ? Integer.parseInt(args[1]) : 0 : 0;
     }
     
     @Override
     public void onRegister() {
         CommandRegistrar.register("skip", this);
-        Manual.setHelpPage("skip", "Skips the currently playing track.");
-        CommandRegistrar.registerAlias("skip", "s", "next", "notthisagain", "pass");
+        Manual.setHelpPage("skip", "Skips the currently playing track.\n" +
+                "Usage: `skip [n]`\n" +
+                "You can specify the `n` track to skip a track in the queue.\n" +
+                "Use the `queue` command to view the queue.");
+        CommandRegistrar.registerAlias("skip", "s", "next", "notthisagain", "pass", "remove");
     }
 }

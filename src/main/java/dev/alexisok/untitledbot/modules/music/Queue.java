@@ -20,6 +20,7 @@ public final class Queue extends UBPlugin {
     
     @Override
     public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
+        MusicKernel.INSTANCE.setLast(message.getGuild().getId(), message.getTextChannel());
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
@@ -30,7 +31,16 @@ public final class Queue extends UBPlugin {
             String format = escapeDiscordMarkdown(i + ": " + t.getInfo().title + "\n");
             if((queue + format).length() > 2048)
                 break;
+            if(i > 20)
+                break;
             queue.append(format);
+        }
+        
+        if(i == 0) {
+            eb.setTitle("Queue");
+            eb.setDescription("Doesn't look like anything is queued.");
+            eb.setColor(Color.RED);
+            return eb.build();
         }
         
         eb.setTitle("Queue");

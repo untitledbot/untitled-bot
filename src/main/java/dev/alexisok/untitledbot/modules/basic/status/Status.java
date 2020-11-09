@@ -6,6 +6,7 @@ import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
+import dev.alexisok.untitledbot.modules.music.MusicKernel;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -40,31 +41,18 @@ public final class Status extends UBPlugin {
         new Timer().schedule(t, 0, 180000); //3 minutes is 180000 ms
     }
     
-    private static void forceUpdate() {
-        updateStatsString();
-    }
-    
     private static void updateStatsString() {
         Runtime.getRuntime().gc();
         long guilds = Main.jda.getGuilds().size();
-        long usableSpace = new File(Main.DATA_PATH).getUsableSpace();
-        long totalSpace  = new File(Main.DATA_PATH).getTotalSpace();
         String returnString = "```";
-        returnString += "          Version: " + Main.VERSION + "\n";
         returnString += " Available memory: " + Runtime.getRuntime().freeMemory() / 1024 / 1024 + " MB\n";
         returnString += "     Total memory: " + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " MB\n";
-        returnString += "       Processors: " + Runtime.getRuntime().availableProcessors() + "\n";
-        returnString += " Total disk space: " + (totalSpace / 1024 / 1024 / 1024) + " GB\n";
-        returnString += "Usable disk space: " + (usableSpace / 1024 / 1024 / 1024) + " GB\n";
         returnString += "             Ping: " + Main.jda.getGatewayPing() + " ms\n";
-        returnString += "           Uptime: " + Uptime.humanReadable() + "\n";
         returnString += "  Commands issued: " + CommandRegistrar.getTotalCommands() + "\n";
         returnString += "   Total messages: " + BotClass.getMessagesSentTotal() + "\n";
         returnString += "          Servers: " + guilds + "\n";
-        returnString += "     Cached users: " + Main.jda.getUserCache().size() + "\n";
-        returnString += "   Cached servers: " + Main.jda.getGuildCache().size() + "\n";
-        returnString += "  Cached channels: " + Main.jda.getTextChannelCache().size() + "\n";
-        returnString += "        UBPlugins: " + CommandRegistrar.registrarSize() + "\n";
+        returnString += "Commands (+alias): " + CommandRegistrar.registrarSize() + "\n";
+        returnString += "    Music Players: " + MusicKernel.INSTANCE.getPlayers() + "\n";
         returnString += "```";
         returnString += "(note: this only updates once every three minutes).";
         
@@ -78,7 +66,7 @@ public final class Status extends UBPlugin {
         
         //force update if the owner is asking for the stats
         if(message.getAuthor().getId().equals(Main.OWNER_ID))
-            forceUpdate();
+            updateStatsString();
         
         eb.setColor(Color.GREEN);
         eb.setTitle("Status");

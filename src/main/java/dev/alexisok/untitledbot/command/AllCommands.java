@@ -115,8 +115,10 @@ public class AllCommands extends UBPlugin {
             "`stop` - stop the player and clear the queue.\n" +
             "`skip` - skip the currently playing song.\n" +
             "`queue` - list the queue of upcoming songs.\n" +
-            "`np` - get the now playing songs." +
-            "`pause` - pause/unpause the songs.");
+            "`np` - get the now playing songs.\n" +
+            "`pause` - pause/unpause the songs.\n" +
+            "`join` - have the bot join the channel without playing music.\n" +
+            "`leave` - have the bot leave the channel without clearing the queue.");
         
         eb.addField("All commands", "Please use one of the following commands for help:\n" +
             "`>help leveling` - leveling and rank commands.\n" +
@@ -134,7 +136,7 @@ public class AllCommands extends UBPlugin {
 //                                                     "If you would like to see another command added, or more features " +
 //                                                     "on this bot, please [join the Discord server](https://discord.gg/vSWgQ9a) :)", false);
         
-        eb.addField("", String.format("**[Support Server](%s) | [GitHub](%s) | [Official Site](%s)**",
+        eb.addField("Need support?", String.format("**[Support Server](%s) | [GitHub](%s) | [Official Site](%s)**",
                 "https://alexisok.dev/ub/discord.html", //DO NOT CHANGE TO XYZ SITE
                 "https://github.com/untitledbot/untitled-bot",
                 "https://untitled-bot.xyz/"), false);
