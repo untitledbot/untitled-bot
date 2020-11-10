@@ -26,6 +26,8 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+import static dev.alexisok.untitledbot.modules.music.NowPlaying.escapeDiscordMarkdown;
+
 /**
  * Plays music through the bot.
  * 
@@ -54,7 +56,7 @@ public class Play extends UBPlugin implements MessageHook {
 //        MusicKernel.INSTANCE.pause(message.getGuild(), false);
         
         if(args.length == 1) {
-            eb.addField("Music Player", "Usage: `play <youtube url>`", false);
+            eb.addField("Music Player", "Usage: `play <url | search query>`", false);
             eb.setColor(Color.RED);
             return eb.build();
         }
@@ -64,7 +66,8 @@ public class Play extends UBPlugin implements MessageHook {
                     Logger.debug("Could not get access to a voice channel.");
                     break;
                 }
-                if(!args[1].matches("http(s)?://(www.)?youtu(.be|be.com)*(.+)")) {
+                if(!args[1].matches("http(s)?://(www.)?youtu(.be|be.com)*(.+)") ||
+                        args[1].matches("http(s)?://(www.)?soundcloud.com/*(.+)")) {
                     message.getChannel().sendTyping().queue();
                     YoutubeSearchResultLoader search = new YoutubeSearchProvider();
                     List<AudioTrackInfo> track = new ArrayList<>();
@@ -75,13 +78,27 @@ public class Play extends UBPlugin implements MessageHook {
                         track.add(audioTrackInfo);
                         return null;
                     });
-                    eb.addField("React with 1 through 5 to pick a video.", "" +
-                            "1. " + track.get(0).title + "\n" +
-                            "2. " + track.get(1).title + "\n" +
-                            "3. " + track.get(2).title + "\n" +
-                            "4. " + track.get(3).title + "\n" +
-                            "5. " + track.get(4).title + "", false);
+                    
+                    String tracks = "";
+                    
+                    for(int i = 0; i < 5; i++) {
+                        long current = track.get(i).length / 1000;
+                        tracks += String.format("%d. `%d:%s` - [**%s** by **%s**](%s)%n",
+                                i + 1,
+                                current / 60,
+                                ((current % 60) + "").length() == 1 ? "0" + (current % 60) : (current % 60),
+                                escapeDiscordMarkdown(track.get(i).title),
+                                escapeDiscordMarkdown(track.get(i).author),
+                                track.get(i).uri);
+                    }
+                    eb.setTitle("React with 1 through 5 to pick a video.");
+                    eb.setDescription(tracks);
                     eb.setColor(Color.GREEN);
+                    
+                    try {
+                        if (RESULTS.containsKey(message.getAuthor().getId()))
+                            RESULTS.get(message.getAuthor().getId()).botMessage.delete().queue();
+                    } catch(Throwable ignored) {}
                     
                     //send the message, add reactions 1-5, then add it to the queue to be listened to
                     message.getChannel().sendMessage(eb.build()).queue(r -> {
@@ -158,7 +175,6 @@ public class Play extends UBPlugin implements MessageHook {
                 }
             }
             
-            RESULTS.remove(message.getTextChannel().getId());
             info.botMessage.delete().queue();
         }
     }

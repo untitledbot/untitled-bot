@@ -289,6 +289,9 @@ public class MusicKernel {
      */
     public synchronized void onUserLeaveVC(@NotNull VoiceChannel vc) {
         
+        if(true)
+            return;
+        
         //don't check guilds the bot isn't playing music in
         if(!this.musicManagers.containsKey(vc.getGuild().getId()))
             return;
