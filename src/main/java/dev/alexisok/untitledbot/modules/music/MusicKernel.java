@@ -159,7 +159,7 @@ public class MusicKernel {
             
             @Override
             public void loadFailed(@NotNull FriendlyException exception) {
-                channel.sendMessage(String.format("Could not play the requested song!%nIf this happens again, please report this.")).queue();
+                channel.sendMessage(String.format("Could not play the requested song!%nIf this happens with a different song, please report this.")).queue();
                 exception.printStackTrace();
             }
             

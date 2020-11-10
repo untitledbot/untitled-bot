@@ -12,8 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.List;
 
 /**
  * @author AlexIsOK
@@ -49,12 +48,16 @@ public final class TrackScheduler extends AudioEventAdapter {
     @Nullable
     public AudioTrack nextTrack() {
         AudioTrack current = this.player.getPlayingTrack();
-        if(this.queue.size() == 0) {
+        if(this.queue.size() == 0 && this.player.getPlayingTrack() == null) {
             MusicKernel.INSTANCE.onQueueEnd(this.guildID);
             return current;
         }
-        this.player.startTrack(this.queue.get(0), false);
-        this.queue.remove(0);
+        if(this.queue.size() != 0) {
+            this.player.startTrack(this.queue.get(0), false);
+            this.queue.remove(0);
+        } else {
+            this.player.startTrack(null, false);
+        }
         return current;
     }
     

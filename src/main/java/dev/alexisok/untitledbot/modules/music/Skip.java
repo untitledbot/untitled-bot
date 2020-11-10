@@ -24,7 +24,7 @@ public final class Skip extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        if(MusicKernel.INSTANCE.queue(message.getGuild()).length == 0)
+        if(MusicKernel.INSTANCE.queue(message.getGuild()).length == 0 && !MusicKernel.INSTANCE.isPlaying(message.getGuild()))
             return eb.addField("Skip", "Nothing to skip...", false).setColor(Color.RED).build();
         
         AudioTrack t = MusicKernel.INSTANCE.skip(message.getGuild(), getOrDefault(args));

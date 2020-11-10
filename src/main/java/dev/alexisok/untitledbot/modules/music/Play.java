@@ -59,18 +59,16 @@ public class Play extends UBPlugin implements MessageHook {
             return eb.build();
         }
         for(VoiceChannel vc : message.getGuild().getVoiceChannels()) {
-            Logger.debug("Looping");
             if(vc.getMembers().contains(message.getMember())) {
                 if(!Objects.requireNonNull(message.getGuild().getMemberById(Main.jda.getSelfUser().getId())).hasPermission(vc, Permission.VOICE_CONNECT)) {
                     Logger.debug("Could not get access to a voice channel.");
                     break;
                 }
                 if(!args[1].matches("http(s)?://(www.)?youtu(.be|be.com)*(.+)")) {
-                    Logger.debug("Searching youtube.");
+                    message.getChannel().sendTyping().queue();
                     YoutubeSearchResultLoader search = new YoutubeSearchProvider();
                     List<AudioTrackInfo> track = new ArrayList<>();
                     search.loadSearchResult(Arrays.toString(Arrays.copyOfRange(args, 1, args.length)), audioTrackInfo -> {
-                        Logger.debug("Found track " + audioTrackInfo.title);
                         if(track.size() >= 5) {
                             return null;
                         }
@@ -92,7 +90,7 @@ public class Play extends UBPlugin implements MessageHook {
                                 r.addReaction("3\uFE0F\u20E3").queue((r4) -> {
                                     r.addReaction("4\uFE0F\u20E3").queue(r5 -> {
                                         r.addReaction("5\uFE0f\u20E3").queue(owo -> {
-                                            RESULTS.putIfAbsent(message.getChannel().getId(), new ResultsObject(track, message, r));
+                                            RESULTS.put(message.getAuthor().getId(), new ResultsObject(track, message, r));
                                         });
                                     });
                                 });
@@ -125,14 +123,11 @@ public class Play extends UBPlugin implements MessageHook {
     @Override
     public void onAnyEvent(GenericEvent e) {
         if(e instanceof GuildMessageReactionAddEvent) {
-            Logger.debug("Got reaction.");
             if(((GuildMessageReactionAddEvent) e).getMember().getId().equals(Main.jda.getSelfUser().getId()))
                 return;
-            Logger.debug("Testing key");
-            if(!RESULTS.containsKey(((GuildMessageReactionAddEvent) e).getChannel().getId()))
+            if(!RESULTS.containsKey(((GuildMessageReactionAddEvent) e).getMember().getId()))
                 return;
-            Logger.debug("");
-            ResultsObject info = RESULTS.get(((GuildMessageReactionAddEvent) e).getChannel().getId());
+            ResultsObject info = RESULTS.get(((GuildMessageReactionAddEvent) e).getMember().getId());
             if(!info.userMessage.getAuthor().getId().equals(((GuildMessageReactionAddEvent) e).getUserId()))
                 return;
             MessageReaction reaction = ((GuildMessageReactionAddEvent) e).getReaction();
@@ -141,7 +136,6 @@ public class Play extends UBPlugin implements MessageHook {
             if(!((GuildMessageReactionAddEvent) e).getMessageId().equals(info.botMessage.getId()))
                 return;
             int toPlay = 0;
-            Logger.debug("Testing reaction " + reaction.getReactionEmote().getEmoji());
             if(reaction.getReactionEmote().getEmoji().equals("1️⃣"))
                 toPlay = 1;
             else if(reaction.getReactionEmote().getEmoji().equals("2️⃣"))

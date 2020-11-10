@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 public final class Bruh extends UBPlugin {
     
     @Override
-    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
+    public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         try {
             message.getChannel().sendMessage("https://tenor.com/view/bruh-seriously-bro-shutup-come-gif-14409930").queue();
         } catch(Throwable ignored) {}
