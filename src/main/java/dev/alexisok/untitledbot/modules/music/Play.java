@@ -165,6 +165,7 @@ public class Play extends UBPlugin implements MessageHook {
             }
             
             RESULTS.remove(message.getTextChannel().getId());
+            info.botMessage.delete().queue();
         }
     }
     
