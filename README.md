@@ -115,7 +115,7 @@ You can join the untitled-bot discord server [here](https://alexisok.dev/ub/disc
 <dd>> <code>call</code> - the meme where Tom picks up the phone and calls someone.</dd><br>
 
 <h2>Music commands</h2>
-<dd>> <code>play</code>Play a YouTube video (YT search not supported YET).</dd><br>
+<dd>> <code>play</code>Play a YouTube video or search YT.</dd><br>
 <dd>> <code>stop</code>stop the player and clear the queue.</dd><br>
 <dd>> <code>skip</code>skip the currently playing song.</dd><br>
 <dd>> <code>queue</code>list the queue of upcoming songs.</dd><br>
