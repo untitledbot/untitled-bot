@@ -204,13 +204,19 @@ public class MusicKernel {
     /**
      * Skip a track for a guild.
      * @param g the guild.
+     * @param n the number to skip, current = 0.
      * @return the skipped track.
      */
     @Contract
     @Nullable
-    public synchronized AudioTrack skip(@NotNull Guild g) {
+    public synchronized AudioTrack skip(@NotNull Guild g, int n) {
         AudioTrack currentTrack = this.musicManagers.get(g.getId()).player.getPlayingTrack();
-        this.musicManagers.get(g.getId()).scheduler.nextTrack();
+        
+        if(n == 0)
+            this.musicManagers.get(g.getId()).scheduler.skip(0); //current track
+        else
+            return this.musicManagers.get(g.getId()).scheduler.skip(Math.min(n - 1, this.musicManagers.get(g.getId()).scheduler.getQueue().size())); //specified track
+        
         return currentTrack;
     }
 
@@ -220,7 +226,8 @@ public class MusicKernel {
      * @param state the paused state (true = pause, false = not paused)
      */
     public synchronized void pause(@NotNull Guild g, boolean state) {
-        this.musicManagers.get(g.getId()).player.setPaused(state);
+        if(isPlaying(g))
+            this.musicManagers.get(g.getId()).player.setPaused(state);
     }
 
     /**
@@ -299,9 +306,11 @@ public class MusicKernel {
         //if there are no humans left in the voice channel
         if(!user) {
             //the same as running the "pause" command.
-            this.pause(vc.getGuild(), true);
-            this.lastChannels.get(vc.getGuild().getId()).sendMessage("The player has been paused as " +
-                    "all users have left the voice channel.").queue();
+            if(!this.isPaused(vc.getGuild())) {
+                this.pause(vc.getGuild(), true);
+                this.lastChannels.get(vc.getGuild().getId()).sendMessage("The player has been paused as " +
+                        "all users have left the voice channel.").queue();
+            }
         }
     }
 

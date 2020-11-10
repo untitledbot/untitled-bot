@@ -2,8 +2,10 @@ package dev.alexisok.untitledbot.modules.music;
 
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -11,6 +13,7 @@ import net.dv8tion.jda.api.entities.VoiceChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.Objects;
 
 /**
@@ -20,15 +23,25 @@ import java.util.Objects;
 public final class Join extends UBPlugin {
     
     @Override
-    public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
+    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
+        MusicKernel.INSTANCE.setLast(message.getGuild().getId(), message.getTextChannel());
+        EmbedBuilder eb = new EmbedBuilder();
+        EmbedDefaults.setEmbedDefaults(eb, message);
         for(VoiceChannel vc : message.getGuild().getVoiceChannels()) {
             if(!Objects.requireNonNull(message.getGuild().getMemberById(Main.jda.getSelfUser().getId())).hasPermission(vc, Permission.VOICE_CONNECT))
-                break;
+                continue;
             if(vc.getMembers().contains(message.getMember())) {
+                if(!Objects.requireNonNull(message.getGuild().getMemberById(Main.jda.getSelfUser().getId())).hasPermission(vc, Permission.VOICE_CONNECT))
+                    break;
                 MusicKernel.INSTANCE.join(vc);
-                return null;
+                eb.addField("Music Player", "I have joined the voice channel " + vc.getName() + ".", false);
+                eb.setColor(Color.GREEN);
+                return eb.build();
             }
         }
+        eb.addField("Music Player", "I couldn't find a voice channel to join, do I have access to it?", false);
+        eb.setColor(Color.RED);
+        return eb.build();
     }
     
     @Override

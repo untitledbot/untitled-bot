@@ -23,12 +23,14 @@ public final class Skip extends UBPlugin {
         MusicKernel.INSTANCE.setLast(message.getGuild().getId(), message.getTextChannel());
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
-        AudioTrack t = MusicKernel.INSTANCE.skip(message.getGuild());
+        
+        if(MusicKernel.INSTANCE.queue(message.getGuild()).length == 0)
+            return eb.addField("Skip", "Nothing to skip...", false).setColor(Color.RED).build();
+        
+        AudioTrack t = MusicKernel.INSTANCE.skip(message.getGuild(), getOrDefault(args));
         
         if(t != null)
-            eb.addField("Skip", "The track " + t.getInfo().title + " has been skipped.", false).setColor(Color.GREEN);
-        else
-            eb.addField("Skip", "Nothing to skip...", false).setColor(Color.RED);
+            eb.addField("Skip", "The track **" + NowPlaying.escapeDiscordMarkdown(t.getInfo().title) + "** has been skipped.", false).setColor(Color.GREEN);
         
         return eb.build();
     }

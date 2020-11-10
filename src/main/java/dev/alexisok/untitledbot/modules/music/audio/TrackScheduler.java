@@ -7,8 +7,11 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import dev.alexisok.untitledbot.modules.music.MusicKernel;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -19,7 +22,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public final class TrackScheduler extends AudioEventAdapter {
     
     private final AudioPlayer player;
-    private final BlockingQueue<AudioTrack> queue;
+    private final ArrayList<AudioTrack> queue;
     
     @Getter@Setter
     private boolean repeat = false;
@@ -29,24 +32,43 @@ public final class TrackScheduler extends AudioEventAdapter {
     
     public TrackScheduler(@NotNull AudioPlayer player, @NotNull String guildID) {
         this.player = player;
-        this.queue = new LinkedBlockingQueue<>();
+        this.queue = new ArrayList<>();
         this.guildID = guildID;
     }
     
     public void queue(@NotNull AudioTrack track) {
         if(!player.startTrack(track, true))
-            queue.offer(track);
+            queue.add(track);
     }
-    
-    public void nextTrack() {
-        this.player.startTrack(this.queue.poll(), false);
+
+    /**
+     * Goes to the next track.
+     * @return the track that is done playing.
+     */
+    @Contract
+    @Nullable
+    public AudioTrack nextTrack() {
+        AudioTrack current = this.player.getPlayingTrack();
+        if(this.queue.size() == 0) {
+            MusicKernel.INSTANCE.onQueueEnd(this.guildID);
+            return current;
+        }
+        this.player.startTrack(this.queue.get(0), false);
+        this.queue.remove(0);
+        return current;
     }
     
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if(endReason.equals(AudioTrackEndReason.REPLACED))
         if(this.repeat && endReason.equals(AudioTrackEndReason.FINISHED)) {
+            MusicKernel.INSTANCE.onNext(this.guildID, track);
             this.player.playTrack(track);
+            return;
+        }
+        
+        if(this.queue.size() == 0 && !endReason.mayStartNext) {
+            MusicKernel.INSTANCE.onQueueEnd(this.guildID);
             return;
         }
         
@@ -55,7 +77,7 @@ public final class TrackScheduler extends AudioEventAdapter {
             return;
         }
         
-        AudioTrack nextTrack = this.queue.peek();
+        AudioTrack nextTrack = this.queue.get(0);
         
         if(endReason.mayStartNext)
             this.nextTrack();
@@ -63,14 +85,19 @@ public final class TrackScheduler extends AudioEventAdapter {
         MusicKernel.INSTANCE.onNext(this.guildID, nextTrack);
     }
     
-    public BlockingQueue<AudioTrack> getQueue() {
-        return new LinkedBlockingQueue<>(this.queue);
+    public ArrayList<AudioTrack> getQueue() {
+        return new ArrayList<>(this.queue);
     }
-
+    
     /**
      * Clear the queue
      */
     public void clear() {
         this.queue.clear();
+    }
+
+    public AudioTrack skip(int n) {
+        if(n == 0) return this.nextTrack();
+        else return this.queue.remove(n);
     }
 }

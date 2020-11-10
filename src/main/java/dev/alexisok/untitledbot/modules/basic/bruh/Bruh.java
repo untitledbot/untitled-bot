@@ -19,10 +19,10 @@ public final class Bruh extends UBPlugin {
     
     @Override
     public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
-        EmbedBuilder eb = new EmbedBuilder();
-        EmbedDefaults.setEmbedDefaults(eb, message);
-        eb.setImage("https://tenor.com/view/bruh-seriously-bro-shutup-come-gif-14409930");
-        return eb.build();
+        try {
+            message.getChannel().sendMessage("https://tenor.com/view/bruh-seriously-bro-shutup-come-gif-14409930").queue();
+        } catch(Throwable ignored) {}
+        return null;
     }
 
     @Override

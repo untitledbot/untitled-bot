@@ -116,9 +116,7 @@ public class AllCommands extends UBPlugin {
             "`skip` - skip the currently playing song.\n" +
             "`queue` - list the queue of upcoming songs.\n" +
             "`np` - get the now playing songs.\n" +
-            "`pause` - pause/unpause the songs.\n" +
-            "`join` - have the bot join the channel without playing music.\n" +
-            "`leave` - have the bot leave the channel without clearing the queue.");
+            "`pause` - pause/unpause the songs.\n");
         
         eb.addField("All commands", "Please use one of the following commands for help:\n" +
             "`>help leveling` - leveling and rank commands.\n" +
