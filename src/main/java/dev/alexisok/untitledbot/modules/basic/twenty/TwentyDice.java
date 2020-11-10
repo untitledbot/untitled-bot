@@ -30,7 +30,7 @@ public class TwentyDice extends UBPlugin {
         int diceRoll = ThreadLocalRandom.current().nextInt(1, 21);
         int rollFor  = ThreadLocalRandom.current().nextInt(1, ROLL_FOR.length);
     
-        eb.addField(String.format("Rolling for %s.", args.length == 1 ? ROLL_FOR[rollFor] : args[1]),
+        eb.addField(String.format("Rolling for %s.", args.length == 1 ? ROLL_FOR[rollFor] : args[1].replace("\n", "")),
                 String.format("You rolled %d", diceRoll),
                 false);
         
