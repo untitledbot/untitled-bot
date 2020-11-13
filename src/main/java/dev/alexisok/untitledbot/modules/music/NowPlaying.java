@@ -7,6 +7,7 @@ import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -47,6 +48,8 @@ public final class NowPlaying extends UBPlugin {
         return eb.build();
     }
     
+    @NotNull
+    @Contract(pure = true)
     public static String escapeDiscordMarkdown(@NotNull String toEscape) {
         toEscape = toEscape.replaceAll("\\*", "\\*");
         toEscape = toEscape.replaceAll("_", "\\_");

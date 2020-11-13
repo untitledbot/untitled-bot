@@ -84,7 +84,7 @@ public class Play extends UBPlugin implements MessageHook {
                     if(track.size() <= 4) {
                         eb.setTitle("Hmmm.....");
                         eb.setColor(Color.RED);
-                        eb.setDescription("I couldn't find any results for that... maybe try a different query?");
+                        eb.setDescription("I couldn't find any results for that... maybe try a different query or paste a URL?");
                         return eb.build();
                     }
                     
@@ -144,9 +144,17 @@ public class Play extends UBPlugin implements MessageHook {
         CommandRegistrar.registerHook(new Play());
     }
 
+    /**
+     * this is not needed as of now.
+     * @param m the mre.
+     */
     @Override
     public void onMessage(GuildMessageReceivedEvent m) {}
 
+    /**
+     * Check for message reactions for the numbers 1-5 on the music module.
+     * @param e the event
+     */
     @Override
     public void onAnyEvent(GenericEvent e) {
         if(e instanceof GuildMessageReactionAddEvent) {
