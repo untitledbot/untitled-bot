@@ -156,12 +156,6 @@ public final class Ranks extends UBPlugin implements MessageHook {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        if(!message.isFromGuild()) {
-            eb.setColor(Color.RED);
-            eb.addField("Error", "You must run this in a guild!", false);
-            return eb.build();
-        }
-        
         String xp;
         String lv;
         
