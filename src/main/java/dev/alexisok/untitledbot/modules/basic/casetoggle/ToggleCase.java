@@ -7,11 +7,14 @@ import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.EnumSet;
 
 /**
  * @author AlexIsOK
@@ -30,11 +33,22 @@ public final class ToggleCase extends UBPlugin {
                                 if(message.mentionsEveryone()) {
                                     message.getChannel().sendMessage("Haha nerd nice try").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
                                 }
-                                message.getChannel().sendMessage(alternate(t.getRetrievedHistory().get(0).getContentRaw().replaceAll("<@[0-9]{5,64}>", "<user>").toLowerCase())).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
+                                String c = alternate(t.getRetrievedHistory().get(0).getContentRaw().toLowerCase());
+                                message.getChannel().sendMessage(
+                                        new MessageBuilder()
+                                                .setAllowedMentions(EnumSet.noneOf(Message.MentionType.class))
+                                                .setContent(c)
+                                                .build()
+                                ).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
                             } catch(Throwable ignored){}
                         });
             } else {
-                message.getChannel().sendMessage(alternate(String.join(" ", ArrayUtils.remove(args, 0)).toLowerCase())).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
+                message.getChannel().sendMessage(
+                        new MessageBuilder()
+                        .setContent(alternate(String.join(" ", ArrayUtils.remove(args, 0)).toLowerCase()))
+                        .setAllowedMentions(EnumSet.noneOf(Message.MentionType.class))
+                        .build()
+                ).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
             }
         } catch(Throwable ignored) {
             message.getChannel().sendMessage("Cannot mock the previous message as it either had no text or the text is in an embed.").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
@@ -58,6 +72,6 @@ public final class ToggleCase extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("toggle-case", this);
         Manual.setHelpPage("toggle-case", "MaKe A mEsSaGe ChAnGe EaCh LeTtEr CaPiTaLiZaTiOn.");
-        CommandRegistrar.registerAlias("toggle-case", "alternate-case", "ac", "tc", "mock");
+        CommandRegistrar.registerAlias("toggle-case", "alternate-case", "ac", "tc", "mock", "mawk");
     }
 }

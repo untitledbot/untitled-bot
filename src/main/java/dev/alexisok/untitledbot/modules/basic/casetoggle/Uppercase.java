@@ -6,11 +6,14 @@ import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.EnumSet;
 
 /**
  * Command `caps` and stuff
@@ -30,11 +33,22 @@ public final class Uppercase extends UBPlugin {
                                 if(message.mentionsEveryone()) {
                                     message.getChannel().sendMessage("Haha nerd nice try").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
                                 }
-                                message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().toUpperCase())).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
+                                String c = t.getRetrievedHistory().get(0).getContentRaw().toUpperCase();
+                                message.getChannel().sendMessage(
+                                        new MessageBuilder()
+                                                .setAllowedMentions(EnumSet.noneOf(Message.MentionType.class))
+                                                .setContent(c)
+                                                .build()
+                                ).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
                             } catch(Throwable ignored){}
                         });
             } else {
-                message.getChannel().sendMessage((String.join(" ", ArrayUtils.remove(args, 0)).toUpperCase())).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
+                message.getChannel().sendMessage(
+                        new MessageBuilder()
+                                .setContent(String.join(" ", ArrayUtils.remove(args, 0)).toUpperCase())
+                                .setAllowedMentions(EnumSet.noneOf(Message.MentionType.class))
+                                .build()
+                ).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
             }
         } catch(Throwable ignored) {
             message.getChannel().sendMessage("Cannot uppercase the previous message as it either had no text or the text is in an embed.").queue(r -> BotClass.addToDeleteCache(message.getId(), r));

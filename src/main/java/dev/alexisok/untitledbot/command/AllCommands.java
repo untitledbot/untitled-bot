@@ -29,7 +29,7 @@ public class AllCommands extends UBPlugin {
             "`rank` - get the rank of yourself or a specific user.\n" +
             "`leaderboard` - get the highest ranking users in the guild.\n" +
             "`rank-total` - get the total amount of xp of yourself or another user.\n" +
-            "`rank-settings` - rankup and rank boost settings for moderators. (adm)\n" +
+            "`rank-settings` - configure level up messages.(adm)\n" +
             "`rank-role` - assign rank roles for users when they level up. (adm)\n" +
             "`rank-roles` - get a list of current rank roles.");
         Manual.setHelpPage("util", "\n" +
@@ -42,7 +42,6 @@ public class AllCommands extends UBPlugin {
             "`avatar` - get the avatar of yourself or another user.\n" +
             "`bug-report` - report a bug directly to me.\n" +
             "`discord` - get an invite link for the Discord support server.\n" +
-            "`vote` - vote for the bot on Top.GG.\n" +
             "`ping` - get the ping of the bot.\n" +
             "`inv` - list your inventory.\n" +
             "`reverse` - reverse a string.\n" +
@@ -68,7 +67,7 @@ public class AllCommands extends UBPlugin {
             "`ship` - ship two users (user requested!).\n" +
             "`20` - roll a twenty sided die.\n" +
             "`owo` - owofy a stwing of text,,,\n" +
-            "`cat` - get a cat fact." +
+            "`cat` - get a cat fact.\n" +
             "`aol` - a legendary tale of the spider lenny vs the wizard lenny.....\n");
         Manual.setHelpPage("econ", "\n" +
             "`bal` - get the balance of yourself or another user.\n" +
@@ -102,7 +101,7 @@ public class AllCommands extends UBPlugin {
             "`spread` - spread ALL the pixels\n" +
             "`swirl` - whszoosh\n" +
             "`wave` - wewewewew\n" +
-            "`emboss` - does... things.");
+            "`emboss` - embosses images?");
         
         Manual.setHelpPage("meme", "\n" +
             "`achievement` - generate a fake MC achievement\n" +

@@ -7,11 +7,15 @@ import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.apache.commons.collections4.bag.CollectionBag;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.EnumSet;
 
 /**
  * @author AlexIsOK
@@ -33,7 +37,13 @@ public final class Lowercase extends UBPlugin {
                                     message.getChannel().sendMessage("Haha nerd nice try").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
                                     return;
                                 }
-                                message.getChannel().sendMessage((t.getRetrievedHistory().get(0).getContentRaw().toLowerCase())).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
+                                String c = t.getRetrievedHistory().get(0).getContentRaw().toLowerCase();
+                                message.getChannel().sendMessage(
+                                        new MessageBuilder()
+                                        .setAllowedMentions(EnumSet.noneOf(Message.MentionType.class))
+                                        .setContent(c)
+                                        .build()
+                                ).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
                             } catch(Throwable ignored){}
                         });
             } else {
@@ -42,7 +52,12 @@ public final class Lowercase extends UBPlugin {
                     message.getChannel().sendMessage("Haha nerd nice try").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
                     return null;
                 }
-                message.getChannel().sendMessage(content).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
+                message.getChannel().sendMessage(
+                        new MessageBuilder()
+                                .setAllowedMentions(EnumSet.noneOf(Message.MentionType.class))
+                                .setContent(content)
+                                .build()
+                ).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
             }
         } catch(Throwable ignored) {
             message.getChannel().sendMessage("Cannot do lowercase on the previous message.").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
