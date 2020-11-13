@@ -29,6 +29,7 @@ public final class VoidCache extends UBPlugin {
         
         Starboard.voidAllCache();
         BotClass.voidPrefixCache();
+        Main.resetContributors();
         
         eb.addField("Void", "Cache has been voided.  Expect a slowdown for the next few minutes.", false);
         return eb.build();

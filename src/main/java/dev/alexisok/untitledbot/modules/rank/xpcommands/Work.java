@@ -119,6 +119,7 @@ public final class Work extends UBPlugin {
         RESPONSES.add("i need more responses please contribute to this on github or something anyways you earned UB$%d.");
         RESPONSES.add("You find out the purpose of life, and earn UB$%d because of it.");
         RESPONSES.add("You went vegan for ten minutes and earn UB$%d from stream donations.");
+        RESPONSES.add("Something something you got UB$%d");
         
         CommandRegistrar.register("work", this);
         Manual.setHelpPage("work", "Work to get untitled-bot currency (not a real currency).");

@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot;
 
+import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
 import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
@@ -53,6 +54,8 @@ public final class Main {
     private static final String TOP_GG_TOKEN;
     
     public static DiscordBotListAPI API;
+    
+    public static final ArrayList<String> CONTRIBUTORS = new ArrayList<>();
     
     static {
         debug("Installing shutdown hook");
@@ -134,8 +137,38 @@ public final class Main {
                 new Timer().schedule(updateServerCountTask, 20000L, 1200000L);
             }
         });
-    
+        
         t.start();
+        
+        if(new File("contributors.properties").exists()) {
+            Properties p = new Properties();
+            try {
+                p.load(new FileInputStream("contributors.properties"));
+                p.forEach((o, o2) -> {
+                    CONTRIBUTORS.add(o.toString());
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Resets the contributors list and reads from the file.
+     */
+    public static void resetContributors() {
+        CONTRIBUTORS.clear();
+        if(new File("contributors.properties").exists()) {
+            Properties p = new Properties();
+            try {
+                p.load(new FileInputStream("contributors.properties"));
+                p.forEach((o, o2) -> {
+                    CONTRIBUTORS.add(o.toString());
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
     
     private static void setDefaultProps(@NotNull Properties p) {
@@ -177,8 +210,9 @@ public final class Main {
                     .enableCache(MEMBER_OVERRIDES, EMOTE)
                     .setMemberCachePolicy(MemberCachePolicy.ONLINE.and(OWNER).and(VOICE))
                     .addEventListeners(new ModHook(), new BotClass(), new Starboard())
+                    .setAudioSendFactory(new NativeAudioSendFactory()) //mitigates packet loss according to JDA NAS.
                     .build();
-            jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.STREAMING, "https://untitled-bot.xyz"));
+            jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help"));
         } catch(LoginException e) {
             e.printStackTrace();
             Logger.critical("Could not login to Discord!", 1);

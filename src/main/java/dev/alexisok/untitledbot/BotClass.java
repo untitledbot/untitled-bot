@@ -6,7 +6,6 @@ import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.music.MusicKernel;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -22,9 +21,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -80,7 +76,8 @@ public final class BotClass extends ListenerAdapter {
                     "```" +
                     "\n\n\n" +
                     "Thank you for inviting untitled-bot!\n" +
-                    "For help with the bot, use `" + Main.PREFIX + "help`\n" +
+                    "For help with the bot, use `>help`\n" +
+                    "To change the prefix, use `>prefix <new prefix>`\n" +
                     "The website for the bot is [here](https://untitled-bot.xyz), and the " +
                     "official support server is [here](https://discord.gg/vSWgQ9a).", false).build();
     
@@ -163,7 +160,21 @@ public final class BotClass extends ListenerAdapter {
     public static synchronized void voidPrefixCache() {
         PREFIX_CACHE.clear();
     }
-    
+
+    /**
+     * Gets a nice prefix, so `>` as a prefix will return `>` but `ub` returns `ub `
+     * @param id the id of the guild
+     * @return the new prefix
+     */
+    @NotNull
+    @Contract(pure = true)
+    public static String getPrefixNice(String id) {
+        String prefix = getPrefix(id, null);
+        if((prefix.charAt(prefix.length() - 1) + "").matches("[A-Za-z0-9]"))
+            prefix += " ";
+        return prefix;
+    }
+
     /**
      * This is messy...
      * @param event the mre
@@ -222,20 +233,24 @@ public final class BotClass extends ListenerAdapter {
         
         message = message.substring(prefix.length());
         
+        message = message.replace("\n", " ");
+        
         //replace all "  " with " "
         if(message.contains("  ")) {
             do message = message.replaceAll(" {2}", " ");
             while(message.contains("  "));
         }
-    
+        
         //args...
         String[] args = message.split(" ");
-    
+        
         //execute a command and return the message it provides
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 try {
+                    args[0] = args[0].toLowerCase();
+                    Logger.debug("Exec command " + args[0]);
                     event.getChannel()
                             .sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
                             .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r));

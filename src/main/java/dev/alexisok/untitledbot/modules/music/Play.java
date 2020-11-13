@@ -79,25 +79,35 @@ public class Play extends UBPlugin implements MessageHook {
                         return null;
                     });
                     
-                    String tracks = "";
+                    StringBuilder tracks = new StringBuilder();
+                    
+                    if(track.size() <= 4) {
+                        eb.setTitle("Hmmm.....");
+                        eb.setColor(Color.RED);
+                        eb.setDescription("I couldn't find any results for that... maybe try a different query?");
+                        return eb.build();
+                    }
                     
                     for(int i = 0; i < 5; i++) {
                         long current = track.get(i).length / 1000;
-                        tracks += String.format("%d. `%d:%s` - [**%s** by **%s**](%s)%n",
+                        tracks.append(String.format("%d. `%d:%s` - [**%s** by **%s**](%s)%n",
                                 i + 1,
                                 current / 60,
                                 ((current % 60) + "").length() == 1 ? "0" + (current % 60) : (current % 60),
                                 escapeDiscordMarkdown(track.get(i).title),
                                 escapeDiscordMarkdown(track.get(i).author),
-                                track.get(i).uri);
+                                track.get(i).uri));
                     }
                     eb.setTitle("React with 1 through 5 to pick a video.");
-                    eb.setDescription(tracks);
+                    eb.setDescription(tracks.toString());
                     eb.setColor(Color.GREEN);
                     
                     try {
-                        if (RESULTS.containsKey(message.getAuthor().getId()))
-                            RESULTS.get(message.getAuthor().getId()).botMessage.delete().queue();
+                        if(RESULTS.containsKey(message.getAuthor().getId()))
+                            RESULTS.get(message.getAuthor().getId()).botMessage.delete()
+                                    .onErrorMap(throwable -> {
+                                        return null; //old message was already deleted.
+                                    }).queue();
                     } catch(Throwable ignored) {}
                     
                     //send the message, add reactions 1-5, then add it to the queue to be listened to
@@ -171,10 +181,13 @@ public class Play extends UBPlugin implements MessageHook {
             
             for(VoiceChannel vc : info.userMessage.getGuild().getVoiceChannels()) {
                 if(vc.getMembers().contains(message.getMember())) {
-                    MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), info.infos.get(toPlay - 1).uri, vc);
+                    try {
+                        MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), info.infos.get(toPlay - 1).uri, vc);
+                    } catch(IndexOutOfBoundsException ignored) {}
                 }
             }
             
+            //delete the original message
             info.botMessage.delete().queue();
         }
     }

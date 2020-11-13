@@ -40,7 +40,7 @@ public final class Vote extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("vote", this);
-        Manual.setHelpPage("vote", "Get the link to vote for the bot on Top.GG...");
+//        CommandRegistrar.register("vote", this);
+//        Manual.setHelpPage("vote", "Get the link to vote for the bot on Top.GG...");
     }
 }

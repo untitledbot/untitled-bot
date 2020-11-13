@@ -24,14 +24,24 @@ public final class Queue extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
+        int min = 0;
+        int max = 20;
+        
+        //page of queue
+        if(args.length == 2 && args[1].matches("^[123456789]")) {
+            max = 20 * Integer.parseInt(args[1]) - 1;
+            min = max - 20;
+        }
+        
         StringBuilder queue = new StringBuilder();
         int i = 0;
         for(AudioTrack t : MusicKernel.INSTANCE.queue(message.getGuild())) {
-            i++;
-            String format = escapeDiscordMarkdown(i + ": " + t.getInfo().title + "\n");
+            if(i++ < min)
+                continue;
+            String format = escapeDiscordMarkdown(String.format("%d: %s\n", i, t.getInfo().title));
             if((queue + format).length() > 2048)
                 break;
-            if(i > 20)
+            if(i > max)
                 break;
             queue.append(format);
         }
@@ -63,7 +73,8 @@ public final class Queue extends UBPlugin {
     @Override
     public void onRegister() {
         CommandRegistrar.register("queue", this);
-        Manual.setHelpPage("queue", "Get the queue for this server.");
+        Manual.setHelpPage("queue", "Get the queue for this server.\n" +
+                "Usage: `queue [page; def 1]`");
         CommandRegistrar.registerAlias("queue", "queueueueueueueueueueue", "q", "kew");
     }
 }

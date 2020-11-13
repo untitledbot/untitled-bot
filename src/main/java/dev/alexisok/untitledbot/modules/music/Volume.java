@@ -1,6 +1,8 @@
 package dev.alexisok.untitledbot.modules.music;
 
+import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -26,6 +28,27 @@ public final class Volume extends UBPlugin {
     
     @Override
     public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
+        
+        if(Main.CONTRIBUTORS.contains(message.getAuthor().getId())) {
+            EmbedBuilder eb = new EmbedBuilder();
+            EmbedDefaults.setEmbedDefaults(eb, message);
+            
+            if(args.length == 1 || (args.length == 2 && !args[1].matches("[0-9]{1,3}")))
+                return eb.addField("Volume", "The volume must be a value between 0 and 100.", false).setColor(Color.RED).build();
+            
+            int vol = Integer.parseInt(args[1]);
+            
+            if(vol < 0 || vol > 100)
+                return eb.addField("Volume", "The volume must be a value between 0 and 100.", false).setColor(Color.RED).build();
+            
+            MusicKernel.INSTANCE.setVolume(message.getGuild().getId(), vol);
+            eb.addField("Volume", "Volume has been set.  Thank you for being a contributor to untitled-bot!", false);
+            eb.setColor(Color.GREEN);
+            
+            return eb.build();
+            
+        }
+        
         return EMBED;
     }
     

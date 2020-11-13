@@ -38,7 +38,9 @@ public final class AttackOnLenny extends UBPlugin {
                             "(∩ ͡° ͜ʖ ͡°)⊃━炎炎炎炎炎炎炎炎").queueAfter(2500, MILLISECONDS, con2 -> {
                                 con2.editMessage("(∩ ͡° ͜ʖ ͡°)⊃━炎炎炎炎炎炎炎炎 /╲/( ͡° ͡° ͜ʖ ͡° ͡°)/\\╱\\").queueAfter(2500, MILLISECONDS, con3 -> {
                                     con3.editMessage("\\*\\*BANG SMASH EXPLOSION SOUND EFFECTS\\*\\*").queueAfter(2000, MILLISECONDS, con4 -> {
-                                        con4.editMessage("(͡° ͜ʖ ͡°) evil man has been defeated.  Use the `aol` command to watch again.").queueAfter(2000, MILLISECONDS, con5 -> {
+                                        con4.editMessage("(͡° ͜ʖ ͡°) evil man has been defeated.  Use the `"
+                                                + BotClass.getPrefixNice(con4.getGuild().getId()) + "aol` command to watch again.")
+                                                .queueAfter(2000, MILLISECONDS, con5 -> {
                                             WATCHING.remove(con5.getGuild().getId());
                                         });
                                     });

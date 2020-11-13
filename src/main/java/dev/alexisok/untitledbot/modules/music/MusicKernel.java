@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Handles a lot of music stuff and commands.
@@ -87,7 +88,7 @@ public class MusicKernel {
         eb.setTitle("\u25B6\uFE0F Now Playing", track.getInfo().uri);
         eb.addField(NowPlaying.escapeDiscordMarkdown(track.getInfo().title),
                 "By " + NowPlaying.escapeDiscordMarkdown(track.getInfo().author), false);
-        this.lastChannels.get(guildID).sendMessage(eb.build()).queue();
+        this.lastChannels.get(guildID).sendMessage(eb.build()).queueAfter(200, TimeUnit.MILLISECONDS);
     }
     
     private final AudioPlayerManager playerManager;
@@ -101,7 +102,6 @@ public class MusicKernel {
         this.musicManagers = new HashMap<>();
         this.playerManager = new DefaultAudioPlayerManager();
         AudioSourceManagers.registerRemoteSources(playerManager);
-        AudioSourceManagers.registerLocalSource(playerManager);
     }
     
     protected void loadAndPlay(@NotNull TextChannel channel, @NotNull String trackURL, @NotNull VoiceChannel requestedVC) {
@@ -136,11 +136,10 @@ public class MusicKernel {
                     return;
                 }
                 
-                if (first == null) {
+                if(first == null) {
                     first = playlist.getTracks().get(0);
                 }
                 
-                //TODO reverse this for loop if there are problems loading playlists in the correct order.
                 for(AudioTrack playlistItem : playlist.getTracks()) {
                     mm.scheduler.queue(playlistItem);
                 }
@@ -150,6 +149,7 @@ public class MusicKernel {
                         NowPlaying.escapeDiscordMarkdown(first.getInfo().title),
                         NowPlaying.escapeDiscordMarkdown(playlist.getName())), false);
                 play(channel.getGuild(), requestedVC, mm, first);
+                channel.sendMessage(eb.build()).queue();
             }
             
             @Override
@@ -199,6 +199,7 @@ public class MusicKernel {
         this.musicManagers.get(g.getId()).scheduler.clear();
         this.musicManagers.get(g.getId()).player.destroy();
         g.getAudioManager().closeAudioConnection();
+        this.musicManagers.remove(g.getId());
     }
 
     /**
@@ -289,16 +290,18 @@ public class MusicKernel {
      */
     public synchronized void onUserLeaveVC(@NotNull VoiceChannel vc) {
         
-        if(true)
-            return;
-        
         //don't check guilds the bot isn't playing music in
         if(!this.musicManagers.containsKey(vc.getGuild().getId()))
             return;
         
         boolean user = false;
         
+        boolean hasSelf = false;
+        
         for(Member m : vc.getMembers()) {
+            
+            if(m.getUser().getId().equalsIgnoreCase(vc.getJDA().getSelfUser().getId()))
+                hasSelf = true;
             
             if(m.getUser().isBot())
                 continue;
@@ -307,7 +310,7 @@ public class MusicKernel {
         }
         
         //if there are no humans left in the voice channel
-        if(!user) {
+        if(!user && hasSelf) {
             //the same as running the "pause" command.
             if(!this.isPaused(vc.getGuild())) {
                 this.pause(vc.getGuild(), true);
@@ -325,7 +328,7 @@ public class MusicKernel {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("Music Player");
         eb.addField("Music Player", "The queue is empty, use the `play` command to play a song.", false);
-        this.lastChannels.get(guildID).sendMessage(eb.build()).queue();
+        this.lastChannels.get(guildID).sendMessage(eb.build()).queueAfter(200, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -355,5 +358,18 @@ public class MusicKernel {
      */
     public void join(@NotNull VoiceChannel vc) {
         vc.getGuild().getAudioManager().openAudioConnection(vc);
+    }
+    
+    public void setVolume(String id, int vol) {
+        this.musicManagers.get(id).player.setVolume(vol);
+    }
+
+    /**
+     * Seek to a specific time.
+     * @param id the ID of the guild
+     * @param l time to seek to in ms.
+     */
+    public void seek(@NotNull String id, long l) {
+        this.musicManagers.get(id).seek(id, l);
     }
 }

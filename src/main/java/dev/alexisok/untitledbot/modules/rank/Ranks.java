@@ -86,7 +86,6 @@ public final class Ranks extends UBPlugin implements MessageHook {
         Manual.setHelpPage("rank-settings", "Set the rank settings.\n" +
                                                     "Usage: `rank-settings <setting> <value>`\n" +
                                                     "Current settings:\n" +
-                                                    "\tannounce-xp-boost <true | false>\n" +
                                                     "\tannounce-level-up <current | channel <channel #> | none>\n");
         CommandRegistrar.registerAlias("rank-top", "ranktop", "leaderboard", "top", "ranklist", "bottom");
         CommandRegistrar.registerAlias("rank", "level");

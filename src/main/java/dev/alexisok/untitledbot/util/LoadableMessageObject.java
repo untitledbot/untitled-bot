@@ -5,13 +5,14 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.Contract;
 
+import java.io.File;
 import java.util.Objects;
 
 /**
  * @author AlexIsOK
  * @since 1.3.23
  */
-public class LoadableMessageObject implements Loadable {
+public class LoadableMessageObject  {
     
     private Message loadedMessage;
     
@@ -19,17 +20,15 @@ public class LoadableMessageObject implements Loadable {
         this.loadedMessage = m;
     }
     
-    @Override
     @Contract
-    public void load(String load) {
-        String[] data = load.split(";");
-        TextChannel tc = Main.jda.getTextChannelById(data[0]);
-        Objects.requireNonNull(tc).retrieveMessageById(data[1]).queue(r -> {
-            this.loadedMessage = r;
-        });
+    public void load(File load) {
+//        String[] data = load.getAbsoluteFile().split(";");
+//        TextChannel tc = Main.jda.getTextChannelById(data[0]);
+//        Objects.requireNonNull(tc).retrieveMessageById(data[1]).queue(r -> {
+//            this.loadedMessage = r;
+//        });
     }
     
-    @Override
     @Contract(pure = true)
     public String store() {
         return this.loadedMessage.getChannel().getId() + ";" + this.loadedMessage.getId();

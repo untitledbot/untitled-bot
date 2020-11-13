@@ -1,11 +1,14 @@
 package dev.alexisok.untitledbot.command;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.awt.*;
 
 /**
  * Lists all commands to the user.
@@ -16,8 +19,6 @@ import org.jetbrains.annotations.Nullable;
  * @since 1.3
  */
 public class AllCommands extends UBPlugin {
-    
-    private static final MessageEmbed HELP_MESSAGE;
     
     static {
         EmbedBuilder eb = new EmbedBuilder();
@@ -129,17 +130,6 @@ public class AllCommands extends UBPlugin {
             "`>help meme` - meme generation.\n" +
             "`>help music` - music commands.\n\n" +
             "To change the prefix of the bot, use `>prefix`", false);
-        
-//        eb.addField("Want something added?", "\n" +
-//                                                     "If you would like to see another command added, or more features " +
-//                                                     "on this bot, please [join the Discord server](https://discord.gg/vSWgQ9a) :)", false);
-        
-        eb.addField("Need support?", String.format("**[Support Server](%s) | [GitHub](%s) | [Official Site](%s)**",
-                "https://alexisok.dev/ub/discord.html", //DO NOT CHANGE TO XYZ SITE
-                "https://github.com/untitledbot/untitled-bot",
-                "https://untitled-bot.xyz/"), false);
-        
-        HELP_MESSAGE = eb.build();
     }
     
     /**
@@ -158,7 +148,27 @@ public class AllCommands extends UBPlugin {
      */
     @Override
     public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
-        return HELP_MESSAGE;
+        EmbedBuilder eb = new EmbedBuilder();
+        EmbedDefaults.setEmbedDefaults(eb, message);
+        String prefix = BotClass.getPrefixNice(message.getGuild().getId());
+        eb.addField("All commands", String.format("Please use one of the following commands for help:\n" +
+                "`%shelp leveling` - leveling and rank commands.\n" +
+                "`%shelp util` - utilities.\n" +
+                "`%shelp moderation` - moderation and logging commands.\n" +
+                "`%shelp fun` - fun commands.\n" +
+                "`%shelp econ` - economy commands.\n" +
+                "`%shelp reactions` - GIF or text reactions.\n" +
+                "`%shelp image` - image manipulation\n" +
+                "`%shelp meme` - meme generation.\n" +
+                "`%shelp music` - music commands.\n\n" +
+                "To change the prefix of the bot, use `%sprefix`",
+                prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix), false);
+        eb.setColor(Color.GREEN);
+        eb.addField("Need support?", String.format("**[Support Server](%s) | [GitHub](%s) | [Official Site](%s)**",
+                "https://alexisok.dev/ub/discord.html", //DO NOT CHANGE TO XYZ SITE
+                "https://github.com/untitledbot/untitled-bot",
+                "https://untitled-bot.xyz/"), false);
+        return eb.build();
     }
     
     /**

@@ -52,7 +52,7 @@ public final class AtSomeone extends UBPlugin {
         EmbedDefaults.setEmbedDefaults(eb, message);
         //obtained from https://www.lennyfaces.net/magic/
         String lennyA = "\uFFE1( \u0361\u00B0 \u035C\u0296 \u0361\u00B0)/\u2606*\u3002;+\uFF0CAT SOMEONE HAS BEEN CAST\nWHO SHALL RECEIVE THY INCANTATION?\nWHY, YES, IT IS <@";
-        Member randomMember = message.getGuild().getMembers().get(ThreadLocalRandom.current().nextInt(0, message.getGuild().getMembers().size()));
+        Member randomMember = message.getGuild().getMemberCache().getElementById(ThreadLocalRandom.current().nextInt(0, (int) message.getGuild().getMemberCache().size()));
         lennyA += String.format("%s> OF COURSE!", randomMember.getId());
         
         ThreadLocalRandom tlr = ThreadLocalRandom.current();

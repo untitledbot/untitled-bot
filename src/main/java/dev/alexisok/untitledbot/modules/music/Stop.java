@@ -42,6 +42,6 @@ public final class Stop extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("stop", this);
         Manual.setHelpPage("stop", "Stop the currently playing song.");
-        CommandRegistrar.registerAlias("stop", "die");
+        CommandRegistrar.registerAlias("stop", "die", "destroy", "reeeee");
     }
 }

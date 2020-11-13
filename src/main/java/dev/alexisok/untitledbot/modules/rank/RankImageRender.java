@@ -44,10 +44,6 @@ public final class RankImageRender {
         Logger.log("Created tmp rank directory?  " + new File("./tmp/rank/").mkdirs());
         Logger.log("If this is false, it probably means the directory already exists.  If the directory doesn't exist, make sure" +
                            " that the bot has write permissions in the current directory.");
-        for(String fn : GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()) {
-//            Logger.debug("Font " + fn + " is registered.");
-        }
-        Logger.debug("Done listing fonts.");
         
     }
     
