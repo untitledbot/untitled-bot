@@ -144,9 +144,17 @@ public final class Main {
             Properties p = new Properties();
             try {
                 p.load(new FileInputStream("contributors.properties"));
-                p.forEach((o, o2) -> {
-                    CONTRIBUTORS.add(o.toString());
-                });
+                p.forEach((o, o2) -> CONTRIBUTORS.add(o.toString()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        if(new File("blacklist.properties").exists()) {
+            Properties p = new Properties();
+            try {
+                p.load(new FileInputStream("blacklist.properties"));
+                p.forEach((o, o2) -> BotClass.addToBlacklist(o.toString()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -162,9 +170,7 @@ public final class Main {
             Properties p = new Properties();
             try {
                 p.load(new FileInputStream("contributors.properties"));
-                p.forEach((o, o2) -> {
-                    CONTRIBUTORS.add(o.toString());
-                });
+                p.forEach((o, o2) -> CONTRIBUTORS.add(o.toString()));
             } catch (IOException e) {
                 e.printStackTrace();
             }

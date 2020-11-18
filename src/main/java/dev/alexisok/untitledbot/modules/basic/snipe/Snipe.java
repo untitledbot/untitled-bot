@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * @author AlexIsOK
@@ -46,20 +47,20 @@ public final class Snipe extends UBPlugin implements MessageHook {
             return eb.build();
         }
         
-        Message sniped = ModHook.getMessageByID(SNIPE_CACHE.get(target.getId()));
+        Message sniped = null;
+        
+        try {
+            //this is done to prevent getting deleted messages from other channels outside of the guild.
+            sniped = ModHook.getMessageByID(SNIPE_CACHE.get(Objects.requireNonNull(message.getGuild().getTextChannelById(target.getId())).getId()));
+        } catch(NullPointerException ignored) {}
         
         if(sniped == null) {
             eb.setTitle("Snipe");
-            eb.setDescription("No message to snipe.");
+            eb.setDescription("No message to snipe.  Please enable the message-update or message-delete logs to use this command.");
             eb.setColor(Color.RED);
             return eb.build();
         }
         SNIPE_CACHE.remove(target.getId());
-        
-        if(sniped.getContentRaw().matches("\\bdiscord(.|\\\\.)gg")) {
-            eb.addField("Snipe", "Sniped message might contain an invite link!", false);
-            return eb.build();
-        }
         
         eb.setTitle("Snipe");
         eb.setDescription(sniped.getContentRaw());
@@ -88,7 +89,7 @@ public final class Snipe extends UBPlugin implements MessageHook {
 
     @Override
     public void onRegister() {
-        CommandRegistrar.register("snipe", this);
+        CommandRegistrar.register("snipe", "admin", this);
         Manual.setHelpPage("snipe", "Get the last deleted message in this channel or another.");
     }
 }

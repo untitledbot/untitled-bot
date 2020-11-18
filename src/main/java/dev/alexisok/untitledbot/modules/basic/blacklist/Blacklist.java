@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static dev.alexisok.untitledbot.BotClass.BLACKLIST;
+import static dev.alexisok.untitledbot.BotClass.addToBlacklist;
 
 /**
  * @author AlexIsOK
@@ -35,7 +36,7 @@ public class Blacklist extends UBPlugin {
                 return eb.build();
             }
             else {
-                BLACKLIST.add(ID);
+                addToBlacklist(ID);
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.addField("Blacklisted!", "This user has been blacklisted :white_check_mark:", false);
                 return eb.build();

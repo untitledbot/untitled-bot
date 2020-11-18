@@ -60,7 +60,8 @@ public class AllCommands extends UBPlugin {
             "`add-log` - add a log type to the log channel.(adm)\n" +
             "`remove-log` - remove a log type from the channel.(adm)\n" +
             "`log-types` - list all current log types.\n" +
-            "`get-log` - list what's being logged.");
+            "`get-log` - list what's being logged.\n" +
+            "`snipe <channel> - get the last deleted message of a channel.");
         Manual.setHelpPage("fun", "\n" +
             "`someone` - mention a random user without pinging them.\n" +
             "`8ball` - simulate a magic 8 ball.\n" +
@@ -159,9 +160,10 @@ public class AllCommands extends UBPlugin {
                 "`%shelp reactions` - GIF or text reactions.\n" +
                 "`%shelp image` - image manipulation\n" +
                 "`%shelp meme` - meme generation.\n" +
-                "`%shelp music` - music commands.\n\n" +
+                "`%shelp music` - music commands.\n" +
+                "`%shelp cache` - change cache config for the bot.\n\n" +
                 "To change the prefix of the bot, use `%sprefix`",
-                prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix), false);
+                prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix), false);
         eb.setColor(Color.GREEN);
         eb.addField("Need support?", String.format("**[Support Server](%s) | [GitHub](%s) | [Official Site](%s)**",
                 "https://alexisok.dev/ub/discord.html", //DO NOT CHANGE TO XYZ SITE

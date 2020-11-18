@@ -31,6 +31,9 @@ import java.awt.*;
 import java.time.Instant;
 import java.util.*;
 
+import static dev.alexisok.untitledbot.modules.moderation.logging.LogTypes.MESSAGE_DELETE;
+import static dev.alexisok.untitledbot.modules.moderation.logging.LogTypes.MESSAGE_UPDATE;
+
 /**
  * Class that hooks on to the {@link dev.alexisok.untitledbot.BotClass#onGenericEvent(GenericEvent)}
  * method to get things like message delete or message change.
@@ -90,6 +93,10 @@ public final class ModHook extends ListenerAdapter {
         
     }
     
+    public static synchronized void resetCacheForGuild(@NotNull String guildID) {
+        LOG_CACHE.remove(guildID);
+    }
+    
     /**
      * Check if the guild allows this type of logging
      * 
@@ -99,28 +106,29 @@ public final class ModHook extends ListenerAdapter {
      */
     private static synchronized boolean ch(String guildID, LogTypes lt) {
         try {
-            if(!LOG_CACHE.containsKey(guildID)) {
-                LOG_CACHE.put(guildID, new ArrayList<>());
+            if(LOG_CACHE.containsKey(guildID)) {
+                return LOG_CACHE.get(guildID).contains(lt);
             }
             String channelID = Vault.getUserDataLocal(null, guildID, "log.channel");
             if(channelID == null || channelID.equals("null"))
                 return false;
-            ArrayList<TextChannel> guildChannels = new ArrayList<>(Main.jda.getGuildById(guildID).getTextChannels());
-            ArrayList<String> channelIDs = new ArrayList<>();
-            for(TextChannel tc : guildChannels) {
-                channelIDs.add(tc.getId());
-            }
-            boolean found = false;
-            for(String ID : channelIDs) {
-                if(ID.equals(channelID)) {
-                    found = true;
-                    break;
-                }
-            }
             
-            if(!found) return false;
+            TextChannel tc = null;
+            
+            try {
+                tc = Objects.requireNonNull(Main.jda.getGuildCache().getElementById(guildID)).getTextChannelById(channelID);
+            } catch(NullPointerException ignored) {}
+            
+            if(tc == null) return false;
             
             String[] policies = Vault.getUserDataLocal(null, guildID, "log.policies").split(",");
+            
+            if(!LOG_CACHE.containsKey(guildID)) {
+                LOG_CACHE.put(guildID, new ArrayList<>());
+                for(String s : policies) {
+                    LOG_CACHE.get(guildID).add(LogTypes.valueOf(s));
+                }
+            }
             
             for(String s : policies) {
                 if(LogTypes.valueOf(s).equals(lt))
@@ -138,7 +146,10 @@ public final class ModHook extends ListenerAdapter {
         //webhook messages cause a lot of problems
         if(e.isWebhookMessage())
             return;
-        MESSAGE_CACHE.put(e.getMessageId(), e.getMessage());
+        if(!LOG_CACHE.containsKey(e.getGuild().getId()))
+            return;
+        if(LOG_CACHE.get(e.getGuild().getId()).contains(MESSAGE_DELETE) || LOG_CACHE.get(e.getGuild().getId()).contains(MESSAGE_UPDATE))
+            MESSAGE_CACHE.put(e.getMessageId(), e.getMessage());
     }
     
     @Override

@@ -20,6 +20,9 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -50,6 +53,31 @@ public final class BotClass extends ListenerAdapter {
     }
     
     public static final ArrayList<String> BLACKLIST = new ArrayList<>();
+    
+    /**
+     * Add a user to the blacklist, also adds them to the blacklist.properties file.
+     * @param userID the id of the user.
+     * @return true if the user was added, false if they were already added or if there was an error.
+     */
+    @Contract
+    public static boolean addToBlacklist(@NotNull String userID) {
+        if(BLACKLIST.contains(userID))
+            return false;
+        
+        BLACKLIST.add(userID);
+        
+        Properties p = new Properties();
+        try(FileInputStream fis = new FileInputStream("./blacklist.properties");
+            FileOutputStream fos = new FileOutputStream("./blacklist.properties")) {
+            p.load(fis);
+            p.put(userID, 0);
+            p.store(fos, "blacklist file");
+            fos.flush();
+            return true;
+        } catch(IOException ignored) {
+            return false;
+        }
+    }
     
     private static final ArrayList<String> NO_PREFIX = new ArrayList<>();
     
@@ -204,9 +232,8 @@ public final class BotClass extends ListenerAdapter {
             message = message.replaceFirst(prefix + " ", prefix);
         
         try {
-            //if the message is @untitled-bot
-            if(event.getMessage().getMentionedMembers().get(0).getId().equals("730135989863055472")
-                    && message.split(" ").length == 1) {
+            //if the message starts with @untitled-bot
+            if(message.split(" ")[0].equalsIgnoreCase("<@730135989863055472>")) {
                 
                 if(prefix.equals(""))
                     event.getChannel().sendMessage("You seem to be in the NoPrefix:TM: mode, to exit, simply say `exit`.").queue();

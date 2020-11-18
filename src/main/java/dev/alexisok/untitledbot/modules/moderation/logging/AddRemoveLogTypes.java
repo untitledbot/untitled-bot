@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.moderation.logging;
 import dev.alexisok.untitledbot.command.Command;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -35,7 +36,7 @@ public final class AddRemoveLogTypes extends UBPlugin implements Command {
                 eb.setColor(Color.RED);
                 eb.addField("Logging", "Usage: add-log <log types.....>\n" +
                                                "Use `list-log-types` for a list of all log types.", false);
-                
+                ModHook.resetCacheForGuild(message.getGuild().getId());
                 return eb.build();
             }
             
@@ -75,35 +76,38 @@ public final class AddRemoveLogTypes extends UBPlugin implements Command {
                     }
                 }
             }
-    
+            
+            ModHook.resetCacheForGuild(message.getGuild().getId());
+            
             return getMessageEmbed(message, eb, lt);
-    
+            
         } else if(args[0].equals("remove-log")) {
             if(args.length == 1) {
                 eb.setColor(Color.RED);
                 eb.addField("Logging", "Usage: remove-log <log types.....>\n" +
                                                "Use `list-log-types` for a list of all log types.", false);
+                ModHook.resetCacheForGuild(message.getGuild().getId());
                 return eb.build();
             }
             ArrayList<LogTypes> lt = new ArrayList<>();
-    
+            
             Logger.debug("Removing existing log types.");
-    
+            
             try {
                 String[] stuffs = Vault.getUserDataLocal(null, message.getGuild().getId(), "log.policies").split(LOG_SEPARATOR);
-        
+                
                 //add existing log types
                 for(String s : stuffs) {
                     lt.add(LogTypes.valueOf(s));
                 }
             } catch(NullPointerException ignored) {}
-    
+            
             Logger.debug("Removing log types.");
-    
+            
             int unknownBreak = 0;
             final int maxBreak = 2;
             boolean maxBreakWarning = false;
-    
+            
             for(String s : args) {
                 if(s.equalsIgnoreCase("remove-log"))
                     continue;
@@ -124,9 +128,12 @@ public final class AddRemoveLogTypes extends UBPlugin implements Command {
                     }
                 }
             }
-    
+            
+            ModHook.resetCacheForGuild(message.getGuild().getId());
+            
             return getMessageEmbed(message, eb, lt);
         } else {
+            ModHook.resetCacheForGuild(message.getGuild().getId());
             Logger.log("Somehow, this message was shown.  AddRemoveLogTypes error?  Not really.  Please report this.");
             return null;
         }
