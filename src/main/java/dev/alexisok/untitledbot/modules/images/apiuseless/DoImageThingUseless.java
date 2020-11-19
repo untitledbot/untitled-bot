@@ -1,4 +1,4 @@
-package dev.alexisok.untitledbot.modules.apiuseless;
+package dev.alexisok.untitledbot.modules.images.apiuseless;
 
 import dev.alexisok.untitledbot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -12,8 +12,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLHandshakeException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * @author AlexIsOK

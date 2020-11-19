@@ -1,4 +1,4 @@
-package dev.alexisok.untitledbot.modules.apiuseless;
+package dev.alexisok.untitledbot.modules.images.apiuseless;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;

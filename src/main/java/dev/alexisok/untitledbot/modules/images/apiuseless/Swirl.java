@@ -1,9 +1,8 @@
-package dev.alexisok.untitledbot.modules.apiuseless;
+package dev.alexisok.untitledbot.modules.images.apiuseless;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
-import dev.alexisok.untitledbot.modules.alexflipnote.api.DoImageThingFlip;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -14,23 +13,21 @@ import org.jetbrains.annotations.NotNull;
  * @author AlexIsOK
  * @since 1.3.23
  */
-public final class Implode extends UBPlugin {
-    
+public final class Swirl extends UBPlugin {
     @Override
     public synchronized @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
 
-        return DoImageThingUseless.generateImage("/implode?amount=1.0&image=%s", eb, message, args);
+        return DoImageThingUseless.generateImage("/swirl?image=%s", eb, message, args);
     }
 
     @Override
     public void onRegister() {
-        CommandRegistrar.register("implode", this);
-        Manual.setHelpPage("implode", "Implode an image\n" +
+        CommandRegistrar.register("swirl", this);
+        Manual.setHelpPage("swirl", "Swirls an image i guess\n" +
                 "API: https://useless-api--vierofernando.repl.co/\n" +
-                "Usage: `implode <image, @user, or blank for your avatar>`\n" +
-                "You can also use 1 to 20 `^` character(s) to get an image from X messages above.");
-        CommandRegistrar.registerAlias("implode", "greg");
+                "Usage: `swirl <image, @user, or blank for your avatar>`" +
+                "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
     }
 }

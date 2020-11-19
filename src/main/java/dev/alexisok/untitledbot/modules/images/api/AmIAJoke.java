@@ -1,4 +1,4 @@
-package dev.alexisok.untitledbot.modules.apiuseless;
+package dev.alexisok.untitledbot.modules.images.api;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
@@ -10,24 +10,30 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * https://api.alexflipnote.dev/
+ * 
+ * https://api.alexflipnote.dev/amiajoke?image=
+ * 
  * @author AlexIsOK
  * @since 1.3.23
  */
-public class Spread extends UBPlugin {
+public final class AmIAJoke extends UBPlugin {
+    
     @Override
     public synchronized @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
-
-        return DoImageThingUseless.generateImage("/spread?image=%s", eb, message, args);
+        
+        return DoImageThingFlip.generateImage("/amiajoke?image=%s", eb, message, args);
     }
-
+    
     @Override
     public void onRegister() {
-        CommandRegistrar.register("spread", this);
-        Manual.setHelpPage("spread", "Spread the image pixels\n" +
-                "API: https://useless-api--vierofernando.repl.co/\n" +
-                "Usage: `spread <image, @user, or blank for your avatar>`" +
+        CommandRegistrar.register("am-i-a-joke", this);
+        Manual.setHelpPage("am-i-a-joke", "Generate an 'Am I A Joke' meme.\n" +
+                "API: https://api.alexflipnote.dev/\n" +
+                "Usage: `joke <image, @user, or blank for your avatar>`" +
                 "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
+        CommandRegistrar.registerAlias("am-i-a-joke", "joke");
     }
 }

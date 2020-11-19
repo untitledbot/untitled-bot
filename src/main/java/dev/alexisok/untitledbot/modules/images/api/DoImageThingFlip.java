@@ -1,7 +1,5 @@
-package dev.alexisok.untitledbot.modules.alexflipnote.api;
+package dev.alexisok.untitledbot.modules.images.api;
 
-import dev.alexisok.untitledbot.logging.Logger;
-import dev.alexisok.untitledbot.modules.apiuseless.DoImageThingUseless;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
