@@ -18,11 +18,15 @@ import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSearchProvider;
 
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -41,6 +45,44 @@ public class Play extends UBPlugin implements MessageHook {
     
     private static final HashMap<String, ResultsObject> RESULTS = new HashMap<>();
     
+    private static final String FILTER_REGEX;
+    
+    static {
+        CommandRegistrar.register("1", (args, message) -> {
+            if(RESULTS.containsKey(message.getAuthor().getId())) {
+                virtualClick(Integer.parseInt(args[0]), RESULTS.get(message.getAuthor().getId()), message);
+                try {
+                    message.delete().queue();
+                } catch(Throwable ignored) {} //if the bot can't delete the message
+            }
+            return null;
+        });
+        CommandRegistrar.registerAlias("1", "2", "3", "4", "5");
+        //hey you know what this works, not the best idea but it still works, you know?
+        
+        List<String> bannedWords = new ArrayList<>();
+        
+        try(BufferedReader br = new BufferedReader(new FileReader("./filters/filters.txt"))) {
+            br.lines().forEach(bannedWords::add);
+        } catch(IOException ignored) {
+            Logger.critical("Could not read from the banned words file!  Safe search has been disabled!", 0, false);
+        }
+        
+        StringBuilder tmp = new StringBuilder(".*?(?i)(");
+        
+        for(int i = 0; i < bannedWords.size(); i++) {
+            if(bannedWords.get(i).isEmpty() || bannedWords.get(i).equalsIgnoreCase("\n"))
+                continue;
+            tmp.append(bannedWords.get(i));
+            if(bannedWords.size() - 1 != i)
+                tmp.append("|");
+        }
+        
+        tmp.append(").*?");
+        
+        FILTER_REGEX = tmp.toString();
+    }
+    
     @Nullable
     @Override
     public MessageEmbed onCommand(String[] args, @NotNull Message message) {
@@ -51,7 +93,6 @@ public class Play extends UBPlugin implements MessageHook {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        
         //unset the pause on the channel so people actually know what's going on with the bot.
 //        MusicKernel.INSTANCE.pause(message.getGuild(), false);
         
@@ -60,32 +101,42 @@ public class Play extends UBPlugin implements MessageHook {
             eb.setColor(Color.RED);
             return eb.build();
         }
+        
+        //unpause
+        MusicKernel.INSTANCE.pause(message.getGuild(), false);
+        
         for(VoiceChannel vc : message.getGuild().getVoiceChannels()) {
             if(vc.getMembers().contains(message.getMember())) {
                 if(!Objects.requireNonNull(message.getGuild().getMemberById(Main.jda.getSelfUser().getId())).hasPermission(vc, Permission.VOICE_CONNECT)) {
                     Logger.debug("Could not get access to a voice channel.");
                     break;
                 }
-                if(!args[1].matches("http(s)?://(www.)?youtu(.be|be.com)*(.+)") ||
-                        args[1].matches("http(s)?://(www.)?soundcloud.com/*(.+)")) {
+                if(!args[1].matches("http(s)?://(www.)?youtu(.be|be.com)*(.+)")) {
                     message.getChannel().sendTyping().queue();
                     YoutubeSearchResultLoader search = new YoutubeSearchProvider();
                     List<AudioTrackInfo> track = new ArrayList<>();
                     search.loadSearchResult(Arrays.toString(Arrays.copyOfRange(args, 1, args.length)), audioTrackInfo -> {
                         if(track.size() >= 5) {
-                            return null;
+                            return null; //continue
                         }
+                        if(audioTrackInfo.title.matches(FILTER_REGEX))
+                            return null; //continue
                         track.add(audioTrackInfo);
                         return null;
                     });
                     
                     StringBuilder tracks = new StringBuilder();
                     
-                    if(track.size() <= 4) {
-                        eb.setTitle("Hmmm.....");
+                    if(track.size() == 0) {
+                        eb.addField("Could not find any results for this query.", "", false);
                         eb.setColor(Color.RED);
-                        eb.setDescription("I couldn't find any results for that... maybe try a different query or paste a URL?");
                         return eb.build();
+                    }
+                    
+                    //if the track is an id such as dQw4w9WgXcQ only one or two results will be returned, best to catch this here.
+                    if(track.size() != 5) {
+                        MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), "https://youtube.com/watch?v=" + track.get(0), vc);
+                        return null;
                     }
                     
                     for(int i = 0; i < 5; i++) {
@@ -98,7 +149,7 @@ public class Play extends UBPlugin implements MessageHook {
                                 escapeDiscordMarkdown(track.get(i).author),
                                 track.get(i).uri));
                     }
-                    eb.setTitle("React with 1 through 5 to pick a video.");
+                    eb.setTitle("React with or say 1 through 5 to pick a video.");
                     eb.setDescription(tracks.toString());
                     eb.setColor(Color.GREEN);
                     
@@ -112,17 +163,19 @@ public class Play extends UBPlugin implements MessageHook {
                     
                     //send the message, add reactions 1-5, then add it to the queue to be listened to
                     message.getChannel().sendMessage(eb.build()).queue(r -> {
-                        r.addReaction("1\uFE0F\u20E3").queue((r2) -> {
-                            r.addReaction("2\uFE0F\u20E3").queue(r3 -> {
-                                r.addReaction("3\uFE0F\u20E3").queue((r4) -> {
-                                    r.addReaction("4\uFE0F\u20E3").queue(r5 -> {
-                                        r.addReaction("5\uFE0f\u20E3").queue(owo -> {
-                                            RESULTS.put(message.getAuthor().getId(), new ResultsObject(track, message, r));
+                        try {
+                            RESULTS.put(message.getAuthor().getId(), new ResultsObject(track, message, r));
+                            r.addReaction("1\uFE0F\u20E3").queue((r2) -> {
+                                r.addReaction("2\uFE0F\u20E3").queue(r3 -> {
+                                    r.addReaction("3\uFE0F\u20E3").queue((r4) -> {
+                                        r.addReaction("4\uFE0F\u20E3").queue(r5 -> {
+                                            r.addReaction("5\uFE0f\u20E3").queue(owo -> {
+                                            });
                                         });
                                     });
                                 });
                             });
-                        });
+                        } catch(InsufficientPermissionException ignored) {} //bot might not be able to add reactions?
                     });
                     return null;
                 }
@@ -145,11 +198,14 @@ public class Play extends UBPlugin implements MessageHook {
     }
 
     /**
-     * this is not needed as of now.
      * @param m the mre.
      */
     @Override
-    public void onMessage(GuildMessageReceivedEvent m) {}
+    public void onMessage(GuildMessageReceivedEvent m) {
+        String content = m.getMessage().getContentRaw();
+        if(RESULTS.containsKey(m.getAuthor().getId()) && content.matches("^[1-5]$"))
+            virtualClick(Integer.parseInt(content), RESULTS.get(m.getAuthor().getId()), m.getMessage());
+    }
 
     /**
      * Check for message reactions for the numbers 1-5 on the music module.
@@ -187,17 +243,32 @@ public class Play extends UBPlugin implements MessageHook {
             
             Message message = info.userMessage;
             
-            for(VoiceChannel vc : info.userMessage.getGuild().getVoiceChannels()) {
-                if(vc.getMembers().contains(message.getMember())) {
-                    try {
-                        MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), info.infos.get(toPlay - 1).uri, vc);
-                    } catch(IndexOutOfBoundsException ignored) {}
-                }
-            }
-            
-            //delete the original message
-            info.botMessage.delete().queue();
+            virtualClick(toPlay, info, message);
         }
+    }
+
+    /**
+     * When a user selects an item 1 - 5, used to make things easier.
+     * @param toPlay the number selected.
+     */
+    private static void virtualClick(int toPlay, ResultsObject info, Message message) {
+        if(toPlay < 1 || toPlay > 5)
+            throw new IllegalArgumentException("Number must be between 1 and 5 (inclusive).");
+        
+        //this most likely will not be null but best to check
+        if(info == null || message == null) return;
+        
+        for(VoiceChannel vc : info.userMessage.getGuild().getVoiceChannels()) {
+            if(vc.getMembers().contains(message.getMember())) {
+                try {
+                    MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), info.infos.get(toPlay - 1).uri, vc);
+                } catch(IndexOutOfBoundsException ignored) {}
+            }
+        }
+        
+        //delete the original message
+        info.botMessage.delete().queue();
+        RESULTS.remove(message.getAuthor().getId());
     }
     
     private static class ResultsObject {

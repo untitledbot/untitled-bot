@@ -1,4 +1,4 @@
-package dev.alexisok.untitledbot.modules.images.api;
+package dev.alexisok.untitledbot.modules.images.apiflipnote;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Arrays;
@@ -18,8 +19,9 @@ import java.util.Arrays;
  */
 public final class Achievement extends UBPlugin {
     
+    @SuppressWarnings({"unused", "ResultOfMethodCallIgnored"})
     @Override
-    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
+    public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         

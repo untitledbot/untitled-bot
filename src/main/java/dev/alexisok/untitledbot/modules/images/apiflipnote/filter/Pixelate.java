@@ -1,9 +1,9 @@
-package dev.alexisok.untitledbot.modules.images.api.filter;
+package dev.alexisok.untitledbot.modules.images.apiflipnote.filter;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
-import dev.alexisok.untitledbot.modules.images.api.DoImageThingFlip;
+import dev.alexisok.untitledbot.modules.images.apiflipnote.DoImageThingFlip;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;

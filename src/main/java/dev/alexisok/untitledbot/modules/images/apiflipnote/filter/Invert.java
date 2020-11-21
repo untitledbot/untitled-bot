@@ -1,9 +1,9 @@
-package dev.alexisok.untitledbot.modules.images.api.filter;
+package dev.alexisok.untitledbot.modules.images.apiflipnote.filter;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
-import dev.alexisok.untitledbot.modules.images.api.DoImageThingFlip;
+import dev.alexisok.untitledbot.modules.images.apiflipnote.DoImageThingFlip;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -14,22 +14,22 @@ import org.jetbrains.annotations.NotNull;
  * @author AlexIsOK
  * @since 1.3.23
  */
-public class JPEG extends UBPlugin {
+public final class Invert extends UBPlugin {
+
     @Override
     public synchronized @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
 
-        return DoImageThingFlip.generateImage("/filter/jpegify?image=%s", eb, message, args);
+        return DoImageThingFlip.generateImage("/filter/invert?image=%s", eb, message, args);
     }
 
     @Override
     public void onRegister() {
-        CommandRegistrar.register("jpeg", this);
-        Manual.setHelpPage("jpeg", "Make an image higher quality\n" +
+        CommandRegistrar.register("invert", this);
+        Manual.setHelpPage("invert", "Invert an image.\n" +
                 "API: https://api.alexflipnote.dev/\n" +
-                "Usage: `jpegify <image, @user, or blank for your avatar>`" +
+                "Usage: `invert <image, @user, or blank for your avatar>`" +
                 "\nYou can also use 1 to 20 `^` character(s) to get an image from X messages above.");
-        CommandRegistrar.registerAlias("jpeg", "jpegify", "jpg", "enhance", "sharpen");
     }
 }

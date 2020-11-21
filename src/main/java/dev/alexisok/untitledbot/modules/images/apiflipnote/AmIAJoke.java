@@ -1,4 +1,4 @@
-package dev.alexisok.untitledbot.modules.images.api;
+package dev.alexisok.untitledbot.modules.images.apiflipnote;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;

@@ -1,4 +1,4 @@
-package dev.alexisok.untitledbot.modules.images.api;
+package dev.alexisok.untitledbot.modules.images.apiflipnote;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;

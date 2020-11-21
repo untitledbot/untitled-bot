@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +33,9 @@ public class MusicKernel {
     
     public static final MusicKernel INSTANCE;
     
-    private static final int MAX_SONGS_PER_GUILD = 200;
+    private static final int MAX_SONGS_PER_GUILD = 100;
+    
+    private static final long MAXIMUM_SONG_LENGTH_SECONDS = 7200; //2 hours
     
     private static final HashMap<String, @Nullable Role> DJ_ROLE_CACHE;
     
@@ -104,6 +107,10 @@ public class MusicKernel {
         AudioSourceManagers.registerRemoteSources(playerManager);
     }
     
+    private static synchronized boolean isValidTrack(AudioTrack track) {
+        return track.getInfo().length <= MAXIMUM_SONG_LENGTH_SECONDS * 1000 || track.getInfo().isStream;
+    }
+    
     protected void loadAndPlay(@NotNull TextChannel channel, @NotNull String trackURL, @NotNull VoiceChannel requestedVC) {
         MusicManager mm = getAudioPlayer(channel.getGuild());
         
@@ -112,6 +119,18 @@ public class MusicKernel {
             public void trackLoaded(@NotNull AudioTrack track) {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setTimestamp(new Date().toInstant());
+                if(!isValidTrack(track)) {
+                    eb.addField("Play", "The track is too long!  Please play a track that is less than two hours.", false);
+                    eb.setColor(Color.RED);
+                    channel.sendMessage(eb.build()).queue();
+                    return;
+                }
+                if(musicManagers.get(channel.getGuild().getId()).scheduler.getQueue().size() >= 100) {
+                    eb.addField("Play", "There are too many tracks in the queue!", false);
+                    eb.setColor(Color.RED);
+                    channel.sendMessage(eb.build()).queue();
+                    return;
+                }
                 eb.addField("Play", String.format("▶ The track **%s** has been added to the queue!",
                         NowPlaying.escapeDiscordMarkdown(track.getInfo().title)), false);
                 eb.setColor(Color.GREEN);
@@ -129,18 +148,23 @@ public class MusicKernel {
                 int queueSize = INSTANCE.musicManagers.get(channel.getGuild().getId()).scheduler.getQueue().size();
                 
                 if(queueSize + playlist.getTracks().size() >= MAX_SONGS_PER_GUILD) {
-                    eb.addField("Play", "Error loading playlist; playlist is either over 200 videos or " +
-                            "the queue would overflow past 200", false);
+                    eb.addField("Play", "Error loading playlist; playlist is either over 100 videos or " +
+                            "the queue would overflow past 100", false);
                     eb.setColor(Color.RED);
                     channel.sendMessage(eb.build()).queue();
                     return;
                 }
                 
+                ArrayList<AudioTrack> tracks = new ArrayList<>(playlist.getTracks());
+                
                 if(first == null) {
-                    first = playlist.getTracks().get(0);
+                    first = tracks.get(0);
+                    tracks.remove(0);
                 }
                 
                 for(AudioTrack playlistItem : playlist.getTracks()) {
+                    if(playlistItem.getInfo().length > MAXIMUM_SONG_LENGTH_SECONDS * 1000)
+                        continue;
                     mm.scheduler.queue(playlistItem);
                 }
                 
@@ -294,6 +318,9 @@ public class MusicKernel {
         if(!this.musicManagers.containsKey(vc.getGuild().getId()))
             return;
         
+        if(this.isPaused(vc.getGuild()))
+            return;
+        
         boolean user = false;
         
         boolean hasSelf = false;
@@ -311,15 +338,17 @@ public class MusicKernel {
         
         //if there are no humans left in the voice channel
         if(!user && hasSelf) {
-            //the same as running the "pause" command.
-            if(!this.isPaused(vc.getGuild())) {
-                this.pause(vc.getGuild(), true);
-                this.lastChannels.get(vc.getGuild().getId()).sendMessage("The player has been paused as " +
-                        "all users have left the voice channel.").queue();
-            }
+            this.disconnect(vc.getGuild());
+            this.pause(vc.getGuild(), true);
+            this.lastChannels.get(vc.getGuild().getId()).sendMessage("The player has been paused as " +
+                    "all users have left the voice channel.").queue();
         }
     }
-
+    
+    private void disconnect(Guild g) {
+        g.getAudioManager().closeAudioConnection();
+    }
+    
     /**
      * Run when the queue has ended.
      * @param guildID the ID of the guild.

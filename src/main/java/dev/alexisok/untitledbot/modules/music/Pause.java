@@ -69,6 +69,6 @@ public class Pause extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("pause", this);
         Manual.setHelpPage("pause", "Pause the currently playing track.");
-        CommandRegistrar.registerAlias("pause", "ps", "unpause", "resume", "r");
+        CommandRegistrar.registerAlias("pause", "ps", "unpause", "resume", "r", "pa");
     }
 }

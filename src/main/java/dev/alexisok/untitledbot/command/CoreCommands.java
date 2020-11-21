@@ -2,8 +2,8 @@ package dev.alexisok.untitledbot.command;
 
 import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.logging.Logger;
-import dev.alexisok.untitledbot.modules.images.api.*;
-import dev.alexisok.untitledbot.modules.images.api.filter.*;
+import dev.alexisok.untitledbot.modules.images.apiflipnote.*;
+import dev.alexisok.untitledbot.modules.images.apiflipnote.filter.*;
 import dev.alexisok.untitledbot.modules.images.apiuseless.*;
 import dev.alexisok.untitledbot.modules.basic.atsomeone.AtSomeone;
 import dev.alexisok.untitledbot.modules.basic.avatar.Avatar;
