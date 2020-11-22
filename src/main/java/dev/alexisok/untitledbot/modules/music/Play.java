@@ -45,7 +45,9 @@ public class Play extends UBPlugin implements MessageHook {
     
     private static final HashMap<String, ResultsObject> RESULTS = new HashMap<>();
     
-    private static final String FILTER_REGEX;
+    protected static final String FILTER_REGEX;
+    
+    private static boolean usingSafeSearch = true;
     
     static {
         CommandRegistrar.register("1", (args, message) -> {
@@ -64,8 +66,10 @@ public class Play extends UBPlugin implements MessageHook {
         
         try(BufferedReader br = new BufferedReader(new FileReader("./filters/filters.txt"))) {
             br.lines().forEach(bannedWords::add);
-        } catch(IOException ignored) {
+        } catch(IOException e) {
+            e.printStackTrace();
             Logger.critical("Could not read from the banned words file!  Safe search has been disabled!", 0, false);
+            usingSafeSearch = false;
         }
         
         StringBuilder tmp = new StringBuilder(".*?(?i)(");
@@ -93,9 +97,6 @@ public class Play extends UBPlugin implements MessageHook {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        //unset the pause on the channel so people actually know what's going on with the bot.
-//        MusicKernel.INSTANCE.pause(message.getGuild(), false);
-        
         if(args.length == 1) {
             eb.addField("Music Player", "Usage: `play <url | search query>`", false);
             eb.setColor(Color.RED);
@@ -103,7 +104,8 @@ public class Play extends UBPlugin implements MessageHook {
         }
         
         //unpause
-        MusicKernel.INSTANCE.pause(message.getGuild(), false);
+        if(MusicKernel.INSTANCE.isPlaying(message.getGuild()) && MusicKernel.INSTANCE.isPaused(message.getGuild()))
+            MusicKernel.INSTANCE.pause(message.getGuild(), false);
         
         for(VoiceChannel vc : message.getGuild().getVoiceChannels()) {
             if(vc.getMembers().contains(message.getMember())) {
@@ -116,11 +118,14 @@ public class Play extends UBPlugin implements MessageHook {
                     YoutubeSearchResultLoader search = new YoutubeSearchProvider();
                     List<AudioTrackInfo> track = new ArrayList<>();
                     search.loadSearchResult(Arrays.toString(Arrays.copyOfRange(args, 1, args.length)), audioTrackInfo -> {
-                        if(track.size() >= 5) {
+                        if(track.size() >= 5)
                             return null; //continue
-                        }
-                        if(audioTrackInfo.title.matches(FILTER_REGEX))
-                            return null; //continue
+                        if(audioTrackInfo.length >= 7200000)
+                            return null;
+                        if(usingSafeSearch)
+                            if(audioTrackInfo.title.matches(FILTER_REGEX)) {
+                                return null; //continue
+                            }
                         track.add(audioTrackInfo);
                         return null;
                     });
@@ -159,7 +164,9 @@ public class Play extends UBPlugin implements MessageHook {
                                     .onErrorMap(throwable -> {
                                         return null; //old message was already deleted.
                                     }).queue();
-                    } catch(Throwable ignored) {}
+                    } catch(Throwable e) {
+                        e.printStackTrace();
+                    }
                     
                     //send the message, add reactions 1-5, then add it to the queue to be listened to
                     message.getChannel().sendMessage(eb.build()).queue(r -> {
@@ -169,8 +176,7 @@ public class Play extends UBPlugin implements MessageHook {
                                 r.addReaction("2\uFE0F\u20E3").queue(r3 -> {
                                     r.addReaction("3\uFE0F\u20E3").queue((r4) -> {
                                         r.addReaction("4\uFE0F\u20E3").queue(r5 -> {
-                                            r.addReaction("5\uFE0f\u20E3").queue(owo -> {
-                                            });
+                                            r.addReaction("5\uFE0f\u20E3").queue(owo -> {});
                                         });
                                     });
                                 });

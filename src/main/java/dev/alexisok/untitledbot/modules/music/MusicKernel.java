@@ -35,7 +35,7 @@ public class MusicKernel {
     
     private static final int MAX_SONGS_PER_GUILD = 100;
     
-    private static final long MAXIMUM_SONG_LENGTH_SECONDS = 7200; //2 hours
+    private static final long MAXIMUM_SONG_LENGTH_SECONDS = 18000; //5 hours
     
     private static final HashMap<String, @Nullable Role> DJ_ROLE_CACHE;
     
@@ -120,7 +120,7 @@ public class MusicKernel {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setTimestamp(new Date().toInstant());
                 if(!isValidTrack(track)) {
-                    eb.addField("Play", "The track is too long!  Please play a track that is less than two hours.", false);
+                    eb.addField("Play", "The track is too long!  Please play a track that is less than five hours.", false);
                     eb.setColor(Color.RED);
                     channel.sendMessage(eb.build()).queue();
                     return;
@@ -282,7 +282,11 @@ public class MusicKernel {
      */
     @Contract(pure = true)
     public synchronized boolean isPlaying(@NotNull Guild g) {
-        return this.musicManagers.get(g.getId()).player.getPlayingTrack() != null;
+        try {
+            return this.musicManagers.get(g.getId()).player.getPlayingTrack() != null;
+        } catch(RuntimeException ignored) {
+            return false;
+        }
     }
     
     /**

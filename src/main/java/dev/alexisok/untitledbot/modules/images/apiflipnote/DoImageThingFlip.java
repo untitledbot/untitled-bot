@@ -12,14 +12,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @author AlexIsOK
@@ -28,6 +31,21 @@ import java.util.List;
 public final class DoImageThingFlip {
     
     private DoImageThingFlip(){}
+    
+    private static final String AUTH;
+    
+    static {
+        //load the authorization
+        String s;
+        try(FileInputStream fis = new FileInputStream("./secrets.properties")) {
+            Properties p = new Properties();
+            p.load(fis);
+            s = p.getProperty("flipnote-key");
+        } catch(IOException ignored) {
+            s = "";
+        }
+        AUTH = s;
+    }
     
     @RegExp
     private static final String CDN_REGEX = "(cdn|media).(discordapp.com/)";
@@ -206,7 +224,11 @@ public final class DoImageThingFlip {
         } catch(MalformedURLException ignored) {
             return null;
         }
-        try(InputStream in = url.openStream()) {
+        
+        try {
+            URLConnection con = url.openConnection();
+            con.setRequestProperty("Authorization", AUTH);
+            InputStream in = con.getInputStream();
             Files.copy(in, Paths.get("./tmp/" + uniqueID + ".png"), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();

@@ -269,6 +269,7 @@ public final class CoreCommands {
 //        new Seek().onRegister();
         
         new Bruh().onRegister();
+        new GetSafeSearch().onRegister();
         Logger.log("Modules have been registered.");
     }
 }
