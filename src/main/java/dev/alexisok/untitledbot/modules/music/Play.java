@@ -120,7 +120,7 @@ public class Play extends UBPlugin implements MessageHook {
                     search.loadSearchResult(Arrays.toString(Arrays.copyOfRange(args, 1, args.length)), audioTrackInfo -> {
                         if(track.size() >= 5)
                             return null; //continue
-                        if(audioTrackInfo.length >= 7200000)
+                        if(audioTrackInfo.length >= 18000000)
                             return null;
                         if(usingSafeSearch)
                             if(audioTrackInfo.title.matches(FILTER_REGEX)) {
