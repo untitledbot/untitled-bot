@@ -267,6 +267,7 @@ public final class CoreCommands {
         new NowPlaying().onRegister();
         new Queue().onRegister();
 //        new Seek().onRegister();
+        new Join().onRegister();
         
         new Bruh().onRegister();
         new GetSafeSearch().onRegister();

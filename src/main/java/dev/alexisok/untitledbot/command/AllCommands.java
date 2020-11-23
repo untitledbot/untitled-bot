@@ -112,12 +112,13 @@ public class AllCommands extends UBPlugin {
             "`call` - generate a meme where tom calls someone\n");
         
         Manual.setHelpPage("music", "\n" +
-            "`play` - play a YouTube video (will support searching YT soon!)\n" +
-            "`stop` - stop the player and clear the queue.\n" +
-            "`skip` - skip the currently playing song.\n" +
-            "`queue` - list the queue of upcoming songs.\n" +
-            "`np` - get the now playing songs.\n" +
-            "`pause` - pause/unpause the songs.\n");
+            "`play` - play or search for a YouTube video\n" +
+            "`stop` - stop the player and clear the queue\n" +
+            "`skip` - skip the currently playing song\n" +
+            "`queue` - list the queue of upcoming songs\n" +
+            "`np` - get the now playing songs\n" +
+            "`pause` - pause/unpause the songs\n" +
+            "`join` - join the voice channel without playing anything\n");
         
         eb.addField("All commands", "Please use one of the following commands for help:\n" +
             "`>help leveling` - leveling and rank commands.\n" +
@@ -160,10 +161,9 @@ public class AllCommands extends UBPlugin {
                 "`%shelp reactions` - GIF or text reactions.\n" +
                 "`%shelp image` - image manipulation\n" +
                 "`%shelp meme` - meme generation.\n" +
-                "`%shelp music` - music commands.\n" +
-                "`%shelp cache` - change cache config for the bot.\n\n" +
+                "`%shelp music` - music commands.\n\n" +
                 "To change the prefix of the bot, use `%sprefix`",
-                prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix), false);
+                prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix), false);
         eb.setColor(Color.GREEN);
         eb.addField("Need support?", String.format("**[Support Server](%s) | [GitHub](%s) | [Official Site](%s)**",
                 "https://alexisok.dev/ub/discord.html", //DO NOT CHANGE TO XYZ SITE

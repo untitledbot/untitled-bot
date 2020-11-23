@@ -322,9 +322,6 @@ public class MusicKernel {
         if(!this.musicManagers.containsKey(vc.getGuild().getId()))
             return;
         
-        if(this.isPaused(vc.getGuild()))
-            return;
-        
         boolean user = false;
         
         boolean hasSelf = false;
