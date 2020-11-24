@@ -52,14 +52,14 @@ public class Pause extends UBPlugin {
         
         if(MusicKernel.INSTANCE.isPaused(message.getGuild())) {
             MusicKernel.INSTANCE.pause(message.getGuild(), false);
-            eb.addField("Music Player", "⏯ The player has been unpaused.\n" +
+            eb.addField("Music Player", "\u25B6 The player has been unpaused.\n" +
                     "Use the `pause` command to pause it again.", false);
             eb.setColor(Color.GREEN);
             return eb.build();
         }
         
         MusicKernel.INSTANCE.pause(message.getGuild(), true);
-        eb.addField("Music Bot", "⏯ The player has been paused.\n" +
+        eb.addField("Music Bot", "\u23F8 The player has been paused.\n" +
                 "Use the `resume` command to unpause it.", false);
         eb.setColor(Color.GREEN);
         return eb.build();

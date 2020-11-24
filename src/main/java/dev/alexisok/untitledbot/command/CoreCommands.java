@@ -268,6 +268,7 @@ public final class CoreCommands {
         new Queue().onRegister();
 //        new Seek().onRegister();
         new Join().onRegister();
+        new Leave().onRegister();
         
         new Bruh().onRegister();
         new GetSafeSearch().onRegister();

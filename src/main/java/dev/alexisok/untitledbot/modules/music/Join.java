@@ -34,7 +34,8 @@ public final class Join extends UBPlugin {
                 if(!Objects.requireNonNull(message.getGuild().getMemberById(Main.jda.getSelfUser().getId())).hasPermission(vc, Permission.VOICE_CONNECT))
                     break;
                 MusicKernel.INSTANCE.join(vc);
-                eb.addField("Music Player", "I have joined the voice channel " + vc.getName() + ".", false);
+                eb.addField("Music Player", "I have joined the voice channel " + vc.getName() + ".\n" +
+                        "" + (MusicKernel.INSTANCE.isPaused(message.getGuild()) ? "Note: the player is paused!" : ""), false);
                 eb.setColor(Color.GREEN);
                 return eb.build();
             }

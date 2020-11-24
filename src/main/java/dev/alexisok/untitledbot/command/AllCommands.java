@@ -118,7 +118,8 @@ public class AllCommands extends UBPlugin {
             "`queue` - list the queue of upcoming songs\n" +
             "`np` - get the now playing songs\n" +
             "`pause` - pause/unpause the songs\n" +
-            "`join` - join the voice channel without playing anything\n");
+            "`join` - join the voice channel without playing anything\n" +
+            "`leave` - leave the current voice channel without stopping the player\n");
         
         eb.addField("All commands", "Please use one of the following commands for help:\n" +
             "`>help leveling` - leveling and rank commands.\n" +

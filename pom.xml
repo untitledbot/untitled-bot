@@ -205,14 +205,6 @@
             <url>https://jcenter.bintray.com</url>
         </repository>
     </repositories>
-    <distributionManagement>
-        <repository>
-            <id>bintray-alexisok-untitled-bot</id>
-            <name>alexisok-untitled-bot</name>
-            <url>https://api.bintray.com/maven/alexisok/untitled-bot/untitled-bot/;publish=1</url>
-        </repository>
-    </distributionManagement>
-
     <properties>
         <kotlin.version>1.4.20-RC</kotlin.version>
     </properties>

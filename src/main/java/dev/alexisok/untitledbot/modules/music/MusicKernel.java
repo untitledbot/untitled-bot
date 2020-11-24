@@ -272,7 +272,10 @@ public class MusicKernel {
      */
     @Contract(pure = true)
     public synchronized boolean isPaused(@NotNull Guild g) {
-        return this.musicManagers.get(g.getId()).player.isPaused();
+        try {
+            return this.musicManagers.get(g.getId()).player.isPaused();
+        } catch(RuntimeException ignored) {}
+        return false;
     }
 
     /**
@@ -401,5 +404,19 @@ public class MusicKernel {
      */
     public void seek(@NotNull String id, long l) {
         this.musicManagers.get(id).seek(id, l);
+    }
+
+    /**
+     * Leave a voice channel
+     * @param vc the voice channel to leave
+     * @return true if it left, false otherwise.
+     */
+    public boolean leave(VoiceChannel vc) {
+        this.pause(vc.getGuild(), true);
+        if(vc.getGuild().getAudioManager().isConnected()) {
+            vc.getGuild().getAudioManager().closeAudioConnection();
+            return true;
+        }
+        return false;
     }
 }
