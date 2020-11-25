@@ -59,63 +59,63 @@ public final class ChessGame {
     protected void movePiece(@NotNull String from, @NotNull String to, @NotNull String playerID) throws IllegalArgumentException {
         if(!from.matches("^[A-Ha-h][1-8]$") || !to.matches("^[A-Ha-h][1-8]$"))
             throw new IllegalArgumentException("Please input valid coordinates, such as A1 to A5");
-        int colTo = switch(to.charAt(0)) {
-            case 'A' -> 1;
-            case 'B' -> 2;
-            case 'C' -> 3;
-            case 'D' -> 4;
-            case 'E' -> 5;
-            case 'F' -> 6;
-            case 'G' -> 7;
-            case 'H' -> 8;
-            default -> -1;
-        };
-        
-        int colFrom = switch(from.charAt(0)) {
-            case 'A' -> 1;
-            case 'B' -> 2;
-            case 'C' -> 3;
-            case 'D' -> 4;
-            case 'E' -> 5;
-            case 'F' -> 6;
-            case 'G' -> 7;
-            case 'H' -> 8;
-            default -> -1;
-        };
-        
-        int rowTo = Character.getNumericValue(to.charAt(1));
-        int rowFrom = Character.getNumericValue(from.charAt(1));
-        
-        colTo--;
-        colFrom--;
-        
-        rowTo--;
-        rowFrom--;
-        
-        ChessPiece current = this.board[rowFrom][colFrom];
-        
-        if(current == null || current.equals(AIR))
-            throw new IllegalArgumentException("You cannot move that piece!");
-        
-        boolean is1 = this.whiteID.equalsIgnoreCase(playerID);
-        
-        if((is1 && current.side != 1) || (!is1 && current.side != 2))
-            throw new IllegalArgumentException("You cannot move that piece!");
-        
-        
-        if(current.name.equals("pawn")) {
-            if(colFrom != colTo) {
-                if(colFrom - 1 != colTo && colFrom + 1 != colTo)
-                    throw new IllegalArgumentException("Pawn cannot move more than one to the left or to the right.");
-                if(rowFrom + 1 != rowTo)
-                    throw new IllegalArgumentException("Pawn must move forward one to take a piece!");
-                
-            }
-            
-            if(rowFrom != 1) {
-                
-            }
-        }
+//        int colTo = switch(to.charAt(0)) {
+//            case 'A' -> 1;
+//            case 'B' -> 2;
+//            case 'C' -> 3;
+//            case 'D' -> 4;
+//            case 'E' -> 5;
+//            case 'F' -> 6;
+//            case 'G' -> 7;
+//            case 'H' -> 8;
+//            default -> -1;
+//        };
+//        
+//        int colFrom = switch(from.charAt(0)) {
+//            case 'A' -> 1;
+//            case 'B' -> 2;
+//            case 'C' -> 3;
+//            case 'D' -> 4;
+//            case 'E' -> 5;
+//            case 'F' -> 6;
+//            case 'G' -> 7;
+//            case 'H' -> 8;
+//            default -> -1;
+//        };
+//        
+//        int rowTo = Character.getNumericValue(to.charAt(1));
+//        int rowFrom = Character.getNumericValue(from.charAt(1));
+//        
+//        colTo--;
+//        colFrom--;
+//        
+//        rowTo--;
+//        rowFrom--;
+//        
+//        ChessPiece current = this.board[rowFrom][colFrom];
+//        
+//        if(current == null || current.equals(AIR))
+//            throw new IllegalArgumentException("You cannot move that piece!");
+//        
+//        boolean is1 = this.whiteID.equalsIgnoreCase(playerID);
+//        
+//        if((is1 && current.side != 1) || (!is1 && current.side != 2))
+//            throw new IllegalArgumentException("You cannot move that piece!");
+//        
+//        
+//        if(current.name.equals("pawn")) {
+//            if(colFrom != colTo) {
+//                if(colFrom - 1 != colTo && colFrom + 1 != colTo)
+//                    throw new IllegalArgumentException("Pawn cannot move more than one to the left or to the right.");
+//                if(rowFrom + 1 != rowTo)
+//                    throw new IllegalArgumentException("Pawn must move forward one to take a piece!");
+//                
+//            }
+//            
+//            if(rowFrom != 1) {
+//                
+//            }
+//        }
     }
     
 }

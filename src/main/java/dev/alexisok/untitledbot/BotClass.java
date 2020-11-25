@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
@@ -386,6 +387,27 @@ public final class BotClass extends ListenerAdapter {
                 Logger.debug(String.format("Could not send a welcome message to %s.", e.getGuild().getId()));
             }
         }
+    }
+    
+    @Override
+    public void onGuildLeave(@NotNull GuildLeaveEvent e) {
+        Guild g = e.getGuild();
+        Logger.debug("Guild left");
+        Logger.debug(String.format("" +
+                        "Name: %s%n" +
+                        "Creation time: %s%n" +
+                        "ID: %s%n" +
+                        g.getName(), g.getTimeCreated().toString(),
+                g.getId()));
+        Main.jda.getTextChannelById(774205271282810911L).sendMessage(
+                new EmbedBuilder().addField("Guild left!", String.format("" +
+                                "Name: %s%n" +
+                                "Creation time: %s%n" +
+                                "ID: %s%n" +
+                        g.getName(), g.getTimeCreated().toString(),
+                        g.getId()), false)
+                        .setThumbnail(g.getIconUrl()).build()
+        ).queue();
     }
     
     @Override
