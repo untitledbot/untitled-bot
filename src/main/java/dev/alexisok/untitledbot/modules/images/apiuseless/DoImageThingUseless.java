@@ -2,6 +2,7 @@ package dev.alexisok.untitledbot.modules.images.apiuseless;
 
 import dev.alexisok.untitledbot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -138,6 +139,12 @@ public final class DoImageThingUseless {
                 message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
                 return null;
             } else if(args.length == 2 && args[1].matches("^[\\^]{1,20}")) { //amount of ^ characters
+                if(!message.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_HISTORY)) {
+                    eb.addField("Insufficient permissions!", "This bot must have the 'Read Message History' permission on Discord\n" +
+                            " to use up arrows.", false);
+                    eb.setColor(Color.RED);
+                    return eb.build();
+                }
                 message.getChannel().getHistoryBefore(message, args[1].length()).queue(complete -> {
                     Message m = complete.getRetrievedHistory().get(args[1].length() - 1);
                     List<Message.Attachment> attachments = m.getAttachments();

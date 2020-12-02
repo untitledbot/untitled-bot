@@ -61,7 +61,7 @@ public class AllCommands extends UBPlugin {
             "`remove-log` - remove a log type from the channel.(adm)\n" +
             "`log-types` - list all current log types.\n" +
             "`get-log` - list what's being logged.\n" +
-            "`snipe <channel> - get the last deleted message of a channel.");
+            "`snipe <channel>` - get the last deleted message of a channel.");
         Manual.setHelpPage("fun", "\n" +
             "`someone` - mention a random user without pinging them.\n" +
             "`8ball` - simulate a magic 8 ball.\n" +

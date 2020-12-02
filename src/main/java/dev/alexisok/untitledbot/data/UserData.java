@@ -56,7 +56,7 @@ public final class UserData {
 				}
 			}
 		} catch (IOException e) {
-			Logger.critical("Could not create a data!  " + userID + ", " + guildID + ".", -1, false);
+			Logger.critical("Could not create a data!  " + userID + ", " + guildID + ".");
 			//to be caught and reported to the end user over Discord.
 			e.printStackTrace();
 			throw new UserDataFileCouldNotBeCreatedException();

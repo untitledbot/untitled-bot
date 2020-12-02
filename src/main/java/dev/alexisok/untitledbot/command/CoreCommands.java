@@ -2,6 +2,7 @@ package dev.alexisok.untitledbot.command;
 
 import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.basic.privacy.Privacy;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.*;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.filter.*;
 import dev.alexisok.untitledbot.modules.images.apiuseless.*;
@@ -272,6 +273,8 @@ public final class CoreCommands {
         
         new Bruh().onRegister();
         new GetSafeSearch().onRegister();
+        
+        new Privacy().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

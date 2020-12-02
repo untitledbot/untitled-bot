@@ -74,7 +74,7 @@ public final class ModHook extends ListenerAdapter {
         
         Manual.setHelpPage("log-channel",
                 "Move the logging channel to a specific channel.\n" +
-                        "Usage: log-channel <channelName | null>\n" +
+                        "Usage: log-channel <channelName | none>\n" +
                         "Type the word 'null' to disable logging for the server altogether.\n" +
                         "Logs are stored in the logging channel only, the bot does not store information" +
                         " about the user on disk.");
@@ -90,6 +90,7 @@ public final class ModHook extends ListenerAdapter {
                         "A list of all logs can be found using the command `log-types`");
         Manual.setHelpPage("get-log", "Get the logging types for this guild.\n" +
                                               "Usage: get-log\n");
+        CommandRegistrar.registerAlias("get-log", "get-logs");
         
     }
     
@@ -189,11 +190,13 @@ public final class ModHook extends ListenerAdapter {
                 "Original time sent: %s%n" +
                 "Time edited: %s%n" +
                 "Message ID: %s%n" +
+                "Sent by: %s%n" +
                 "Message channel: %s%n" +
                 "[Link](%s)%n",
                 e.getMessage().getTimeCreated(),
                 e.getMessage().getTimeEdited(),
                 e.getMessageId(),
+                e.getAuthor().getAsMention(),
                 e.getChannel().getAsMention(),
                 e.getMessage().getJumpUrl()), false);
         MESSAGE_CACHE.put(e.getMessageId(), e.getMessage());
@@ -233,10 +236,12 @@ public final class ModHook extends ListenerAdapter {
                         "Original time sent: %s%n" +
                         "Time deleted: %s%n" +
                         "Message ID: %s%n" +
+                        "Sent by: %s%n" +
                         "Message channel: %s%n",
                 deleted.getTimeCreated().toString().replace("T", " ").split("\\.")[0],
                 new Date().toString().replace("T", " ").split("\\.")[0],
                 e.getMessageId(),
+                deleted.getAuthor().getAsMention(),
                 e.getChannel().getAsMention()), false);
         eb.setColor(Color.RED);
         eb.setTimestamp(Instant.now());
@@ -339,7 +344,7 @@ public final class ModHook extends ListenerAdapter {
         
         String roleCreated = e.getRole().getId();
         
-        eb.addField("Logger", "Guild role created.\n" +
+        eb.addField("Logger", "Role created.\n" +
                                       "Role: <@&" + roleCreated + ">", false);
         eb.setColor(Color.GREEN);
         eb.setTimestamp(Instant.now());
@@ -357,7 +362,7 @@ public final class ModHook extends ListenerAdapter {
     
         String roleCreated = e.getRole().getId();
     
-        eb.addField("Logger", "Guild role deleted.\n" +
+        eb.addField("Logger", "Rrole deleted.\n" +
                                       "Role: <@&" + roleCreated + ">", false);
         eb.setColor(Color.RED);
         eb.setTimestamp(Instant.now());
@@ -373,7 +378,7 @@ public final class ModHook extends ListenerAdapter {
         
         EmbedBuilder eb = new EmbedBuilder();
         
-        eb.addField("Logger", "Guild role updated.\n" +
+        eb.addField("Logger", "Role updated.\n" +
                            "Role: <@&" + e.getRole().getId() + ">\n" +
                                       "Old mentionable state: " + e.getOldValue() + "\n" +
                                       "New mentionable state: " + e.getNewValue() + "\n", false);
@@ -391,7 +396,7 @@ public final class ModHook extends ListenerAdapter {
     
         EmbedBuilder eb = new EmbedBuilder();
     
-        eb.addField("Logger", "Guild role updated.\n" +
+        eb.addField("Logger", "Role updated.\n" +
                                       "Role: <@&" + e.getRole().getId() + ">\n" +
                                       "Old name: " + e.getOldValue() + "\n" +
                                       "New name: " + e.getNewValue() + "\n", false);
@@ -462,10 +467,10 @@ public final class ModHook extends ListenerAdapter {
             i++;
         }
         
-        eb.addField("Logger", "Guild role updated.\n" +
+        eb.addField("Logger", "Role updated.\n" +
                                       "Role: <@&" + e.getRole().getId() + ">\n" +
-                                      "Old permissions: " + String.join(", ", oldValues) + "\n" +
-                                      "New permissions: " + String.join(", ", newValues), false);
+                                      "**Old permissions**: " + String.join(",  ", oldValues) + "\n" +
+                                      "**New permissions**: " + String.join(",  ", newValues), false);
         eb.setColor(Color.YELLOW);
         eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
@@ -532,7 +537,7 @@ public final class ModHook extends ListenerAdapter {
         
         EmbedBuilder eb = new EmbedBuilder();
         
-        eb.addField("Logger", "User joined guild.\n" +
+        eb.addField("Logger", "User joined server.\n" +
                                       "User: <@" + e.getUser().getId() + ">\n" +
                                       "Account creation time: " + new Date(((e.getUser().getIdLong() >> 22) + 1420070400000L)).toString(), false);
         
@@ -550,7 +555,7 @@ public final class ModHook extends ListenerAdapter {
         
         EmbedBuilder eb = new EmbedBuilder();
         
-        eb.addField("Logger", "User left guild.\n" +
+        eb.addField("Logger", "User left server.\n" +
                                       "User: <@" + e.getUser().getId() + ">", false);
         
         eb.setColor(Color.RED);

@@ -68,7 +68,7 @@ public class Play extends UBPlugin implements MessageHook {
             br.lines().forEach(bannedWords::add);
         } catch(IOException e) {
             e.printStackTrace();
-            Logger.critical("Could not read from the banned words file!  Safe search has been disabled!", 0, false);
+            Logger.critical("Could not read from the banned words file!  Safe search has been disabled!");
             usingSafeSearch = false;
         }
         

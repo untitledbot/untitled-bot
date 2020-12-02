@@ -1,6 +1,7 @@
 package dev.alexisok.untitledbot.modules.images.apiflipnote;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -108,7 +110,7 @@ public final class DoImageThingFlip {
                 if (attachments.size() == 0) {
                     String returnString = download(
                             String.format(
-                                    "https://useless-api--vierofernando.repl.co/" + relativePath,
+                                    "https://api.alexflipnote.dev/" + relativePath,
                                     deAnimate(m.getAuthor().getEffectiveAvatarUrl())),
                             message.getId()
                     );
@@ -119,7 +121,7 @@ public final class DoImageThingFlip {
                 
                 String returnString = download(
                         String.format(
-                                "https://useless-api--vierofernando.repl.co/" + relativePath,
+                                "https://api.alexflipnote.dev/" + relativePath,
                                 m.getAttachments().get(0).getUrl()),
                         message.getId()
                 );
@@ -130,7 +132,7 @@ public final class DoImageThingFlip {
         } else if(args.length == 2 && args[1].matches(CDN_REGEX)) {
             String returnString = download(
                     String.format(
-                            "https://useless-api--vierofernando.repl.co/" + relativePath,
+                            "https://api.alexflipnote.dev/" + relativePath,
                             args[1]),
                     message.getId()
             );
@@ -138,6 +140,12 @@ public final class DoImageThingFlip {
             message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
             return null;
         } else if(args.length == 2 && args[1].matches("^[\\^]{1,20}")) {
+            if(!message.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_HISTORY)) {
+                eb.addField("Insufficient permissions!", "This bot must have the 'Read Message History' permission on Discord\n" +
+                        " to use up arrows.", false);
+                eb.setColor(Color.RED);
+                return eb.build();
+            }
             message.getChannel().getHistoryBefore(message, args[1].length()).queue(complete -> {
                 Message m = complete.getRetrievedHistory().get(args[1].length() - 1);
                 List<Message.Attachment> attachments = m.getAttachments();
@@ -145,7 +153,9 @@ public final class DoImageThingFlip {
                     String returnString = download(
                             String.format(
                                     "https://api.alexflipnote.dev/" + relativePath,
-                                    deAnimate(m.getAuthor().getEffectiveAvatarUrl())),
+                                    relativePath.contains("magik") ?
+                                    deAnimate(m.getAuthor().getEffectiveAvatarUrl()) :
+                                    m.getAuthor().getEffectiveAvatarUrl()),
                             message.getId()
                     );
                     
