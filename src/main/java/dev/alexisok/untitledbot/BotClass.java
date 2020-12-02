@@ -309,7 +309,7 @@ public final class BotClass extends ListenerAdapter {
                     event.getChannel()
                             .sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
                             .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r));
-                } catch(NullPointerException ignored) { //this returns null if the command does not exist.
+                } catch(NullPointerException e) { //this returns null if the command does not exist.
                     Logger.debug("NPE");
                 } catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
                     Logger.debug("Could not send a message to a channel.");

@@ -173,7 +173,7 @@ public final class CoreCommands {
         Logger.log("Registering modules.");
         
         new EightBall().onRegister();
-//        new AtSomeone().onRegister();
+        new AtSomeone().onRegister();
         new Ranks().onRegister();
         new TwentyDice().onRegister();
         new Ship().onRegister();

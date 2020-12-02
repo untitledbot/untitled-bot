@@ -192,6 +192,11 @@
             <artifactId>jda-nas</artifactId>
             <version>1.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.SparklingComet</groupId>
+            <artifactId>java-mojang-api</artifactId>
+            <version>97bc9add82</version>
+        </dependency>
     </dependencies>
     
     <repositories>
