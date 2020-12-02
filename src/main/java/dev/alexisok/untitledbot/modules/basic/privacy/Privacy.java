@@ -39,6 +39,8 @@ public final class Privacy extends UBPlugin {
                 "The intents for this bot are as follows:\n" +
                 "Server messages, server message reactions, emojis, members, and voice states.\n" +
                 "Note: voice states is used to tell if a user is in a voice channel, for the music player.\n", false);
+        eb.addField("Need more info?", "" +
+                "A more in-depth description of privacy for this bot is available [here](https://untitled-bot.xyz/privacy.html).", false);
         eb.addField("Questions?", "" +
                 "Feel free to [join the official support server](https://alexisok.dev/ub/discord.html).\n" +
                 "The source code is [on github](https://github.com/untitledbot/untitled-bot) if you want to see it as well.", false);

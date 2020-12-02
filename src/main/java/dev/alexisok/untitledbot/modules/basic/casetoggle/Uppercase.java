@@ -51,7 +51,8 @@ public final class Uppercase extends UBPlugin {
                 ).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
             }
         } catch(Throwable ignored) {
-            message.getChannel().sendMessage("Cannot uppercase the previous message as it either had no text or the text is in an embed.").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
+            message.getChannel().sendMessage("Couldn't do caps on the previous message.  Do I have the " +
+                    "'Read Message History' permission?").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         }
         return null;
     }

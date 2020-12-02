@@ -2,6 +2,7 @@ package dev.alexisok.untitledbot.command;
 
 import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.basic.minecraft.MinecraftAPI;
 import dev.alexisok.untitledbot.modules.basic.privacy.Privacy;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.*;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.filter.*;
@@ -170,8 +171,9 @@ public final class CoreCommands {
      */
     public static void registerModules() {
         Logger.log("Registering modules.");
+        
         new EightBall().onRegister();
-        new AtSomeone().onRegister();
+//        new AtSomeone().onRegister();
         new Ranks().onRegister();
         new TwentyDice().onRegister();
         new Ship().onRegister();
@@ -196,7 +198,7 @@ public final class CoreCommands {
         new Blacklist().onRegister();
         new Vote().onRegister();
         new Ping().onRegister();
-        new Inventory().onRegister();
+//        new Inventory().onRegister();
         new Reverse().onRegister();
         new Discord().onRegister();
         new Balance().onRegister();
@@ -275,6 +277,8 @@ public final class CoreCommands {
         new GetSafeSearch().onRegister();
         
         new Privacy().onRegister();
+        //minecraft api seems to have some problems.
+//        new MinecraftAPI().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

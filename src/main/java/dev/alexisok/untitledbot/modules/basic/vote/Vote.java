@@ -23,7 +23,7 @@ public final class Vote extends UBPlugin {
     private static final String URL = "https://top.gg/bot/730135989863055472/vote";
     
     private static final String MESSAGE = String.format("You can [vote for untitled-bot on top.gg](%s).\n\n" +
-                                                  "After that, you can use the `vr` or `vote-reward` command :)", URL);
+                                                  "As of now, you don't get anything for it, but it really helps out!", URL);
     
     @NotNull
     @Override
@@ -40,7 +40,7 @@ public final class Vote extends UBPlugin {
     
     @Override
     public void onRegister() {
-//        CommandRegistrar.register("vote", this);
-//        Manual.setHelpPage("vote", "Get the link to vote for the bot on Top.GG...");
+        CommandRegistrar.register("vote", this);
+        Manual.setHelpPage("vote", "Get the link to vote for the bot on Top.GG...");
     }
 }

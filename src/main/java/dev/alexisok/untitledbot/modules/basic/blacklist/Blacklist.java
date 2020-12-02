@@ -27,6 +27,7 @@ public class Blacklist extends UBPlugin {
             if(ID.equals("541763812676861952")) {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.addField("no", "you cannot blacklist yourself lol", false);
+                return eb.build();
             }
             
             if(BLACKLIST.contains(ID)) {
@@ -34,8 +35,7 @@ public class Blacklist extends UBPlugin {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.addField("Blacklisted!", "This user has been removed from the blacklist :white_check_mark:", false);
                 return eb.build();
-            }
-            else {
+            } else {
                 addToBlacklist(ID);
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.addField("Blacklisted!", "This user has been blacklisted :white_check_mark:", false);
