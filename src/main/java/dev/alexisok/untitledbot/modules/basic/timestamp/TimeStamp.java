@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
+import dev.alexisok.untitledbot.util.DateFormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -57,7 +58,7 @@ public final class TimeStamp extends UBPlugin {
             return null;
         }
         
-        message.getChannel().sendMessage("Provided timestamp was created:\n" + new Date(time).toString()).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
+        message.getChannel().sendMessage("Provided timestamp was created:\n" + DateFormatUtil.format(new Date(time))).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         return null;
     }
     

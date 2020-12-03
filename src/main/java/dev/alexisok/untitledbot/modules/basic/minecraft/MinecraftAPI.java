@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.modules.music.NowPlaying;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
+import dev.alexisok.untitledbot.util.DateFormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -74,7 +75,7 @@ public class MinecraftAPI extends UBPlugin {
                 eb.setTitle("Username history for " + args[2]);
                 StringBuilder description = new StringBuilder("");
                 api.getNameHistoryOfPlayer(UUID).forEach((username, time) -> {
-                    description.append(String.format("**Username**: %s   **time**: %s%n", edm(username), new Date(time)));
+                    description.append(String.format("**Username**: %s   **time**: %s%n", edm(username), DateFormatUtil.format(new Date(time))));
                 });
                 eb.setDescription(description);
                 eb.setColor(Color.GREEN);

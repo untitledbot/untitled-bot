@@ -7,6 +7,7 @@ import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.modules.moderation.logging.*;
 import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.DateFormatUtil;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -238,8 +239,8 @@ public final class ModHook extends ListenerAdapter {
                         "Message ID: %s%n" +
                         "Sent by: %s%n" +
                         "Message channel: %s%n",
-                deleted.getTimeCreated().toString().replace("T", " ").split("\\.")[0],
-                new Date().toString().replace("T", " ").split("\\.")[0],
+                DateFormatUtil.format(deleted.getTimeCreated()),
+                DateFormatUtil.format(new Date()),
                 e.getMessageId(),
                 deleted.getAuthor().getAsMention(),
                 e.getChannel().getAsMention()), false);
@@ -539,7 +540,7 @@ public final class ModHook extends ListenerAdapter {
         
         eb.addField("Logger", "User joined server.\n" +
                                       "User: <@" + e.getUser().getId() + ">\n" +
-                                      "Account creation time: " + new Date(((e.getUser().getIdLong() >> 22) + 1420070400000L)).toString(), false);
+                                      "Account creation time: " + DateFormatUtil.format(new Date(((e.getUser().getIdLong() >> 22) + 1420070400000L))), false);
         
         eb.setColor(Color.GREEN);
         eb.setTimestamp(Instant.now());
