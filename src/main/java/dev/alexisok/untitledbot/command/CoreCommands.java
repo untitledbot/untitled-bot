@@ -273,6 +273,7 @@ public final class CoreCommands {
         new Join().onRegister();
         new Leave().onRegister();
         new DJHandle().onRegister();
+        new Repeat().onRegister();
         
         new Bruh().onRegister();
         new GetSafeSearch().onRegister();

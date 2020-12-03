@@ -79,7 +79,7 @@ public final class RankImageRender {
     @Nullable
     @CheckReturnValue
     @Contract(pure = true)
-    public static File render(String userID, String guildID, long uniqueID, boolean flip) throws UserDataCouldNotBeObtainedException, IOException {
+    public static synchronized File render(String userID, String guildID, long uniqueID, boolean flip) throws UserDataCouldNotBeObtainedException, IOException {
         
         User u = Main.jda.getUserById(userID);
         

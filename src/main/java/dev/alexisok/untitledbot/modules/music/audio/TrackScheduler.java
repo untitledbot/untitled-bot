@@ -63,10 +63,8 @@ public final class TrackScheduler extends AudioEventAdapter {
     
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if(endReason.equals(AudioTrackEndReason.REPLACED))
         if(this.repeat && endReason.equals(AudioTrackEndReason.FINISHED)) {
-            MusicKernel.INSTANCE.onNext(this.guildID, track);
-            this.player.playTrack(track);
+            this.player.playTrack(track.makeClone()); //not cloning will throw errors
             return;
         }
         

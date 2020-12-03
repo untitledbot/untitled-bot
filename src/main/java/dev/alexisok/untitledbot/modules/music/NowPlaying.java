@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.music;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.util.stream.IntStream;
 
 /**
  * @author AlexIsOK
@@ -35,17 +37,43 @@ public final class NowPlaying extends UBPlugin {
         String author = MusicKernel.INSTANCE.nowPlaying(message.getGuild()).getInfo().author;
         String url = MusicKernel.INSTANCE.nowPlaying(message.getGuild()).getInfo().uri;
         eb.setTitle("Now Playing", url);
-        eb.addField("Now Playing", String.format("" +
+        eb.setDescription(String.format("" +
                 "Playing **%s** by %s%n" +
-                "Time: %d:%s / %d:%s%n",
+                "Time: %d:%s / %d:%s%n" +
+                "%s",
                 escapeDiscordMarkdown(title), escapeDiscordMarkdown(author),
                 current / 60,
                 ((current % 60) + "").length() == 1 ? "0" + (current % 60) : (current % 60), //change things like 1:2 to 1:02
                 max / 60,
-                ((max % 60) + "").length() == 1 ? "0" + (max % 60) : (max % 60)), //change things like 1:2 to 1:02
-                false);
+                ((max % 60) + "").length() == 1 ? "0" + (max % 60) : (max % 60), getProgressBar((double) current / (double) max))); //change things like 1:2 to 1:02
         eb.setColor(Color.GREEN);
         return eb.build();
+    }
+
+    /**
+     * Make a nice little progress bar from a double
+     * @param progress the progress as a value between 0 and 1
+     * @return the bar
+     */
+    private static synchronized String getProgressBar(double progress) {
+        if(progress >= 1)
+            progress = 1;
+        if(progress <= 0)
+            progress = 0;
+        
+        StringBuilder rs = new StringBuilder("```\n");
+        
+        int prg = (int) (progress * 100 / 2);
+        int left = 50 - prg;
+        
+        IntStream.range(0, prg - 1).mapToObj(i -> "=").forEach(rs::append);
+        
+        rs.append(">");
+        
+        IntStream.range(0, left).mapToObj(i -> "-").forEach(rs::append);
+        
+        rs.append("\n```");
+        return rs.toString();
     }
     
     @NotNull

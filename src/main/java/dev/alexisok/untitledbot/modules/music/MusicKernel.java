@@ -419,4 +419,12 @@ public class MusicKernel {
         }
         return false;
     }
+
+    public boolean getRepeat(String guildID) {
+        return this.musicManagers.get(guildID).scheduler.isRepeat();
+    }
+
+    public void setRepeat(String guildID, boolean state) {
+        this.musicManagers.get(guildID).scheduler.setRepeat(state);
+    }
 }
