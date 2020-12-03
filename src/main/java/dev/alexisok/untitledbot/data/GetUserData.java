@@ -17,8 +17,12 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.io.File;
 import java.io.FileFilter;
+import java.net.URI;
+import java.nio.file.*;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
@@ -69,6 +73,28 @@ public final class GetUserData extends UBPlugin {
             if(new File(Main.parsePropertiesLocation(userID, null)).exists()) {
                 dataFiles.add(new File(Main.parsePropertiesLocation(userID, null)));
             }
+            
+            Map<String, String> e = new HashMap<>();
+            e.put("create", "true");
+            
+            URI uri = URI.create("jar:file:/tmp/EXPORT_" + message.getId() + ".zip");
+            
+            try(FileSystem fs = FileSystems.newFileSystem(uri, e)) {
+                for(File f : dataFiles) {
+                    Path a = Paths.get(f.getAbsolutePath());
+                    
+                    String folder = f.getPath().split("/")[f.getPath().split("/").length - 2];
+                    
+                    Path z = fs.getPath("/" + folder);
+                    Files.copy(a, z, StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+            
+            message.getAuthor().openPrivateChannel().queue(r -> {
+                r.sendFile(new File("/tmp/EXPORT_" + message.getId() + ".zip")).queue(r2 -> {
+                    new File("/tmp/EXPORT_" + message.getId() + ".zip").delete();
+                });
+            });
             
             setRateLimiter(userID);
             
