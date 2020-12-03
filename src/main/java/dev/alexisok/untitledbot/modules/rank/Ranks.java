@@ -123,7 +123,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
                 i++;
             }
         } catch(ArrayIndexOutOfBoundsException ignored) {
-            return 300;
+            return 65536;
         }
         return i;
     }
