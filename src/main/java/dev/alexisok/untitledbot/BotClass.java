@@ -457,29 +457,9 @@ public final class BotClass extends ListenerAdapter {
         }
     }
     
-    private static String deNull(String s) {
-        return s == null ? "" : s;
-    }
-    
     @Override
     public void onGuildLeave(@NotNull GuildLeaveEvent e) {
-        Guild g = e.getGuild();
         Logger.debug("Guild left");
-        Logger.debug(String.format("" +
-                        "Name: %s%n" +
-                        "Creation time: %s%n" +
-                        "ID: %s%n" +
-                        deNull(g.getName()), deNull(g.getTimeCreated().toString()),
-                deNull(g.getId())));
-        Main.jda.getTextChannelById(774205271282810911L).sendMessage(
-                new EmbedBuilder().addField("Guild left!", String.format("" +
-                                "Name: %s%n" +
-                                "Creation time: %s%n" +
-                                "ID: %s%n" +
-                        deNull(g.getName()), deNull(g.getTimeCreated().toString()),
-                        deNull(g.getId())), false)
-                        .setThumbnail(g.getIconUrl()).build()
-        ).queue();
     }
     
     @Override

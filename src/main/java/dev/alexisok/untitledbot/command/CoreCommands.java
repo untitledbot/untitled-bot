@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.minecraft.MinecraftAPI;
 import dev.alexisok.untitledbot.modules.basic.privacy.Privacy;
+import dev.alexisok.untitledbot.modules.basic.purge.Purge;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.*;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.filter.*;
 import dev.alexisok.untitledbot.modules.images.apiuseless.*;
@@ -281,6 +282,7 @@ public final class CoreCommands {
         new Privacy().onRegister();
         //minecraft api seems to have some problems.
 //        new MinecraftAPI().onRegister();
+        new Purge().onRegister();
         Logger.log("Modules have been registered.");
     }
 }
