@@ -5,8 +5,10 @@ import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.Role;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +25,18 @@ public final class Stop extends UBPlugin {
         MusicKernel.INSTANCE.setLast(message.getGuild().getId(), message.getTextChannel());
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
+        
+        Role dj = MusicKernel.getDJRole(message.getGuild().getId());
+        
+        if(dj != null && !message.getMember().getPermissions().contains(Permission.MESSAGE_MANAGE)) {
+            try {
+                if(!message.getMember().getRoles().contains(dj)) {
+                    eb.addField("Music Player", "You must have the DJ Role <@&" + dj.getId() + "> to do this!", false);
+                    eb.setColor(Color.RED);
+                    return eb.build();
+                }
+            } catch(Throwable ignored) {}
+        }
         
         try {
             MusicKernel.INSTANCE.stop(message.getGuild());

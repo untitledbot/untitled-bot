@@ -72,7 +72,7 @@ public class MusicKernel {
     private static synchronized void updateCache(@NotNull String guildID) {
         String roleID = Vault.getUserDataLocal(null, guildID, DJ_ROLE_VAULT_NAME);
         
-        if(roleID == null)
+        if(roleID == null || roleID.equals("none"))
             return;
 
         Logger.debug("Updating DJ cache to include " + roleID + " for " + guildID);
