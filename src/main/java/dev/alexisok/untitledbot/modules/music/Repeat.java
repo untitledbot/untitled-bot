@@ -35,8 +35,8 @@ public final class Repeat extends UBPlugin {
         
         MusicKernel.INSTANCE.setRepeat(message.getGuild().getId(), !isRepeat);
         
-        if(isRepeat) eb.addField("Music Player", "Music player will no longer repeat the current song.", false);
-        else eb.addField("Music Player", "Music player will now repeat the current song.", false);
+        if(isRepeat) eb.addField("Music Player", "\uD83D\uDD01Music player will no longer repeat the current song.", false);
+        else eb.addField("Music Player", "\uD83D\uDD01Music player will now repeat the current song.", false);
         
         eb.setColor(Color.GREEN);
         return eb.build();

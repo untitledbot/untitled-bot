@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
+
 /**
  * Seek to a specific time in the video.
  * 
@@ -23,6 +25,13 @@ public class Seek extends UBPlugin {
         
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
+        
+        if(args.length != 2 || args[1].startsWith("1") || args[1].length() > 10) {
+            eb.addField("Seek", "Usage: `seek <time>`\n" +
+                                "See `help seek` for more information and usage.", false);
+            eb.setColor(Color.RED);
+            return eb.build();
+        }
         
         long gotoTime = 0L;
         

@@ -270,7 +270,7 @@ public final class CoreCommands {
         new Volume().onRegister();
         new NowPlaying().onRegister();
         new Queue().onRegister();
-//        new Seek().onRegister();
+        new Seek().onRegister();
         new Join().onRegister();
         new Leave().onRegister();
         new DJHandle().onRegister();

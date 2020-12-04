@@ -72,7 +72,7 @@ public final class NowPlaying extends UBPlugin {
         
         IntStream.range(0, left).mapToObj(i -> "░").forEach(rs::append);
 
-        rs.append("  ").append(progress * 100).append("%");
+        rs.append("  ").append(String.format("%.0f", progress / 100)).append("%");
         
         rs.append("\n```");
         return rs.toString();
