@@ -352,7 +352,7 @@ public final class BotClass extends ListenerAdapter {
                     return;
                 }
             }
-            if(amount >= 13) {
+            if(amount >= 13 - (INFRACTIONS.getOrDefault(authorID, (byte) 0) * 2)) {
                 event.getChannel().sendMessage("Hey <@" + authorID + ">, slow down on the commands.\n" +
                         "You will be temporarily banned from the bot if you continue to spam.").queue();
                 RATE_LIMIT.remove(authorID);
