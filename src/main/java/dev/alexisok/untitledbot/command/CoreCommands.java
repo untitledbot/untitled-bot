@@ -2,7 +2,6 @@ package dev.alexisok.untitledbot.command;
 
 import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.logging.Logger;
-import dev.alexisok.untitledbot.modules.basic.minecraft.MinecraftAPI;
 import dev.alexisok.untitledbot.modules.basic.privacy.Privacy;
 import dev.alexisok.untitledbot.modules.basic.purge.Purge;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.*;
