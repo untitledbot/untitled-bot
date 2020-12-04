@@ -52,7 +52,7 @@ public final class Status extends UBPlugin {
         returnString += "   Total messages: " + BotClass.getMessagesSentTotal() + "\n";
         returnString += "          Servers: " + guilds + "\n";
         returnString += "  OpenJDK Version: " + System.getProperty("java.version") + "\n";
-        returnString += "      JDA Version: 4.2.0_209\n";
+        returnString += "      JDA Version: 4.2.0_222\n";
         returnString += "Commands (+alias): " + CommandRegistrar.registrarSize() + "\n";
         returnString += "    Music Players: " + MusicKernel.INSTANCE.getPlayers() + "\n";
         returnString += "```";

@@ -24,7 +24,4 @@ public interface Loadable {
      */
     String store();
     
-    HashMap<String, String> loadAll(File load);
-    
-    
 }

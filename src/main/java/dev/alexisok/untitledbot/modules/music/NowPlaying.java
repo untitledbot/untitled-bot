@@ -66,11 +66,13 @@ public final class NowPlaying extends UBPlugin {
         int prg = (int) (progress * 100 / 2);
         int left = 50 - prg;
         
-        IntStream.range(0, prg - 1).mapToObj(i -> "=").forEach(rs::append);
+        IntStream.range(0, prg - 1).mapToObj(i -> "▓").forEach(rs::append);
         
-        rs.append(">");
+        rs.append("▓");
         
-        IntStream.range(0, left).mapToObj(i -> "-").forEach(rs::append);
+        IntStream.range(0, left).mapToObj(i -> "░").forEach(rs::append);
+
+        rs.append("  ").append(progress * 100).append("%");
         
         rs.append("\n```");
         return rs.toString();

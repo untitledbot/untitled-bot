@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.music.MusicKernel;
 import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.ShutdownHook;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.GenericEvent;
@@ -52,6 +53,8 @@ public final class BotClass extends ListenerAdapter {
     public static long getMessagesSentTotal() {
         return messagesSentTotal;
     }
+    
+    public static final List<ShutdownHook> HOOK_REGISTRAR = new ArrayList<>();
     
     private static final int MAX_INFRACTIONS = 3;
     
@@ -305,12 +308,11 @@ public final class BotClass extends ListenerAdapter {
             public void run() {
                 try {
                     args[0] = args[0].toLowerCase();
-                    Logger.debug("Exec command " + args[0]);
+                    Logger.debug("Exec command " + args[0] + " by " + event.getAuthor().getId());
                     event.getChannel()
                             .sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
                             .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r));
                 } catch(NullPointerException e) { //this returns null if the command does not exist.
-                    Logger.debug("NPE");
                 } catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
                     Logger.debug("Could not send a message to a channel.");
                 } catch(Throwable t) {
@@ -470,5 +472,19 @@ public final class BotClass extends ListenerAdapter {
     @Override
     public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
         MusicKernel.INSTANCE.onUserLeaveVC(event.getChannelLeft());
+    }
+
+    /**
+     * Run when the bot is about to shutdown.
+     * 
+     * Note: this calls {@link Runtime#exit(int)} with a status code of {@code 0}.
+     */
+    public static void onShutdown() {
+        HOOK_REGISTRAR.forEach(ShutdownHook::onShutdown);
+        Runtime.getRuntime().exit(0);
+    }
+    
+    public static void registerShutdownHook(@NotNull ShutdownHook hook) {
+        HOOK_REGISTRAR.add(hook);
     }
 }
