@@ -51,12 +51,11 @@ public class Seek extends UBPlugin {
     @Override
     public void onRegister() {
         CommandRegistrar.register("seek", this);
-        Manual.setHelpPage("seek", """
-                Seek to a specific time in a video.
-                Usage: `seek <time>`
-                Examples:
-                `seek 1:25` (1 min 25 sec)
-                `seek 600 (5 min)""");
+        Manual.setHelpPage("seek", "Seek to a specific time in a video.\n" +
+                "Usage: `seek <time>`" +
+                "Examples:" +
+                "`seek 1:25` (1 min 25 sec)" +
+                "`seek 600 (5 min)");
         CommandRegistrar.registerAlias("seek", "goto", "sleek");
     }
 }

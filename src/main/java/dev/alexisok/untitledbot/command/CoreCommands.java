@@ -53,7 +53,6 @@ import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rank.Rnak;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleGet;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleSet;
-import dev.alexisok.untitledbot.modules.rank.xpcommands.Inventory;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Steal;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Work;
 import dev.alexisok.untitledbot.modules.reactions.AttackOnLenny;
