@@ -67,7 +67,7 @@ public final class Bet extends UBPlugin {
         }
         
         if(new Random(message.getIdLong()).nextBoolean()) {
-            eb.addField("Bet", String.format("You bet UB$%d and got UB$%d in return!\nYou now have UB$%d.", amount, amount * 2, moneyBank + amount), false);
+            eb.addField("Bet", String.format("You bet UB$%d and got UB$%d in return!\nYou now have UB$%d.", amount, amount * 2, moneyBank + (amount * 2)), false);
             eb.setColor(Color.GREEN);
             moneyBank += (amount * 2);
         } else {

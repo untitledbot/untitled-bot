@@ -5,8 +5,6 @@ import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import dev.alexisok.untitledbot.modules.starboard.Starboard;
-import io.netty.util.internal.logging.Log4J2LoggerFactory;
-import lombok.extern.log4j.Log4j2;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -15,7 +13,6 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.sonatype.aether.impl.internal.Slf4jLogger;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;
@@ -58,8 +55,6 @@ public final class Main {
     public static final ArrayList<String> CONTRIBUTORS = new ArrayList<>();
     
     static {
-        debug("Installing shutdown hook");
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
         String DEFAULT_PREFIX1;
         //temp for final string
         String DATA_PATH1;
@@ -194,7 +189,7 @@ public final class Main {
      *             other arguments not listed in this methods JavaDoc will
      *             be ignored.
      */
-    public static void main(@NotNull String[] args) {
+    public static void main(@NotNull String[] args) throws InterruptedException {
         
         Logger.log("Starting untitled bot " + VERSION + ".");
         Logger.log("Starting in location " + System.getProperty("user.dir"));
@@ -204,14 +199,14 @@ public final class Main {
         try {
             token = args[0];
         } catch(ArrayIndexOutOfBoundsException ignored) {
-            Logger.critical("Could not read a token from the first argument!", 5, true);
+            Logger.critical("Could not read a token from the first argument!");
             return;
         }
         
         try {
-            
-            //message reactions may be used for a future release
-            jda = JDABuilder.create(GUILD_MESSAGE_REACTIONS, GUILD_MESSAGES, GUILD_EMOJIS, GUILD_MEMBERS, GUILD_VOICE_STATES)
+            jda = JDABuilder
+                    .create(GUILD_MESSAGE_REACTIONS, GUILD_MESSAGES, GUILD_EMOJIS, GUILD_MEMBERS, GUILD_VOICE_STATES, GUILD_BANS)
+                    .disableCache(ACTIVITY, CLIENT_STATUS) //bot does not need presence intents
                     .setToken(token)
                     .enableCache(MEMBER_OVERRIDES, EMOTE)
                     .setMemberCachePolicy(MemberCachePolicy.ONLINE.and(OWNER).and(VOICE))
@@ -219,9 +214,10 @@ public final class Main {
                     .setAudioSendFactory(new NativeAudioSendFactory()) //mitigates packet loss according to JDA NAS.
                     .build();
             jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help"));
+            jda.awaitReady();
         } catch(LoginException e) {
             e.printStackTrace();
-            Logger.critical("Could not login to Discord!", 1);
+            Logger.critical("Could not login to Discord!");
         }
         
         CoreCommands.registerCoreCommands();

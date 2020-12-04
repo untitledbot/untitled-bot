@@ -94,7 +94,7 @@ public class RankRoleSet extends UBPlugin {
             eb.addField("Oops!!!", "Looks like something went wrong with untitled-bot!  Please report this using the `bug-report` command if this continues...\n" +
                                            "Error: RANK_ROLE_SET_PRODUCED_NPE_FOR_SELF_ROLE_CHECK", false);
             eb.setColor(Color.RED);
-            Logger.critical("RANK_ROLE_SET_PRODUCED_NPE_FOR_SELF_ROLE_CHECK", -1, false);
+            Logger.critical("RANK_ROLE_SET_PRODUCED_NPE_FOR_SELF_ROLE_CHECK");
             return eb.build();
         }
         

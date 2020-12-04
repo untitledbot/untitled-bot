@@ -2,6 +2,8 @@ package dev.alexisok.untitledbot.command;
 
 import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.basic.privacy.Privacy;
+import dev.alexisok.untitledbot.modules.basic.purge.Purge;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.*;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.filter.*;
 import dev.alexisok.untitledbot.modules.images.apiuseless.*;
@@ -51,7 +53,6 @@ import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rank.Rnak;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleGet;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleSet;
-import dev.alexisok.untitledbot.modules.rank.xpcommands.Inventory;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Steal;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Work;
 import dev.alexisok.untitledbot.modules.reactions.AttackOnLenny;
@@ -169,6 +170,7 @@ public final class CoreCommands {
      */
     public static void registerModules() {
         Logger.log("Registering modules.");
+        
         new EightBall().onRegister();
         new AtSomeone().onRegister();
         new Ranks().onRegister();
@@ -195,7 +197,7 @@ public final class CoreCommands {
         new Blacklist().onRegister();
         new Vote().onRegister();
         new Ping().onRegister();
-        new Inventory().onRegister();
+//        new Inventory().onRegister();
         new Reverse().onRegister();
         new Discord().onRegister();
         new Balance().onRegister();
@@ -266,12 +268,19 @@ public final class CoreCommands {
         new Volume().onRegister();
         new NowPlaying().onRegister();
         new Queue().onRegister();
-//        new Seek().onRegister();
+        new Seek().onRegister();
         new Join().onRegister();
         new Leave().onRegister();
+        new DJHandle().onRegister();
+        new Repeat().onRegister();
         
         new Bruh().onRegister();
         new GetSafeSearch().onRegister();
+        
+        new Privacy().onRegister();
+        //minecraft api seems to have some problems.
+//        new MinecraftAPI().onRegister();
+        new Purge().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

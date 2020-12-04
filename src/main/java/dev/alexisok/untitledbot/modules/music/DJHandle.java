@@ -11,7 +11,6 @@ import net.dv8tion.jda.api.entities.Role;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,9 +27,13 @@ public class DJHandle extends UBPlugin {
         EmbedDefaults.setEmbedDefaults(eb, message);
         
         if(args.length == 1) {
-            eb.addField("DJ", "Usage: `dj <role @ | role name | role ID>`", false);
+            eb.addField("DJ", "Usage: `dj <role @ | role name | role ID | none>`", false);
             eb.setColor(Color.RED);
             return eb.build();
+        }
+        
+        if(args[1].equals("none")) {
+            MusicKernel.setDJRole(message.getGuild().getId(), null);
         }
         
         Role r = null;
@@ -60,8 +63,7 @@ public class DJHandle extends UBPlugin {
         MusicKernel.setDJRole(message.getGuild().getId(), r);
         
         eb.addField("DJ Role", "The DJ Role has been set to " + r.getAsMention() + ".  Any users with this role will be able to " +
-                "use the `stop` and `skip` commands freely.\n" +
-                "Note: people without the DJ role can still use the `skip` command, but multiple people must vote to skip it.", false);
+                "use the `stop` and `skip` commands freely.\n", false);
         eb.setColor(Color.GREEN);
         return eb.build();
     }
@@ -70,7 +72,7 @@ public class DJHandle extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("dj", "admin", this);
         Manual.setHelpPage("dj", "Set the DJ role in this server.\n" +
-                "Usage: `dj <role @ | role name | role ID>`\n" +
+                "Usage: `dj <role @ | role name | role ID | none>`\n" +
                 "Anyone with this role will be able to skip, stop, and add playlists.");
     }
 }

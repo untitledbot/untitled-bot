@@ -25,8 +25,8 @@ public final class Ship extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        if(message.getMentionedMembers().size() != 2) {
-            eb.addField("Ship", "Usage: `ship <user 1> <user 2>`", false);
+        if(args.length <= 2) {
+            eb.addField("Ship", "Usage: `ship <person 1> <person 2>`", false);
             eb.setColor(Color.RED);
             
             return eb.build();

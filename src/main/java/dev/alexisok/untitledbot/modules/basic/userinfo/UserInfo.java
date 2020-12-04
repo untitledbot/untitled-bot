@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.basic.userinfo;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
+import dev.alexisok.untitledbot.util.DateFormatUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import org.jetbrains.annotations.NotNull;
@@ -91,7 +92,7 @@ public final class UserInfo extends UBPlugin {
                                           "Channels: %d%n" +
                                           "Voice channels: %d%n" +
                                           "Categories: `%d`%n",
-                            g.getId(), g.getTimeCreated().toInstant().toString(), g.getRequiredMFALevel().toString().toLowerCase(),
+                            g.getId(), DateFormatUtil.format(g.getTimeCreated()), g.getRequiredMFALevel().toString().toLowerCase(),
                             g.getAfkTimeout().getSeconds() / 60, g.getDefaultNotificationLevel().toString().toLowerCase(),
                             g.getExplicitContentLevel().getDescription(), g.getBoostTier().getMaxBitrate() / 1000,
                             g.getBoostTier().getMaxEmotes(), g.getMaxFileSize() / 1024 / 1024, g.getOwnerId(),

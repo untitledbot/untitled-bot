@@ -57,6 +57,12 @@ public final class Top extends UBPlugin {
             return null;
         }
         
+        setRateLimiter(message.getGuild().getId());
+        
+        if(message.getGuild().getMemberCache().size() > 500) {
+            message.getChannel().sendMessage("This server is literally gigantic.  It may take anywhere from 3 seconds to 2 minutes to run this command.").queue();
+        }
+        
         LinkedHashMap<String, Long> topXP = new LinkedHashMap<>(new LinkedHashMap<>());
         
         for(File s : new File(Main.DATA_PATH + "/" + message.getGuild().getId() + "/").listFiles()) {
@@ -77,7 +83,6 @@ public final class Top extends UBPlugin {
             File imageToSend = Objects.requireNonNull(render(topXP, message.getGuild().getName(), message.getGuild().getId()));
             //send and then delete the image when it has sent
             message.getChannel().sendFile(imageToSend).queue();
-            setRateLimiter(message.getGuild().getId());
         } catch(IOException | NullPointerException ignored) {
             message.getChannel().sendMessage("Could not send the rank top!").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         }

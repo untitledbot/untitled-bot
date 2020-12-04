@@ -1,7 +1,7 @@
 package dev.alexisok.untitledbot.modules.images.apiuseless;
 
-import dev.alexisok.untitledbot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -126,8 +126,6 @@ public final class DoImageThingUseless {
                 message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
                 return null;
             } else if(args.length == 2 && args[1].matches(PROXY_REGEX)) {
-                Logger.debug(args[1]);
-                Logger.debug(deProxy(args[1]));
                 String returnString = download(
                         String.format(
                                 "https://useless-api--vierofernando.repl.co/" + relativePath,
@@ -138,6 +136,12 @@ public final class DoImageThingUseless {
                 message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
                 return null;
             } else if(args.length == 2 && args[1].matches("^[\\^]{1,20}")) { //amount of ^ characters
+                if(!message.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_HISTORY)) {
+                    eb.addField("Insufficient permissions!", "This bot must have the 'Read Message History' permission on Discord\n" +
+                            " to use up arrows.", false);
+                    eb.setColor(Color.RED);
+                    return eb.build();
+                }
                 message.getChannel().getHistoryBefore(message, args[1].length()).queue(complete -> {
                     Message m = complete.getRetrievedHistory().get(args[1].length() - 1);
                     List<Message.Attachment> attachments = m.getAttachments();
@@ -226,7 +230,6 @@ public final class DoImageThingUseless {
     @Nullable
     @Contract(pure = true)
     private static synchronized String download(@NotNull String urlStr, @NotNull String uniqueID) {
-        Logger.debug("Downloading " + urlStr);
         URL url;
         try {
             url = new URL(urlStr);

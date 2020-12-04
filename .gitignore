@@ -10,3 +10,5 @@ font.ttf
 cooldowns.properties
 contributors.properties
 blacklist.properties
+.shutdown
+./shutdown

@@ -60,7 +60,8 @@ public final class Lowercase extends UBPlugin {
                 ).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
             }
         } catch(Throwable ignored) {
-            message.getChannel().sendMessage("Cannot do lowercase on the previous message.").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
+            message.getChannel().sendMessage("Couldn't do lowercase on the previous message.  Do I have the " +
+                    "'Read Message History' permission?").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         }
         return null;
     }

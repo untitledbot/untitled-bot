@@ -29,38 +29,28 @@ public final class SetLogChannel extends UBPlugin {
         
         if(args.length == 1) {
             eb.setColor(Color.RED);
-            eb.addField("Logging", "Usage: log-channel <text channel # | null>", false);
+            eb.addField("Logging", "Usage: log-channel <text channel # | none>", false);
             
             return eb.build();
         }
         
         if(message.getMentionedChannels().size() == 0 && !args[1].equals("null")) {
-            eb.addField("Logging", "Usage: log-channel <text channel # | null>", false);
+            eb.addField("Logging", "Usage: log-channel <text channel # | none>", false);
             eb.setColor(Color.RED);
             return eb.build();
         }
         
-        if(!args[1].equals("null")) {
-            TextChannel tc = message.getMentionedChannels().get(0);
-    
-            ArrayList<TextChannel> IDsList = new ArrayList<>(message.getGuild().getTextChannels());
-            ArrayList<String> IDs = new ArrayList<>();
+        if(!args[1].equals("none")) {
             
-            for(TextChannel tc1 : IDsList) {
-                IDs.add(tc1.getId());
-            }
+            TextChannel tc = null;
             
-            boolean found = false;
-    
-            for(String id : IDs) {
-                if(id.equals(tc.getId())) {
-                    found = true;
-                    break;
-                }
-            }
+            try {
+                //to prevent using other channels outside of the guild
+                tc = message.getGuild().getTextChannelById(message.getMentionedChannels().get(0).getId());
+            } catch(Exception ignored) {}
             
-            if(!found) {
-                eb.addField("Logging", "Usage: log-channel <text channel # | null>", false);
+            if(tc == null) {
+                eb.addField("Logging", "Usage: log-channel <text channel # | none>", false);
                 eb.setColor(Color.RED);
                 return eb.build();
             }

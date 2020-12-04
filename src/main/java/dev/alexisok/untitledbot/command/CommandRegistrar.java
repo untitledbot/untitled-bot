@@ -94,7 +94,7 @@ public class CommandRegistrar {
 			p.putAll(COOLDOWN);
 			p.store(new FileOutputStream("./cooldowns.properties"), "#cooldown");
 		} catch(IOException ignored) {
-			Logger.critical("Could not save cooldown to properties file!", -1, false);
+			Logger.critical("Could not save cooldown to properties file!");
 		}
 	}
 	

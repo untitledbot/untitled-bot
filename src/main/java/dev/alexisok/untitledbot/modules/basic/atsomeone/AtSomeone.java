@@ -2,6 +2,7 @@ package dev.alexisok.untitledbot.modules.basic.atsomeone;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -10,6 +11,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -51,17 +53,23 @@ public final class AtSomeone extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         //obtained from https://www.lennyfaces.net/magic/
-        String lennyA = "\uFFE1( \u0361\u00B0 \u035C\u0296 \u0361\u00B0)/\u2606*\u3002;+\uFF0CAT SOMEONE HAS BEEN CAST\nWHO SHALL RECEIVE THY INCANTATION?\nWHY, YES, IT IS <@";
-        Member randomMember = message.getGuild().getMemberCache().getElementById(ThreadLocalRandom.current().nextInt(0, (int) message.getGuild().getMemberCache().size()));
-        lennyA += String.format("%s> OF COURSE!", randomMember.getId());
+        //this only gets cached members
+        Member randomMember;
         
-        ThreadLocalRandom tlr = ThreadLocalRandom.current();
+        Random rand = new Random(message.getIdLong());
+        
+        java.util.List<Member> memberCache = message.getGuild().getMemberCache().asList();
+        
+        randomMember = memberCache.get(rand.nextInt(memberCache.size() - 1));
+        
+        String lennyA = "\uFFE1( \u0361\u00B0 \u035C\u0296 \u0361\u00B0)/\u2606*\u3002;+\uFF0CAT SOMEONE HAS BEEN CAST\nWHO SHALL RECEIVE THY INCANTATION?\nWHY, YES, IT IS <@" + randomMember.getId() + "> OF COURSE!";
+        
         
         //generate random color
         float r, g, b;
-        r = tlr.nextFloat();
-        g = tlr.nextFloat();
-        b = tlr.nextFloat();
+        r = rand.nextFloat();
+        g = rand.nextFloat();
+        b = rand.nextFloat();
         
         eb.setColor(new Color(r, g, b));
         eb.addField("@SOMEONE", lennyA, false);

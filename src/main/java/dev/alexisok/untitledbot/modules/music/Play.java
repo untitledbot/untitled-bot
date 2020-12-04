@@ -18,6 +18,7 @@ import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.exceptions.ContextException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,7 +69,7 @@ public class Play extends UBPlugin implements MessageHook {
             br.lines().forEach(bannedWords::add);
         } catch(IOException e) {
             e.printStackTrace();
-            Logger.critical("Could not read from the banned words file!  Safe search has been disabled!", 0, false);
+            Logger.critical("Could not read from the banned words file!  Safe search has been disabled!");
             usingSafeSearch = false;
         }
         

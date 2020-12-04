@@ -5,10 +5,12 @@ import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.music.MusicKernel;
 import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.ShutdownHook;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
@@ -52,7 +54,40 @@ public final class BotClass extends ListenerAdapter {
         return messagesSentTotal;
     }
     
+    public static final List<ShutdownHook> HOOK_REGISTRAR = new ArrayList<>();
+    
+    private static final int MAX_INFRACTIONS = 3;
+    
+    //user id, commands
+    private static final HashMap<Long, Integer> RATE_LIMIT = new HashMap<>();
+    
+    //user id, amount of times hit ratelimit
+    private static final HashMap<Long, Byte> INFRACTIONS = new HashMap<>();
+    
+    //user id
+    private static final ArrayList<Long> TEMP_BLACKLIST = new ArrayList<>();
+    
+    //user id
     public static final ArrayList<String> BLACKLIST = new ArrayList<>();
+    
+    static {
+        TimerTask t = new TimerTask() {
+            @Override
+            public void run() {
+                RATE_LIMIT.clear();
+            }
+        };
+        
+        TimerTask t2 = new TimerTask() {
+            @Override
+            public void run() {
+                INFRACTIONS.clear();
+            }
+        };
+        
+        new Timer().scheduleAtFixedRate(t, 0, 60000); //1 minute
+        new Timer().scheduleAtFixedRate(t2, 0, 3600000); //1 hour
+    }
     
     /**
      * Add a user to the blacklist, also adds them to the blacklist.properties file.
@@ -83,7 +118,7 @@ public final class BotClass extends ListenerAdapter {
     
     //message id, bot msg id reply
     private static final HashMap<String, Message> DELETE_THIS_CACHE = new HashMap<>();
-
+    
     /**
      * For methods that do not send messages through traditional means.
      * @param messageID the ID of the user's message.
@@ -111,8 +146,6 @@ public final class BotClass extends ListenerAdapter {
     
     //cache for server prefixes
     private static final HashMap<String, String> PREFIX_CACHE = new HashMap<>();
-    
-    private static final Timer TIMER = new Timer(true);
     
     /**
      * Nullify the prefix cache for a specific guild.
@@ -217,7 +250,7 @@ public final class BotClass extends ListenerAdapter {
         if(event.getAuthor().isBot() || event.isWebhookMessage())
             return;
         
-        if(BLACKLIST.contains(event.getAuthor().getId()))
+        if(BLACKLIST.contains(event.getAuthor().getId()) || TEMP_BLACKLIST.contains(event.getAuthor().getIdLong()))
             return;
         
         if(!event.getChannel().canTalk())
@@ -246,9 +279,7 @@ public final class BotClass extends ListenerAdapter {
                                             "For a full list of commands, use `%shelp` or `%s help`.%n" +
                                             "The default prefix is `>` and can be set by an administrator " +
                                             "on this server by using the `prefix` command.", prefix, prefix, prefix))
-                                    .queue(r -> {
-                                        DELETE_THIS_CACHE.put(event.getMessageId(), r);
-                                    });
+                                    .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r));
                         }
                     }, 0);
                 return;
@@ -277,24 +308,64 @@ public final class BotClass extends ListenerAdapter {
             public void run() {
                 try {
                     args[0] = args[0].toLowerCase();
-                    Logger.debug("Exec command " + args[0]);
+                    Logger.debug("Exec command " + args[0] + " by " + event.getAuthor().getId());
                     event.getChannel()
                             .sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
                             .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r));
-                } catch(NullPointerException ignored) { //this returns null if the command does not exist.
+                } catch(NullPointerException e) { //this returns null if the command does not exist.
                 } catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
                     Logger.debug("Could not send a message to a channel.");
                 } catch(Throwable t) {
                     t.printStackTrace();
                 }
+                //this needs to be outside of everything else to avoid not being called.
+                updateRL(event);
             }
         }, 0);
         
     }
+    
+    private static synchronized void updateRL(GuildMessageReceivedEvent event) {
 
+        long authorID = event.getAuthor().getIdLong();
+
+        if(RATE_LIMIT.containsKey(authorID)) {
+            int amount = RATE_LIMIT.get(authorID);
+            amount++;
+            RATE_LIMIT.put(authorID, amount);
+            if(INFRACTIONS.containsKey(authorID)) {
+                byte i = INFRACTIONS.get(authorID);
+                if(i >= MAX_INFRACTIONS) {
+                    event.getChannel().sendMessage("\\* \\* \\* BANNED \\* \\* \\*\n" +
+                            "<@" + authorID + ">, you have been temporarily banned from using the bot.\n" +
+                            "").queue();
+                    RATE_LIMIT.remove(authorID);
+                    INFRACTIONS.remove(authorID);
+                    TEMP_BLACKLIST.add(authorID);                            //12h
+                    event.getAuthor().openPrivateChannel().queueAfter(43200000L, TimeUnit.MILLISECONDS, e -> {
+                        try {
+                            TEMP_BLACKLIST.remove(authorID);
+                            e.sendMessage("You have been unbanned from using the bot.\n" +
+                                    "Note: continue to break this rule and you will be banned from the bot forever.").queue();
+                        } catch(Throwable ignored) {}
+                    });
+                    return;
+                }
+            }
+            if(amount >= 13 - (INFRACTIONS.getOrDefault(authorID, (byte) 0) * 2)) {
+                event.getChannel().sendMessage("Hey <@" + authorID + ">, slow down on the commands.\n" +
+                        "You will be temporarily banned from the bot if you continue to spam.").queue();
+                RATE_LIMIT.remove(authorID);
+                INFRACTIONS.put(authorID, (byte) (INFRACTIONS.getOrDefault(authorID, (byte) 0) + 1));
+            }
+        } else {
+            RATE_LIMIT.put(event.getAuthor().getIdLong(), 1);
+        }
+    }
+    
     /**
-     * 
-     * @param event
+     * when a guild message is deleted.  what else could it possibly be?
+     * @param event the delete event
      */
     @Override
     public void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event) {
@@ -389,6 +460,11 @@ public final class BotClass extends ListenerAdapter {
     }
     
     @Override
+    public void onGuildLeave(@NotNull GuildLeaveEvent e) {
+        Logger.debug("Guild left");
+    }
+    
+    @Override
     public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
         MusicKernel.INSTANCE.onUserLeaveVC(event.getChannelLeft());
     }
@@ -396,5 +472,19 @@ public final class BotClass extends ListenerAdapter {
     @Override
     public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent event) {
         MusicKernel.INSTANCE.onUserLeaveVC(event.getChannelLeft());
+    }
+
+    /**
+     * Run when the bot is about to shutdown.
+     * 
+     * Note: this calls {@link Runtime#exit(int)} with a status code of {@code 0}.
+     */
+    public static void onShutdown() {
+        HOOK_REGISTRAR.forEach(ShutdownHook::onShutdown);
+        Runtime.getRuntime().exit(0);
+    }
+    
+    public static void registerShutdownHook(@NotNull ShutdownHook hook) {
+        HOOK_REGISTRAR.add(hook);
     }
 }

@@ -61,7 +61,8 @@ public class AllCommands extends UBPlugin {
             "`remove-log` - remove a log type from the channel.(adm)\n" +
             "`log-types` - list all current log types.\n" +
             "`get-log` - list what's being logged.\n" +
-            "`snipe <channel> - get the last deleted message of a channel.");
+            "`snipe <channel>` - get the last deleted message of a channel.\n" +
+            "`purge` - leave and delete all user data for this server.");
         Manual.setHelpPage("fun", "\n" +
             "`someone` - mention a random user without pinging them.\n" +
             "`8ball` - simulate a magic 8 ball.\n" +
@@ -119,7 +120,9 @@ public class AllCommands extends UBPlugin {
             "`np` - get the now playing songs\n" +
             "`pause` - pause/unpause the songs\n" +
             "`join` - join the voice channel without playing anything\n" +
-            "`leave` - leave the current voice channel without stopping the player\n");
+            "`leave` - leave the current voice channel without stopping the player\n" +
+            "`dj` - set the DJ role for the server\n" +
+            "`seek` - seek to a specific point in the song");
         
         eb.addField("All commands", "Please use one of the following commands for help:\n" +
             "`>help leveling` - leveling and rank commands.\n" +

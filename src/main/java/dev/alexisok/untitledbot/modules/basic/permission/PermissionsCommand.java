@@ -26,13 +26,21 @@ public final class PermissionsCommand extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        Member target;
+        Member target = null;
+        
+        if(args.length != 1 && args[1].matches("[0-9]+"))
+            target = message.getGuild().getMemberCache().getElementById(args[1]);
         
         try {
-            target = message.getMentionedMembers(message.getGuild()).get(0);
-        } catch(IndexOutOfBoundsException ignored) {
+            if(target != null)
+                target = message.getMentionedMembers(message.getGuild()).get(0);
+        } catch(IndexOutOfBoundsException ignored) {}
+        
+        if(target == null)
             target = message.getMember();
-        }
+        
+        if(target == null)
+            return eb.addField("uhm", "bot did an error whoops", false).build();
         
         StringBuilder perms = new StringBuilder();
         for(Permission p : target.getPermissions()) {

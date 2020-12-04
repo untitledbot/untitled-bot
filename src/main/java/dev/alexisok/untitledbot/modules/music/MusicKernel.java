@@ -7,10 +7,13 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.music.audio.MusicManager;
 import dev.alexisok.untitledbot.modules.vault.Vault;
+import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import org.jetbrains.annotations.Contract;
@@ -21,6 +24,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -41,9 +45,18 @@ public class MusicKernel {
     
     private static final String DJ_ROLE_VAULT_NAME = "dj.id";
     
+    //if the bot is still loading the previous songs from shutdown.
+    @Getter@Setter
+    private static boolean isStillLoading = true;
+    
     static {
         INSTANCE = new MusicKernel();
         DJ_ROLE_CACHE = new HashMap<>();
+        try {
+            BotClass.registerShutdownHook(new SaveQueue());
+        } catch(Throwable e) {
+            e.printStackTrace();
+        }
     }
     
     {
@@ -72,7 +85,7 @@ public class MusicKernel {
     private static synchronized void updateCache(@NotNull String guildID) {
         String roleID = Vault.getUserDataLocal(null, guildID, DJ_ROLE_VAULT_NAME);
         
-        if(roleID == null)
+        if(roleID == null || roleID.equals("none"))
             return;
 
         Logger.debug("Updating DJ cache to include " + roleID + " for " + guildID);
@@ -107,12 +120,16 @@ public class MusicKernel {
         AudioSourceManagers.registerRemoteSources(playerManager);
     }
     
+    public AudioPlayerManager getPlayerManager() {
+        return this.playerManager;
+    }
+    
     private static synchronized boolean isValidTrack(AudioTrack track) {
         return track.getInfo().length <= MAXIMUM_SONG_LENGTH_SECONDS * 1000 || track.getInfo().isStream;
     }
     
-    protected void loadAndPlay(@NotNull TextChannel channel, @NotNull String trackURL, @NotNull VoiceChannel requestedVC) {
-        MusicManager mm = getAudioPlayer(channel.getGuild());
+    protected void loadAndPlay(TextChannel channel, @NotNull String trackURL, @NotNull VoiceChannel requestedVC) {
+        MusicManager mm = getAudioPlayer(requestedVC.getGuild(), requestedVC);
         
         this.playerManager.loadItemOrdered(mm, trackURL, new AudioLoadResultHandler() {
             @Override
@@ -131,10 +148,14 @@ public class MusicKernel {
                     channel.sendMessage(eb.build()).queue();
                     return;
                 }
-                eb.addField("Play", String.format("▶ The track **%s** has been added to the queue!",
-                        NowPlaying.escapeDiscordMarkdown(track.getInfo().title)), false);
-                eb.setColor(Color.GREEN);
-                channel.sendMessage(eb.build()).queue();
+                
+                //do not send the queue message if it is still loading.
+                if(!isStillLoading) {
+                    eb.addField("Play", String.format("▶ The track **%s** has been added to the queue!",
+                            NowPlaying.escapeDiscordMarkdown(track.getInfo().title)), false);
+                    eb.setColor(Color.GREEN);
+                    channel.sendMessage(eb.build()).queue();
+                }
                 play(channel.getGuild(),requestedVC, mm, track);
             }
             
@@ -299,11 +320,11 @@ public class MusicKernel {
      */
     @NotNull
     @Contract(pure = true)
-    private synchronized MusicManager getAudioPlayer(@NotNull Guild guild) {
+    protected synchronized MusicManager getAudioPlayer(@NotNull Guild guild, @NotNull VoiceChannel channel) {
         MusicManager mm = this.musicManagers.get(guild.getId());
         
         if(mm == null) {
-            mm = new MusicManager(this.playerManager, guild.getId());
+            mm = new MusicManager(this.playerManager, guild.getId(), channel);
             this.musicManagers.put(guild.getId(), mm);
         }
         
@@ -418,5 +439,37 @@ public class MusicKernel {
             return true;
         }
         return false;
+    }
+    
+    public boolean getRepeat(String guildID) {
+        return this.musicManagers.get(guildID).scheduler.isRepeat();
+    }
+    
+    public void setRepeat(String guildID, boolean state) {
+        this.musicManagers.get(guildID).scheduler.setRepeat(state);
+    }
+
+    /**
+     * Get the currently playing tracks by voice channel ID
+     * @return the tracks
+     */
+    protected HashMap<String, String> getCurrentlyPlaying() {
+        HashMap<String, String> currentlyPlaying = new HashMap<>();
+        this.musicManagers.forEach((guild, player) -> currentlyPlaying.put(player.channel.getId(), player.player.getPlayingTrack().getInfo().uri));
+        return currentlyPlaying;
+    }
+
+    /**
+     * Get the current music queues.
+     * @return the current music queues
+     */
+    protected HashMap<String[], List<String>> getQueues() {
+        HashMap<String[], List<String>> tracks = new HashMap<>();
+        this.musicManagers.forEach((guild, player) -> {
+            String[] sto = new String[] {this.musicManagers.get(guild).channel.getId(), this.lastChannels.get(guild).getId()};
+            tracks.put(sto, new ArrayList<>());
+            player.scheduler.getQueue().forEach(q -> tracks.get(sto).add(q.getInfo().uri));
+        });
+        return tracks;
     }
 }
