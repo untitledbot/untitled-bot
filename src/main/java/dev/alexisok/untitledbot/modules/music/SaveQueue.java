@@ -81,6 +81,10 @@ public final class SaveQueue implements ShutdownHook {
                 Logger.critical("A voice channel to load was null!");
                 e.printStackTrace();
             }
+            
+            if(!file.delete()) {
+                Logger.critical("Could not delete a shutdown file!");
+            }
         });
         
         new Timer().schedule(new TimerTask() {
