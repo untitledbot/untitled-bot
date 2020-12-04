@@ -266,7 +266,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
             randomAmount = ThreadLocalRandom.current().nextLong(0,
                     ((1 + Long.parseLong(Vault.getUserDataLocalOrDefault(m.getAuthor().getId(),
                             m.getGuild().getId(),
-                            "ranks-level", "1")))));
+                            "ranks-level", "1")) + 3L)));
         } catch(Throwable ignored) {
             Logger.log("Error: there was an error with boost amount for user " + mre.getAuthor().getId() + " in guild " + mre.getGuild().getId());
         }
