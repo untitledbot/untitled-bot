@@ -1,6 +1,5 @@
 package dev.alexisok.untitledbot.modules.images.apiuseless;
 
-import dev.alexisok.untitledbot.logging.Logger;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -127,8 +126,6 @@ public final class DoImageThingUseless {
                 message.getChannel().sendFile(new File(returnString)).queue(r -> new File(returnString).delete());
                 return null;
             } else if(args.length == 2 && args[1].matches(PROXY_REGEX)) {
-                Logger.debug(args[1]);
-                Logger.debug(deProxy(args[1]));
                 String returnString = download(
                         String.format(
                                 "https://useless-api--vierofernando.repl.co/" + relativePath,
@@ -233,7 +230,6 @@ public final class DoImageThingUseless {
     @Nullable
     @Contract(pure = true)
     private static synchronized String download(@NotNull String urlStr, @NotNull String uniqueID) {
-        Logger.debug("Downloading " + urlStr);
         URL url;
         try {
             url = new URL(urlStr);
