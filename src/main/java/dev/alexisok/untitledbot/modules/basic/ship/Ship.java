@@ -5,11 +5,13 @@ import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -25,16 +27,18 @@ public final class Ship extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        if(args.length <= 2) {
+        if(message.getMentionedMembers(message.getGuild()).size() != 2) {
             eb.addField("Ship", "Usage: `ship <person 1> <person 2>`", false);
             eb.setColor(Color.RED);
             
             return eb.build();
         }
+
+        Member m1, m2;
+        m1 = message.getMentionedMembers().get(0);
+        m2 = message.getMentionedMembers().get(0);
         
-        int rand = ThreadLocalRandom.current().nextInt(100) + 1;
-    
-        Logger.debug((String.valueOf(rand)));
+        int rand = new Random(m1.getIdLong() - m2.getIdLong()).nextInt(100) + 1;
         
         String response = rand + "% ";
         
@@ -58,7 +62,7 @@ public final class Ship extends UBPlugin {
             response += "Would make a great couple! :heart_eyes:";
         } else if (rand < 100) {
             response += "Pretty close to perfect! :kissing_heart::heart:";
-        } else if (rand == 100) {
+        } else {
             response += "Meant to be!! :ring::smiling_face_with_3_hearts::two_hearts::two_hearts:";
         }
         
