@@ -455,7 +455,11 @@ public class MusicKernel {
      */
     protected HashMap<String, String> getCurrentlyPlaying() {
         HashMap<String, String> currentlyPlaying = new HashMap<>();
-        this.musicManagers.forEach((guild, player) -> currentlyPlaying.put(player.channel.getId(), player.player.getPlayingTrack().getInfo().uri));
+        this.musicManagers.forEach((guild, player) -> {
+            if(guild == null || player == null || player.channel == null || player.player.getPlayingTrack() == null)
+                return;
+            currentlyPlaying.put(player.channel.getId(), player.player.getPlayingTrack().getInfo().uri);
+        });
         return currentlyPlaying;
     }
 
