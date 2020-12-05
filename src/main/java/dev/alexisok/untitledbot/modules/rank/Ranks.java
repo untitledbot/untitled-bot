@@ -2,10 +2,7 @@ package dev.alexisok.untitledbot.modules.rank;
 
 import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
-import dev.alexisok.untitledbot.command.CommandRegistrar;
-import dev.alexisok.untitledbot.command.EmbedDefaults;
-import dev.alexisok.untitledbot.command.Manual;
-import dev.alexisok.untitledbot.command.MessageHook;
+import dev.alexisok.untitledbot.command.*;
 import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
 import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
 import dev.alexisok.untitledbot.logging.Logger;
@@ -72,10 +69,10 @@ public final class Ranks extends UBPlugin implements MessageHook {
     @Override
     public void onRegister() {
         CommandRegistrar.registerHook(this);
-        CommandRegistrar.register("rank", "core.ranks", this);
-        CommandRegistrar.register("rank-total", "core.ranks", new Total());
-        CommandRegistrar.register("rank-top", "core.ranks", new Top());
-        CommandRegistrar.register("rank-settings", "admin", new RankSettings());
+        CommandRegistrar.register("rank", this);
+        CommandRegistrar.register("rank-total", new Total());
+        CommandRegistrar.register("rank-top", new Top());
+        CommandRegistrar.register("rank-settings", UBPerm.MANAGE_MESSAGES, new RankSettings());
         new Daily().onRegister();
         new Shop().onRegister();
         Manual.setHelpPage("rank-top", "Get the top user ranks for the server.\n" +

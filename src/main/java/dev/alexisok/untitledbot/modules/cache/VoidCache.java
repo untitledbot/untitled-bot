@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.UBPerm;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.starboard.Starboard;
 import dev.alexisok.untitledbot.modules.starboard.StarboardHandle;
@@ -37,7 +38,7 @@ public final class VoidCache extends UBPlugin {
 
     @Override
     public void onRegister() {
-        CommandRegistrar.register("void", "owner", this);
+        CommandRegistrar.register("void", UBPerm.OWNER, this);
         Manual.setHelpPage("void", "Void ALL of the caches.");
     }
 }

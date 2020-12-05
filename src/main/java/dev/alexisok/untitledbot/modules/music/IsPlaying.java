@@ -1,6 +1,7 @@
 package dev.alexisok.untitledbot.modules.music;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.command.UBPerm;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -25,6 +26,6 @@ public final class IsPlaying extends UBPlugin {
 
     @Override
     public void onRegister() {
-        CommandRegistrar.register("isplaying", "owner", this);
+        CommandRegistrar.register("isplaying", UBPerm.OWNER, this);
     }
 }

@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.music;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.UBPerm;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -70,7 +71,7 @@ public class DJHandle extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("dj", "admin", this);
+        CommandRegistrar.register("dj", UBPerm.ADMIN, this);
         Manual.setHelpPage("dj", "Set the DJ role in this server.\n" +
                 "Usage: `dj <role @ | role name | role ID | none>`\n" +
                 "Anyone with this role will be able to skip, stop, and add playlists.");

@@ -77,7 +77,7 @@ public final class Status extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("status", "core.stats", this);
+        CommandRegistrar.register("status", this);
         CommandRegistrar.registerAlias("status", "stats");
         Manual.setHelpPage("status", "Get the status and other statistics about the bot.");
     }

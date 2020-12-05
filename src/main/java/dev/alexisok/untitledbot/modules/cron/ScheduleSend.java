@@ -32,7 +32,7 @@ public final class ScheduleSend extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("schedule", "core.schedule", this);
+        CommandRegistrar.register("schedule", this);
         Manual.setHelpPage("schedule", "Schedule a message to send to a user when an event is triggered.\n" +
                                                "Usage: schedule <event> <message...>\n" +
                                                "See the GitHub Wiki page for more information.");

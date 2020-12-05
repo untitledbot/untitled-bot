@@ -46,6 +46,6 @@ public class TwentyDice extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("20", "fun.twenty", this);
+        CommandRegistrar.register("20", this);
     }
 }

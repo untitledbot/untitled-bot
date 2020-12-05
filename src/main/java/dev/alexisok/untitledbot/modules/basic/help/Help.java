@@ -25,7 +25,7 @@ public final class Help extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("help", "core.help", this);
+        CommandRegistrar.register("help", this);
         CommandRegistrar.registerAlias("help", "man", "halp");
     }
     

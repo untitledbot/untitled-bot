@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.moderation.modcommands;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.UBPerm;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -33,7 +34,7 @@ public class Pardon extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("pardon", "admin", this);
+        CommandRegistrar.register("pardon", UBPerm.ADMIN, this);
         CommandRegistrar.registerAlias("pardon", "un-ban");
         Manual.setHelpPage("pardon", "Pardon a user from banishment.");
     }

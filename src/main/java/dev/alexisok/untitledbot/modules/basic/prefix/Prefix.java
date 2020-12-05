@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.UBPerm;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -22,7 +23,7 @@ import java.awt.*;
 public final class Prefix extends UBPlugin {
     @Override
     public void onRegister() {
-        CommandRegistrar.register("set-prefix", "admin", this);
+        CommandRegistrar.register("set-prefix", UBPerm.MANAGE_MESSAGES, this);
         CommandRegistrar.registerAlias("set-prefix", "prefix");
         Manual.setHelpPage("set-prefix", "Set the prefix for the bot.\n" +
                                                  "Usage: `set-prefix <prefix>`");

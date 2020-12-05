@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.eval;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.UBPerm;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -46,7 +47,7 @@ public class Eval extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("eval", "owner", this);
+        CommandRegistrar.register("eval", UBPerm.OWNER, this);
         Manual.setHelpPage("eval", "Eval command");
     }
 }

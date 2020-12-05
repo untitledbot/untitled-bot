@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.election;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.UBPerm;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -194,7 +195,7 @@ public final class ElectionConfig extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("election-config", "admin", this);
+        CommandRegistrar.register("election-config", UBPerm.ADMIN, this);
         Manual.setHelpPage("election-config", "Configure an election.\n" +
                 "Sub-commands:\n" +
                 "`election-config reset` - reset the election statistics (only works for elections that have ended).\n" +

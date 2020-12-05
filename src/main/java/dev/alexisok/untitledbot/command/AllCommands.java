@@ -181,6 +181,6 @@ public class AllCommands extends UBPlugin {
      */
     @Override
     public void onRegister() {
-        CommandRegistrar.register("commands", "core.commands", this);
+        CommandRegistrar.register("commands", this);
     }
 }

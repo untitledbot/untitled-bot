@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.basic.snipe;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.command.MessageHook;
+import dev.alexisok.untitledbot.command.UBPerm;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -89,7 +90,7 @@ public final class Snipe extends UBPlugin implements MessageHook {
 
     @Override
     public void onRegister() {
-        CommandRegistrar.register("snipe", "admin", this);
+        CommandRegistrar.register("snipe", UBPerm.ADMIN, this);
         Manual.setHelpPage("snipe", "Get the last deleted message in this channel or another.");
     }
 }

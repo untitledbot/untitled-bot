@@ -81,7 +81,7 @@ public final class CoreCommands {
     public static void registerCoreCommands() {
         Logger.log("Registering core commands.");
         //invite command
-        CommandRegistrar.register("invite", "core.invite", (args, message) -> {
+        CommandRegistrar.register("invite", (args, message) -> {
             EmbedBuilder eb = new EmbedBuilder();
             EmbedDefaults.setEmbedDefaults(eb, message);
             
@@ -97,7 +97,7 @@ public final class CoreCommands {
         });
         
         //The about command to get information about the bot and the server link.
-        CommandRegistrar.register("about", "core.about", (args, message) -> {
+        CommandRegistrar.register("about", (args, message) -> {
             EmbedBuilder eb = new EmbedBuilder();
             EmbedDefaults.setEmbedDefaults(eb, message);
             
@@ -124,7 +124,7 @@ public final class CoreCommands {
         });
         
         //idk man testing or something
-        CommandRegistrar.register("test", "test.test.a", (args, message) -> {
+        CommandRegistrar.register("test", (args, message) -> {
             EmbedBuilder eb = new EmbedBuilder();
             EmbedDefaults.setEmbedDefaults(eb, message);
             eb.setColor(Color.CYAN);
@@ -133,7 +133,7 @@ public final class CoreCommands {
         });
         
         //cooldown command
-        CommandRegistrar.register("cooldown", "owner", (args, message) -> {
+        CommandRegistrar.register("cooldown", UBPerm.OWNER, (args, message) -> {
             if(args.length == 2)
                 return new EmbedBuilder().addField("its " + CommandRegistrar.getCommandCooldown(args[1]), "a", false).build();
             EmbedBuilder eb = new EmbedBuilder();

@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.rank.rankcommands;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.UBPerm;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
@@ -114,7 +115,7 @@ public class RankRoleSet extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("rank-role", "admin", this);
+        CommandRegistrar.register("rank-role", UBPerm.ADMIN, this);
         Manual.setHelpPage("rank-role", "Set the role to give a user when they level up!\n" +
                                                 "Usage: `rank-role <level> <role @ | role ID | role name | none>`\n" +
                                                 "To clear a role reward, use `rank-role <level> none`\n" +

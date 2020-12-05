@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.UBPerm;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -60,7 +61,7 @@ public final class Purge extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("purge", "admin", this);
+        CommandRegistrar.register("purge", UBPerm.ADMIN, this);
         Manual.setHelpPage("purge", "The purge command does NOT delete messages.\n" +
                 "It is an owner-only command that deletes all user data for this server then leaves.");
     }

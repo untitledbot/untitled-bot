@@ -115,7 +115,7 @@ public final class GetUserData extends UBPlugin {
      */
     @Override
     public void onRegister() {
-        CommandRegistrar.register("data", "core.data", this);
+        CommandRegistrar.register("data", this);
     }
     
     /**

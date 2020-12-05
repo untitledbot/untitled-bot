@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.cron;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.UBPerm;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -42,7 +43,7 @@ public class Cron extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("cron", "admin", this);
+        CommandRegistrar.register("cron", UBPerm.ADMIN, this);
         Manual.setHelpPage("cron", "Set a cron job to send messages at specified times.\n" +
                                            "Usage: `cron <dm | channel> <@join | @leave | hour, day of week> <[channel #]> <message...>.\n" +
                                            "Note: because of the bot hosting location, the timezone is Mountain Standard Time.\n" +

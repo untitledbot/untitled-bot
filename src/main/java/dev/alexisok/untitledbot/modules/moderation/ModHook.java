@@ -5,6 +5,7 @@ import com.google.common.collect.Iterables;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.UBPerm;
 import dev.alexisok.untitledbot.modules.moderation.logging.*;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.util.DateFormatUtil;
@@ -65,11 +66,11 @@ public final class ModHook extends ListenerAdapter {
     }
 
     static {
-        CommandRegistrar.register("log-channel", "admin", new SetLogChannel());
-        CommandRegistrar.register("add-log", "admin", new AddRemoveLogTypes());
-        CommandRegistrar.register("remove-log", "admin", new AddRemoveLogTypes());
+        CommandRegistrar.register("log-channel", UBPerm.ADMIN, new SetLogChannel());
+        CommandRegistrar.register("add-log", UBPerm.ADMIN, new AddRemoveLogTypes());
+        CommandRegistrar.register("remove-log", UBPerm.ADMIN, new AddRemoveLogTypes());
         //this is not admin because moderators might want their users to be able to see what they log.
-        CommandRegistrar.register("get-log", "logging.get", new GetLogTypes());
+        CommandRegistrar.register("get-log", new GetLogTypes());
         new ListLogTypes().onRegister();
         
         Manual.setHelpPage("log-channel",

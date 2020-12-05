@@ -1,6 +1,7 @@
 package dev.alexisok.untitledbot.modules.basic.sleep;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.command.UBPerm;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Message;
@@ -25,6 +26,6 @@ public final class Sleep extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("sleep", "owner", this);
+        CommandRegistrar.register("sleep", UBPerm.OWNER, this);
     }
 }

@@ -64,7 +64,7 @@ public final class TimeStamp extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("timestamp", "core.timestamp", this);
+        CommandRegistrar.register("timestamp", this);
         Manual.setHelpPage("timestamp", "Get the timestamp of a snowflake.\n" +
                                                 "Usage: `timestamp [snowflake | user @ | channel #]`\n" +
                                                 "To get snowflakes, enable developer mode in Discord appearance settings, then " +
