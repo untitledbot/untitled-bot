@@ -53,7 +53,7 @@ public final class TrackScheduler extends AudioEventAdapter {
             return current;
         }
         if(this.queue.size() != 0) {
-            this.player.startTrack(this.queue.get(0), false);
+            this.player.startTrack(this.queue.get(0).makeClone(), false);
             this.queue.remove(0);
         } else {
             this.player.startTrack(null, false);

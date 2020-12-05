@@ -92,7 +92,7 @@ public final class UserInfo extends UBPlugin {
                                           "Channels: %d%n" +
                                           "Voice channels: %d%n" +
                                           "Categories: `%d`%n",
-                            g.getId(), DateFormatUtil.format(g.getTimeCreated()), g.getRequiredMFALevel().toString().toLowerCase(),
+                            g.getId(), g.getTimeCreated().toInstant().toString(), g.getRequiredMFALevel().toString().toLowerCase(),
                             g.getAfkTimeout().getSeconds() / 60, g.getDefaultNotificationLevel().toString().toLowerCase(),
                             g.getExplicitContentLevel().getDescription(), g.getBoostTier().getMaxBitrate() / 1000,
                             g.getBoostTier().getMaxEmotes(), g.getMaxFileSize() / 1024 / 1024, g.getOwnerId(),
@@ -116,7 +116,9 @@ public final class UserInfo extends UBPlugin {
             }
             
             if(u == null) {
-                u = message.getGuild().getMemberById(args[1]);
+                try {
+                    u = message.getGuild().getMemberById(args[1]);
+                } catch(Throwable ignored) {}
             }
             
             if(u == null) {

@@ -58,7 +58,7 @@ public final class TimeStamp extends UBPlugin {
             return null;
         }
         
-        message.getChannel().sendMessage("Provided timestamp was created:\n" + DateFormatUtil.format(new Date(time))).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
+        message.getChannel().sendMessage("Provided timestamp was created:\n" + new Date(time)).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         return null;
     }
     
