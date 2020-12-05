@@ -30,7 +30,7 @@ public final class Help extends UBPlugin {
     }
     
     @Override
-    public @NotNull MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
+    public @Nullable MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         try {
@@ -42,7 +42,10 @@ public final class Help extends UBPlugin {
             eb.setDescription(embedStr);
             return eb.build();
         } catch(ArrayIndexOutOfBoundsException ignored) {
-            return Objects.requireNonNull(CommandRegistrar.runCommand("commands", args, message));
+            CommandRegistrar.runCommand("commands", args, message, (embed) -> {
+                message.getChannel().sendMessage(embed).queue();
+            });
         }
+        return null;
     }
 }

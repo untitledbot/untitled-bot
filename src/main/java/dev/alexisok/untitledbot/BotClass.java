@@ -303,25 +303,24 @@ public final class BotClass extends ListenerAdapter {
         String[] args = message.split(" ");
         
         //execute a command and return the message it provides
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    args[0] = args[0].toLowerCase();
-                    Logger.debug("Exec command " + args[0] + " by " + event.getAuthor().getId());
-                    event.getChannel()
-                            .sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
-                            .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r));
-                } catch(NullPointerException e) { //this returns null if the command does not exist.
-                } catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
-                    Logger.debug("Could not send a message to a channel.");
-                } catch(Throwable t) {
-                    t.printStackTrace();
-                }
-                //this needs to be outside of everything else to avoid not being called.
-                updateRL(event);
-            }
-        }, 0);
+        try {
+            args[0] = args[0].toLowerCase();
+            Logger.debug("Exec command " + args[0] + " by " + event.getAuthor().getId());
+            CommandRegistrar.runCommand(args[0], args, event.getMessage(), (embed) -> {
+                if(embed == null)
+                    return;
+                event.getChannel()
+                    .sendMessage((Objects.requireNonNull(embed)))
+                    .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r)); 
+            });
+        } catch(NullPointerException e) { //this returns null if the command does not exist.
+        } catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
+            Logger.debug("Could not send a message to a channel.");
+        } catch(Throwable t) {
+            t.printStackTrace();
+        }
+        //this needs to be outside of everything else to avoid not being called.
+        updateRL(event);
         
     }
     
@@ -368,7 +367,7 @@ public final class BotClass extends ListenerAdapter {
      * @param event the delete event
      */
     @Override
-    public void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event) {
+    public synchronized void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event) {
         if(DELETE_THIS_CACHE.containsKey(event.getMessageId())) {
             Logger.debug("Deleting message");
             DELETE_THIS_CACHE.get(event.getMessageId()).delete().queue();
@@ -381,22 +380,23 @@ public final class BotClass extends ListenerAdapter {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setDescription("Hello!  To use untitled-bot, type `>help` in a server I'm in to get started.\n" +
                 "If you changed the prefix, simply type @untitled-bot in the server to get my prefix.\n\nFor help with the bot, feel free to join the" +
-                " [official server](https://alexisok.dev/ub/discord.html).");
+                " [official server](https://alexisok.dev/ub/discord.html).\n\n" +
+                "NOTE: any conversation with this bot is logged.  Don't send me anything too embarrassing!");
         onPrivateMessage = eb.build();
     }
     
     @Override
-    public final void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent e) {
+    public final synchronized void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent e) {
         if(!e.getAuthor().getId().equals("730135989863055472")) {
-            
             e.getAuthor().openPrivateChannel().queue(a -> a.sendMessage(onPrivateMessage).queue(
                     r -> BotClass.addToDeleteCache(e.getMessage().getId(), r)
             ));
+            Logger.log("DM " + e.getAuthor().getId() + ": " + e.getMessage().getContentRaw().replace("\n", "\\n"));
         }
     }
     
     @Override
-    public void onGenericEvent(@Nonnull GenericEvent event) {
+    public synchronized void onGenericEvent(@Nonnull GenericEvent event) {
         CommandRegistrar.runGenericListeners(event);
     }
 
@@ -408,7 +408,7 @@ public final class BotClass extends ListenerAdapter {
      * Existing guilds won't be looked at, but this will be.
      * @param g the guild
      */
-    private static void onJoin(@NotNull Guild g) {
+    private static synchronized void onJoin(@NotNull Guild g) {
         User owner;
         String ownerTag = "ERROR";
         String ownerID = "ERROR";

@@ -29,8 +29,6 @@ import java.util.TimerTask;
  */
 public final class Status extends UBPlugin {
     
-    private static String stats = "";
-    
     static {
         TimerTask t = new TimerTask() {
             @Override
@@ -43,24 +41,8 @@ public final class Status extends UBPlugin {
     
     private static void updateStatsString() {
         Runtime.getRuntime().gc();
-        long guilds = Main.getGuildCount();
-        String returnString = "```";
-        returnString += " Available memory: " + Runtime.getRuntime().freeMemory() / 1024 / 1024 + " MB\n";
-        returnString += "     Total memory: " + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " MB\n";
-        returnString += "         Max ping: " + Main.getPingMax() + " ms\n";
-        returnString += "     Minimum ping: " + Main.getPingMin() + " ms\n";
-        returnString += "     Average ping: " + Main.getPingAverage() + " ms\n";
-        returnString += "  Commands issued: " + CommandRegistrar.getTotalCommands() + "\n";
-        returnString += "   Total messages: " + BotClass.getMessagesSentTotal() + "\n";
-        returnString += "          Servers: " + guilds + "\n";
-        returnString += "  OpenJDK Version: " + System.getProperty("java.version") + "\n";
-        returnString += "      JDA Version: 4.2.0_222\n";
-        returnString += "Commands (+alias): " + CommandRegistrar.registrarSize() + "\n";
-        returnString += "    Music Players: " + MusicKernel.INSTANCE.getPlayers() + "\n";
-        returnString += "```";
-        returnString += "(note: this only updates once every three minutes).";
         
-        stats = returnString;
+        
     }
     
     @Override
@@ -68,13 +50,28 @@ public final class Status extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        //force update if the owner is asking for the stats
-        if(message.getAuthor().getId().equals(Main.OWNER_ID))
-            updateStatsString();
-        
+        long guilds = Main.getGuildCount();
+        StringBuilder returnString = new StringBuilder("```\n");
+        returnString.append(" Available memory: ").append(Runtime.getRuntime().freeMemory() / 1024 / 1024).append(" MB\n");
+        returnString.append("     Total memory: ").append(Runtime.getRuntime().totalMemory() / 1024 / 1024).append(" MB\n");
+        returnString.append("         Max ping: ").append(Main.getPingMax()).append(" ms\n");
+        returnString.append("     Minimum ping: ").append(Main.getPingMin()).append(" ms\n");
+        returnString.append("     Average ping: ").append(Main.getPingAverage()).append(" ms\n");
+        returnString.append("  Commands issued: ").append(CommandRegistrar.getTotalCommands()).append("\n");
+        returnString.append("   Total messages: ").append(BotClass.getMessagesSentTotal()).append("\n");
+        returnString.append("          Servers: ").append(guilds).append("\n");
+        returnString.append("  OpenJDK Version: ").append(System.getProperty("java.version")).append("\n");
+        returnString.append("      JDA Version: 4.2.0_222\n");
+        returnString.append("Commands (+alias): ").append(CommandRegistrar.registrarSize()).append("\n");
+        returnString.append("    Music Players: ").append(MusicKernel.INSTANCE.getPlayers()).append("\n");
+        returnString.append("            Shard: ").append(message.getJDA().getShardInfo().getShardId()).append("\n");
+        returnString.append("     Total shards: ").append(Main.SHARD_COUNT).append("\n");
+        returnString.append(" Servers on shard: ").append(message.getJDA().getGuilds().size()).append("\n");
+        returnString.append("```");
+
         eb.setColor(Color.GREEN);
         eb.setTitle("Status");
-        eb.setDescription(stats);
+        eb.setDescription(returnString);
         return eb.build();
     }
     

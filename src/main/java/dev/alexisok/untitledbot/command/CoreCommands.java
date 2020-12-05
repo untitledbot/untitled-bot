@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.privacy.Privacy;
 import dev.alexisok.untitledbot.modules.basic.purge.Purge;
+import dev.alexisok.untitledbot.modules.basic.sleep.Sleep;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.*;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.filter.*;
 import dev.alexisok.untitledbot.modules.images.apiuseless.*;
@@ -283,6 +284,7 @@ public final class CoreCommands {
         new Purge().onRegister();
         
         //1.3.25
+        new Sleep().onRegister();
         Logger.log("Modules have been registered.");
     }
 }

@@ -26,7 +26,6 @@ public final class TimeCommand extends UBPlugin {
     public MessageEmbed onCommand(String[] args, @NotNull Message message) {
         long current = System.currentTimeMillis();
         
-        MessageEmbed returnEmbed = CommandRegistrar.runCommand(args[1], ArrayUtils.removeElement(args, 0), message);
         
         long end = System.currentTimeMillis();
         
@@ -34,7 +33,7 @@ public final class TimeCommand extends UBPlugin {
             message.getChannel().sendMessage(String.format("Command took %dms.", end - current)).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         } catch(Throwable ignored) {}
         
-        return returnEmbed;
+        return null;
         
     }
     

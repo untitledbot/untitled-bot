@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.command;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.util.OnCommandReturn;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
@@ -178,53 +179,55 @@ public class CommandRegistrar {
 	 * @param commandName the name of the command to execute.
 	 * @param args the arguments for the command.
 	 * @param m the {@link Message}   
-	 * @return the return embed.  Returns {@code null} if the command was not found (or if the command returns null by itself).
+	 * @param r what to run on completion   
 	 */
-	@Nullable
 	@CheckReturnValue
-	public static MessageEmbed runCommand(@NotNull String commandName, @NotNull String[] args, @NotNull Message m) {
+	public static synchronized void runCommand(@NotNull String commandName, @NotNull String[] args, @NotNull Message m, @NotNull OnCommandReturn r) {
 		
 		commandsSent++;
+		TimerTask t = new TimerTask() {
+			@Override
+			public void run() {
+				String permissionNode = getCommandPermissionNode(commandName);
+				Logger.debug("Getting permission node " + permissionNode);
+				//return null if the command does not exist.
+				if(!REGISTRAR.containsKey(commandName) || permissionNode == null) {
+					Logger.debug(String.format("Rejecting key %s because it was either null or did not exist in the registrar.", commandName));
+					r.onReturn(null);
+					return;
+				}
+				//owner is a global super user and can access any commands on any servers
+				if(m.getAuthor().getId().equals(Main.OWNER_ID)) {
+					r.onReturn(REGISTRAR.get(commandName).onCommand(args, m));
+					return;
+				}
+				EmbedBuilder eb = new EmbedBuilder();
+				EmbedDefaults.setEmbedDefaults(eb, m);
+				if(permissionNode.equalsIgnoreCase("owner")) {
+					eb.setDescription("This command can only be run by the owner of the bot.");
+					eb.setColor(Color.RED);
+					r.onReturn(eb.build());
+					return;
+				}
+				//if the user is a superuser, execute the command without checking the permission node.
+				if(Objects.requireNonNull(m.getMember()).hasPermission(Permission.ADMINISTRATOR)) {
+					r.onReturn(REGISTRAR.get(commandName).onCommand(args, m));
+					return;
+				}
+				if(permissionNode.equalsIgnoreCase("admin")) {
+					eb.setDescription("This command requires the administrator permission on Discord.");
+					eb.setColor(Color.RED);
+					r.onReturn(eb.build());
+					return;
+				}
+				UserData.checkUserExists(m.getAuthor().getId(), m.getGuild().getId());
+				UserData.checkUserExists(null, m.getGuild().getId());
+				r.onReturn(REGISTRAR.get(commandName).onCommand(args, m));
+			}
+		};
 		
-		String permissionNode = getCommandPermissionNode(commandName);
+		new Timer().schedule(t, 0L);
 		
-		Logger.debug("Getting permission node " + permissionNode);
-		
-		//return null if the command does not exist.
-		if(!REGISTRAR.containsKey(commandName) || permissionNode == null) {
-			Logger.debug(String.format("Rejecting key %s because it was either null or did not exist in the registrar.", commandName));
-			return null;
-		}
-			
-		//owner is a global super user and can access any commands on any servers
-		if(m.getAuthor().getId().equals(Main.OWNER_ID))
-			return REGISTRAR.get(commandName).onCommand(args, m);
-		
-		
-		EmbedBuilder eb = new EmbedBuilder();
-		EmbedDefaults.setEmbedDefaults(eb, m);
-		
-		if(permissionNode.equalsIgnoreCase("owner")) {
-			eb.setDescription("This command can only be run by the owner of the bot.");
-			eb.setColor(Color.RED);
-			return eb.build();
-		}
-		
-		//if the user is a superuser, execute the command without checking the permission node.
-		if(Objects.requireNonNull(m.getMember()).hasPermission(Permission.ADMINISTRATOR))
-			return REGISTRAR.get(commandName).onCommand(args, m);
-		
-		if(permissionNode.equalsIgnoreCase("admin")) {
-			eb.setDescription("This command requires the administrator permission on Discord.");
-			eb.setColor(Color.RED);
-			return eb.build();
-		}
-		
-		
-		UserData.checkUserExists(m.getAuthor().getId(), m.getGuild().getId());
-		UserData.checkUserExists(null, m.getGuild().getId());
-		
-		return REGISTRAR.get(commandName).onCommand(args, m);
 	}
 	
 	/**
@@ -316,15 +319,4 @@ public class CommandRegistrar {
 		return REGISTRAR.get(command).getClass();
 	}
 	
-	/**
-	 * Get the {@link Command} from a command name.
-	 * @param commandName the command name.
-	 * @return the {@link Command} which may be null.
-	 * @see #hasCommand(String)
-	 */
-	@Nullable
-	@Contract(pure = true)
-	protected static Command getCommandByName(String commandName) {
-		return REGISTRAR.get(commandName);
-	}
 }

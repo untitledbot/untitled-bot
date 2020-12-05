@@ -256,7 +256,7 @@ public final class Main {
         try {
             for(int i = 0; i < SHARD_COUNT; i++) {
                 jda[i] = JDABuilder
-                        .create(GUILD_MESSAGE_REACTIONS, GUILD_MESSAGES, GUILD_EMOJIS, GUILD_MEMBERS, GUILD_VOICE_STATES, GUILD_BANS)
+                        .create(GUILD_MESSAGE_REACTIONS, GUILD_MESSAGES, GUILD_EMOJIS, GUILD_MEMBERS, GUILD_VOICE_STATES, GUILD_BANS, DIRECT_MESSAGES)
                         .disableCache(ACTIVITY, CLIENT_STATUS) //bot does not need presence intents
                         .setToken(token)
                         .useSharding(i, SHARD_COUNT)
