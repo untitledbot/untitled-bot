@@ -25,7 +25,7 @@ public class Rnak extends UBPlugin {
     @Override
     public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         try {
-            File f = RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong(), true);
+            File f = RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong(), true, message);
             message.getChannel().sendFile(Objects.requireNonNull(f)).queue(r -> f.delete());
         } catch(Throwable t) {
             t.printStackTrace();

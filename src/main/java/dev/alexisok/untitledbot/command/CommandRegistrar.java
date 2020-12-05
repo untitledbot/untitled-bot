@@ -316,5 +316,15 @@ public class CommandRegistrar {
 		return REGISTRAR.get(command).getClass();
 	}
 	
-	
+	/**
+	 * Get the {@link Command} from a command name.
+	 * @param commandName the command name.
+	 * @return the {@link Command} which may be null.
+	 * @see #hasCommand(String)
+	 */
+	@Nullable
+	@Contract(pure = true)
+	protected static Command getCommandByName(String commandName) {
+		return REGISTRAR.get(commandName);
+	}
 }

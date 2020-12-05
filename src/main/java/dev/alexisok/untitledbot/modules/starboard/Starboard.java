@@ -153,7 +153,7 @@ public final class Starboard extends ListenerAdapter {
         
         if(channelID.equals("none")) return;
     
-        TextChannel tc = Main.jda.getTextChannelById(channelID);
+        TextChannel tc = linkedMessage.getJDA().getTextChannelById(channelID);
         
         if(tc == null) return;
         

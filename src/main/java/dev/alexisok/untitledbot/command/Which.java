@@ -54,5 +54,6 @@ public class Which extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("which", this);
         Manual.setHelpPage("which", "Get the name of the package where the command is located as well as the source code link.");
+        CommandRegistrar.registerAlias("which", "sauce");
     }
 }

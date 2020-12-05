@@ -190,7 +190,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         eb.setColor(Color.GREEN);
         if(!other) {
             try {
-                File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong()));
+                File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong(), message));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
                 return null;
             } catch(InsufficientPermissionException | NullPointerException | IOException e) {
@@ -219,8 +219,8 @@ public final class Ranks extends UBPlugin implements MessageHook {
                         target = message.getGuild().getMembersByEffectiveName(args[1], true).get(0).getUser();
                 } catch(Throwable ignored) {}
                 if(target == null)
-                    target = Main.jda.getUserById(args[1]);
-                File f = Objects.requireNonNull(RankImageRender.render(Objects.requireNonNull(target).getId(), message.getGuild().getId(), message.getIdLong()));
+                    target = message.getJDA().getUserById(args[1]);
+                File f = Objects.requireNonNull(RankImageRender.render(Objects.requireNonNull(target).getId(), message.getGuild().getId(), message.getIdLong(), message));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
                 return null;
             } catch(InsufficientPermissionException | NullPointerException ignored2) {
@@ -319,7 +319,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
                             .sendMessage(String.format("Nice %s!  You have leveled up to level %d!%n%s", m.getAuthor().getName(), currentLv, roleMessage))
                             .queue(r -> BotClass.addToDeleteCache(m.getId(), r));
                 } else if(shouldSendPhase2.equalsIgnoreCase("channel")) {
-                    Objects.requireNonNull(Main.jda.getTextChannelById(Objects.requireNonNull(Vault.getUserDataLocal(null, m.getGuild().getId(), "ranks-broadcast.rankup.channel"))))
+                    Objects.requireNonNull(Main.getTextChannelById(Objects.requireNonNull(Vault.getUserDataLocal(null, m.getGuild().getId(), "ranks-broadcast.rankup.channel"))))
                             .sendMessage(String.format("%s has leveled up to level %d!%n%s", m.getAuthor().getName(), currentLv, roleMessage))
                             .queue(r -> BotClass.addToDeleteCache(m.getId(), r));
                 }

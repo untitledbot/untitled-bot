@@ -43,11 +43,13 @@ public final class Status extends UBPlugin {
     
     private static void updateStatsString() {
         Runtime.getRuntime().gc();
-        long guilds = Main.jda.getGuilds().size();
+        long guilds = Main.getGuildCount();
         String returnString = "```";
         returnString += " Available memory: " + Runtime.getRuntime().freeMemory() / 1024 / 1024 + " MB\n";
         returnString += "     Total memory: " + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " MB\n";
-        returnString += "             Ping: " + Main.jda.getGatewayPing() + " ms\n";
+        returnString += "         Max ping: " + Main.getPingMax() + " ms\n";
+        returnString += "     Minimum ping: " + Main.getPingMin() + " ms\n";
+        returnString += "     Average ping: " + Main.getPingAverage() + " ms\n";
         returnString += "  Commands issued: " + CommandRegistrar.getTotalCommands() + "\n";
         returnString += "   Total messages: " + BotClass.getMessagesSentTotal() + "\n";
         returnString += "          Servers: " + guilds + "\n";

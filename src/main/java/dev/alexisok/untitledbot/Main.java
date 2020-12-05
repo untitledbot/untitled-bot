@@ -8,11 +8,12 @@ import dev.alexisok.untitledbot.modules.starboard.Starboard;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import org.discordbots.api.client.DiscordBotListAPI;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.security.auth.login.LoginException;
 import java.io.*;
@@ -44,15 +45,64 @@ public final class Main {
     public static final String PREFIX;
     public static final String OWNER_ID;
     
+    public static final int SHARD_COUNT = 10;
+    
     public static final boolean DEBUG;
     
-    public static JDA jda;
+    public static JDA[] jda = new JDA[SHARD_COUNT];
     
     private static final String TOP_GG_TOKEN;
     
     public static DiscordBotListAPI API;
     
     public static final ArrayList<String> CONTRIBUTORS = new ArrayList<>();
+    
+    /**
+     * Get a specific {@link JDA} from a guild ID.
+     * @param guildID the guild ID.
+     * @return the JDA.
+     */
+    public static JDA getJDAFromGuildID(long guildID) {
+        return jda[(int) ((guildID >> 22) % SHARD_COUNT)];
+    }
+    
+    /**
+     * Get a specific {@link JDA} from a guild ID.
+     * @param guildID the guild ID.
+     * @return the JDA.
+     */
+    public static JDA getJDAFromGuildID(@NotNull String guildID) {
+        return getJDAFromGuildID(Long.parseLong(guildID));
+    }
+    
+    /**
+     * Get a specific {@link JDA} from a guild.
+     * @param g the guild
+     * @return the JDA.
+     */
+    public static JDA getJDAFromGuild(@NotNull Guild g) {
+        return getJDAFromGuildID(g.getIdLong());
+    }
+    
+    /**
+     * Gets the total amount of servers the bot is connected to.
+     * @return the amount of servers.
+     */
+    public static int getGuildCount() {
+        int count = 0;
+        for(JDA j : jda) {
+            count += j.getGuilds().size();
+        }
+        return count;
+    }
+    
+    public static int getUserCount() {
+        int count = 0;
+        for(JDA j : jda) {
+            count += j.getUsers().size();
+        }
+        return count;
+    }
     
     static {
         String DEFAULT_PREFIX1;
@@ -123,7 +173,7 @@ public final class Main {
                     @Override
                     public void run() {
                         Logger.log("Updating Top.GG stats...");
-                        API.setStats(jda.getGuilds().size());
+                        API.setStats(getGuildCount());
                         Logger.log("Done updating stats.");
                     }
                 };
@@ -204,17 +254,20 @@ public final class Main {
         }
         
         try {
-            jda = JDABuilder
-                    .create(GUILD_MESSAGE_REACTIONS, GUILD_MESSAGES, GUILD_EMOJIS, GUILD_MEMBERS, GUILD_VOICE_STATES, GUILD_BANS)
-                    .disableCache(ACTIVITY, CLIENT_STATUS) //bot does not need presence intents
-                    .setToken(token)
-                    .enableCache(MEMBER_OVERRIDES, EMOTE)
-                    .setMemberCachePolicy(MemberCachePolicy.ONLINE.and(OWNER).and(VOICE))
-                    .addEventListeners(new ModHook(), new BotClass(), new Starboard())
-                    .setAudioSendFactory(new NativeAudioSendFactory()) //mitigates packet loss according to JDA NAS.
-                    .build();
-            jda.getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help"));
-            jda.awaitReady();
+            for(int i = 0; i < SHARD_COUNT; i++) {
+                jda[i] = JDABuilder
+                        .create(GUILD_MESSAGE_REACTIONS, GUILD_MESSAGES, GUILD_EMOJIS, GUILD_MEMBERS, GUILD_VOICE_STATES, GUILD_BANS)
+                        .disableCache(ACTIVITY, CLIENT_STATUS) //bot does not need presence intents
+                        .setToken(token)
+                        .useSharding(i, SHARD_COUNT)
+                        .enableCache(MEMBER_OVERRIDES, EMOTE)
+                        .setMemberCachePolicy(MemberCachePolicy.ONLINE.and(OWNER).and(VOICE))
+                        .addEventListeners(new ModHook(), new BotClass(), new Starboard())
+                        .setAudioSendFactory(new NativeAudioSendFactory()) //mitigates packet loss according to JDA NAS.
+                        .build();
+                jda[i].getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help"));
+                jda[i].awaitReady();
+            }
         } catch(LoginException e) {
             e.printStackTrace();
             Logger.critical("Could not login to Discord!");
@@ -245,4 +298,89 @@ public final class Main {
         return DATA_PATH + guildID + "/" + userID + ".properties";
     }
     
+    public static int getPingAverage() {
+        int total = 0;
+        for(JDA j : jda) {
+            total += j.getGatewayPing();
+        }
+        return total / SHARD_COUNT;
+    }
+    
+    public static int getPingMin() {
+        int[] counts = new int[SHARD_COUNT];
+        for(int i = 0; i < jda.length; i++) {
+            counts[i] = (int) jda[i].getGatewayPing();
+        }
+        Arrays.sort(counts);
+        return counts[0];
+    }
+    
+    public static int getPingMax() {
+        int[] counts = new int[SHARD_COUNT];
+        for(int i = 0; i < jda.length; i++) {
+            counts[i] = (int) jda[i].getGatewayPing();
+        }
+        Arrays.sort(counts);
+        return counts[SHARD_COUNT - 1];
+    }
+    
+    /**
+     * Gets a {@link Role} by ID from the Role cache.
+     * 
+     * Note: this iterates over all shards.
+     * 
+     * @param roleID the ID of the role.
+     * @return the {@link Role} or {@code null} if it wasn't found.
+     */
+    @Nullable
+    @Contract(pure = true)
+    public static Role getRoleById(String roleID) {
+        Role r = null;
+        for(JDA j : jda) {
+            r = j.getRoleById(roleID);
+            if(r != null) //found role
+                break;
+        }
+        return r;
+    }
+
+    /**
+     * Gets a {@link VoiceChannel} by ID from the VC cache.
+     *
+     * Note: this iterates over all shards.
+     *
+     * @param vcID the ID of the VoiceChannel
+     * @return the {@link VoiceChannel} or {@code null} if it wasn't found.
+     */
+    @Nullable
+    @Contract(pure = true)
+    public static VoiceChannel getVoiceChannelById(String vcID) {
+        VoiceChannel r = null;
+        for(JDA j : jda) {
+            r = j.getVoiceChannelById(vcID);
+            if(r != null) //found vc
+                break;
+        }
+        return r;
+    }
+    
+    /**
+     * Gets a {@link TextChannel} by ID from the TC cache.
+     *
+     * Note: this iterates over all shards.
+     *
+     * @param tcID the ID of the TextChannel
+     * @return the {@link TextChannel} or {@code null} if it wasn't found.
+     */
+    @Nullable
+    @Contract(pure = true)
+    public static TextChannel getTextChannelById(String tcID) {
+        TextChannel r = null;
+        for(JDA j : jda) {
+            r = j.getTextChannelById(tcID);
+            if(r != null) //found tc
+                break;
+        }
+        return r;
+    }
 }

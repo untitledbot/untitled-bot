@@ -46,7 +46,7 @@ public final class BugReport extends UBPlugin {
         eb.addField("Bug Report", message.getContentRaw(), false);
         eb.setAuthor(message.getAuthor().getId());
         
-        Objects.requireNonNull(Main.jda.getTextChannelById("747228587026940006")).sendMessage(eb.build()).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
+        Objects.requireNonNull(Main.getJDAFromGuildID(730122694250725380L).getTextChannelById("747228587026940006")).sendMessage(eb.build()).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
     
         EmbedDefaults.setEmbedDefaults(eb, message);
         

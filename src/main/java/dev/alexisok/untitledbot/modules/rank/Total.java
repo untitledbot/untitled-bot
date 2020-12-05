@@ -28,7 +28,7 @@ public final class Total extends UBPlugin {
         
         try {
             int s = message.getMentionedMembers().size();
-            User target = s == 1 ? message.getMentionedMembers().get(0).getUser() : Main.jda.getUserById(args[1]);
+            User target = s == 1 ? message.getMentionedMembers().get(0).getUser() : message.getJDA().getUserById(args[1]);
             total = Ranks.totalXPFromAllLevels(target.getId(), message.getGuild().getId());
         } catch(Exception ignored) {
             total = Ranks.totalXPFromAllLevels(message.getMember().getId(), message.getGuild().getId());

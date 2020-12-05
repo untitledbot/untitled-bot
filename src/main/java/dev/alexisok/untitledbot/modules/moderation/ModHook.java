@@ -64,8 +64,7 @@ public final class ModHook extends ListenerAdapter {
         return MESSAGE_CACHE.get(ID);
     }
 
-    @Override
-    public void onReady(@NotNull ReadyEvent re) {
+    static {
         CommandRegistrar.register("log-channel", "admin", new SetLogChannel());
         CommandRegistrar.register("add-log", "admin", new AddRemoveLogTypes());
         CommandRegistrar.register("remove-log", "admin", new AddRemoveLogTypes());
@@ -118,7 +117,7 @@ public final class ModHook extends ListenerAdapter {
             TextChannel tc = null;
             
             try {
-                tc = Objects.requireNonNull(Main.jda.getGuildCache().getElementById(guildID)).getTextChannelById(channelID);
+                tc = Objects.requireNonNull(Main.getJDAFromGuildID(guildID)).getTextChannelById(channelID);
             } catch(NullPointerException ignored) {}
             
             if(tc == null) return false;
@@ -265,7 +264,7 @@ public final class ModHook extends ListenerAdapter {
         
         String tcID = Vault.getUserDataLocal(null, guildID, "log.channel");
         
-        return Main.jda.getTextChannelById(tcID);
+        return Main.getJDAFromGuildID(guildID).getTextChannelById(tcID);
     }
     
     @Override

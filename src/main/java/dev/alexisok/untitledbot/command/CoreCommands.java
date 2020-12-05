@@ -281,6 +281,8 @@ public final class CoreCommands {
         //minecraft api seems to have some problems.
 //        new MinecraftAPI().onRegister();
         new Purge().onRegister();
+        
+        //1.3.25
         Logger.log("Modules have been registered.");
     }
 }

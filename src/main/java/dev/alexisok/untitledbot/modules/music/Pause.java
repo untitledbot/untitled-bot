@@ -33,7 +33,7 @@ public class Pause extends UBPlugin {
         for(VoiceChannel vc : message.getGuild().getVoiceChannels()) {
             if(vc.getMembers().contains(message.getMember())) {
                 //if the requester and this bot are in the same voice channel
-                if(vc.getMembers().contains(message.getMember()) && vc.getMembers().contains(message.getGuild().getMemberById(Main.jda.getSelfUser().getId())))
+                if(vc.getMembers().contains(message.getMember()) && vc.getMembers().contains(message.getGuild().getMemberById(message.getJDA().getSelfUser().getId())))
                     user = true;
             }
         }

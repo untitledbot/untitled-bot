@@ -33,14 +33,14 @@ public final class Profile extends UBPlugin {
         
         try {
             u = args[1].matches("[0-9]+")
-                             ? Objects.requireNonNull(Main.jda.getUserById(args[1]))
+                             ? Objects.requireNonNull(message.getJDA().getUserById(args[1]))
                              : message.getMentionedMembers().get(0).getUser();
         } catch(Throwable t) {
             u = message.getAuthor();
         }
         
         try {
-            File f = Objects.requireNonNull(RankImageRender.render(u.getId(), message.getGuild().getId(), message.getIdLong()));
+            File f = Objects.requireNonNull(RankImageRender.render(u.getId(), message.getGuild().getId(), message.getIdLong(), message));
             message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
         } catch(Throwable ignored){}
         

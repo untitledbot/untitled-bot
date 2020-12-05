@@ -110,7 +110,7 @@ public class Play extends UBPlugin implements MessageHook {
         
         for(VoiceChannel vc : message.getGuild().getVoiceChannels()) {
             if(vc.getMembers().contains(message.getMember())) {
-                if(!Objects.requireNonNull(message.getGuild().getMemberById(Main.jda.getSelfUser().getId())).hasPermission(vc, Permission.VOICE_CONNECT)) {
+                if(!Objects.requireNonNull(message.getGuild().getMemberById(message.getJDA().getSelfUser().getId())).hasPermission(vc, Permission.VOICE_CONNECT)) {
                     Logger.debug("Could not get access to a voice channel.");
                     break;
                 }
@@ -221,7 +221,7 @@ public class Play extends UBPlugin implements MessageHook {
     @Override
     public void onAnyEvent(GenericEvent e) {
         if(e instanceof GuildMessageReactionAddEvent) {
-            if(((GuildMessageReactionAddEvent) e).getMember().getId().equals(Main.jda.getSelfUser().getId()))
+            if(((GuildMessageReactionAddEvent) e).getMember().getId().equals(e.getJDA().getSelfUser().getId()))
                 return;
             if(!RESULTS.containsKey(((GuildMessageReactionAddEvent) e).getMember().getId()))
                 return;

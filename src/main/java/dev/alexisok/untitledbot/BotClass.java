@@ -417,7 +417,7 @@ public final class BotClass extends ListenerAdapter {
             ownerID = owner.getId();
             ownerTag = owner.getAsTag();
         } catch(NullPointerException ignored) {}
-        Main.jda.getTextChannelById(774205271282810911L).sendMessage(
+        Main.getTextChannelById("774205271282810911").sendMessage(
                 new EmbedBuilder().addField("Guild joined!", String.format("" +
                         "Name: %s%n" +
                         "Creation time: %s%n" +

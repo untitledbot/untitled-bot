@@ -89,12 +89,6 @@
             <artifactId>JDA</artifactId>
             <version>4.2.0_222</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-            <version>2.3.2</version>
-        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -124,10 +118,9 @@
             <version>1.9</version>
         </dependency>
         <dependency>
-            <groupId> org.apache.cassandra</groupId>
+            <groupId>org.apache.cassandra</groupId>
             <artifactId>cassandra-all</artifactId>
             <version>3.11.8</version>
-
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -138,12 +131,6 @@
                     <artifactId>log4j</artifactId>
                 </exclusion>
             </exclusions>
-
-        </dependency>
-        <dependency>
-            <groupId>org.xeustechnologies</groupId>
-            <artifactId>jcl-core</artifactId>
-            <version>2.8</version>
         </dependency>
         <dependency>
             <groupId>org.xerial</groupId>
@@ -167,35 +154,9 @@
             <version>1.3.52</version>
         </dependency>
         <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-youtube</artifactId>
-            <version>v3-rev20200213-1.30.9</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.sealedtx</groupId>
-            <artifactId>java-youtube-downloader</artifactId>
-            <version>2.4.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib-jdk8</artifactId>
-            <version>${kotlin.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test-junit</artifactId>
-            <version>${kotlin.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.sedmelluq</groupId>
             <artifactId>jda-nas</artifactId>
             <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.SparklingComet</groupId>
-            <artifactId>java-mojang-api</artifactId>
-            <version>97bc9add82</version>
         </dependency>
     </dependencies>
     

@@ -84,7 +84,7 @@ public class RankRoleSet extends UBPlugin {
         }
         
         try {
-            if(!Objects.requireNonNull(message.getGuild().getMemberById(jda.getSelfUser().getId())).getRoles().get(0).canInteract(r)) {
+            if(!Objects.requireNonNull(message.getGuild().getMemberById(message.getJDA().getSelfUser().getId())).getRoles().get(0).canInteract(r)) {
                 eb.addField("Error", "Looks like I can't do anything with this role!  Please make sure I have the `manage-roles` permission " +
                                              "and my top role is higher than the role you want to give.", false);
                 eb.setColor(Color.RED);

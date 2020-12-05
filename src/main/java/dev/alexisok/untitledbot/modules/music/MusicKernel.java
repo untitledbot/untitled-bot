@@ -91,7 +91,7 @@ public class MusicKernel {
         Logger.debug("Updating DJ cache to include " + roleID + " for " + guildID);
         
         //do not check for null
-        DJ_ROLE_CACHE.put(guildID, Main.jda.getRoleById(roleID));
+        DJ_ROLE_CACHE.put(guildID, Main.getRoleById(roleID));
     }
     
     /**

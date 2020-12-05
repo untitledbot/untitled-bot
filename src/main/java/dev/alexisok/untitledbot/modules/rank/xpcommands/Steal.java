@@ -46,7 +46,7 @@ public final class Steal extends UBPlugin {
         
         try {
             m = args[1].matches("[0-9]+")
-                             ? Objects.requireNonNull(Main.jda.getUserById(args[1]))
+                             ? Objects.requireNonNull(message.getJDA().getUserById(args[1]))
                              : message.getMentionedMembers().get(0).getUser();
         } catch(Throwable t) {
             eb.addField("Steal", "Usage: `steal <user @ | user ID>`", false);

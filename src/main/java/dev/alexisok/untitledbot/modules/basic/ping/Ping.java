@@ -28,7 +28,7 @@ public final class Ping extends UBPlugin {
         EmbedDefaults.setEmbedDefaults(eb, message);
     
         eb.addField("Pong!",
-                String.format("%d ms.", Main.jda.getGatewayPing()),
+                String.format("%d ms.", message.getJDA().getGatewayPing()),
                 false);
         eb.setColor(Color.GREEN);
         return eb.build();
@@ -37,6 +37,7 @@ public final class Ping extends UBPlugin {
     @Override
     public void onRegister() {
         CommandRegistrar.register("ping", this);
+        CommandRegistrar.register("pong", new Pong());
         Manual.setHelpPage("ping", "Get the ping of the bot.");
     }
 }

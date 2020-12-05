@@ -8,6 +8,7 @@ import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Shop;
 import dev.alexisok.untitledbot.modules.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
@@ -56,11 +57,12 @@ public final class RankImageRender {
      * @param userID the ID of the user.
      * @param guildID the ID of the guild.
      * @param uniqueID a unique ID to give the file, usually the ID of the message.  Prevents collision.
+     * @param m the message.
      * @return the file where it is stored, or {@code null} if it could not be rendered.
      * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
-    public static File render(String userID, String guildID, long uniqueID) throws UserDataCouldNotBeObtainedException, IOException {
-        return render(userID, guildID, uniqueID, false);
+    public static File render(String userID, String guildID, long uniqueID, Message m) throws UserDataCouldNotBeObtainedException, IOException {
+        return render(userID, guildID, uniqueID, false, m);
     }
     
     /**
@@ -73,15 +75,16 @@ public final class RankImageRender {
      * @param guildID the ID of the guild.
      * @param uniqueID a unique ID to give the file, usually the ID of the message.  Prevents collision.
      * @param flip flip the image around
+     * @param m the message
      * @return the file where it is stored, or {@code null} if it could not be rendered.
      * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
     @Nullable
     @CheckReturnValue
     @Contract(pure = true)
-    public static synchronized File render(String userID, String guildID, long uniqueID, boolean flip) throws UserDataCouldNotBeObtainedException, IOException {
+    public static synchronized File render(String userID, String guildID, long uniqueID, boolean flip, Message m) throws UserDataCouldNotBeObtainedException, IOException {
         
-        User u = Main.jda.getUserById(userID);
+        User u = m.getJDA().getUserById(userID);
         
         //current and needed xp
         long current;
