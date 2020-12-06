@@ -266,22 +266,17 @@ public final class BotClass extends ListenerAdapter {
         
         try {
             //if the message starts with @untitled-bot
-            if(message.split(" ")[0].equalsIgnoreCase("<@730135989863055472>")) {
+            if(message.split(" ")[0].equalsIgnoreCase("<@730135989863055472>") || message.split(" ")[0].equalsIgnoreCase("<@!730135989863055472>")) {
                 
                 if(prefix.equals(""))
                     event.getChannel().sendMessage("You seem to be in the NoPrefix:TM: mode, to exit, simply say `exit`.").queue();
                 else
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            event.getChannel()
-                                    .sendMessage(String.format("Hello!  My prefix for this server is `%s`.%n" +
-                                            "For a full list of commands, use `%shelp` or `%s help`.%n" +
-                                            "The default prefix is `>` and can be set by an administrator " +
-                                            "on this server by using the `prefix` command.", prefix, prefix, prefix))
-                                    .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r));
-                        }
-                    }, 0);
+                    event.getChannel()
+                            .sendMessage(String.format("Hello!  My prefix for this server is `%s`.%n" +
+                                    "For a full list of commands, use `%shelp` or `%s help`.%n" +
+                                    "The default prefix is `>` and can be set by an administrator " +
+                                    "on this server by using the `prefix` command.", prefix, prefix, prefix))
+                            .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r));
                 return;
             }
         } catch(IndexOutOfBoundsException ignored) {}
@@ -387,7 +382,7 @@ public final class BotClass extends ListenerAdapter {
     
     @Override
     public final synchronized void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent e) {
-        if(!e.getAuthor().getId().equals("730135989863055472")) {
+        if(!e.getAuthor().getId().equals("730135989863055472") && !e.getAuthor().getId().equals("716035864123408404")) {
             e.getAuthor().openPrivateChannel().queue(a -> a.sendMessage(onPrivateMessage).queue(
                     r -> BotClass.addToDeleteCache(e.getMessage().getId(), r)
             ));
@@ -439,7 +434,7 @@ public final class BotClass extends ListenerAdapter {
         List<TextChannel> ch = e.getGuild().getTextChannels();
         
         boolean found = false;
-        
+        voidPrefixCache(); //because broken bot stuffs
         try {
             for(TextChannel tc : ch) {
                 if(tc.getName().contains("bot")) {

@@ -6,6 +6,7 @@ import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.privacy.Privacy;
 import dev.alexisok.untitledbot.modules.basic.purge.Purge;
 import dev.alexisok.untitledbot.modules.basic.sleep.Sleep;
+import dev.alexisok.untitledbot.modules.basic.version.Version;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.*;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.filter.*;
 import dev.alexisok.untitledbot.modules.images.apiuseless.*;
@@ -62,6 +63,7 @@ import dev.alexisok.untitledbot.modules.reactions.Dis;
 import dev.alexisok.untitledbot.modules.reactions.Hide;
 import dev.alexisok.untitledbot.modules.basic.reward.VoteReward;
 import dev.alexisok.untitledbot.modules.starboard.StarboardHandle;
+import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -286,6 +288,21 @@ public final class CoreCommands {
         
         //1.3.25
         new Sleep().onRegister();
+        new Version().onRegister();
+        
         Logger.log("Modules have been registered.");
+        Logger.log("Registering non-native plugins.");
+        registerNonNativePlugins();
+        Logger.log("Non-native plugins have been registered.");
+    }
+    
+    private static void registerNonNativePlugins() {
+        try {
+            Class<? extends UBPlugin> c = Class.forName("dev.alexisok.untitledbot.dash.Main").asSubclass(UBPlugin.class);
+            c.cast(UBPlugin.class).onRegister();
+        } catch(Throwable e) {
+            Logger.critical("Could not load the dashboard!");
+            e.printStackTrace();
+        }
     }
 }

@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.command;
 
+import dev.alexisok.untitledbot.BotClass;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import static dev.alexisok.untitledbot.command.CommandRegistrar.*;
@@ -23,9 +24,9 @@ public final class Manual {
 	 * @param page the page.
 	 * @return the help page specified or {@code null} if no such page exists.
 	 */
-	public static @Nullable String getHelpPages(String page) {
+	public static @Nullable String getHelpPages(String page, String guildID) {
 		return MAN_PAGES.containsKey(page)
-				       ? "Help for " + page + ":\n\n" + MAN_PAGES.get(page)
+				       ? "Help for " + page + ":\n\n" + MAN_PAGES.get(page).replace("%s", BotClass.getPrefixNice(guildID))
 				       : getCommandPermissionNode(page) != null ?
 						         "There doesn't seem to be any help pages available for this command!" : null;
 	}

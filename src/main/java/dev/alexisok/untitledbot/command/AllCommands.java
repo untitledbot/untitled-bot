@@ -26,91 +26,91 @@ public class AllCommands extends UBPlugin {
         eb.setTitle("untitled-bot commands");
     
         Manual.setHelpPage("leveling", "\n" +
-            "`rank` - get the rank of yourself or a specific user.\n" +
-            "`leaderboard` - get the highest ranking users in the guild.\n" +
-            "`rank-total` - get the total amount of xp of yourself or another user.\n" +
-            "`rank-settings` - configure level up messages.(adm)\n" +
-            "`rank-role` - assign rank roles for users when they level up. (adm)\n" +
-            "`rank-roles` - get a list of current rank roles.");
+            "`%srank` - get the rank of yourself or a specific user.\n" +
+            "`%sleaderboard` - get the highest ranking users in the guild.\n" +
+            "`%srank-total` - get the total amount of xp of yourself or another user.\n" +
+            "`%srank-settings` - configure level up messages.(adm)\n" +
+            "`%srank-role` - assign rank roles for users when they level up. (adm)\n" +
+            "`%srank-roles` - get a list of current rank roles.");
         Manual.setHelpPage("util", "\n" +
-            "`help [command]` - get help for a specific command.\n" +
-            "`prefix <prefix>` - set this guilds prefix. (adm)\n" +
-            "`status` - get the status and statistics of the bot.\n" +
-            "`timestamp` - get the timestamp of a Discord snowflake.\n" +
-            "`uptime` - get the uptime of the bot.\n" +
-            "`info` - get info about the server or a specific user.\n" +
-            "`avatar` - get the avatar of yourself or another user.\n" +
-            "`bug-report` - report a bug directly to me.\n" +
-            "`discord` - get an invite link for the Discord support server.\n" +
-            "`ping` - get the ping of the bot.\n" +
-            "`inv` - list your inventory.\n" +
-            "`reverse` - reverse a string.\n" +
-            "`config` - easy configuration for the bot.(adm)\n" +
-            "`profile` - get the profile of another user.\n" +
-            "`caps` - make a message all capital letters.\n" +
-            "`lowercase` - make a message all lowercase letters.\n" +
-            "`mock` - MaKe A mEsSaGe ChAnGe EaCh LeTtEr CaPiTaLiZaTiOn.\n" +
-            "`source` - get the source code for the bot.\n" +
-            "`which` - get the package for a command.\n" +
-            "`permissions` - get the permissions of a specific user or yourself.\n" +
-            "`remind` - have the bot dm you a reminder.\n" +
-            "`rot13` - run a string through rot13.\n");
+            "`%shelp [command]` - get help for a specific command.\n" +
+            "`%sprefix <prefix>` - set this guilds prefix. (adm)\n" +
+            "`%sstatus` - get the status and statistics of the bot.\n" +
+            "`%stimestamp` - get the timestamp of a Discord snowflake.\n" +
+            "`%suptime` - get the uptime of the bot.\n" +
+            "`%sinfo` - get info about the server or a specific user.\n" +
+            "`%savatar` - get the avatar of yourself or another user.\n" +
+            "`%sbug-report` - report a bug directly to me.\n" +
+            "`%sdiscord` - get an invite link for the Discord support server.\n" +
+            "`%sping` - get the ping of the bot.\n" +
+            "`%sinv` - list your inventory.\n" +
+            "`%sreverse` - reverse a string.\n" +
+            "`%sconfig` - easy configuration for the bot.(adm)\n" +
+            "`%sprofile` - get the profile of another user.\n" +
+            "`%scaps` - make a message all capital letters.\n" +
+            "`%slowercase` - make a message all lowercase letters.\n" +
+            "`%smock` - MaKe A mEsSaGe ChAnGe EaCh LeTtEr CaPiTaLiZaTiOn.\n" +
+            "`%ssource` - get the source code for the bot.\n" +
+            "`%swhich` - get the package for a command.\n" +
+            "`%spermissions` - get the permissions of a specific user or yourself.\n" +
+            "`%sremind` - have the bot dm you a reminder.\n" +
+            "`%srot13` - run a string through rot13.\n");
         Manual.setHelpPage("moderation", "\n" +
-            "`log-channel` - set the logging channel.(adm)\n" +
-            "`add-log` - add a log type to the log channel.(adm)\n" +
-            "`remove-log` - remove a log type from the channel.(adm)\n" +
-            "`log-types` - list all current log types.\n" +
-            "`get-log` - list what's being logged.\n" +
-            "`snipe <channel>` - get the last deleted message of a channel.\n" +
-            "`purge` - leave and delete all user data for this server.");
+            "`%slog-channel` - set the logging channel.(adm)\n" +
+            "`%sadd-log` - add a log type to the log channel.(adm)\n" +
+            "`%sremove-log` - remove a log type from the channel.(adm)\n" +
+            "`%slog-types` - list all current log types.\n" +
+            "`%sget-log` - list what's being logged.\n" +
+            "`%ssnipe <channel>` - get the last deleted message of a channel.\n" +
+            "`%spurge` - leave and delete all user data for this server.");
         Manual.setHelpPage("fun", "\n" +
-            "`someone` - mention a random user without pinging them.\n" +
-            "`8ball` - simulate a magic 8 ball.\n" +
-            "`ship` - ship two users (user requested!).\n" +
-            "`20` - roll a twenty sided die.\n" +
-            "`owo` - owofy a stwing of text,,,\n" +
-            "`cat` - get a cat fact.\n" +
-            "`aol` - a legendary tale of the spider lenny vs the wizard lenny.....\n");
+            "`%ssomeone` - mention a random user without pinging them.\n" +
+            "`%s8ball` - simulate a magic 8 ball.\n" +
+            "`%sship` - ship two users (user requested!).\n" +
+            "`%s20` - roll a twenty sided die.\n" +
+            "`%sowo` - owofy a stwing of text,,,\n" +
+            "`%scat` - get a cat fact.\n" +
+            "`%saol` - a legendary tale of the spider lenny vs the wizard lenny.....\n");
         Manual.setHelpPage("econ", "\n" +
-            "`bal` - get the balance of yourself or another user.\n" +
-            "`work` - get UB$\n" +
-            "`steal` - get or lose UB$ depending on who you target.\n" +
-            "`inv` - list your inventory.\n" +
-            "`pay` - pay a user UB$.\n" +
-            "`bet` - coinflip command.\n" +
-            "`deposit` and `withdraw`, put/take money between the bank.");
+            "`%sbal` - get the balance of yourself or another user.\n" +
+            "`%swork` - get UB$\n" +
+            "`%ssteal` - get or lose UB$ depending on who you target.\n" +
+            "`%sinv` - list your inventory.\n" +
+            "`%spay` - pay a user UB$.\n" +
+            "`%sbet` - coinflip command.\n" +
+            "`%sdeposit` and `withdraw`, put/take money between the bank.");
         Manual.setHelpPage("reactions", "\n" +
-            "`ayaya` - react with ayaya (or something else).\n" +
-            "`hide` - hide behind a wall.\n" +
-            "`dis` - display ಠ_ಠ\n" +
-            "`aol` - attack on lenny.\n" +
+            "`%sayaya` - react with ayaya (or something else).\n" +
+            "`%shide` - hide behind a wall.\n" +
+            "`%sdis` - display ಠ_ಠ\n" +
+            "`%saol` - attack on lenny.\n" +
             "");
         
         Manual.setHelpPage("image", "\n" +
             "NOTE: please upload an image to manipulate or @mention another user, otherwise it will use your avatar.\n" +
-            "`magik` - LITERALLY CORRUPTS images (not literally)\n" +
-            "`blur` - blur an image\n" +
-            "`deepfry` - deepfry an image\n" +
-            "`invert` - invert an image\n" +
-            "`jpeg` - make image jpeg\n" +
-            "`pixelate` - make image pixelate\n" +
-            "`sepia` - listen it was on alexflipnote api idk what it does\n" +
-            "`wide` - T H I C C image\n" +
-            "`charcoal` - make an image look like charcoal\n" +
-            "`explode` - kaboom\n" +
-            "`implode` - implode an image\n" +
-            "`sketch` - make an image look like it was sketched\n" +
-            "`spread` - spread ALL the pixels\n" +
-            "`swirl` - whszoosh\n" +
-            "`wave` - wewewewew\n" +
-            "`emboss` - embosses images?");
+            "`%smagik` - LITERALLY CORRUPTS images (not literally)\n" +
+            "`%sblur` - blur an image\n" +
+            "`%sdeepfry` - deepfry an image\n" +
+            "`%sinvert` - invert an image\n" +
+            "`%sjpeg` - make image jpeg\n" +
+            "`%spixelate` - make image pixelate\n" +
+            "`%ssepia` - listen it was on alexflipnote api idk what it does\n" +
+            "`%swide` - T H I C C image\n" +
+            "`%scharcoal` - make an image look like charcoal\n" +
+            "`%sexplode` - kaboom\n" +
+            "`%simplode` - implode an image\n" +
+            "`%ssketch` - make an image look like it was sketched\n" +
+            "`%sspread` - spread ALL the pixels\n" +
+            "`%sswirl` - whszoosh\n" +
+            "`%swave` - wewewewew\n" +
+            "`%semboss` - embosses images?");
         
         Manual.setHelpPage("meme", "\n" +
-            "`achievement` - generate a fake MC achievement\n" +
-            "`joke` - generate an 'Am I a joke to you?' meme\n" +
-            "`bad` - generate a 'Bad.' meme\n" +
-            "`scroll` - generate a 'Scroll of Truth' meme\n" +
-            "`call` - generate a meme where tom calls someone\n");
+            "`%sachievement` - generate a fake MC achievement\n" +
+            "`%sjoke` - generate an 'Am I a joke to you?' meme\n" +
+            "`%sbad` - generate a 'Bad.' meme\n" +
+            "`%sscroll` - generate a 'Scroll of Truth' meme\n" +
+            "`%scall` - generate a meme where tom calls someone\n");
         
         Manual.setHelpPage("music", "\n" +
             "`play` - play or search for a YouTube video\n" +
