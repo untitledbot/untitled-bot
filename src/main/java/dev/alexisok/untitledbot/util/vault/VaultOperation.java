@@ -1,4 +1,4 @@
-package dev.alexisok.untitledbot.modules.vault;
+package dev.alexisok.untitledbot.util.vault;
 
 /**
  * Vault operations to reduce the risk of corruption i guess

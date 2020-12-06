@@ -1,4 +1,4 @@
-package dev.alexisok.untitledbot.modules.vault;
+package dev.alexisok.untitledbot.util.vault;
 
 /**
  * @author AlexIsOK

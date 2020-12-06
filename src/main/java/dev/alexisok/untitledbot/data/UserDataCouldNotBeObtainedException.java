@@ -1,6 +1,6 @@
 package dev.alexisok.untitledbot.data;
 
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.vault.Vault;
 
 /**
  * Thrown if user data could not be obtained.

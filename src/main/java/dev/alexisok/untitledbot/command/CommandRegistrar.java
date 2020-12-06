@@ -1,6 +1,8 @@
 package dev.alexisok.untitledbot.command;
 
 import dev.alexisok.untitledbot.Main;
+import dev.alexisok.untitledbot.command.enums.UBPerm;
+import dev.alexisok.untitledbot.command.exception.CommandAlreadyRegisteredException;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.util.OnCommandReturn;

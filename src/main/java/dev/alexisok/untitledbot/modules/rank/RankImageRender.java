@@ -1,13 +1,9 @@
 package dev.alexisok.untitledbot.modules.rank;
 
-import dev.alexisok.untitledbot.Main;
-import dev.alexisok.untitledbot.command.CommandRegistrar;
-import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Shop;
-import dev.alexisok.untitledbot.modules.vault.Vault;
-import net.dv8tion.jda.api.EmbedBuilder;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.Contract;
@@ -25,10 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Objects;
 
 /**

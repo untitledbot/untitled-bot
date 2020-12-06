@@ -1,4 +1,6 @@
-package dev.alexisok.untitledbot.command;
+package dev.alexisok.untitledbot.command.exception;
+
+import dev.alexisok.untitledbot.command.CommandRegistrar;
 
 /**
  * Thrown if a command is already registered in {@link CommandRegistrar}

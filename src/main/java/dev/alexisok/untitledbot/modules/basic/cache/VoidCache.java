@@ -1,14 +1,13 @@
-package dev.alexisok.untitledbot.modules.cache;
+package dev.alexisok.untitledbot.modules.basic.cache;
 
 import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
-import dev.alexisok.untitledbot.command.UBPerm;
+import dev.alexisok.untitledbot.command.enums.UBPerm;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.starboard.Starboard;
-import dev.alexisok.untitledbot.modules.starboard.StarboardHandle;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;

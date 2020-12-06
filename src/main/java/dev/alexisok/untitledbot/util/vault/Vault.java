@@ -1,4 +1,4 @@
-package dev.alexisok.untitledbot.modules.vault;
+package dev.alexisok.untitledbot.util.vault;
 
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.data.UserData;

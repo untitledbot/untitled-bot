@@ -1,4 +1,4 @@
-package dev.alexisok.untitledbot.command;
+package dev.alexisok.untitledbot.command.enums;
 
 /**
  * Describes untitled-bot permissions.
@@ -15,5 +15,14 @@ public enum UBPerm {
     
     UBPerm(String s) {
         this.niceName = s;
+    }
+    
+    /**
+     * If this is used mid-line without niceName, automatically insert niceName instead of the Enum name.
+     * @return the nice name.
+     */
+    @Override
+    public String toString() {
+        return this.niceName;
     }
 }

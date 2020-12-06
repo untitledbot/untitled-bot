@@ -1,4 +1,4 @@
-package dev.alexisok.untitledbot.command;
+package dev.alexisok.untitledbot.command.exception;
 
 /**
  * This is for you Brain <3

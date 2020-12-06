@@ -11,7 +11,7 @@ import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.music.audio.MusicManager;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;

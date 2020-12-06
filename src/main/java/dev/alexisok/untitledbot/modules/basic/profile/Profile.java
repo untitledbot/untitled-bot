@@ -1,6 +1,5 @@
-package dev.alexisok.untitledbot.modules.profile;
+package dev.alexisok.untitledbot.modules.basic.profile;
 
-import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.logging.Logger;

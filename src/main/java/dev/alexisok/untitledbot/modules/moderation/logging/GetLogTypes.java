@@ -2,7 +2,7 @@ package dev.alexisok.untitledbot.modules.moderation.logging;
 
 import dev.alexisok.untitledbot.command.Command;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;

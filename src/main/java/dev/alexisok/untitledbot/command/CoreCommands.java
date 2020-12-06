@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.command;
 
+import dev.alexisok.untitledbot.command.enums.UBPerm;
 import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.privacy.Privacy;
@@ -42,14 +43,14 @@ import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
 import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
 import dev.alexisok.untitledbot.modules.basic.userinfo.UserInfo;
 import dev.alexisok.untitledbot.modules.basic.vote.Vote;
-import dev.alexisok.untitledbot.modules.cache.VoidCache;
+import dev.alexisok.untitledbot.modules.basic.cache.VoidCache;
 import dev.alexisok.untitledbot.modules.config.ConfigHandle;
 import dev.alexisok.untitledbot.modules.eco.*;
-import dev.alexisok.untitledbot.modules.eval.Eval;
+import dev.alexisok.untitledbot.modules.basic.eval.Eval;
 import dev.alexisok.untitledbot.modules.music.*;
-import dev.alexisok.untitledbot.modules.noprefix.Exit;
-import dev.alexisok.untitledbot.modules.noprefix.NoPrefix;
-import dev.alexisok.untitledbot.modules.profile.Profile;
+import dev.alexisok.untitledbot.modules.basic.noprefix.Exit;
+import dev.alexisok.untitledbot.modules.basic.noprefix.NoPrefix;
+import dev.alexisok.untitledbot.modules.basic.profile.Profile;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rank.Rnak;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleGet;
@@ -59,7 +60,7 @@ import dev.alexisok.untitledbot.modules.rank.xpcommands.Work;
 import dev.alexisok.untitledbot.modules.reactions.AttackOnLenny;
 import dev.alexisok.untitledbot.modules.reactions.Dis;
 import dev.alexisok.untitledbot.modules.reactions.Hide;
-import dev.alexisok.untitledbot.modules.reward.VoteReward;
+import dev.alexisok.untitledbot.modules.basic.reward.VoteReward;
 import dev.alexisok.untitledbot.modules.starboard.StarboardHandle;
 import net.dv8tion.jda.api.EmbedBuilder;
 

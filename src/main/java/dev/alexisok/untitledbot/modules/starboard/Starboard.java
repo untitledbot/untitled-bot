@@ -1,10 +1,8 @@
 package dev.alexisok.untitledbot.modules.starboard;
 
 import dev.alexisok.untitledbot.BotClass;
-import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.logging.Logger;
-import dev.alexisok.untitledbot.modules.moderation.ModHook;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;

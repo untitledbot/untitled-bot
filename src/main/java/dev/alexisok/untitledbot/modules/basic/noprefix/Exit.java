@@ -1,4 +1,4 @@
-package dev.alexisok.untitledbot.modules.noprefix;
+package dev.alexisok.untitledbot.modules.basic.noprefix;
 
 import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
