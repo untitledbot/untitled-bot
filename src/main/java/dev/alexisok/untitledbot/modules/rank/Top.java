@@ -168,7 +168,7 @@ public final class Top extends UBPlugin {
             User u;
             
             try {
-                u = Main.getJDAFromGuildID(guildID).getGuildById(guildID).getMemberById(s).getUser();
+                u = Main.getJDAFromGuild(guildID).getGuildById(guildID).getMemberById(s).getUser();
             } catch(Throwable ignored) {return;}
             
             if(u.isBot())

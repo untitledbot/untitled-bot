@@ -45,7 +45,7 @@ public final class Main {
     public static final String PREFIX;
     public static final String OWNER_ID;
     
-    public static final int SHARD_COUNT = 10;
+    public static final int SHARD_COUNT = 2;
     
     public static final boolean DEBUG;
     
@@ -62,7 +62,7 @@ public final class Main {
      * @param guildID the guild ID.
      * @return the JDA.
      */
-    public static JDA getJDAFromGuildID(long guildID) {
+    public static JDA getJDAFromGuild(long guildID) {
         return jda[(int) ((guildID >> 22) % SHARD_COUNT)];
     }
     
@@ -71,8 +71,8 @@ public final class Main {
      * @param guildID the guild ID.
      * @return the JDA.
      */
-    public static JDA getJDAFromGuildID(@NotNull String guildID) {
-        return getJDAFromGuildID(Long.parseLong(guildID));
+    public static JDA getJDAFromGuild(@NotNull String guildID) {
+        return getJDAFromGuild(Long.parseLong(guildID));
     }
     
     /**
@@ -81,7 +81,7 @@ public final class Main {
      * @return the JDA.
      */
     public static JDA getJDAFromGuild(@NotNull Guild g) {
-        return getJDAFromGuildID(g.getIdLong());
+        return getJDAFromGuild(g.getIdLong());
     }
     
     /**
@@ -199,7 +199,7 @@ public final class Main {
             Properties p = new Properties();
             try {
                 p.load(new FileInputStream("blacklist.properties"));
-                p.forEach((o, o2) -> BotClass.addToBlacklist(o.toString()));
+                p.forEach((o, o2) -> BotClass.addToBlacklist(Long.parseLong(o.toString())));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -382,5 +382,25 @@ public final class Main {
                 break;
         }
         return r;
+    }
+    
+    /**
+     * Gets a {@link User} by ID from the User cache.
+     *
+     * Note: this iterates over all shards.
+     *
+     * @param userID the ID of the User.
+     * @return the {@link User} or {@code null} if it wasn't found.
+     */
+    @Nullable
+    @Contract(pure = true)
+    public static User getUserById(long userID) {
+        User u = null;
+        for(JDA j : jda) {
+            u = j.getUserById(userID);
+            if(u != null)
+                break;
+        }
+        return u;
     }
 }

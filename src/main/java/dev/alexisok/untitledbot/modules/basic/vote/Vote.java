@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.basic.vote;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
@@ -42,5 +43,6 @@ public final class Vote extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("vote", this);
         Manual.setHelpPage("vote", "Get the link to vote for the bot on Top.GG...");
+        BotClass.registerVoteHook(new OnVoteHook());
     }
 }

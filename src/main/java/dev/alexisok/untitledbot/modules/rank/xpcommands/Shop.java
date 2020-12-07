@@ -1,6 +1,8 @@
 package dev.alexisok.untitledbot.modules.rank.xpcommands;
 
+import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
+import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -25,10 +27,12 @@ import java.util.Objects;
  */
 public final class Shop extends UBPlugin {
     
-    private static final ArrayList<ShopItem> ITEMS = new ArrayList<>();
+    protected static final ArrayList<ShopItem> ITEMS = new ArrayList<>();
     
     public static final String CURRENCY_VAULT_NAME = "balance";
     public static final String BANK_VAULT_NAME     = "balance.bank";
+    
+    public static final String TOKEN_VAULT_NAME    = "tokens";
     
     /**
      * Get the amount of ITEMS.
@@ -50,14 +54,16 @@ public final class Shop extends UBPlugin {
             StringBuilder itemList = new StringBuilder();
             
             for(ShopItem si : ITEMS) {
+                if(si.getCostInLevels() == -1L)
+                    continue;
                 if(si.getMaximum() != -1)
-                    itemList.append(String.format("`%s` -- `UB$%d` -- %s -- limit: `%d`%n%n",
+                    itemList.append(String.format("`%s` -- `TK %d` -- %s -- limit: `%d`%n%n",
                             si.getName(),
                             si.getCostInLevels(),
                             si.getDescription(),
                             si.getMaximum()));
                 else
-                    itemList.append(String.format("`%s` -- `UB$%d` -- %s -- limit: `unlimited`%n%n",
+                    itemList.append(String.format("`%s` -- `TK %d` -- %s -- limit: `unlimited`%n%n",
                             si.getName(),
                             si.getCostInLevels(),
                             si.getDescription()));
@@ -80,15 +86,15 @@ public final class Shop extends UBPlugin {
                         int userLevel;
                         
                         try {
-                            userLevel = Integer.parseInt(Objects.requireNonNull(Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), CURRENCY_VAULT_NAME)));
-                        } catch(NullPointerException | NumberFormatException ignored) {
+                            userLevel = Integer.parseInt((Vault.getUserDataLocalOrDefault(message.getAuthor().getId(), null, TOKEN_VAULT_NAME, "0")));
+                        } catch(NumberFormatException ignored) {
                             userLevel = 0;
                         }
                         
                         if(userLevel >= a.getCostInLevels()) {
                             
                             //current count of item in inv as str
-                            String currentCountStr = Vault.getUserDataLocal(message.getAuthor().getId(), message.getGuild().getId(), "shop.item." + a.getItemID());
+                            String currentCountStr = Vault.getUserDataLocal(message.getAuthor().getId(), null, "shop.item." + a.getItemID());
                             int currentCount = currentCountStr == null ? 0 : Integer.parseInt(currentCountStr);
                             if(a.getMaximum() != -1 && currentCount >= a.getMaximum()) {
                                 eb.addField("Shop",
@@ -103,18 +109,18 @@ public final class Shop extends UBPlugin {
                             Vault.storeUserDataLocal(
                                     message.getAuthor().getId(),
                                     message.getGuild().getId(),
-                                    CURRENCY_VAULT_NAME,
+                                    TOKEN_VAULT_NAME,
                                     String.valueOf(userLevel - a.getCostInLevels()));
                             
                             //store item
                             Vault.storeUserDataLocal(message.getAuthor().getId(),
-                                    message.getGuild().getId(),
+                                    null,
                                     String.format("shop.item.%d", a.getItemID()),
                                     String.valueOf(currentCount + 1));
                             
                             eb.addField("Transaction Receipt",
-                                    String.format("You have bought `%s` for UB$%d.%n" +
-                                                          "Balance:%nUB$%d ---> UB$%d%n" +
+                                    String.format("You have bought `%s` for %d tokens.%n" +
+                                                          "Balance:%nTK %d ---> TK %d%n" +
                                                           "Quantity of item:%n%d ---> %d%n",
                                             a.getName(), a.getCostInLevels(), userLevel, userLevel - a.getCostInLevels(),
                                             currentCount, currentCount + 1),
@@ -125,7 +131,7 @@ public final class Shop extends UBPlugin {
                         } else {
                             
                             eb.addField("Shop",
-                                    String.format("Error: `%s` costs UB$" + a.getCostInLevels() + ", but you only have UB$" + userLevel + ".",
+                                    String.format("Error: `%s` costs TK " + a.getCostInLevels() + ", but you only have TK " + userLevel + ".",
                                             a.getName()),
                                     false);
                             eb.setColor(Color.RED);
@@ -175,37 +181,34 @@ public final class Shop extends UBPlugin {
     /**
      * Get the amount of items a user currently has in their inventory.
      * @param userID the ID of the user
-     * @param guildID the ID of the guild
      * @param item the item ID to search for
      * @return the number of items the user has, or zero if the user does not have the item.
      */
-    protected static long getCountOfItemUserHas(String userID, String guildID, int item) {
-        String items = Vault.getUserDataLocal(userID, guildID, "shop.item." + item);
-        if(items == null)
-            return 0L;
-        return Long.parseLong(items);
+    protected static long getCountOfItemUserHas(String userID, int item) {
+        return Long.parseLong(Vault.getUserDataLocalOrDefault(userID, null, "shop.item." + item, "0"));
     }
     
     @Override
     public void onRegister() {
-//        CommandRegistrar.register("shop", this);
-        ITEMS.add(new ShopItem("RPG Item I", 1000, "A claimable item for when the RPG releases (low-tier random item).  Can be used once the RPG is out.", 1, 10));
-        ITEMS.add(new ShopItem("RPG Item II", 20000, "A claimable item for when the RPG releases (mid-tier random item).  Can be used once the RPG is out.", 2, 5));
-        ITEMS.add(new ShopItem("RPG Item III", 500000, "A claimable item for when the RPG releases (high-tier random item).  Can be used once the RPG is out.", 3, 3));
+        CommandRegistrar.register("shop", this);
         
-        ITEMS.add(new ShopItem("RPG Early Supporter Badge", 0, "A badge that shows you were using the bot before the RPG released!  Doesn't do anything in the RPG, will show when users use the `profile` command on you.", 4, 1));
+        ITEMS.add(new ShopItem("One level", 10, "Gives you one level on this server.  Useful for people who are level 30+.", 1));
+        ITEMS.add(new ShopItem("Five levels", 40, "Gives you five levels on this server.  Good way to get everyone to hate you as well.", 2));
+        ITEMS.add(new ShopItem("1000 XP", 10, "Gives you 1000 XP.  Useful for people below level 10.", 3));
+        ITEMS.add(new ShopItem("December 2020 User", 0, "Gives you the December 2020 User.  This does nothing and is probably worthless.", 4, 1));
+        ITEMS.add(new ShopItem("UB$10000", 10, "Gives you UB$10000.", 5));
         
         ITEMS.add(new ShopItem("Moderator Role on the Support Server", Long.MAX_VALUE, "Gives you the \"moderator\" role on the support server.", 5));
         
-//        Manual.setHelpPage("shop", "" +
-//                                           "Available sub-commands:\n" +
-//                                           "```\n" +
-//                                           "list - list all available items.\n" +
-//                                           "buy <item name> - buy a specific item.\n" +
-//                                           "```" +
-//                                           "\n\n" +
-//                                           "Note: all items are purchased with your xp in this guild, use the `rank` command to see your XP and level." +
-//                                           "\n\n" +
-//                                           "All purchases are non-refundable and are delivered immediately.");
+        Manual.setHelpPage("shop", "" +
+                                           "Available sub-commands:\n" +
+                                           "```\n" +
+                                           "list - list all available items.\n" +
+                                           "buy <item name> - buy a specific item.\n" +
+                                           "```" +
+                                           "\n\n" +
+                                           "Note: all items are purchased with your tokens, use the `%stokens` command to see your XP and level." +
+                                           "\n\n" +
+                                           "All purchases are non-refundable and are delivered immediately.");
     }
 }

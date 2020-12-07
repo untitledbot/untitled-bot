@@ -36,7 +36,7 @@ public final class Ship extends UBPlugin {
 
         Member m1, m2;
         m1 = message.getMentionedMembers().get(0);
-        m2 = message.getMentionedMembers().get(0);
+        m2 = message.getMentionedMembers().get(1);
         
         int rand = new Random(m1.getIdLong() - m2.getIdLong()).nextInt(100) + 1;
         

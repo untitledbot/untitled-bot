@@ -1,6 +1,8 @@
 package dev.alexisok.untitledbot.modules.rank.xpcommands;
 
+import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
+import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -28,7 +30,7 @@ public final class Inventory extends UBPlugin {
         StringBuilder builder = new StringBuilder();
         
         for(int i = 0; i <= Shop.getItemSize(); i++) {
-            long count = Shop.getCountOfItemUserHas(message.getAuthor().getId(), message.getGuild().getId(), i);
+            long count = Shop.getCountOfItemUserHas(message.getAuthor().getId(), i);
             if(count == 0)
                 continue;
             
@@ -39,7 +41,8 @@ public final class Inventory extends UBPlugin {
             ));
         }
         if(!builder.toString().isEmpty()) {
-            eb.addField("Inventory", "Your inventory\n\n" + builder.toString(), false);
+            eb.setTitle("Your Inventory");
+            eb.setDescription(builder.toString() + "\n\n");
             eb.setColor(Color.GREEN);
         } else {
             eb.addField("Inventory", "Hm... it seems like your inventory is empty...\n" +
@@ -52,7 +55,7 @@ public final class Inventory extends UBPlugin {
     
     @Override
     public void onRegister() {
-//        CommandRegistrar.register("inv", this);
-//        Manual.setHelpPage("inv", "Get your inventory.  You cannon get the inventory of another user.");
+        CommandRegistrar.register("inv", this);
+        Manual.setHelpPage("inv", "Get your inventory.  You cannot get the inventory of another user.");
     }
 }

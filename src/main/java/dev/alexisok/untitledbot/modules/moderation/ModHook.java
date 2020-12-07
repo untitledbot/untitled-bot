@@ -118,7 +118,7 @@ public final class ModHook extends ListenerAdapter {
             TextChannel tc = null;
             
             try {
-                tc = Objects.requireNonNull(Main.getJDAFromGuildID(guildID)).getTextChannelById(channelID);
+                tc = Objects.requireNonNull(Main.getJDAFromGuild(guildID)).getTextChannelById(channelID);
             } catch(NullPointerException ignored) {}
             
             if(tc == null) return false;
@@ -265,7 +265,7 @@ public final class ModHook extends ListenerAdapter {
         
         String tcID = Vault.getUserDataLocal(null, guildID, "log.channel");
         
-        return Main.getJDAFromGuildID(guildID).getTextChannelById(tcID);
+        return Main.getJDAFromGuild(guildID).getTextChannelById(tcID);
     }
     
     @Override

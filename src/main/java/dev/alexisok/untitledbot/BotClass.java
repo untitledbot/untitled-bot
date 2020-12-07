@@ -3,7 +3,9 @@ package dev.alexisok.untitledbot;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.basic.vote.OnVoteHook;
 import dev.alexisok.untitledbot.modules.music.MusicKernel;
+import dev.alexisok.untitledbot.util.hook.VoteHook;
 import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.util.ShutdownHook;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -68,7 +70,9 @@ public final class BotClass extends ListenerAdapter {
     private static final ArrayList<Long> TEMP_BLACKLIST = new ArrayList<>();
     
     //user id
-    public static final ArrayList<String> BLACKLIST = new ArrayList<>();
+    public static final ArrayList<Long> BLACKLIST = new ArrayList<>();
+    
+    private static final ArrayList<VoteHook> VOTE_HOOKS = new ArrayList<>();
     
     static {
         TimerTask t = new TimerTask() {
@@ -89,13 +93,17 @@ public final class BotClass extends ListenerAdapter {
         new Timer().scheduleAtFixedRate(t2, 0, 3600000); //1 hour
     }
     
+    public static void addHook(@NotNull VoteHook hook) {
+        VOTE_HOOKS.add(hook);
+    }
+    
     /**
      * Add a user to the blacklist, also adds them to the blacklist.properties file.
      * @param userID the id of the user.
      * @return true if the user was added, false if they were already added or if there was an error.
      */
     @Contract
-    public static boolean addToBlacklist(@NotNull String userID) {
+    public static boolean addToBlacklist(long userID) {
         if(BLACKLIST.contains(userID))
             return false;
         
@@ -236,6 +244,10 @@ public final class BotClass extends ListenerAdapter {
         return prefix;
     }
 
+    public static void registerVoteHook(OnVoteHook onVoteHook) {
+        VOTE_HOOKS.add(onVoteHook);
+    }
+
     /**
      * This is messy...
      * @param event the mre
@@ -250,7 +262,7 @@ public final class BotClass extends ListenerAdapter {
         if(event.getAuthor().isBot() || event.isWebhookMessage())
             return;
         
-        if(BLACKLIST.contains(event.getAuthor().getId()) || TEMP_BLACKLIST.contains(event.getAuthor().getIdLong()))
+        if(BLACKLIST.contains(event.getAuthor().getIdLong()) || TEMP_BLACKLIST.contains(event.getAuthor().getIdLong()))
             return;
         
         if(!event.getChannel().canTalk())
@@ -481,5 +493,14 @@ public final class BotClass extends ListenerAdapter {
     
     public static void registerShutdownHook(@NotNull ShutdownHook hook) {
         HOOK_REGISTRAR.add(hook);
+    }
+    
+    /**
+     * Run when a user votes for the bot.
+     * @param userID the ID of the user.
+     */
+    @SuppressWarnings("unused")
+    public static void onVote(long userID) {
+        VOTE_HOOKS.forEach(h -> h.onVote(userID));
     }
 }

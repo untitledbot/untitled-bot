@@ -23,9 +23,9 @@ public class Blacklist extends UBPlugin {
         if(!message.getAuthor().getId().equals("541763812676861952"))
             return null;
         try {
-            String ID = message.getMentionedMembers().size() == 1 ? message.getMentionedMembers().get(0).getId() : args[1];
+            long ID = Long.parseLong(message.getMentionedMembers().size() == 1 ? message.getMentionedMembers().get(0).getId() : args[1]);
             
-            if(ID.equals("541763812676861952")) {
+            if(ID == 541763812676861952L) {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.addField("no", "you cannot blacklist yourself lol", false);
                 return eb.build();
