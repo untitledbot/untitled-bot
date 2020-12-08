@@ -55,10 +55,12 @@ public final class ShardInfo extends UBPlugin {
                  int users   = j.getUsers().size();
                 long ping    = j.getGatewayPing();
                 
-                int shardID  = j.getShardInfo().getShardId();
+                int shardIDi  = j.getShardInfo().getShardId();
+                
+                String shardID = shardIDi + (shardIDi == message.getJDA().getShardInfo().getShardId() ? "*" : "");
                 
                 description.append(String.format("%s%s%s%s%s%s%s%n",
-                        shardID, " ".repeat(Math.max(0, 6 - String.valueOf(shardID + (shardID == message.getJDA().getShardInfo().getShardId() ? "*" : "")).length())) + "░ ",
+                        shardID, " ".repeat(Math.max(0, 6 - shardID.length())) + "░ ",
                         servers, " ".repeat(Math.max(0, 8 - String.valueOf(servers).length())) + "░ ",
                         ping, " ".repeat(Math.max(0, 5 - String.valueOf(ping).length())) + "░ ",
                         users - 1));

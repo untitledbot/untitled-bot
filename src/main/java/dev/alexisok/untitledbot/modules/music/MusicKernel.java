@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Handles a lot of music stuff and commands.
@@ -403,7 +404,14 @@ public class MusicKernel {
      */
     @Contract(pure = true)
     public int getPlayers() {
-        return this.musicManagers.size();
+        AtomicInteger i = new AtomicInteger();
+        this.musicManagers.forEach((a, b) -> {
+            try {
+                if (b.player.getPlayingTrack() != null)
+                    i.getAndIncrement();
+            } catch(Throwable ignored) {}
+        });
+        return i.get();
     }
 
     /**
@@ -455,7 +463,11 @@ public class MusicKernel {
      */
     protected HashMap<String, String> getCurrentlyPlaying() {
         HashMap<String, String> currentlyPlaying = new HashMap<>();
-        this.musicManagers.forEach((guild, player) -> currentlyPlaying.put(player.channel.getId(), player.player.getPlayingTrack().getInfo().uri));
+        this.musicManagers.forEach((guild, player) -> {
+            try {
+                currentlyPlaying.put(player.channel.getId(), player.player.getPlayingTrack().getInfo().uri);
+            } catch(NullPointerException ignored) {return;}
+        });
         return currentlyPlaying;
     }
 
