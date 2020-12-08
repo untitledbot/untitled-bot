@@ -14,6 +14,8 @@ public final class OnVoteHook implements VoteHook {
     
     @Override
     public void onVote(long userID) {
+        if(true)
+            return; //TEMP TODO
         Logger.log("Incoming vote from " + userID);
         User u = Main.getUserById(userID);
         

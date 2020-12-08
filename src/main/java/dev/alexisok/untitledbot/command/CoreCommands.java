@@ -6,6 +6,8 @@ import dev.alexisok.untitledbot.hook.WebhookPlugin;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.privacy.Privacy;
 import dev.alexisok.untitledbot.modules.basic.purge.Purge;
+import dev.alexisok.untitledbot.modules.basic.shardinfo.CalcShard;
+import dev.alexisok.untitledbot.modules.basic.shardinfo.ShardInfo;
 import dev.alexisok.untitledbot.modules.basic.sleep.Sleep;
 import dev.alexisok.untitledbot.modules.basic.version.Version;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.*;
@@ -57,7 +59,6 @@ import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rank.Rnak;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleGet;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleSet;
-import dev.alexisok.untitledbot.modules.rank.xpcommands.Inventory;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Steal;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Work;
 import dev.alexisok.untitledbot.modules.reactions.AttackOnLenny;
@@ -203,7 +204,7 @@ public final class CoreCommands {
         new Blacklist().onRegister();
         new Vote().onRegister();
         new Ping().onRegister();
-        new Inventory().onRegister();
+//        new Inventory().onRegister();
         new Reverse().onRegister();
         new Discord().onRegister();
         new Balance().onRegister();
@@ -290,16 +291,10 @@ public final class CoreCommands {
         new Sleep().onRegister();
         new Version().onRegister();
         new WebhookPlugin().onRegister();
+        new ShardInfo().onRegister();
+        new CalcShard().onRegister();
         
         Logger.log("Modules have been registered.");
     }
     
-    private static void registerNonNativePlugins() {
-        try {
-            Class.forName("dev.alexisok.untitledbot.dash.Main").asSubclass(UBPlugin.class).cast(UBPlugin.class).onRegister();
-        } catch(Throwable e) {
-            Logger.critical("Could not load the dashboard!");
-            e.printStackTrace();
-        }
-    }
 }

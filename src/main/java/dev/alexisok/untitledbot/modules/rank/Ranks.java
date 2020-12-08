@@ -74,7 +74,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         CommandRegistrar.register("rank-top", new Top());
         CommandRegistrar.register("rank-settings", UBPerm.MANAGE_MESSAGES, new RankSettings());
         new Daily().onRegister();
-        new Shop().onRegister();
+//        new Shop().onRegister();
         Manual.setHelpPage("rank-top", "Get the top user ranks for the server.\n" +
                                                "Usage: `top`");
         Manual.setHelpPage("rank", "Get your (or another user's) rank.\nUsage: `rank [user @ | user ID]`");

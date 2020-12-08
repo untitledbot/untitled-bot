@@ -45,7 +45,7 @@ public final class Main {
     public static final String PREFIX;
     public static final String OWNER_ID;
     
-    public static final int SHARD_COUNT = 2;
+    public static final int SHARD_COUNT = 10;
     
     public static final boolean DEBUG;
     
@@ -402,5 +402,9 @@ public final class Main {
                 break;
         }
         return u;
+    }
+
+    public static JDA getJDAByShardId(int i) {
+        return jda[i];
     }
 }
