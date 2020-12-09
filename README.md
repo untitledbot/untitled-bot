@@ -25,4 +25,8 @@ You can join the untitled-bot discord server [here](https://alexisok.dev/ub/disc
 ### Contributing
 
 Please help contribute to the bot!  Having multiple people help with the bot makes the repository much better than if
-one person did everything.  As of 1.3.21, contributors get a custom background for the `rank` command!
+one person did everything.
+
+### Note
+
+The bot's code, what is on GitHub, and what is on other branches are async, meaning that there might be features on the bot that aren't on MASTER yet or aren't on GitHub at all.  There might be some features that are on GitHub but are not on the bot.  Check https://top.gg/bot/730135989863055472 for the latest features.
