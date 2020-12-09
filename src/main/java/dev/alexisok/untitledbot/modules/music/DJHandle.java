@@ -49,9 +49,7 @@ public class DJHandle extends UBPlugin {
         
         //role by name
         if(r == null) {
-            List<String> name = Arrays.asList(args);
-            name.remove(0);
-            String newName = Arrays.toString(name.toArray(new String[0]));
+            String newName = Arrays.toString(Arrays.copyOfRange(args, 1, args.length));
             List<Role> roles = message.getGuild().getRolesByName(newName, false);
             if(roles.size() != 0)
                 r = roles.get(0);

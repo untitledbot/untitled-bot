@@ -124,7 +124,11 @@ public final class ModHook extends ListenerAdapter {
             
             if(tc == null) return false;
             
-            String[] policies;
+            String[] policies = new String[0];
+            
+            try {
+                policies = Vault.getUserDataLocal(null, guildID, "log.policies").split(",");
+            } catch(NullPointerException | IndexOutOfBoundsException ignored) {} //if there are no policies.
             
             try {
                 policies = Vault.getUserDataLocal(null, guildID, "log.policies").split(",");
@@ -247,7 +251,7 @@ public final class ModHook extends ListenerAdapter {
                         "Sent by: %s%n" +
                         "Message channel: %s%n",
                 DateFormatUtil.format(deleted.getTimeCreated()),
-                DateFormatUtil.format(new Date()),
+                (new Date()),
                 e.getMessageId(),
                 deleted.getAuthor().getAsMention(),
                 e.getChannel().getAsMention()), false);
@@ -547,7 +551,7 @@ public final class ModHook extends ListenerAdapter {
         
         eb.addField("Logger", "User joined server.\n" +
                                       "User: <@" + e.getUser().getId() + ">\n" +
-                                      "Account creation time: " + DateFormatUtil.format(new Date(((e.getUser().getIdLong() >> 22) + 1420070400000L))), false);
+                                      "Account creation time: " + new Date((e.getUser().getIdLong() >> 22) + 1420070400000L), false);
         
         eb.setColor(Color.GREEN);
         eb.setTimestamp(Instant.now());
