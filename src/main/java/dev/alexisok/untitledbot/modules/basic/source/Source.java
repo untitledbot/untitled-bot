@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.basic.source;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.Which;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.util.Objects;
 
 /**
  * Link to the source code
@@ -27,6 +29,10 @@ public final class Source extends UBPlugin {
     public MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
+        
+        if(args.length == 2) {
+            return Objects.requireNonNull(new Which().onCommand(args, message));
+        }
         
         eb.addField("Source", "Source code for the bot:\n" +
                                       "https://github.com/untitledbot/untitled-bot", false);

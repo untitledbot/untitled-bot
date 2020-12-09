@@ -244,7 +244,7 @@ public final class BotClass extends ListenerAdapter {
         return prefix;
     }
 
-    public static void registerVoteHook(OnVoteHook onVoteHook) {
+    public static void registerVoteHook(VoteHook onVoteHook) {
         VOTE_HOOKS.add(onVoteHook);
     }
 

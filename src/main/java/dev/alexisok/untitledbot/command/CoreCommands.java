@@ -9,6 +9,7 @@ import dev.alexisok.untitledbot.modules.basic.purge.Purge;
 import dev.alexisok.untitledbot.modules.basic.shardinfo.CalcShard;
 import dev.alexisok.untitledbot.modules.basic.shardinfo.ShardInfo;
 import dev.alexisok.untitledbot.modules.basic.sleep.Sleep;
+import dev.alexisok.untitledbot.modules.basic.update.Update;
 import dev.alexisok.untitledbot.modules.basic.version.Version;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.*;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.filter.*;
@@ -67,6 +68,7 @@ import dev.alexisok.untitledbot.modules.reactions.Hide;
 import dev.alexisok.untitledbot.modules.basic.reward.VoteReward;
 import dev.alexisok.untitledbot.modules.starboard.StarboardHandle;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
+import dev.alexisok.untitledbot.util.VotedCache;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -149,6 +151,10 @@ public final class CoreCommands {
         
         Logger.log("Core commands have been registered.");
         registerHelp();
+        
+        Logger.log("Registering the vote cache.");
+        VotedCache.init();
+        Logger.log("Registered the vote cache.");
     }
     
     /**
@@ -158,12 +164,12 @@ public final class CoreCommands {
      * Not all of those are core commands.
      */
     private static void registerHelp() {
-        Manual.setHelpPage("help", "Get help with a specific command.\nUsage: `help <command>`.");
+        Manual.setHelpPage("help", "Get help with a specific command.\nUsage: `%shelp <command>`.");
         Manual.setHelpPage("status", "Get the status of the bot and JVM.");
         Manual.setHelpPage("invite", "Get the invite link for the bot.");
         Manual.setHelpPage("about", "much knowledge");
         Manual.setHelpPage("rank", "Get the current level and XP of a user.\nUsage: " +
-                                           "rank [user @]\n" +
+                                           "`%srank [user @]`\n" +
                                            "leave argument blank for your own stats.");
     }
     
@@ -293,6 +299,7 @@ public final class CoreCommands {
         new WebhookPlugin().onRegister();
         new ShardInfo().onRegister();
         new CalcShard().onRegister();
+        new Update().onRegister();
         
         Logger.log("Modules have been registered.");
     }

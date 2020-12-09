@@ -29,10 +29,13 @@ public final class CalcShard extends UBPlugin {
         int num_shards;
         
         try {
-            if(args.length != 3 || !args[1].matches("[0-9]{10,35}") || !args[2].matches("[0-9]{0,5}"))
+            if(args.length != 3 || !args[1].matches("[0-9]{1,20}") || !args[2].matches("[0-9]{1,5}"))
                 throw new NumberFormatException();
             guild_id = Long.parseLong(args[1]);
             num_shards = Integer.parseInt(args[2]);
+            
+            if(num_shards == 0)
+                throw new NumberFormatException();
         } catch(NumberFormatException ignored) {
             eb.addField("Shard Calculator", "Usage: `calc-shard <guildID> <shardTotal>`", false);
             eb.setColor(Color.RED);
@@ -48,6 +51,6 @@ public final class CalcShard extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("calc-shard", this);
         Manual.setHelpPage("calc-shard", "Calculate the ID of the shard based off of the guild ID and shard total.\n" +
-                "Usage: `calc-shard <guildID> <shardTotal>`");
+                "Usage: `%scalc-shard <guildID> <shardTotal>`");
     }
 }

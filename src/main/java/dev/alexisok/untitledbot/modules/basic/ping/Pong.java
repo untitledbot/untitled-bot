@@ -15,7 +15,7 @@ public final class Pong extends UBPlugin {
     
     @Override
     public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
-        message.reply("Ping! ...wait").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
+        message.reply("Ping! ...wait, that's my line!").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         return null;
     }
     

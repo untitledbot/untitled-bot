@@ -27,13 +27,11 @@ import static net.dv8tion.jda.api.utils.MemberCachePolicy.VOICE;
 import static net.dv8tion.jda.api.utils.cache.CacheFlag.*;
 
 /**
- *
+ * 
  * Main class, contains the main method.
  * This class is what sets {@link BotClass} as a bot.
- *
- * For more information on developing, use the wiki
- * posted on the GitHub page.
- *
+ * 
+ * 
  * @author AlexIsOK
  * @since 0.0.1
  */
@@ -43,9 +41,9 @@ public final class Main {
     public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
     public static final String DATA_PATH;
     public static final String PREFIX;
-    public static final String OWNER_ID;
+    public static final String OWNER_ID = "541763812676861952";
     
-    public static final int SHARD_COUNT = 6;
+    public static final int SHARD_COUNT = 8;
     
     public static final boolean DEBUG;
     
@@ -57,178 +55,6 @@ public final class Main {
     
     public static final ArrayList<String> CONTRIBUTORS = new ArrayList<>();
     
-    /**
-     * Get a specific {@link JDA} from a guild ID.
-     * @param guildID the guild ID.
-     * @return the JDA.
-     */
-    public static JDA getJDAFromGuild(long guildID) {
-        return jda[(int) ((guildID >> 22) % SHARD_COUNT)];
-    }
-    
-    /**
-     * Get a specific {@link JDA} from a guild ID.
-     * @param guildID the guild ID.
-     * @return the JDA.
-     */
-    public static JDA getJDAFromGuild(@NotNull String guildID) {
-        return getJDAFromGuild(Long.parseLong(guildID));
-    }
-    
-    /**
-     * Get a specific {@link JDA} from a guild.
-     * @param g the guild
-     * @return the JDA.
-     */
-    public static JDA getJDAFromGuild(@NotNull Guild g) {
-        return getJDAFromGuild(g.getIdLong());
-    }
-    
-    /**
-     * Gets the total amount of servers the bot is connected to.
-     * @return the amount of servers.
-     */
-    public static int getGuildCount() {
-        int count = 0;
-        for(JDA j : jda) {
-            count += j.getGuilds().size();
-        }
-        return count;
-    }
-    
-    public static int getUserCount() {
-        int count = 0;
-        for(JDA j : jda) {
-            count += j.getUsers().size();
-        }
-        return count;
-    }
-    
-    static {
-        String DEFAULT_PREFIX1;
-        //temp for final string
-        String DATA_PATH1;
-        String OWNER_ID1;
-        boolean DEBUG1;
-        debug("Starting to do the config stuffs");
-        try {
-            
-            Properties p = new Properties();
-            try {
-                p.load(new FileInputStream(new File(CONFIG_PATH + "/bot.properties")));
-            } catch (FileNotFoundException ignored) {
-                setDefaultProps(p);
-                p.store(new FileOutputStream(CONFIG_PATH + "/bot.properties"), null);
-                throw new IOException(); //break into the last IOException catch block
-            }
-            DATA_PATH1 = p.getProperty("dataPath");
-            DEFAULT_PREFIX1 = p.getProperty("prefix");
-            OWNER_ID1 = p.getProperty("ownerId");
-            DEBUG1 = Boolean.parseBoolean(p.getProperty("debugMode"));
-            if (!DATA_PATH1.endsWith("/")) DATA_PATH1 += "/";
-            if(DEFAULT_PREFIX1.equals(""))
-                DEFAULT_PREFIX1 = ">";
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-            DATA_PATH1 = CONFIG_PATH + "/usrdata/"; //default
-            DEFAULT_PREFIX1 = ">";
-            OWNER_ID1 = "0";
-            DEBUG1 = false;
-        }
-        debug("Done with config stuff");
-        //create the directory if it doesn't
-        //already exist.
-        //noinspection ResultOfMethodCallIgnored
-        new File(DATA_PATH1).mkdirs();
-        PREFIX = DEFAULT_PREFIX1;
-        DATA_PATH = DATA_PATH1;
-        OWNER_ID = OWNER_ID1;
-        DEBUG = DEBUG1;
-        
-        Properties secrets = new Properties();
-        String secretsTemp = "none";
-        try {
-            secrets.load(new FileReader(CONFIG_PATH + "/secrets.properties"));
-            secretsTemp = secrets.getProperty("top.gg.token", "none");
-            if(secretsTemp == null) {
-                secretsTemp = "none";
-            }
-        } catch (IOException e) {
-            Logger.log("Could not load the Top.GG secrets file!");
-            Logger.log("If you are self-hosting, this is normal.");
-        }
-        
-        TOP_GG_TOKEN = secretsTemp;
-        
-        Thread t = new Thread(() -> {
-            
-            if(!TOP_GG_TOKEN.equals("none")) {
-                API = new DiscordBotListAPI.Builder()
-                    .token(TOP_GG_TOKEN)
-                    .botId("730135989863055472")
-                    .build();
-                
-                TimerTask updateServerCountTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        Logger.log("Updating Top.GG stats...");
-                        API.setStats(getGuildCount());
-                        Logger.log("Done updating stats.");
-                    }
-                };
-                
-                //delay the first schedule by 20 seconds and update every 20 minutes
-                new Timer().schedule(updateServerCountTask, 20000L, 1200000L);
-            }
-        });
-        
-        t.start();
-        
-        if(new File("contributors.properties").exists()) {
-            Properties p = new Properties();
-            try {
-                p.load(new FileInputStream("contributors.properties"));
-                p.forEach((o, o2) -> CONTRIBUTORS.add(o.toString()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        
-        if(new File("blacklist.properties").exists()) {
-            Properties p = new Properties();
-            try {
-                p.load(new FileInputStream("blacklist.properties"));
-                p.forEach((o, o2) -> BotClass.addToBlacklist(Long.parseLong(o.toString())));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * Resets the contributors list and reads from the file.
-     */
-    public static void resetContributors() {
-        CONTRIBUTORS.clear();
-        if(new File("contributors.properties").exists()) {
-            Properties p = new Properties();
-            try {
-                p.load(new FileInputStream("contributors.properties"));
-                p.forEach((o, o2) -> CONTRIBUTORS.add(o.toString()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    
-    private static void setDefaultProps(@NotNull Properties p) {
-        p.setProperty("configVersion", "1.3.8");
-        p.setProperty("dataPath", "./usrdata/");
-        p.setProperty("prefix", ">");
-        p.setProperty("ownerId", "000000000000000000");
-        p.setProperty("debugMode", "false");
-    }
     
     /**
      *
@@ -240,7 +66,7 @@ public final class Main {
      *             be ignored.
      */
     public static void main(@NotNull String[] args) throws InterruptedException {
-        
+
         Logger.log("Starting untitled bot " + VERSION + ".");
         Logger.log("Starting in location " + System.getProperty("user.dir"));
         
@@ -272,11 +98,95 @@ public final class Main {
             e.printStackTrace();
             Logger.critical("Could not login to Discord!");
         }
-        
+
         CoreCommands.registerCoreCommands();
         CoreCommands.registerModules();
-        
+
     }
+    
+    /**
+     * Get a specific {@link JDA} from a guild ID.
+     * @param guildID the guild ID.
+     * @return the JDA.
+     */
+    @NotNull
+    @Contract(pure = true)
+    public static JDA getJDAFromGuild(long guildID) {
+        return jda[(int) ((guildID >> 22) % SHARD_COUNT)];
+    }
+    
+    /**
+     * Get a specific {@link JDA} from a guild ID.
+     * @param guildID the guild ID.
+     * @return the JDA.
+     */
+    @NotNull
+    @Contract(pure = true)
+    public static JDA getJDAFromGuild(@NotNull String guildID) {
+        return getJDAFromGuild(Long.parseLong(guildID));
+    }
+    
+    /**
+     * Get a specific {@link JDA} from a guild.
+     * @param g the guild
+     * @return the JDA.
+     */
+    @NotNull
+    @Contract(pure = true)
+    public static JDA getJDAFromGuild(@NotNull Guild g) {
+        return getJDAFromGuild(g.getIdLong());
+    }
+    
+    /**
+     * Gets the total amount of servers the bot is connected to.
+     * @return the amount of servers.
+     */
+    @Contract(pure = true)
+    public static int getGuildCount() {
+        int count = 0;
+        for(JDA j : jda) {
+            count += j.getGuilds().size();
+        }
+        return count;
+    }
+    
+    /**
+     * Get the total {@link User} count across all shards.
+     * @return the user count.
+     */
+    @Contract(pure = true)
+    public static int getUserCount() {
+        int count = 0;
+        for(JDA j : jda) {
+            count += j.getUsers().size();
+        }
+        return count;
+    }
+    
+    /**
+     * Resets the contributors list and reads from the file.
+     */
+    public static void resetContributors() {
+        CONTRIBUTORS.clear();
+        if(new File("contributors.properties").exists()) {
+            Properties p = new Properties();
+            try {
+                p.load(new FileInputStream("contributors.properties"));
+                p.forEach((o, o2) -> CONTRIBUTORS.add(o.toString()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    private static void setDefaultProps(@NotNull Properties p) {
+        p.setProperty("configVersion", "1.3.8");
+        p.setProperty("dataPath", "./usrdata/");
+        p.setProperty("prefix", ">");
+        p.setProperty("ownerId", "000000000000000000");
+        p.setProperty("debugMode", "false");
+    }
+    
     
     /**
      * Return the resulting properties location of a specific user
@@ -289,8 +199,9 @@ public final class Main {
      * @param guildID the discord snowflake of the guild.  Can be {@code null} for user config.
      * @return the parsed properties location.
      */
+    @NotNull
     @Contract(pure = true)
-    public static @NotNull String parsePropertiesLocation(String userID, String guildID) {
+    public static String parsePropertiesLocation(String userID, String guildID) {
         if(userID == null && guildID == null)
             return DATA_PATH;
         if(userID == null) return DATA_PATH + guildID + ".properties";
@@ -298,6 +209,10 @@ public final class Main {
         return DATA_PATH + guildID + "/" + userID + ".properties";
     }
     
+    /**
+     * @return the average ping across all guilds.
+     */
+    @Contract(pure = true)
     public static int getPingAverage() {
         int total = 0;
         for(JDA j : jda) {
@@ -306,6 +221,10 @@ public final class Main {
         return total / SHARD_COUNT;
     }
     
+    /**
+     * @return the minimum ping of one of the guilds.
+     */
+    @Contract(pure = true)
     public static int getPingMin() {
         int[] counts = new int[SHARD_COUNT];
         for(int i = 0; i < jda.length; i++) {
@@ -315,6 +234,10 @@ public final class Main {
         return counts[0];
     }
     
+    /**
+     * @return the maximum ping of one of the guilds.
+     */
+    @Contract(pure = true)
     public static int getPingMax() {
         int[] counts = new int[SHARD_COUNT];
         for(int i = 0; i < jda.length; i++) {
@@ -343,7 +266,7 @@ public final class Main {
         }
         return r;
     }
-
+    
     /**
      * Gets a {@link VoiceChannel} by ID from the VC cache.
      *
@@ -403,8 +326,120 @@ public final class Main {
         }
         return u;
     }
-
+    
+    /**
+     * Check {@link Main#SHARD_COUNT} to see the total amount of shards.
+     * 
+     * Note: shards start at 0.
+     * 
+     * Get a specific JDA by the shard ID.
+     * @param i the ID of the shard.
+     * @return the specific JDA.
+     * @throws IllegalArgumentException if the range is out of bounds.
+     */
+    @NotNull
+    @Contract(pure = true)
     public static JDA getJDAByShardId(int i) {
+        if(i < 0 || i >= SHARD_COUNT)
+            throw new IllegalArgumentException("The ID of the shard is not in the range of [0, " + SHARD_COUNT + ").");
         return jda[i];
+    }
+    
+    
+    static {
+        String DEFAULT_PREFIX1;
+        //temp for final string
+        String DATA_PATH1;
+        boolean DEBUG1;
+        debug("Starting to do the config stuffs");
+        try {
+            
+            Properties p = new Properties();
+            try {
+                p.load(new FileInputStream(new File(CONFIG_PATH + "/bot.properties")));
+            } catch (FileNotFoundException ignored) {
+                setDefaultProps(p);
+                p.store(new FileOutputStream(CONFIG_PATH + "/bot.properties"), null);
+                throw new IOException(); //break into the last IOException catch block
+            }
+            DATA_PATH1 = p.getProperty("dataPath");
+            DEFAULT_PREFIX1 = p.getProperty("prefix");
+            DEBUG1 = Boolean.parseBoolean(p.getProperty("debugMode"));
+            if (!DATA_PATH1.endsWith("/")) DATA_PATH1 += "/";
+            if(DEFAULT_PREFIX1.equals(""))
+                DEFAULT_PREFIX1 = ">";
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            DATA_PATH1 = CONFIG_PATH + "/usrdata/"; //default
+            DEFAULT_PREFIX1 = ">";
+            DEBUG1 = false;
+        }
+        debug("Done with config stuff");
+        //create the directory if it doesn't
+        //already exist.
+        //noinspection ResultOfMethodCallIgnored
+        new File(DATA_PATH1).mkdirs();
+        PREFIX = DEFAULT_PREFIX1;
+        DATA_PATH = DATA_PATH1;
+        DEBUG = DEBUG1;
+        
+        Properties secrets = new Properties();
+        String secretsTemp = "none";
+        try {
+            secrets.load(new FileReader(CONFIG_PATH + "/secrets.properties"));
+            secretsTemp = secrets.getProperty("top.gg.token", "none");
+            if(secretsTemp == null) {
+                secretsTemp = "none";
+            }
+        } catch (IOException e) {
+            Logger.log("Could not load the Top.GG secrets file!");
+        }
+        
+        TOP_GG_TOKEN = secretsTemp;
+        
+        Thread t = new Thread(() -> {
+            
+            if(!TOP_GG_TOKEN.equals("none")) {
+                API = new DiscordBotListAPI.Builder()
+                        .token(TOP_GG_TOKEN)
+                        .botId("730135989863055472")
+                        .build();
+                
+                TimerTask updateServerCountTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Logger.log("Updating Top.GG stats...");
+                        API.setStats(getGuildCount());
+                        Logger.log("Done updating stats.");
+                    }
+                };
+                
+                //delay the first schedule by 20 seconds and update every 20 minutes
+                new Timer().schedule(updateServerCountTask, 20000L, 1200000L);
+            }
+        });
+        
+        t.start();
+        
+        if(new File("contributors.properties").exists()) {
+            Properties p = new Properties();
+            try {
+                p.load(new FileInputStream("contributors.properties"));
+                p.forEach((o, o2) -> CONTRIBUTORS.add(o.toString()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        if(new File("blacklist.properties").exists()) {
+            Properties p = new Properties();
+            try {
+                p.load(new FileInputStream("blacklist.properties"));
+                p.forEach((o, o2) -> BotClass.addToBlacklist(Long.parseLong(o.toString())));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

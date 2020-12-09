@@ -25,7 +25,12 @@ public final class UserInfo extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        if(args.length == 1) {
+        Member u = null;
+        
+        if(args.length == 1 && !args[0].equals("info") && message.getMentionedMembers().size() != 1)
+            u = message.getMember();
+        
+        if(args.length == 1 && args[0].equals("info")) {
             //server info
             eb.setThumbnail(message.getGuild().getIconUrl());
             Guild.VerificationLevel ve = message.getGuild().getVerificationLevel();
@@ -106,8 +111,6 @@ public final class UserInfo extends UBPlugin {
             return eb.build();
         } else if(message.getMentionedMembers().size() == 1 || args.length == 2) {
             //member info
-            java.util.List<Member> mentioned = message.getMentionedMembers();
-            Member u = mentioned.size() != 0 ? mentioned.get(0) : null;
             
             if(u == null) {
                 try {
@@ -115,7 +118,7 @@ public final class UserInfo extends UBPlugin {
                 } catch(Throwable ignored) {}
             }
             
-            if(u == null || !isLong(args[1])) {
+            if(u == null && isLong(args[1])) {
                 u = message.getGuild().getMemberById(args[1]);
             }
             

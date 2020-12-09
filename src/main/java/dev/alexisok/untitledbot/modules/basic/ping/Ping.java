@@ -26,9 +26,12 @@ public final class Ping extends UBPlugin {
     public MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
-    
+        
+        long rest = message.getJDA().getRestPing().complete();
+        
         eb.addField("Pong!",
-                String.format("%d ms.", message.getJDA().getGatewayPing()),
+                String.format("Gateway: %d ms%n" +
+                              "REST: %d ms", message.getJDA().getGatewayPing(), rest),
                 false);
         eb.setColor(Color.GREEN);
         return eb.build();

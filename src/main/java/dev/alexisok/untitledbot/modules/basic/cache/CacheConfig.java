@@ -23,7 +23,7 @@ public final class CacheConfig extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("cache-config", UBPerm.ADMIN, this);
         Manual.setHelpPage("cache-config", "Configure the cache for this server.\n" +
-                "Usage: `cache-config <subcommand> <true/false>`\n" +
+                "Usage: `%scache-config <subcommand> <true/false>`\n" +
                 "");
     }
 }

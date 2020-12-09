@@ -26,7 +26,7 @@ public final class Prefix extends UBPlugin {
         CommandRegistrar.register("set-prefix", UBPerm.MANAGE_MESSAGES, this);
         CommandRegistrar.registerAlias("set-prefix", "prefix");
         Manual.setHelpPage("set-prefix", "Set the prefix for the bot.\n" +
-                                                 "Usage: `set-prefix <prefix>`");
+                                                 "Usage: `%sset-prefix <prefix>`");
     }
     
     @Override
@@ -45,12 +45,12 @@ public final class Prefix extends UBPlugin {
         
         if(prefix.length() > 5 || prefix.length() < 1) {
             eb.setColor(Color.RED);
-            eb.addField("Prefix", "Prefix must be one to five characters in length.", false);
+            eb.addField("Prefix", "Prefix must be 1-64 characters in length.", false);
             
             return eb.build();
         }
         
-        if(!prefix.matches("[\\x21-\\x7E]{1,10}"))
+        if(!prefix.matches("[\\x21-\\x7E]{1,64}"))
             return eb.addField("Prefix", "Prefix cannot include special (unicode) characters or spaces.", false).setColor(Color.RED).build();
         
         Vault.storeUserDataLocal(null, message.getGuild().getId(), "guild.prefix", prefix);

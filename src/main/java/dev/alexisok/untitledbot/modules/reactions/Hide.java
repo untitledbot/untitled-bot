@@ -45,11 +45,11 @@ public final class Hide extends UBPlugin {
             message.getChannel()
                    .sendMessage(PHASES[0]) //this is hurting my eyes and my head, but then again i wrote this on two hours of sleep
                    .queueAfter(0, NANOSECONDS, msg -> msg.editMessage(PHASES[1])
-                           .queueAfter(1, SECONDS, msg2 -> msg2.editMessage(PHASES[2]) //at least it works...
-                                   .queueAfter(1, SECONDS, msg3 -> msg3.editMessage(PHASES[3])
-                                           .queueAfter(1, SECONDS, msg4 -> msg4.editMessage(PHASES[4]) //right?
-                                                   .queueAfter(1, SECONDS, msg5 -> msg5.editMessage(PHASES[5]) //.....right..?
-                                                           .queueAfter(1, SECONDS, end -> WATCHING.remove(end.getGuild().getId()))))))); //maybe...
+                           .queueAfter(2, SECONDS, msg2 -> msg2.editMessage(PHASES[2]) //at least it works...
+                                   .queueAfter(2, SECONDS, msg3 -> msg3.editMessage(PHASES[3])
+                                           .queueAfter(2, SECONDS, msg4 -> msg4.editMessage(PHASES[4]) //right?
+                                                   .queueAfter(2, SECONDS, msg5 -> msg5.editMessage(PHASES[5]) //.....right..?
+                                                           .queueAfter(2, SECONDS, end -> WATCHING.remove(end.getGuild().getId()))))))); //maybe...
             
         }
         

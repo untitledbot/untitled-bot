@@ -50,7 +50,7 @@ public final class Profile extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("profile", this);
         Manual.setHelpPage("profile", "Get your user profile or another user's profile.\n" +
-                                              "Usage: `profile [user @ | user ID]`");
+                                              "Usage: `%sprofile [user @ | user ID]`");
         CommandRegistrar.registerAlias("profile", "prof");
     }
 }

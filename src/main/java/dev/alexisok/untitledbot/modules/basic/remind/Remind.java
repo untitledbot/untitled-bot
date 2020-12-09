@@ -97,7 +97,7 @@ public final class Remind extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("remind", this);
         Manual.setHelpPage("remind", "Have the bot DM you a message after a while.\n" +
-                                             "Usage: `remind <time> <unit> <message...>`\n" +
+                                             "Usage: `%sremind <time> <unit> <message...>`\n" +
                                              "Valid time units: `hours`, `minutes`, `seconds`, and `milliseconds`.\n" +
                                              "Maximum time must not exceed 86400 seconds (one day).\n" +
                                              "Note: although it is rare, if the bot goes offline, the timer will be cleared.");

@@ -43,7 +43,7 @@ public final class RoleCount extends UBPlugin {
             for(Role r : message.getGuild().getRoleCache()) {
                 if(r.isPublicRole())
                     continue;
-                CharSequence format = String.format("<@&%s> %s%n", r.getId(), r.getId());
+                CharSequence format = String.format("<@&%s> %s%n", r.getId(), message.getGuild().getMembersWithRoles(r).size());
                 if(data.length() + format.length() > 2048)
                     break;
                 data.append(format);
@@ -95,7 +95,7 @@ public final class RoleCount extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("roles", this);
         Manual.setHelpPage("roles", "Get the roles in a server or the amount of members with a role.\n" +
-                "Usage: `roles [role ID | role name]`\n" +
+                "Usage: `%sroles [role ID | role name]`\n" +
                 "Does not accept role @ for obvious reasons.");
     }
 }

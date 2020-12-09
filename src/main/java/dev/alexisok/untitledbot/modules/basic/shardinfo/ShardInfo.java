@@ -47,23 +47,25 @@ public final class ShardInfo extends UBPlugin {
             eb.setTitle("Shard Info");
             StringBuilder description = new StringBuilder("```\n");
             
-            description.append("shard ░ servers ░ ping ░ users\n");
-            description.append("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n");
+            description.append("shard | servers | users     | ping | rest\n");
+            description.append("------+---------+-----------+------+------\n");
             
             for(JDA j : Main.jda) {
                  int servers = j.getGuilds().size();
                  int users   = j.getUsers().size();
                 long ping    = j.getGatewayPing();
+                long rest    = j.getRestPing().complete();
                 
                 int shardIDi  = j.getShardInfo().getShardId();
                 
                 String shardID = shardIDi + (shardIDi == message.getJDA().getShardInfo().getShardId() ? "*" : "");
                 
-                description.append(String.format("%s%s%s%s%s%s%s%n",
-                        shardID, " ".repeat(Math.max(0, 6 - shardID.length())) + "░ ",
-                        servers, " ".repeat(Math.max(0, 8 - String.valueOf(servers).length())) + "░ ",
-                        ping, " ".repeat(Math.max(0, 5 - String.valueOf(ping).length())) + "░ ",
-                        users - 1));
+                description.append(String.format("%s%s%s%s%s%s%s%s%s%n",
+                        shardID, " ".repeat(Math.max(0, 6 - shardID.length())) + "| ",
+                        servers, " ".repeat(Math.max(0, 8 - String.valueOf(servers).length())) + "| ",
+                        users, " ".repeat(Math.max(0, 10 - String.valueOf(users).length())) + "| ",
+                        ping, " ".repeat(Math.max(0, 5 - String.valueOf(ping).length())) + "| ",
+                        rest));
             }
             
             description.append("\n```");

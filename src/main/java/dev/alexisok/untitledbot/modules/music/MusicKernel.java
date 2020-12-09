@@ -9,8 +9,10 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
+import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.music.audio.MusicManager;
+import dev.alexisok.untitledbot.util.VotedCache;
 import dev.alexisok.untitledbot.util.vault.Vault;
 import lombok.Getter;
 import lombok.Setter;
@@ -102,6 +104,7 @@ public class MusicKernel {
      */
     public synchronized void onNext(@NotNull String guildID, @NotNull AudioTrack track) {
         EmbedBuilder eb = new EmbedBuilder();
+        EmbedDefaults.setEmbedDefaults(eb, track.getUserData(Message.class));
         eb.setTitle("\u25B6\uFE0F Now Playing", track.getInfo().uri);
         eb.addField(NowPlaying.escapeDiscordMarkdown(track.getInfo().title),
                 "By " + NowPlaying.escapeDiscordMarkdown(track.getInfo().author), false);
@@ -119,10 +122,6 @@ public class MusicKernel {
         this.musicManagers = new HashMap<>();
         this.playerManager = new DefaultAudioPlayerManager();
         AudioSourceManagers.registerRemoteSources(playerManager);
-    }
-    
-    public AudioPlayerManager getPlayerManager() {
-        return this.playerManager;
     }
     
     private static synchronized boolean isValidTrack(AudioTrack track) {
@@ -407,7 +406,7 @@ public class MusicKernel {
         AtomicInteger i = new AtomicInteger();
         this.musicManagers.forEach((a, b) -> {
             try {
-                if (b.player.getPlayingTrack() != null)
+                if(b.player.getPlayingTrack() != null)
                     i.getAndIncrement();
             } catch(Throwable ignored) {}
         });
@@ -466,7 +465,7 @@ public class MusicKernel {
         this.musicManagers.forEach((guild, player) -> {
             try {
                 currentlyPlaying.put(player.channel.getId(), player.player.getPlayingTrack().getInfo().uri);
-            } catch(NullPointerException ignored) {return;}
+            } catch(NullPointerException ignored) {}
         });
         return currentlyPlaying;
     }
