@@ -113,16 +113,16 @@ public class AllCommands extends UBPlugin {
             "`%scall` - generate a meme where tom calls someone\n");
         
         Manual.setHelpPage("music", "\n" +
-            "`play` - play or search for a YouTube video\n" +
-            "`stop` - stop the player and clear the queue\n" +
-            "`skip` - skip the currently playing song\n" +
-            "`queue` - list the queue of upcoming songs\n" +
-            "`np` - get the now playing songs\n" +
-            "`pause` - pause/unpause the songs\n" +
-            "`join` - join the voice channel without playing anything\n" +
-            "`leave` - leave the current voice channel without stopping the player\n" +
-            "`dj` - set the DJ role for the server\n" +
-            "`seek` - seek to a specific point in the song");
+            "`%splay` - play or search for a YouTube video\n" +
+            "`%sstop` - stop the player and clear the queue\n" +
+            "`%sskip` - skip the currently playing song\n" +
+            "`%squeue` - list the queue of upcoming songs\n" +
+            "`%snp` - get the now playing songs\n" +
+            "`%spause` - pause/unpause the songs\n" +
+            "`%sjoin` - join the voice channel without playing anything\n" +
+            "`%sleave` - leave the current voice channel without stopping the player\n" +
+            "`%sdj` - set the DJ role for the server\n" +
+            "`%sseek` - seek to a specific point in the song");
         
         eb.addField("All commands", "Please use one of the following commands for help:\n" +
             "`>help leveling` - leveling and rank commands.\n" +

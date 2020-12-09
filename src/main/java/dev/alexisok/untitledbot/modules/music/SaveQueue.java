@@ -71,7 +71,7 @@ public final class SaveQueue implements ShutdownHook {
                 
                 Map<Integer, String> sortedQueue = new TreeMap<>(queue);
                 
-                sortedQueue.forEach((i, s) -> INSTANCE.loadAndPlay(tc, s, vc));
+                sortedQueue.forEach((i, s) -> INSTANCE.loadAndPlay(tc, s, vc, null));
                 
                 INSTANCE.setLast(tc.getGuild().getId(), tc);
                 

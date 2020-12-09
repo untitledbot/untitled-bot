@@ -141,7 +141,7 @@ public class Play extends UBPlugin implements MessageHook {
                     
                     //if the track is an id such as dQw4w9WgXcQ only one or two results will be returned, best to catch this here.
                     if(track.size() != 5) {
-                        MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), "https://youtube.com/watch?v=" + track.get(0), vc);
+                        MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), "https://youtube.com/watch?v=" + track.get(0), vc, message);
                         return null;
                     }
                     
@@ -186,7 +186,7 @@ public class Play extends UBPlugin implements MessageHook {
                     });
                     return null;
                 }
-                MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), args[1], vc);
+                MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), args[1], vc, message);
                 return null;
             }
         }
@@ -268,7 +268,7 @@ public class Play extends UBPlugin implements MessageHook {
         for(VoiceChannel vc : info.userMessage.getGuild().getVoiceChannels()) {
             if(vc.getMembers().contains(message.getMember())) {
                 try {
-                    MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), info.infos.get(toPlay - 1).uri, vc);
+                    MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), info.infos.get(toPlay - 1).uri, vc, message);
                 } catch(IndexOutOfBoundsException ignored) {}
             }
         }

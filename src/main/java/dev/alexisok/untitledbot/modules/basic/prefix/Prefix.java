@@ -43,14 +43,14 @@ public final class Prefix extends UBPlugin {
         
         String prefix = args[1];
         
-        if(prefix.length() > 5 || prefix.length() < 1) {
+        if(prefix.length() > 10 || prefix.length() < 1) {
             eb.setColor(Color.RED);
-            eb.addField("Prefix", "Prefix must be 1-64 characters in length.", false);
+            eb.addField("Prefix", "Prefix must be 1-10 characters in length.", false);
             
             return eb.build();
         }
         
-        if(!prefix.matches("[\\x21-\\x7E]{1,64}"))
+        if(!prefix.matches("[\\x21-\\x7E]{1,10}"))
             return eb.addField("Prefix", "Prefix cannot include special (unicode) characters or spaces.", false).setColor(Color.RED).build();
         
         Vault.storeUserDataLocal(null, message.getGuild().getId(), "guild.prefix", prefix);

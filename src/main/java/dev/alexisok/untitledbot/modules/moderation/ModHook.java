@@ -6,6 +6,7 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.command.enums.UBPerm;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.moderation.logging.*;
 import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.util.DateFormatUtil;
@@ -123,8 +124,14 @@ public final class ModHook extends ListenerAdapter {
             
             if(tc == null) return false;
             
-            String[] policies = Vault.getUserDataLocal(null, guildID, "log.policies").split(",");
+            String[] policies;
             
+            try {
+                policies = Vault.getUserDataLocal(null, guildID, "log.policies").split(",");
+            } catch(Exception ignored) {
+                Logger.critical("Could not get the policies for " + guildID + "!");
+                return false;
+            }
             if(!LOG_CACHE.containsKey(guildID)) {
                 LOG_CACHE.put(guildID, new ArrayList<>());
                 for(String s : policies) {

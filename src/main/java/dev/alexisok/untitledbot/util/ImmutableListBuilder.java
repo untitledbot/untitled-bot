@@ -12,7 +12,7 @@ import java.util.List;
  */
 public final class ImmutableListBuilder<T> {
     
-    private List<T> temp = new ArrayList<>();
+    private final List<T> temp = new ArrayList<>();
     
     public ImmutableListBuilder() {
         
