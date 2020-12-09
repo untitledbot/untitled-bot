@@ -25,16 +25,16 @@ public final class Help extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("help", "core.help", this);
+        CommandRegistrar.register("help", this);
         CommandRegistrar.registerAlias("help", "man", "halp");
     }
     
     @Override
-    public @NotNull MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
+    public @Nullable MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         try {
-            String returnString = Manual.getHelpPages(args[1]);
+            String returnString = Manual.getHelpPages(args[1], message.getGuild().getId());
             String embedStr = returnString == null
                                       ? "Could not find the help page, did you make a typo?"
                                       : returnString;
@@ -42,7 +42,10 @@ public final class Help extends UBPlugin {
             eb.setDescription(embedStr);
             return eb.build();
         } catch(ArrayIndexOutOfBoundsException ignored) {
-            return Objects.requireNonNull(CommandRegistrar.runCommand("commands", args, message));
+            CommandRegistrar.runCommand("commands", args, message, (embed) -> {
+                message.getChannel().sendMessage(embed).queue();
+            });
         }
+        return null;
     }
 }

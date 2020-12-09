@@ -2,6 +2,7 @@ package dev.alexisok.untitledbot.modules.basic.cache;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.enums.UBPerm;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -20,9 +21,9 @@ public final class CacheConfig extends UBPlugin {
 
     @Override
     public void onRegister() {
-        CommandRegistrar.register("cache-config", "admin", this);
+        CommandRegistrar.register("cache-config", UBPerm.ADMIN, this);
         Manual.setHelpPage("cache-config", "Configure the cache for this server.\n" +
-                "Usage: `cache-config <subcommand> <true/false>`\n" +
+                "Usage: `%scache-config <subcommand> <true/false>`\n" +
                 "");
     }
 }

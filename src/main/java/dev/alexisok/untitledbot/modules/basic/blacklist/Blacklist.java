@@ -1,6 +1,7 @@
 package dev.alexisok.untitledbot.modules.basic.blacklist;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.command.enums.UBPerm;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -22,9 +23,9 @@ public class Blacklist extends UBPlugin {
         if(!message.getAuthor().getId().equals("541763812676861952"))
             return null;
         try {
-            String ID = message.getMentionedMembers().size() == 1 ? message.getMentionedMembers().get(0).getId() : args[1];
+            long ID = Long.parseLong(message.getMentionedMembers().size() == 1 ? message.getMentionedMembers().get(0).getId() : args[1]);
             
-            if(ID.equals("541763812676861952")) {
+            if(ID == 541763812676861952L) {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.addField("no", "you cannot blacklist yourself lol", false);
                 return eb.build();
@@ -47,6 +48,6 @@ public class Blacklist extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("blacklist", "owner", this);
+        CommandRegistrar.register("blacklist", UBPerm.OWNER, this);
     }
 }

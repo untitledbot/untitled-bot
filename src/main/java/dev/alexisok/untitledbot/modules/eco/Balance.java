@@ -1,13 +1,12 @@
 package dev.alexisok.untitledbot.modules.eco;
 
-import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.rank.RankImageRender;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Shop;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -41,7 +40,7 @@ public final class Balance extends UBPlugin {
         
         try {
             User m = args[1].matches("[0-9]+")
-                             ? Objects.requireNonNull(Main.jda.getUserById(args[1]))
+                             ? Objects.requireNonNull(message.getJDA().getUserById(args[1]))
                              : message.getMentionedMembers().get(0).getUser();
             
             bal = Vault.getUserDataLocal(m.getId(), message.getGuild().getId(), Shop.CURRENCY_VAULT_NAME);
@@ -55,12 +54,12 @@ public final class Balance extends UBPlugin {
         try {
             if(another) {
                 User m = args[1].matches("[0-9]+")
-                                 ? Objects.requireNonNull(Main.jda.getUserById(args[1]))
+                                 ? Objects.requireNonNull(message.getJDA().getUserById(args[1]))
                                  : message.getMentionedMembers().get(0).getUser();
-                File f = Objects.requireNonNull(RankImageRender.render(m.getId(), message.getGuild().getId(), message.getIdLong()));
+                File f = Objects.requireNonNull(RankImageRender.render(m.getId(), message.getGuild().getId(), message.getIdLong(), message));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
             } else {
-                File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong()));
+                File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong(), message));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
             }
             return null;

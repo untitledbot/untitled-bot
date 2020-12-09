@@ -110,7 +110,7 @@ public class Play extends UBPlugin implements MessageHook {
         
         for(VoiceChannel vc : message.getGuild().getVoiceChannels()) {
             if(vc.getMembers().contains(message.getMember())) {
-                if(!Objects.requireNonNull(message.getGuild().getMemberById(Main.jda.getSelfUser().getId())).hasPermission(vc, Permission.VOICE_CONNECT)) {
+                if(!Objects.requireNonNull(message.getGuild().getMemberById(message.getJDA().getSelfUser().getId())).hasPermission(vc, Permission.VOICE_CONNECT)) {
                     Logger.debug("Could not get access to a voice channel.");
                     break;
                 }
@@ -141,7 +141,7 @@ public class Play extends UBPlugin implements MessageHook {
                     
                     //if the track is an id such as dQw4w9WgXcQ only one or two results will be returned, best to catch this here.
                     if(track.size() != 5) {
-                        MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), "https://youtube.com/watch?v=" + track.get(0), vc);
+                        MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), "https://youtube.com/watch?v=" + track.get(0), vc, message);
                         return null;
                     }
                     
@@ -186,7 +186,7 @@ public class Play extends UBPlugin implements MessageHook {
                     });
                     return null;
                 }
-                MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), args[1], vc);
+                MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), args[1], vc, message);
                 return null;
             }
         }
@@ -221,7 +221,7 @@ public class Play extends UBPlugin implements MessageHook {
     @Override
     public void onAnyEvent(GenericEvent e) {
         if(e instanceof GuildMessageReactionAddEvent) {
-            if(((GuildMessageReactionAddEvent) e).getMember().getId().equals(Main.jda.getSelfUser().getId()))
+            if(((GuildMessageReactionAddEvent) e).getMember().getId().equals(e.getJDA().getSelfUser().getId()))
                 return;
             if(!RESULTS.containsKey(((GuildMessageReactionAddEvent) e).getMember().getId()))
                 return;
@@ -268,7 +268,7 @@ public class Play extends UBPlugin implements MessageHook {
         for(VoiceChannel vc : info.userMessage.getGuild().getVoiceChannels()) {
             if(vc.getMembers().contains(message.getMember())) {
                 try {
-                    MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), info.infos.get(toPlay - 1).uri, vc);
+                    MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), info.infos.get(toPlay - 1).uri, vc, message);
                 } catch(IndexOutOfBoundsException ignored) {}
             }
         }

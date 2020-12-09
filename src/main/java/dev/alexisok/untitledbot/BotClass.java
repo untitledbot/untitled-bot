@@ -3,8 +3,10 @@ package dev.alexisok.untitledbot;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.basic.vote.OnVoteHook;
 import dev.alexisok.untitledbot.modules.music.MusicKernel;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.hook.VoteHook;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.util.ShutdownHook;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
@@ -68,7 +70,9 @@ public final class BotClass extends ListenerAdapter {
     private static final ArrayList<Long> TEMP_BLACKLIST = new ArrayList<>();
     
     //user id
-    public static final ArrayList<String> BLACKLIST = new ArrayList<>();
+    public static final ArrayList<Long> BLACKLIST = new ArrayList<>();
+    
+    private static final ArrayList<VoteHook> VOTE_HOOKS = new ArrayList<>();
     
     static {
         TimerTask t = new TimerTask() {
@@ -89,13 +93,17 @@ public final class BotClass extends ListenerAdapter {
         new Timer().scheduleAtFixedRate(t2, 0, 3600000); //1 hour
     }
     
+    public static void addHook(@NotNull VoteHook hook) {
+        VOTE_HOOKS.add(hook);
+    }
+    
     /**
      * Add a user to the blacklist, also adds them to the blacklist.properties file.
      * @param userID the id of the user.
      * @return true if the user was added, false if they were already added or if there was an error.
      */
     @Contract
-    public static boolean addToBlacklist(@NotNull String userID) {
+    public static boolean addToBlacklist(long userID) {
         if(BLACKLIST.contains(userID))
             return false;
         
@@ -236,6 +244,10 @@ public final class BotClass extends ListenerAdapter {
         return prefix;
     }
 
+    public static void registerVoteHook(VoteHook onVoteHook) {
+        VOTE_HOOKS.add(onVoteHook);
+    }
+
     /**
      * This is messy...
      * @param event the mre
@@ -250,7 +262,7 @@ public final class BotClass extends ListenerAdapter {
         if(event.getAuthor().isBot() || event.isWebhookMessage())
             return;
         
-        if(BLACKLIST.contains(event.getAuthor().getId()) || TEMP_BLACKLIST.contains(event.getAuthor().getIdLong()))
+        if(BLACKLIST.contains(event.getAuthor().getIdLong()) || TEMP_BLACKLIST.contains(event.getAuthor().getIdLong()))
             return;
         
         if(!event.getChannel().canTalk())
@@ -266,22 +278,17 @@ public final class BotClass extends ListenerAdapter {
         
         try {
             //if the message starts with @untitled-bot
-            if(message.split(" ")[0].equalsIgnoreCase("<@730135989863055472>")) {
+            if(message.split(" ")[0].equalsIgnoreCase("<@730135989863055472>") || message.split(" ")[0].equalsIgnoreCase("<@!730135989863055472>")) {
                 
                 if(prefix.equals(""))
                     event.getChannel().sendMessage("You seem to be in the NoPrefix:TM: mode, to exit, simply say `exit`.").queue();
                 else
-                    new Timer().schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            event.getChannel()
-                                    .sendMessage(String.format("Hello!  My prefix for this server is `%s`.%n" +
-                                            "For a full list of commands, use `%shelp` or `%s help`.%n" +
-                                            "The default prefix is `>` and can be set by an administrator " +
-                                            "on this server by using the `prefix` command.", prefix, prefix, prefix))
-                                    .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r));
-                        }
-                    }, 0);
+                    event.getChannel()
+                            .sendMessage(String.format("Hello!  My prefix for this server is `%s`.%n" +
+                                    "For a full list of commands, use `%shelp` or `%s help`.%n" +
+                                    "The default prefix is `>` and can be set by an administrator " +
+                                    "on this server by using the `prefix` command.", prefix, prefix, prefix))
+                            .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r));
                 return;
             }
         } catch(IndexOutOfBoundsException ignored) {}
@@ -303,25 +310,24 @@ public final class BotClass extends ListenerAdapter {
         String[] args = message.split(" ");
         
         //execute a command and return the message it provides
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    args[0] = args[0].toLowerCase();
-                    Logger.debug("Exec command " + args[0] + " by " + event.getAuthor().getId());
-                    event.getChannel()
-                            .sendMessage((Objects.requireNonNull(CommandRegistrar.runCommand(args[0], args, event.getMessage()))))
-                            .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r));
-                } catch(NullPointerException e) { //this returns null if the command does not exist.
-                } catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
-                    Logger.debug("Could not send a message to a channel.");
-                } catch(Throwable t) {
-                    t.printStackTrace();
-                }
-                //this needs to be outside of everything else to avoid not being called.
-                updateRL(event);
-            }
-        }, 0);
+        try {
+            args[0] = args[0].toLowerCase();
+            Logger.debug("Exec command " + args[0] + " by " + event.getAuthor().getId());
+            CommandRegistrar.runCommand(args[0], args, event.getMessage(), (embed) -> {
+                if(embed == null)
+                    return;
+                event.getChannel()
+                    .sendMessage((Objects.requireNonNull(embed)))
+                    .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r)); 
+            });
+        } catch(NullPointerException e) { //this returns null if the command does not exist.
+        } catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
+            Logger.debug("Could not send a message to a channel.");
+        } catch(Throwable t) {
+            t.printStackTrace();
+        }
+        //this needs to be outside of everything else to avoid not being called.
+        updateRL(event);
         
     }
     
@@ -368,7 +374,7 @@ public final class BotClass extends ListenerAdapter {
      * @param event the delete event
      */
     @Override
-    public void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event) {
+    public synchronized void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event) {
         if(DELETE_THIS_CACHE.containsKey(event.getMessageId())) {
             Logger.debug("Deleting message");
             DELETE_THIS_CACHE.get(event.getMessageId()).delete().queue();
@@ -381,22 +387,23 @@ public final class BotClass extends ListenerAdapter {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setDescription("Hello!  To use untitled-bot, type `>help` in a server I'm in to get started.\n" +
                 "If you changed the prefix, simply type @untitled-bot in the server to get my prefix.\n\nFor help with the bot, feel free to join the" +
-                " [official server](https://alexisok.dev/ub/discord.html).");
+                " [official server](https://alexisok.dev/ub/discord.html).\n\n" +
+                "NOTE: any conversation with this bot is logged.  Don't send me anything too embarrassing!");
         onPrivateMessage = eb.build();
     }
     
     @Override
-    public final void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent e) {
-        if(!e.getAuthor().getId().equals("730135989863055472")) {
-            
+    public final synchronized void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent e) {
+        if(!e.getAuthor().getId().equals("730135989863055472") && !e.getAuthor().getId().equals("716035864123408404")) {
             e.getAuthor().openPrivateChannel().queue(a -> a.sendMessage(onPrivateMessage).queue(
                     r -> BotClass.addToDeleteCache(e.getMessage().getId(), r)
             ));
+            Logger.log("DM " + e.getAuthor().getId() + ": " + e.getMessage().getContentRaw().replace("\n", "\\n"));
         }
     }
     
     @Override
-    public void onGenericEvent(@Nonnull GenericEvent event) {
+    public synchronized void onGenericEvent(@Nonnull GenericEvent event) {
         CommandRegistrar.runGenericListeners(event);
     }
 
@@ -408,7 +415,7 @@ public final class BotClass extends ListenerAdapter {
      * Existing guilds won't be looked at, but this will be.
      * @param g the guild
      */
-    private static void onJoin(@NotNull Guild g) {
+    private static synchronized void onJoin(@NotNull Guild g) {
         User owner;
         String ownerTag = "ERROR";
         String ownerID = "ERROR";
@@ -417,7 +424,7 @@ public final class BotClass extends ListenerAdapter {
             ownerID = owner.getId();
             ownerTag = owner.getAsTag();
         } catch(NullPointerException ignored) {}
-        Main.jda.getTextChannelById(774205271282810911L).sendMessage(
+        Main.getTextChannelById("774205271282810911").sendMessage(
                 new EmbedBuilder().addField("Guild joined!", String.format("" +
                         "Name: %s%n" +
                         "Creation time: %s%n" +
@@ -439,7 +446,7 @@ public final class BotClass extends ListenerAdapter {
         List<TextChannel> ch = e.getGuild().getTextChannels();
         
         boolean found = false;
-        
+        voidPrefixCache(); //because broken bot stuffs
         try {
             for(TextChannel tc : ch) {
                 if(tc.getName().contains("bot")) {
@@ -486,5 +493,14 @@ public final class BotClass extends ListenerAdapter {
     
     public static void registerShutdownHook(@NotNull ShutdownHook hook) {
         HOOK_REGISTRAR.add(hook);
+    }
+    
+    /**
+     * Run when a user votes for the bot.
+     * @param userID the ID of the user.
+     */
+    @SuppressWarnings("unused")
+    public static void onVote(long userID) {
+        VOTE_HOOKS.forEach(h -> h.onVote(userID));
     }
 }

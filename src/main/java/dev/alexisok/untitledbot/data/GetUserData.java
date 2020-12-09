@@ -4,19 +4,14 @@ import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
-import dev.alexisok.untitledbot.logging.Logger;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.io.File;
-import java.io.FileFilter;
 import java.net.URI;
 import java.nio.file.*;
 import java.time.Instant;
@@ -115,7 +110,7 @@ public final class GetUserData extends UBPlugin {
      */
     @Override
     public void onRegister() {
-        CommandRegistrar.register("data", "core.data", this);
+        CommandRegistrar.register("data", this);
     }
     
     /**

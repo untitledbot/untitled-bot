@@ -57,7 +57,7 @@ public final class Avatar extends UBPlugin {
         CommandRegistrar.register("avatar", this);
         CommandRegistrar.registerAlias("avatar", "av");
         Manual.setHelpPage("avatar", "Get the avatar of yourself or another user.\n" +
-                                             "Usage: `avatar [user @]`\n" +
+                                             "Usage: `%savatar [user @]`\n" +
                                              "Leave the option blank for your own avatar.");
     }
 }

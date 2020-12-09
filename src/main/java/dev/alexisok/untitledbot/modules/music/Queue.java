@@ -74,7 +74,7 @@ public final class Queue extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("queue", this);
         Manual.setHelpPage("queue", "Get the queue for this server.\n" +
-                "Usage: `queue [page; def 1]`");
+                "Usage: `%squeue [page; def 1]`");
         CommandRegistrar.registerAlias("queue", "queueueueueueueueueueue", "q", "kew");
     }
 }

@@ -28,10 +28,10 @@ public final class Join extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         for(VoiceChannel vc : message.getGuild().getVoiceChannels()) {
-            if(!Objects.requireNonNull(message.getGuild().getMemberById(Main.jda.getSelfUser().getId())).hasPermission(vc, Permission.VOICE_CONNECT))
+            if(!Objects.requireNonNull(message.getGuild().getMemberById(message.getJDA().getSelfUser().getId())).hasPermission(vc, Permission.VOICE_CONNECT))
                 continue;
             if(vc.getMembers().contains(message.getMember())) {
-                if(!Objects.requireNonNull(message.getGuild().getMemberById(Main.jda.getSelfUser().getId())).hasPermission(vc, Permission.VOICE_CONNECT))
+                if(!Objects.requireNonNull(message.getGuild().getMemberById(message.getJDA().getSelfUser().getId())).hasPermission(vc, Permission.VOICE_CONNECT))
                     break;
                 MusicKernel.INSTANCE.join(vc);
                 eb.addField("Music Player", "I have joined the voice channel " + vc.getName() + ".\n" +

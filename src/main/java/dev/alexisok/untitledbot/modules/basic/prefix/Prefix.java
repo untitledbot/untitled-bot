@@ -4,7 +4,8 @@ import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.command.enums.UBPerm;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -22,10 +23,10 @@ import java.awt.*;
 public final class Prefix extends UBPlugin {
     @Override
     public void onRegister() {
-        CommandRegistrar.register("set-prefix", "admin", this);
+        CommandRegistrar.register("set-prefix", UBPerm.MANAGE_MESSAGES, this);
         CommandRegistrar.registerAlias("set-prefix", "prefix");
         Manual.setHelpPage("set-prefix", "Set the prefix for the bot.\n" +
-                                                 "Usage: `set-prefix <prefix>`");
+                                                 "Usage: `%sset-prefix <prefix>`");
     }
     
     @Override
@@ -42,14 +43,14 @@ public final class Prefix extends UBPlugin {
         
         String prefix = args[1];
         
-        if(prefix.length() > 5 || prefix.length() < 1) {
+        if(prefix.length() > 10 || prefix.length() < 1) {
             eb.setColor(Color.RED);
-            eb.addField("Prefix", "Prefix must be one to five characters in length.", false);
+            eb.addField("Prefix", "Prefix must be 1-10 characters in length.", false);
             
             return eb.build();
         }
         
-        if(!prefix.matches("[\\x21-\\x7E]{1,5}"))
+        if(!prefix.matches("[\\x21-\\x7E]{1,10}"))
             return eb.addField("Prefix", "Prefix cannot include special (unicode) characters or spaces.", false).setColor(Color.RED).build();
         
         Vault.storeUserDataLocal(null, message.getGuild().getId(), "guild.prefix", prefix);

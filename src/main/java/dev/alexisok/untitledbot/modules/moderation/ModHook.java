@@ -5,8 +5,10 @@ import com.google.common.collect.Iterables;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.enums.UBPerm;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.moderation.logging.*;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.util.DateFormatUtil;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Message;
@@ -64,13 +66,12 @@ public final class ModHook extends ListenerAdapter {
         return MESSAGE_CACHE.get(ID);
     }
 
-    @Override
-    public void onReady(@NotNull ReadyEvent re) {
-        CommandRegistrar.register("log-channel", "admin", new SetLogChannel());
-        CommandRegistrar.register("add-log", "admin", new AddRemoveLogTypes());
-        CommandRegistrar.register("remove-log", "admin", new AddRemoveLogTypes());
+    static {
+        CommandRegistrar.register("log-channel", UBPerm.ADMIN, new SetLogChannel());
+        CommandRegistrar.register("add-log", UBPerm.ADMIN, new AddRemoveLogTypes());
+        CommandRegistrar.register("remove-log", UBPerm.ADMIN, new AddRemoveLogTypes());
         //this is not admin because moderators might want their users to be able to see what they log.
-        CommandRegistrar.register("get-log", "logging.get", new GetLogTypes());
+        CommandRegistrar.register("get-log", new GetLogTypes());
         new ListLogTypes().onRegister();
         
         Manual.setHelpPage("log-channel",
@@ -118,7 +119,7 @@ public final class ModHook extends ListenerAdapter {
             TextChannel tc = null;
             
             try {
-                tc = Objects.requireNonNull(Main.jda.getGuildCache().getElementById(guildID)).getTextChannelById(channelID);
+                tc = Objects.requireNonNull(Main.getJDAFromGuild(guildID)).getTextChannelById(channelID);
             } catch(NullPointerException ignored) {}
             
             if(tc == null) return false;
@@ -129,6 +130,12 @@ public final class ModHook extends ListenerAdapter {
                 policies = Vault.getUserDataLocal(null, guildID, "log.policies").split(",");
             } catch(NullPointerException | IndexOutOfBoundsException ignored) {} //if there are no policies.
             
+            try {
+                policies = Vault.getUserDataLocal(null, guildID, "log.policies").split(",");
+            } catch(Exception ignored) {
+                Logger.critical("Could not get the policies for " + guildID + "!");
+                return false;
+            }
             if(!LOG_CACHE.containsKey(guildID)) {
                 LOG_CACHE.put(guildID, new ArrayList<>());
                 for(String s : policies) {
@@ -269,7 +276,7 @@ public final class ModHook extends ListenerAdapter {
         
         String tcID = Vault.getUserDataLocal(null, guildID, "log.channel");
         
-        return Main.jda.getTextChannelById(tcID);
+        return Main.getJDAFromGuild(guildID).getTextChannelById(tcID);
     }
     
     @Override

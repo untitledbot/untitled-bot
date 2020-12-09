@@ -1,10 +1,9 @@
 package dev.alexisok.untitledbot.modules.rank.xpcommands;
 
-import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -46,7 +45,7 @@ public final class Steal extends UBPlugin {
         
         try {
             m = args[1].matches("[0-9]+")
-                             ? Objects.requireNonNull(Main.jda.getUserById(args[1]))
+                             ? Objects.requireNonNull(message.getJDA().getUserById(args[1]))
                              : message.getMentionedMembers().get(0).getUser();
         } catch(Throwable t) {
             eb.addField("Steal", "Usage: `steal <user @ | user ID>`", false);

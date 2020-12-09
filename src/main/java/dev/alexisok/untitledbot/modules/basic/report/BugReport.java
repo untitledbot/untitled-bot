@@ -5,7 +5,7 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -46,7 +46,7 @@ public final class BugReport extends UBPlugin {
         eb.addField("Bug Report", message.getContentRaw(), false);
         eb.setAuthor(message.getAuthor().getId());
         
-        Objects.requireNonNull(Main.jda.getTextChannelById("747228587026940006")).sendMessage(eb.build()).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
+        Objects.requireNonNull(Main.getJDAFromGuild(730122694250725380L).getTextChannelById("747228587026940006")).sendMessage(eb.build()).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
     
         EmbedDefaults.setEmbedDefaults(eb, message);
         

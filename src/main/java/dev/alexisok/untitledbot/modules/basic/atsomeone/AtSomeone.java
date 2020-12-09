@@ -30,7 +30,7 @@ public final class AtSomeone extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("someone", "module.example.someone", new AtSomeone());
+        CommandRegistrar.register("someone", new AtSomeone());
     }
 
     /**

@@ -58,8 +58,8 @@ public final class SaveQueue implements ShutdownHook {
             Properties p = new Properties();
             try {
                 p.load(new FileReader(file.getAbsoluteFile()));
-                VoiceChannel vc = Main.jda.getVoiceChannelById(vcID);
-                TextChannel tc  = Main.jda.getTextChannelById(tcID);
+                VoiceChannel vc = Main.getVoiceChannelById(vcID);
+                TextChannel tc  = Main.getTextChannelById(tcID);
                 
                 assert vc != null;
                 assert tc != null;
@@ -71,7 +71,7 @@ public final class SaveQueue implements ShutdownHook {
                 
                 Map<Integer, String> sortedQueue = new TreeMap<>(queue);
                 
-                sortedQueue.forEach((i, s) -> INSTANCE.loadAndPlay(tc, s, vc));
+                sortedQueue.forEach((i, s) -> INSTANCE.loadAndPlay(tc, s, vc, null));
                 
                 INSTANCE.setLast(tc.getGuild().getId(), tc);
                 

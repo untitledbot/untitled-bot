@@ -4,8 +4,9 @@ import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.enums.UBPerm;
 import dev.alexisok.untitledbot.modules.starboard.Starboard;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -106,7 +107,7 @@ public final class ConfigHandle extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("config", "admin", this);
+        CommandRegistrar.register("config", UBPerm.ADMIN, this);
         Manual.setHelpPage("config", "The config command allows for easy server setup.\n" +
                                              "You can get a config command generated for you here:" +
                                              "\n" +

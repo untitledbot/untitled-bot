@@ -25,17 +25,11 @@ public final class CacheInfo extends UBPlugin {
         eb.addField("Cache Info", String.format("%n" +
                 "Cached members: %d%n" +
                 "Cached users: %d%n" +
-                "Cached text channels: %d%n" +
-                "Cached voice channels: %d%n" +
                 "Cached servers: %d%n" +
-                "Cached roles: %d%n" +
                 "Cached messages: %d%n",
                 message.getGuild().getMemberCache().size(),
-                Main.jda.getUserCache().size(),
-                Main.jda.getTextChannelCache().size(),
-                Main.jda.getVoiceChannelCache().size(),
-                Main.jda.getGuildCache().size(),
-                Main.jda.getRoleCache().size(),
+                Main.getUserCount(),
+                Main.getGuildCount(),
                 ModHook.getMessageCacheSize()
                 ), false);
         return eb.build();

@@ -12,3 +12,5 @@ contributors.properties
 blacklist.properties
 .shutdown
 ./shutdown
+live.jar
+

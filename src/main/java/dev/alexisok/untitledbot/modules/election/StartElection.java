@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.election;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.enums.UBPerm;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -55,7 +56,7 @@ public final class StartElection extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("election", "admin", this);
+        CommandRegistrar.register("election", UBPerm.ADMIN, this);
         Manual.setHelpPage("election", "Start an election for a server.\n" +
                 "Usage: `election <start/stop>`\n" +
                 "For more information and configuration, see `help election-config`.");

@@ -2,16 +2,14 @@ package dev.alexisok.untitledbot.modules.rank;
 
 import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
-import dev.alexisok.untitledbot.command.CommandRegistrar;
-import dev.alexisok.untitledbot.command.EmbedDefaults;
-import dev.alexisok.untitledbot.command.Manual;
-import dev.alexisok.untitledbot.command.MessageHook;
+import dev.alexisok.untitledbot.command.*;
+import dev.alexisok.untitledbot.command.enums.UBPerm;
 import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
 import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Daily;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Shop;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -29,7 +27,6 @@ import javax.annotation.CheckReturnValue;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -72,12 +69,12 @@ public final class Ranks extends UBPlugin implements MessageHook {
     @Override
     public void onRegister() {
         CommandRegistrar.registerHook(this);
-        CommandRegistrar.register("rank", "core.ranks", this);
-        CommandRegistrar.register("rank-total", "core.ranks", new Total());
-        CommandRegistrar.register("rank-top", "core.ranks", new Top());
-        CommandRegistrar.register("rank-settings", "admin", new RankSettings());
+        CommandRegistrar.register("rank", this);
+        CommandRegistrar.register("rank-total", new Total());
+        CommandRegistrar.register("rank-top", new Top());
+        CommandRegistrar.register("rank-settings", UBPerm.MANAGE_MESSAGES, new RankSettings());
         new Daily().onRegister();
-        new Shop().onRegister();
+//        new Shop().onRegister();
         Manual.setHelpPage("rank-top", "Get the top user ranks for the server.\n" +
                                                "Usage: `top`");
         Manual.setHelpPage("rank", "Get your (or another user's) rank.\nUsage: `rank [user @ | user ID]`");
@@ -190,7 +187,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         eb.setColor(Color.GREEN);
         if(!other) {
             try {
-                File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong()));
+                File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong(), message));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
                 return null;
             } catch(InsufficientPermissionException | NullPointerException | IOException e) {
@@ -219,8 +216,8 @@ public final class Ranks extends UBPlugin implements MessageHook {
                         target = message.getGuild().getMembersByEffectiveName(args[1], true).get(0).getUser();
                 } catch(Throwable ignored) {}
                 if(target == null)
-                    target = Main.jda.getUserById(args[1]);
-                File f = Objects.requireNonNull(RankImageRender.render(Objects.requireNonNull(target).getId(), message.getGuild().getId(), message.getIdLong()));
+                    target = message.getJDA().getUserById(args[1]);
+                File f = Objects.requireNonNull(RankImageRender.render(Objects.requireNonNull(target).getId(), message.getGuild().getId(), message.getIdLong(), message));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
                 return null;
             } catch(InsufficientPermissionException | NullPointerException ignored2) {
@@ -319,7 +316,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
                             .sendMessage(String.format("Nice %s!  You have leveled up to level %d!%n%s", m.getAuthor().getName(), currentLv, roleMessage))
                             .queue(r -> BotClass.addToDeleteCache(m.getId(), r));
                 } else if(shouldSendPhase2.equalsIgnoreCase("channel")) {
-                    Objects.requireNonNull(Main.jda.getTextChannelById(Objects.requireNonNull(Vault.getUserDataLocal(null, m.getGuild().getId(), "ranks-broadcast.rankup.channel"))))
+                    Objects.requireNonNull(Main.getTextChannelById(Objects.requireNonNull(Vault.getUserDataLocal(null, m.getGuild().getId(), "ranks-broadcast.rankup.channel"))))
                             .sendMessage(String.format("%s has leveled up to level %d!%n%s", m.getAuthor().getName(), currentLv, roleMessage))
                             .queue(r -> BotClass.addToDeleteCache(m.getId(), r));
                 }

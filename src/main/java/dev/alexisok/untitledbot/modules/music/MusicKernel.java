@@ -9,9 +9,10 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
+import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.music.audio.MusicManager;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -21,11 +22,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Handles a lot of music stuff and commands.
@@ -91,7 +94,7 @@ public class MusicKernel {
         Logger.debug("Updating DJ cache to include " + roleID + " for " + guildID);
         
         //do not check for null
-        DJ_ROLE_CACHE.put(guildID, Main.jda.getRoleById(roleID));
+        DJ_ROLE_CACHE.put(guildID, Main.getRoleById(roleID));
     }
     
     /**
@@ -101,6 +104,12 @@ public class MusicKernel {
      */
     public synchronized void onNext(@NotNull String guildID, @NotNull AudioTrack track) {
         EmbedBuilder eb = new EmbedBuilder();
+        
+        Message data = track.getUserData(Message.class);
+        
+        if(data != null)
+            EmbedDefaults.setEmbedDefaults(eb, data);
+        
         eb.setTitle("\u25B6\uFE0F Now Playing", track.getInfo().uri);
         eb.addField(NowPlaying.escapeDiscordMarkdown(track.getInfo().title),
                 "By " + NowPlaying.escapeDiscordMarkdown(track.getInfo().author), false);
@@ -120,22 +129,21 @@ public class MusicKernel {
         AudioSourceManagers.registerRemoteSources(playerManager);
     }
     
-    public AudioPlayerManager getPlayerManager() {
-        return this.playerManager;
-    }
-    
     private static synchronized boolean isValidTrack(AudioTrack track) {
         return track.getInfo().length <= MAXIMUM_SONG_LENGTH_SECONDS * 1000 || track.getInfo().isStream;
     }
     
-    protected void loadAndPlay(TextChannel channel, @NotNull String trackURL, @NotNull VoiceChannel requestedVC) {
+    protected void loadAndPlay(TextChannel channel, @NotNull String trackURL, @NotNull VoiceChannel requestedVC, @Nullable Message m) {
         MusicManager mm = getAudioPlayer(requestedVC.getGuild(), requestedVC);
         
         this.playerManager.loadItemOrdered(mm, trackURL, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(@NotNull AudioTrack track) {
                 EmbedBuilder eb = new EmbedBuilder();
-                eb.setTimestamp(new Date().toInstant());
+                if(m != null)
+                    EmbedDefaults.setEmbedDefaults(eb, m);
+                else
+                    eb.setTimestamp(Instant.now());
                 if(!isValidTrack(track)) {
                     eb.addField("Play", "The track is too long!  Please play a track that is less than five hours.", false);
                     eb.setColor(Color.RED);
@@ -156,6 +164,7 @@ public class MusicKernel {
                     eb.setColor(Color.GREEN);
                     channel.sendMessage(eb.build()).queue();
                 }
+                track.setUserData(m);
                 play(channel.getGuild(),requestedVC, mm, track);
             }
             
@@ -184,6 +193,7 @@ public class MusicKernel {
                 }
                 
                 for(AudioTrack playlistItem : playlist.getTracks()) {
+                    playlistItem.setUserData(m);
                     if(playlistItem.getInfo().length > MAXIMUM_SONG_LENGTH_SECONDS * 1000)
                         continue;
                     mm.scheduler.queue(playlistItem);
@@ -403,7 +413,14 @@ public class MusicKernel {
      */
     @Contract(pure = true)
     public int getPlayers() {
-        return this.musicManagers.size();
+        AtomicInteger i = new AtomicInteger();
+        this.musicManagers.forEach((a, b) -> {
+            try {
+                if(b.player.getPlayingTrack() != null)
+                    i.getAndIncrement();
+            } catch(Throwable ignored) {}
+        });
+        return i.get();
     }
 
     /**
@@ -456,9 +473,9 @@ public class MusicKernel {
     protected HashMap<String, String> getCurrentlyPlaying() {
         HashMap<String, String> currentlyPlaying = new HashMap<>();
         this.musicManagers.forEach((guild, player) -> {
-            if(guild == null || player == null || player.channel == null || player.player.getPlayingTrack() == null)
-                return;
-            currentlyPlaying.put(player.channel.getId(), player.player.getPlayingTrack().getInfo().uri);
+            try {
+                currentlyPlaying.put(player.channel.getId(), player.player.getPlayingTrack().getInfo().uri);
+            } catch(NullPointerException ignored) {}
         });
         return currentlyPlaying;
     }

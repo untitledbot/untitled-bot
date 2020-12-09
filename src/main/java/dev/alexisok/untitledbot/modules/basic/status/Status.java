@@ -5,19 +5,14 @@ import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
-import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
 import dev.alexisok.untitledbot.modules.music.MusicKernel;
-import dev.alexisok.untitledbot.modules.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.io.File;
-import java.lang.management.ManagementFactory;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,8 +23,6 @@ import java.util.TimerTask;
  * @since 1.3
  */
 public final class Status extends UBPlugin {
-    
-    private static String stats = "";
     
     static {
         TimerTask t = new TimerTask() {
@@ -43,22 +36,8 @@ public final class Status extends UBPlugin {
     
     private static void updateStatsString() {
         Runtime.getRuntime().gc();
-        long guilds = Main.jda.getGuilds().size();
-        String returnString = "```";
-        returnString += " Available memory: " + Runtime.getRuntime().freeMemory() / 1024 / 1024 + " MB\n";
-        returnString += "     Total memory: " + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " MB\n";
-        returnString += "             Ping: " + Main.jda.getGatewayPing() + " ms\n";
-        returnString += "  Commands issued: " + CommandRegistrar.getTotalCommands() + "\n";
-        returnString += "   Total messages: " + BotClass.getMessagesSentTotal() + "\n";
-        returnString += "          Servers: " + guilds + "\n";
-        returnString += "  OpenJDK Version: " + System.getProperty("java.version") + "\n";
-        returnString += "      JDA Version: 4.2.0_222\n";
-        returnString += "Commands (+alias): " + CommandRegistrar.registrarSize() + "\n";
-        returnString += "    Music Players: " + MusicKernel.INSTANCE.getPlayers() + "\n";
-        returnString += "```";
-        returnString += "(note: this only updates once every three minutes).";
         
-        stats = returnString;
+        
     }
     
     @Override
@@ -66,19 +45,34 @@ public final class Status extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        //force update if the owner is asking for the stats
-        if(message.getAuthor().getId().equals(Main.OWNER_ID))
-            updateStatsString();
-        
+        long guilds = Main.getGuildCount();
+        StringBuilder returnString = new StringBuilder("```\n");
+        returnString.append(" Available memory: ").append(Runtime.getRuntime().freeMemory() / 1024 / 1024).append(" MB\n");
+        returnString.append("     Total memory: ").append(Runtime.getRuntime().totalMemory() / 1024 / 1024).append(" MB\n");
+        returnString.append("         Max ping: ").append(Main.getPingMax()).append(" ms\n");
+        returnString.append("     Minimum ping: ").append(Main.getPingMin()).append(" ms\n");
+        returnString.append("     Average ping: ").append(Main.getPingAverage()).append(" ms\n");
+        returnString.append("  Commands issued: ").append(CommandRegistrar.getTotalCommands()).append("\n");
+        returnString.append("   Total messages: ").append(BotClass.getMessagesSentTotal()).append("\n");
+        returnString.append("          Servers: ").append(guilds).append("\n");
+        returnString.append("  OpenJDK Version: ").append(System.getProperty("java.version")).append("\n");
+        returnString.append("      JDA Version: 4.2.0_222\n");
+        returnString.append("Commands (+alias): ").append(CommandRegistrar.registrarSize()).append("\n");
+        returnString.append("    Music Players: ").append(MusicKernel.INSTANCE.getPlayers()).append("\n");
+        returnString.append("            Shard: ").append(message.getJDA().getShardInfo().getShardId()).append("\n");
+        returnString.append("     Total shards: ").append(Main.SHARD_COUNT).append("\n");
+        returnString.append(" Servers on shard: ").append(message.getJDA().getGuilds().size()).append("\n");
+        returnString.append("```");
+
         eb.setColor(Color.GREEN);
         eb.setTitle("Status");
-        eb.setDescription(stats);
+        eb.setDescription(returnString);
         return eb.build();
     }
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("status", "core.stats", this);
+        CommandRegistrar.register("status", this);
         CommandRegistrar.registerAlias("status", "stats");
         Manual.setHelpPage("status", "Get the status and other statistics about the bot.");
     }

@@ -1,20 +1,21 @@
 package dev.alexisok.untitledbot.command;
 
 import dev.alexisok.untitledbot.Main;
+import dev.alexisok.untitledbot.command.enums.UBPerm;
+import dev.alexisok.untitledbot.command.exception.CommandAlreadyRegisteredException;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.util.OnCommandReturn;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.CheckReturnValue;
+import javax.annotation.CheckForNull;
 import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -26,7 +27,7 @@ import java.util.*;
  * 
  * <ul>
  *     <li>
- *         Run {@link CommandRegistrar#register(String, String, Command)} to register the command.
+ *         Run {@link CommandRegistrar#register(String, UBPerm, Command)} to register the command.
  *     </li>
  *     <li>
  *         (optional but encouraged) Add the help page: {@link Manual#setHelpPage(String, String)}
@@ -36,8 +37,7 @@ import java.util.*;
  *     </li>
  * </ul>
  * 
- * Commands must have a permission node.  The permission nodes must follow a regex of {@code ^[a-z]([a-z][.]?)+[a-z]$},
- * and the command names (what the user types in on Discord) must match {@code ^[a-z0-9_-]*$}.
+ * All command names (what the user types in on Discord) must match {@code ^[a-z0-9_-]*$}.
  * 
  * @author AlexIsOK
  * @since 0.0.1
@@ -47,7 +47,7 @@ public class CommandRegistrar {
 	private static final HashMap<String, Command> REGISTRAR = new HashMap<>();
 	
 	//commandName, permission
-	private static final HashMap<String, String> PERMS_REGISTRAR = new HashMap<>();
+	private static final HashMap<String, UBPerm> PERMS_REGISTRAR = new HashMap<>();
 	
 	//the hook registrar.
 	private static final ArrayList<MessageHook> HOOK_REGISTRAR = new ArrayList<>();
@@ -134,7 +134,7 @@ public class CommandRegistrar {
 	 *                will be executed when the command is called.
 	 * @throws IllegalArgumentException if the command does not match the regex.
 	 */
-	public static void register(@NotNull String commandName, @NotNull String permission, @NotNull Command command)
+	public static void register(@NotNull String commandName, @NotNull UBPerm permission, @NotNull Command command)
 			throws IllegalArgumentException {
 		
 		if(REGISTRAR.containsKey(commandName))
@@ -149,6 +149,9 @@ public class CommandRegistrar {
 	
 	/**
 	 * Register a command.
+	 * 
+	 * If no permission node is specified, {@link UBPerm#EVERYONE} will be used.
+	 * 
 	 * @param commandName the name of the command.  Must match {@code ^[a-z0-9_-]*$} (alphanumerical
 	 *                    lowercase only plus underscores and hyphens).
 	 * @param command the {@link Command} to use.  {@link Command#onCommand(String[], Message)}
@@ -166,7 +169,7 @@ public class CommandRegistrar {
 			throw new IllegalArgumentException("Command does not match regex!");
 		
 		REGISTRAR.put(commandName, command);
-		PERMS_REGISTRAR.put(commandName, "global");
+		PERMS_REGISTRAR.put(commandName, UBPerm.EVERYONE);
 	}
 	
 	/**
@@ -178,53 +181,69 @@ public class CommandRegistrar {
 	 * @param commandName the name of the command to execute.
 	 * @param args the arguments for the command.
 	 * @param m the {@link Message}   
-	 * @return the return embed.  Returns {@code null} if the command was not found (or if the command returns null by itself).
+	 * @param r what to run on completion   
 	 */
-	@Nullable
-	@CheckReturnValue
-	public static MessageEmbed runCommand(@NotNull String commandName, @NotNull String[] args, @NotNull Message m) {
+	public static synchronized void runCommand(@NotNull String commandName, @NotNull String[] args, @NotNull Message m, @NotNull OnCommandReturn r) {
 		
 		commandsSent++;
+		TimerTask t = new TimerTask() {
+			@Override
+			public void run() {
+				UBPerm permissionNode = getCommandPermissionNode(commandName);
+				Logger.debug("Getting permission node " + permissionNode);
+				//return null if the command does not exist.
+				if(!REGISTRAR.containsKey(commandName) || permissionNode == null) {
+					Logger.debug(String.format("Rejecting key %s because it was either null or did not exist in the registrar.", commandName));
+					r.onReturn(null);
+					return;
+				}
+				//owner is a global super user and can access any commands on any servers
+				if(m.getAuthor().getId().equals(Main.OWNER_ID)) {
+					r.onReturn(REGISTRAR.get(commandName).onCommand(args, m));
+					return;
+				}
+				EmbedBuilder eb = new EmbedBuilder();
+				EmbedDefaults.setEmbedDefaults(eb, m);
+				if(permissionNode.equals(UBPerm.OWNER)) {
+					eb.setDescription("This command can only be run by the owner of the bot.");
+					eb.setColor(Color.RED);
+					r.onReturn(eb.build());
+					return;
+				}
+				
+				//if the user is an admin, execute the command without checking the permission node.
+				if(Objects.requireNonNull(m.getMember()).hasPermission(Permission.ADMINISTRATOR)) {
+					r.onReturn(REGISTRAR.get(commandName).onCommand(args, m));
+					return;
+				}
+				
+				//manage server
+				if(permissionNode.equals(UBPerm.MANAGE_SERVER) && m.getMember().hasPermission(Permission.MANAGE_SERVER)) {
+					r.onReturn(eb.build());
+					return;
+				}
+				
+				//manage messages
+				if(permissionNode.equals(UBPerm.MANAGE_MESSAGES) && m.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+					r.onReturn(eb.build());
+					return;
+				}
+				
+				//global commands
+				if(!permissionNode.equals(UBPerm.EVERYONE)) {
+					eb.setDescription("You must have the \"" + permissionNode.niceName + "\" permission to run this command.");
+					eb.setColor(Color.RED);
+					r.onReturn(eb.build());
+					return;
+				}
+				UserData.checkUserExists(m.getAuthor().getId(), m.getGuild().getId());
+				UserData.checkUserExists(null, m.getGuild().getId());
+				r.onReturn(REGISTRAR.get(commandName).onCommand(args, m));
+			}
+		};
 		
-		String permissionNode = getCommandPermissionNode(commandName);
+		new Timer().schedule(t, 0L);
 		
-		Logger.debug("Getting permission node " + permissionNode);
-		
-		//return null if the command does not exist.
-		if(!REGISTRAR.containsKey(commandName) || permissionNode == null) {
-			Logger.debug(String.format("Rejecting key %s because it was either null or did not exist in the registrar.", commandName));
-			return null;
-		}
-			
-		//owner is a global super user and can access any commands on any servers
-		if(m.getAuthor().getId().equals(Main.OWNER_ID))
-			return REGISTRAR.get(commandName).onCommand(args, m);
-		
-		
-		EmbedBuilder eb = new EmbedBuilder();
-		EmbedDefaults.setEmbedDefaults(eb, m);
-		
-		if(permissionNode.equalsIgnoreCase("owner")) {
-			eb.setDescription("This command can only be run by the owner of the bot.");
-			eb.setColor(Color.RED);
-			return eb.build();
-		}
-		
-		//if the user is a superuser, execute the command without checking the permission node.
-		if(Objects.requireNonNull(m.getMember()).hasPermission(Permission.ADMINISTRATOR))
-			return REGISTRAR.get(commandName).onCommand(args, m);
-		
-		if(permissionNode.equalsIgnoreCase("admin")) {
-			eb.setDescription("This command requires the administrator permission on Discord.");
-			eb.setColor(Color.RED);
-			return eb.build();
-		}
-		
-		
-		UserData.checkUserExists(m.getAuthor().getId(), m.getGuild().getId());
-		UserData.checkUserExists(null, m.getGuild().getId());
-		
-		return REGISTRAR.get(commandName).onCommand(args, m);
 	}
 	
 	/**
@@ -248,7 +267,7 @@ public class CommandRegistrar {
 	 */
 	@Nullable
 	@Contract(pure = true)
-	public static String getCommandPermissionNode(String command) {
+	public static UBPerm getCommandPermissionNode(String command) {
 		if(!hasCommand(command))
 			return null;
 		return PERMS_REGISTRAR.get(command);
@@ -310,11 +329,10 @@ public class CommandRegistrar {
 	 * @return the Class
 	 */
 	@Nullable
-	@CheckReturnValue
+	@CheckForNull
 	@Contract(pure = true)
 	public static Class<? extends Command> getClassOfCommand(String command) {
 		return REGISTRAR.get(command).getClass();
 	}
-	
 	
 }

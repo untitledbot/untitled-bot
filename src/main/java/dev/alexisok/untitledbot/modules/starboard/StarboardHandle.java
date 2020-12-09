@@ -3,7 +3,8 @@ package dev.alexisok.untitledbot.modules.starboard;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.command.enums.UBPerm;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -137,7 +138,7 @@ public final class StarboardHandle extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("starboard", "admin", this);
+        CommandRegistrar.register("starboard", UBPerm.MANAGE_SERVER, this);
         Manual.setHelpPage("starboard", "Configure settings for starboard.\n" +
                                                 "A list of sub-commands can be found simply by using the `starboard` command.\n" +
                                                 "\n" +

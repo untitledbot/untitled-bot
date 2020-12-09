@@ -1,9 +1,16 @@
 package dev.alexisok.untitledbot.command;
 
+import dev.alexisok.untitledbot.command.enums.UBPerm;
 import dev.alexisok.untitledbot.data.GetUserData;
+import dev.alexisok.untitledbot.hook.WebhookPlugin;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.basic.privacy.Privacy;
 import dev.alexisok.untitledbot.modules.basic.purge.Purge;
+import dev.alexisok.untitledbot.modules.basic.shardinfo.CalcShard;
+import dev.alexisok.untitledbot.modules.basic.shardinfo.ShardInfo;
+import dev.alexisok.untitledbot.modules.basic.sleep.Sleep;
+import dev.alexisok.untitledbot.modules.basic.update.Update;
+import dev.alexisok.untitledbot.modules.basic.version.Version;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.*;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.filter.*;
 import dev.alexisok.untitledbot.modules.images.apiuseless.*;
@@ -41,14 +48,14 @@ import dev.alexisok.untitledbot.modules.basic.twenty.TwentyDice;
 import dev.alexisok.untitledbot.modules.basic.uptime.Uptime;
 import dev.alexisok.untitledbot.modules.basic.userinfo.UserInfo;
 import dev.alexisok.untitledbot.modules.basic.vote.Vote;
-import dev.alexisok.untitledbot.modules.cache.VoidCache;
+import dev.alexisok.untitledbot.modules.basic.cache.VoidCache;
 import dev.alexisok.untitledbot.modules.config.ConfigHandle;
 import dev.alexisok.untitledbot.modules.eco.*;
-import dev.alexisok.untitledbot.modules.eval.Eval;
+import dev.alexisok.untitledbot.modules.basic.eval.Eval;
 import dev.alexisok.untitledbot.modules.music.*;
-import dev.alexisok.untitledbot.modules.noprefix.Exit;
-import dev.alexisok.untitledbot.modules.noprefix.NoPrefix;
-import dev.alexisok.untitledbot.modules.profile.Profile;
+import dev.alexisok.untitledbot.modules.basic.noprefix.Exit;
+import dev.alexisok.untitledbot.modules.basic.noprefix.NoPrefix;
+import dev.alexisok.untitledbot.modules.basic.profile.Profile;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rank.Rnak;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleGet;
@@ -58,8 +65,10 @@ import dev.alexisok.untitledbot.modules.rank.xpcommands.Work;
 import dev.alexisok.untitledbot.modules.reactions.AttackOnLenny;
 import dev.alexisok.untitledbot.modules.reactions.Dis;
 import dev.alexisok.untitledbot.modules.reactions.Hide;
-import dev.alexisok.untitledbot.modules.reward.VoteReward;
+import dev.alexisok.untitledbot.modules.basic.reward.VoteReward;
 import dev.alexisok.untitledbot.modules.starboard.StarboardHandle;
+import dev.alexisok.untitledbot.plugin.UBPlugin;
+import dev.alexisok.untitledbot.util.VotedCache;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;
@@ -80,7 +89,7 @@ public final class CoreCommands {
     public static void registerCoreCommands() {
         Logger.log("Registering core commands.");
         //invite command
-        CommandRegistrar.register("invite", "core.invite", (args, message) -> {
+        CommandRegistrar.register("invite", (args, message) -> {
             EmbedBuilder eb = new EmbedBuilder();
             EmbedDefaults.setEmbedDefaults(eb, message);
             
@@ -96,7 +105,7 @@ public final class CoreCommands {
         });
         
         //The about command to get information about the bot and the server link.
-        CommandRegistrar.register("about", "core.about", (args, message) -> {
+        CommandRegistrar.register("about", (args, message) -> {
             EmbedBuilder eb = new EmbedBuilder();
             EmbedDefaults.setEmbedDefaults(eb, message);
             
@@ -123,7 +132,7 @@ public final class CoreCommands {
         });
         
         //idk man testing or something
-        CommandRegistrar.register("test", "test.test.a", (args, message) -> {
+        CommandRegistrar.register("test", (args, message) -> {
             EmbedBuilder eb = new EmbedBuilder();
             EmbedDefaults.setEmbedDefaults(eb, message);
             eb.setColor(Color.CYAN);
@@ -132,7 +141,7 @@ public final class CoreCommands {
         });
         
         //cooldown command
-        CommandRegistrar.register("cooldown", "owner", (args, message) -> {
+        CommandRegistrar.register("cooldown", UBPerm.OWNER, (args, message) -> {
             if(args.length == 2)
                 return new EmbedBuilder().addField("its " + CommandRegistrar.getCommandCooldown(args[1]), "a", false).build();
             EmbedBuilder eb = new EmbedBuilder();
@@ -142,6 +151,10 @@ public final class CoreCommands {
         
         Logger.log("Core commands have been registered.");
         registerHelp();
+        
+        Logger.log("Registering the vote cache.");
+        VotedCache.init();
+        Logger.log("Registered the vote cache.");
     }
     
     /**
@@ -151,12 +164,12 @@ public final class CoreCommands {
      * Not all of those are core commands.
      */
     private static void registerHelp() {
-        Manual.setHelpPage("help", "Get help with a specific command.\nUsage: `help <command>`.");
+        Manual.setHelpPage("help", "Get help with a specific command.\nUsage: `%shelp <command>`.");
         Manual.setHelpPage("status", "Get the status of the bot and JVM.");
         Manual.setHelpPage("invite", "Get the invite link for the bot.");
         Manual.setHelpPage("about", "much knowledge");
         Manual.setHelpPage("rank", "Get the current level and XP of a user.\nUsage: " +
-                                           "rank [user @]\n" +
+                                           "`%srank [user @]`\n" +
                                            "leave argument blank for your own stats.");
     }
     
@@ -278,9 +291,17 @@ public final class CoreCommands {
         new GetSafeSearch().onRegister();
         
         new Privacy().onRegister();
-        //minecraft api seems to have some problems.
-//        new MinecraftAPI().onRegister();
         new Purge().onRegister();
+        
+        //1.3.25
+        new Sleep().onRegister();
+        new Version().onRegister();
+        new WebhookPlugin().onRegister();
+        new ShardInfo().onRegister();
+        new CalcShard().onRegister();
+        new Update().onRegister();
+        
         Logger.log("Modules have been registered.");
     }
+    
 }

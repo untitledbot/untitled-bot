@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.basic.time;
 import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.enums.UBPerm;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -26,7 +27,6 @@ public final class TimeCommand extends UBPlugin {
     public MessageEmbed onCommand(String[] args, @NotNull Message message) {
         long current = System.currentTimeMillis();
         
-        MessageEmbed returnEmbed = CommandRegistrar.runCommand(args[1], ArrayUtils.removeElement(args, 0), message);
         
         long end = System.currentTimeMillis();
         
@@ -34,13 +34,13 @@ public final class TimeCommand extends UBPlugin {
             message.getChannel().sendMessage(String.format("Command took %dms.", end - current)).queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         } catch(Throwable ignored) {}
         
-        return returnEmbed;
+        return null;
         
     }
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("time", this);
+        CommandRegistrar.register("time", UBPerm.OWNER, this);
         Manual.setHelpPage("time", "Time a command.\n" +
                                            "This will not bypass command permissions, you will still have to have the needed permissions " +
                                            "to run the command; however, errored commands will still be timed.\n" +

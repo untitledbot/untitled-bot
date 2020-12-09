@@ -1,6 +1,6 @@
 package dev.alexisok.untitledbot.modules.basic.economy;
 
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.vault.Vault;
 
 import java.util.concurrent.ThreadLocalRandom;
 

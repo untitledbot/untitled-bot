@@ -2,8 +2,6 @@ package dev.alexisok.untitledbot.data;
 
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.logging.Logger;
-import dev.alexisok.untitledbot.modules.vault.Vault;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.nio.file.Files;

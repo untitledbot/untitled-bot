@@ -4,7 +4,7 @@ import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -168,7 +168,7 @@ public final class Top extends UBPlugin {
             User u;
             
             try {
-                u = Main.jda.getGuildById(guildID).getMemberById(s).getUser();
+                u = Main.getJDAFromGuild(guildID).getGuildById(guildID).getMemberById(s).getUser();
             } catch(Throwable ignored) {return;}
             
             if(u.isBot())

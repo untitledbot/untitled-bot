@@ -3,8 +3,9 @@ package dev.alexisok.untitledbot.modules.rank.rankcommands;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.command.enums.UBPerm;
 import dev.alexisok.untitledbot.logging.Logger;
-import dev.alexisok.untitledbot.modules.vault.Vault;
+import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -17,9 +18,6 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static dev.alexisok.untitledbot.Main.jda;
 
 /**
  * @author AlexIsOK
@@ -84,7 +82,7 @@ public class RankRoleSet extends UBPlugin {
         }
         
         try {
-            if(!Objects.requireNonNull(message.getGuild().getMemberById(jda.getSelfUser().getId())).getRoles().get(0).canInteract(r)) {
+            if(!Objects.requireNonNull(message.getGuild().getMemberById(message.getJDA().getSelfUser().getId())).getRoles().get(0).canInteract(r)) {
                 eb.addField("Error", "Looks like I can't do anything with this role!  Please make sure I have the `manage-roles` permission " +
                                              "and my top role is higher than the role you want to give.", false);
                 eb.setColor(Color.RED);
@@ -114,7 +112,7 @@ public class RankRoleSet extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("rank-role", "admin", this);
+        CommandRegistrar.register("rank-role", UBPerm.ADMIN, this);
         Manual.setHelpPage("rank-role", "Set the role to give a user when they level up!\n" +
                                                 "Usage: `rank-role <level> <role @ | role ID | role name | none>`\n" +
                                                 "To clear a role reward, use `rank-role <level> none`\n" +

@@ -1,6 +1,7 @@
 package dev.alexisok.untitledbot.modules.music;
 
 import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.command.enums.UBPerm;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -21,6 +22,6 @@ public final class GetSafeSearch extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("getsafesearch", "owner", this);
+        CommandRegistrar.register("getsafesearch", UBPerm.OWNER, this);
     }
 }
