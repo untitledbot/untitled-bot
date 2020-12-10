@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author AlexIsOK
@@ -49,7 +48,7 @@ public final class TrackScheduler extends AudioEventAdapter {
     public AudioTrack nextTrack() {
         AudioTrack current = this.player.getPlayingTrack();
         if(this.queue.size() == 0 && this.player.getPlayingTrack() == null) {
-            MusicKernel.INSTANCE.onQueueEnd(this.guildID);
+            MusicKernel.INSTANCE.onQueueEnd(Long.parseLong(this.guildID));
             return current;
         }
         if(this.queue.size() != 0) {
@@ -69,12 +68,12 @@ public final class TrackScheduler extends AudioEventAdapter {
         }
         
         if(this.queue.size() == 0 && !endReason.mayStartNext) {
-            MusicKernel.INSTANCE.onQueueEnd(this.guildID);
+            MusicKernel.INSTANCE.onQueueEnd(Long.parseLong(this.guildID));
             return;
         }
         
         if(this.queue.size() == 0) {
-            MusicKernel.INSTANCE.onQueueEnd(this.guildID);
+            MusicKernel.INSTANCE.onQueueEnd(Long.parseLong(this.guildID));
             return;
         }
         
@@ -83,7 +82,7 @@ public final class TrackScheduler extends AudioEventAdapter {
         if(endReason.mayStartNext)
             this.nextTrack();
         
-        MusicKernel.INSTANCE.onNext(this.guildID, nextTrack);
+        MusicKernel.INSTANCE.onNext(Long.parseLong(this.guildID), nextTrack);
     }
     
     public ArrayList<AudioTrack> getQueue() {

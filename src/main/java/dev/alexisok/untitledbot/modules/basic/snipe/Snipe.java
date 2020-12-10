@@ -26,7 +26,7 @@ import java.util.Objects;
 public final class Snipe extends UBPlugin implements MessageHook {
     
     //channel id, message id
-    private static final HashMap<String, String> SNIPE_CACHE = new HashMap<>();
+    private static final HashMap<Long, Long> SNIPE_CACHE = new HashMap<>();
     
     {
         CommandRegistrar.registerHook(this);
@@ -38,7 +38,7 @@ public final class Snipe extends UBPlugin implements MessageHook {
 
         TextChannel target = message.getMentionedChannels().size() == 1 ? message.getMentionedChannels().get(0) : message.getTextChannel();
         
-        if(!SNIPE_CACHE.containsKey(target.getId())) {
+        if(!SNIPE_CACHE.containsKey(target.getIdLong())) {
             eb.setTitle("Snipe");
             eb.setDescription("No message to snipe.");
             eb.setColor(Color.RED);
@@ -49,7 +49,7 @@ public final class Snipe extends UBPlugin implements MessageHook {
         
         try {
             //this is done to prevent getting deleted messages from other channels outside of the guild.
-            sniped = ModHook.getMessageByID(SNIPE_CACHE.get(Objects.requireNonNull(message.getGuild().getTextChannelById(target.getId())).getId()));
+            sniped = ModHook.getMessageByID(SNIPE_CACHE.get(Objects.requireNonNull(message.getGuild().getTextChannelById(target.getId())).getIdLong()));
         } catch(NullPointerException ignored) {}
         
         if(sniped == null) {
@@ -58,7 +58,7 @@ public final class Snipe extends UBPlugin implements MessageHook {
             eb.setColor(Color.RED);
             return eb.build();
         }
-        SNIPE_CACHE.remove(target.getId());
+        SNIPE_CACHE.remove(target.getIdLong());
         
         eb.setTitle("Snipe");
         eb.setDescription(sniped.getContentRaw());
@@ -81,13 +81,13 @@ public final class Snipe extends UBPlugin implements MessageHook {
     public void onAnyEvent(GenericEvent e) {
         if(e instanceof GuildMessageDeleteEvent) {
             GuildMessageDeleteEvent a = (GuildMessageDeleteEvent) e;
-            SNIPE_CACHE.put(a.getChannel().getId(), a.getMessageId());
+            SNIPE_CACHE.put(a.getChannel().getIdLong(), a.getMessageIdLong());
         }
     }
-
+    
     @Override
     public void onRegister() {
-        CommandRegistrar.register("snipe", UBPerm.ADMIN, this);
+        CommandRegistrar.register("snipe", UBPerm.MANAGE_MESSAGES, this);
         Manual.setHelpPage("snipe", "Get the last deleted message in this channel or another.");
     }
 }

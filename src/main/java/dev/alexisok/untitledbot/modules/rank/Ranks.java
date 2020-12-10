@@ -28,6 +28,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -55,11 +56,8 @@ public final class Ranks extends UBPlugin implements MessageHook {
         }
     }
     
-    //since xp always starts at 0 and ends at 1 through 10, just store the max value here.
-    private static final HashMap<String, Integer> XP_PER_MESSAGE_CACHE = new HashMap<>();
-    
-    //multiplier per message, values are 0.5x, 0.75x, 1x, 1.25x, 1.5x, 1.75x, 2x, 2.25x, 2.5x, 2.75x, 3x.
-    private static final HashMap<String, Float> MULTIPLIER_CACHE = new HashMap<>();
+    //since xp always starts at 0 and ends at 1 through 100, just store the max value here.
+    private static final HashMap<Long, Integer> XP_PER_MESSAGE_CACHE = new HashMap<>();
     
     @Override
     public void onStartup() {
@@ -81,9 +79,10 @@ public final class Ranks extends UBPlugin implements MessageHook {
         Manual.setHelpPage("rank-total", "Get the total amount of experience of yourself or another user.\n" +
                                                  "Usage: rank-total [user @]");
         Manual.setHelpPage("rank-settings", "Set the rank settings.\n" +
-                                                    "Usage: `rank-settings <setting> <value>`\n" +
+                                                    "Usage: `%srank-settings <setting> <value>`\n" +
                                                     "Current settings:\n" +
-                                                    "\tannounce-level-up <current | channel <channel #> | none>\n");
+                                                    "\t`%sannounce-level-up <current | channel <channel #> | none>`\n" +
+                                                    "\t`%smax-xp <number>`");
         CommandRegistrar.registerAlias("rank-top", "ranktop", "leaderboard", "top", "ranklist", "bottom");
         CommandRegistrar.registerAlias("rank", "level");
         Vault.addDefault("ranks-xp", "0");
@@ -157,6 +156,11 @@ public final class Ranks extends UBPlugin implements MessageHook {
         String lv;
         
         boolean other = false;
+        
+        if(!Main.HAS_MEMBERS_INTENT)
+            message.getChannel().sendMessage("Due to the bot not having its Members Intent accepted, image generation no longer shows the " +
+                    "user avatar or name.  Sorry about that :(\n" +
+                    "I should have the members intent back up in a week or so, please be patient :)").queue();
         
         try {
             int s = message.getMentionedMembers().size();
@@ -241,6 +245,21 @@ public final class Ranks extends UBPlugin implements MessageHook {
         }
         return eb.build();
     }
+
+    /**
+     * Get the amount of XP per message
+     * @param guildID the ID of the guild
+     * @return the amount per message.
+     */
+    private static synchronized int getPerMessage(long guildID) {
+        if(XP_PER_MESSAGE_CACHE.containsKey(guildID))
+            return XP_PER_MESSAGE_CACHE.get(guildID);
+        int v = Integer.parseInt(Vault.getUserDataLocalOrDefault(null, String.valueOf(guildID), "ranks.permsg", "3"));
+        XP_PER_MESSAGE_CACHE.put(guildID, v);
+        return v;
+    }
+    
+    
     
     @Override
     public void onMessage(GuildMessageReceivedEvent mre) {
@@ -254,16 +273,18 @@ public final class Ranks extends UBPlugin implements MessageHook {
             return;
         
         //do not do rank stuffs if there is a command
-        if(m.getContentRaw().startsWith(BotClass.getPrefix(mre.getGuild().getId(), null)))
+        if(m.getContentRaw().startsWith(BotClass.getPrefix(mre.getGuild().getIdLong(), -1)))
             return;
         
         long randomAmount = 0L;
         try {
             //was 3 to 5
             randomAmount = ThreadLocalRandom.current().nextLong(0,
-                    ((1 + Long.parseLong(Vault.getUserDataLocalOrDefault(m.getAuthor().getId(),
+                    1 + Long.parseLong(Vault.getUserDataLocalOrDefault(m.getAuthor().getId(),
                             m.getGuild().getId(),
-                            "ranks-level", "1")) + 3L)));
+                            "ranks-level", "1")) +
+                            getPerMessage(m.getGuild().getIdLong())
+            );
         } catch(Throwable ignored) {
             Logger.log("Error: there was an error with boost amount for user " + mre.getAuthor().getId() + " in guild " + mre.getGuild().getId());
         }

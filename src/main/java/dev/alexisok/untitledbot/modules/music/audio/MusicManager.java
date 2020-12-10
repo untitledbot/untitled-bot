@@ -26,7 +26,7 @@ public final class MusicManager {
         return new AudioHandler(this.player);
     }
 
-    public void seek(@NotNull String id, long l) {
+    public void seek(long id, long l) {
         if(this.player.getPlayingTrack().isSeekable())
             this.player.getPlayingTrack().setPosition(l);
     }

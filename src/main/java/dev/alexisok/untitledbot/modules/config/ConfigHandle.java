@@ -99,7 +99,7 @@ public final class ConfigHandle extends UBPlugin {
         eb.addField("Config", "Congrats!  Your server has been easily configured with the `config` command.\n" +
                                       "You can run this command again if you want to change the configuration.\n", false);
         eb.setColor(Color.GREEN);
-        BotClass.nullifyPrefixCacheSpecific(message.getGuild().getId());
+        BotClass.nullifyPrefixCacheSpecific(message.getGuild().getIdLong());
         Starboard.voidCacheForGuild(message.getGuild().getId());
         return eb.build();
     }

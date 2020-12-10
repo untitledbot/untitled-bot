@@ -75,14 +75,37 @@ public final class RankSettings extends UBPlugin {
                     eb.setColor(Color.RED);
                     return eb.build();
             }
+        } else if(args[1].equalsIgnoreCase("max-xp")) {
+            
+            int max;
+            
+            try {
+                max = Integer.parseInt(args[2]);
+                if(max > 100 || max < 0)
+                    throw new NumberFormatException();
+            } catch(Exception ignored) {
+                eb.setColor(Color.RED);
+                eb.addField("Ranking", "Usage: `rank-settings max-xp <number>`", false);
+                return eb.build();
+            }
+            
+            Vault.storeUserDataLocal(null, message.getGuild().getId(), "ranks.permsg", args[2]);
+            
+            eb.addField("Ranking", "Users will now gain between 0 and " + args[2] + " XP per message.", false);
+            
+            eb.setColor(Color.GREEN);
+            return eb.build();
         }
         
         eb.setColor(Color.RED);
-        eb.addField("Ranking", "The only available option as of now is to change level up messages.\n" +
-                "Usage: `rank-settings announce-level-up <current | channel | none>`\n\n" +
-                "`current` - the channel where the user levels up.\n" +
-                "`channel <channel #>` - a specific channel to send the level up message.\n" +
-                "`none` - do not do level up messages (does NOT stop the rank module, only disables level up messages).\n", false);
+        eb.addField("Ranking", "Rank settings, along with the parameter descriptions.\n" +
+                "`rank-settings announce-level-up <current OR channel OR none>`\n" +
+                "`  current` - the channel where the user levels up.\n" +
+                "`  channel <channel #>` - a specific channel to send the level up message.\n" +
+                "`  none` - do not do level up messages (does NOT stop the rank module, only disables level up messages).\n\n\n" +
+                "\n" +
+                "`rank-settings max-xp <number>`\n" +
+                "`  number` - the maximum amount of xp to give users, between 1 and 100.", false);
         
         return eb.build();
     }

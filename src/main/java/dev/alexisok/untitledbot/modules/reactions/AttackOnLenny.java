@@ -22,12 +22,12 @@ import static java.util.concurrent.TimeUnit.*;
  */
 public final class AttackOnLenny extends UBPlugin {
     
-    private static final ArrayList<String> WATCHING = new ArrayList<>();
+    private static final ArrayList<Long> WATCHING = new ArrayList<>();
     
     @Override
     public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
-        if(!WATCHING.contains(message.getGuild().getId())) {
-            WATCHING.add(message.getGuild().getId());
+        if(!WATCHING.contains(message.getGuild().getIdLong())) {
+            WATCHING.add(message.getGuild().getIdLong());
         } else {
             message.getChannel().sendMessage("You are already watching an epic battle!!!").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
             return null;
@@ -39,9 +39,9 @@ public final class AttackOnLenny extends UBPlugin {
                                 con2.editMessage("(∩ ͡° ͜ʖ ͡°)⊃━炎炎炎炎炎炎炎炎 /╲/( ͡° ͡° ͜ʖ ͡° ͡°)/\\╱\\").queueAfter(2500, MILLISECONDS, con3 -> {
                                     con3.editMessage("\\*\\*BANG SMASH EXPLOSION SOUND EFFECTS\\*\\*").queueAfter(3000, MILLISECONDS, con4 -> {
                                         con4.editMessage("(͡° ͜ʖ ͡°) evil man has been defeated.  Use the `"
-                                                + BotClass.getPrefixNice(con4.getGuild().getId()) + "aol` command to watch again.")
+                                                + BotClass.getPrefixNice(con4.getGuild().getIdLong()) + "aol` command to watch again.")
                                                 .queueAfter(2000, MILLISECONDS, con5 -> {
-                                            WATCHING.remove(con5.getGuild().getId());
+                                            WATCHING.remove(con5.getGuild().getIdLong());
                                         });
                                     });
                                 });
@@ -53,7 +53,7 @@ public final class AttackOnLenny extends UBPlugin {
     @Override
     public void onRegister() {
         CommandRegistrar.register("attack-on-lenny", this);
-        CommandRegistrar.registerAlias("attack-on-lenny", "aol");
         Manual.setHelpPage("attack-on-lenny", "┬┴┬┴┤/╲/( ͡° ͡° ͜ʖ ͡° ͡°)/\\╱\\");
+        CommandRegistrar.registerAlias("attack-on-lenny", "aol");
     }
 }

@@ -42,7 +42,7 @@ public class Seek extends UBPlugin {
             gotoTime /= 60;
         gotoTime *= 1000;
         
-        MusicKernel.INSTANCE.seek(message.getGuild().getId(), gotoTime);
+        MusicKernel.INSTANCE.seek(message.getGuild().getIdLong(), gotoTime);
         
         eb.addField("Seek", String.format("Seeking the player to %d:%d...", gotoTime / 1000 / 60, gotoTime / 1000 / 60 / 60), false);
         return eb.build();

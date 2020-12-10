@@ -155,7 +155,7 @@ public class AllCommands extends UBPlugin {
     public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
-        String prefix = BotClass.getPrefixNice(message.getGuild().getId());
+        String prefix = BotClass.getPrefixNice(message.getGuild().getIdLong());
         eb.addField("All commands", String.format("Please use one of the following commands for help:\n" +
                 "`%shelp leveling` - leveling and rank commands.\n" +
                 "`%shelp util` - utilities.\n" +

@@ -49,7 +49,7 @@ public final class ModHook extends ListenerAdapter {
     private static final HashMap<String, ArrayList<LogTypes>> LOG_CACHE = new HashMap<>();
     
     //message id, message
-    private static final HashMap<String, Message> MESSAGE_CACHE = new HashMap<>();
+    private static final HashMap<Long, Message> MESSAGE_CACHE = new HashMap<>();
 
     /**
      * Get the size of the message cache.
@@ -62,7 +62,7 @@ public final class ModHook extends ListenerAdapter {
     
     @Nullable
     @Contract(pure = true)
-    public static Message getMessageByID(@NotNull String ID) {
+    public static Message getMessageByID(long ID) {
         return MESSAGE_CACHE.get(ID);
     }
 
@@ -158,7 +158,7 @@ public final class ModHook extends ListenerAdapter {
         if(!LOG_CACHE.containsKey(e.getGuild().getId()))
             return;
         if(LOG_CACHE.get(e.getGuild().getId()).contains(MESSAGE_DELETE) || LOG_CACHE.get(e.getGuild().getId()).contains(MESSAGE_UPDATE))
-            MESSAGE_CACHE.put(e.getMessageId(), e.getMessage());
+            MESSAGE_CACHE.put(e.getMessageIdLong(), e.getMessage());
     }
     
     @Override
@@ -173,10 +173,10 @@ public final class ModHook extends ListenerAdapter {
         EmbedBuilder eb = new EmbedBuilder();
         
         eb.setTitle("Message updated.  Old content:");
-        if(!MESSAGE_CACHE.containsKey(e.getMessageId())) {
+        if(!MESSAGE_CACHE.containsKey(e.getMessageIdLong())) {
             eb.setDescription(""); //nothing
         } else
-            eb.setDescription(MESSAGE_CACHE.get(e.getMessageId()).getContentRaw());
+            eb.setDescription(MESSAGE_CACHE.get(e.getMessageIdLong()).getContentRaw());
         
         String[] content = new String[2];
         
@@ -207,7 +207,7 @@ public final class ModHook extends ListenerAdapter {
                 e.getAuthor().getAsMention(),
                 e.getChannel().getAsMention(),
                 e.getMessage().getJumpUrl()), false);
-        MESSAGE_CACHE.put(e.getMessageId(), e.getMessage());
+        MESSAGE_CACHE.put(e.getMessageIdLong(), e.getMessage());
         eb.setColor(Color.YELLOW);
         eb.setTimestamp(Instant.now());
         lc(guildID).sendMessage(eb.build()).queue();
@@ -219,7 +219,7 @@ public final class ModHook extends ListenerAdapter {
         if(!ch(guildID, LogTypes.MESSAGE_UPDATE))
             return;
         
-        Message deleted = MESSAGE_CACHE.get(e.getMessageId());
+        Message deleted = MESSAGE_CACHE.get(e.getMessageIdLong());
         
         EmbedBuilder eb = new EmbedBuilder();
         

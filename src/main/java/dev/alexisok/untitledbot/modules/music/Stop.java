@@ -22,11 +22,11 @@ public final class Stop extends UBPlugin {
 
     @Override
     public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
-        MusicKernel.INSTANCE.setLast(message.getGuild().getId(), message.getTextChannel());
+        MusicKernel.INSTANCE.setLast(message.getGuild().getIdLong(), message.getTextChannel());
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        Role dj = MusicKernel.getDJRole(message.getGuild().getId());
+        Role dj = MusicKernel.getDJRole(message.getGuild().getIdLong());
         
         if(dj != null && !message.getMember().getPermissions().contains(Permission.MESSAGE_MANAGE)) {
             try {

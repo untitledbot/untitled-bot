@@ -78,6 +78,29 @@ public final class Top extends UBPlugin {
         }
         
         topXP = sortHashMap(topXP);
+        
+        message.getChannel().sendMessage("Due to the bot not having the Members intent as of now, the leaderboard will not render an image.\n" +
+                "Don't worry, members intent will be granted soon!").queue();
+        
+        eb.setTitle("Leaderboard");
+        
+        String[] desc = new String[]{""};
+        
+        topXP.forEach((userID, xp) -> {
+            String s = "<@" + userID + "> - " + (Math.toIntExact(xp)) + "\n";
+            
+            if(desc[0].length() + s.length() >= 2048)
+                return;
+            
+            desc[0] += s;
+            
+        });
+        
+        eb.setDescription(desc[0]);
+        if(true)
+            return eb.build();
+        
+        
         try {
             //the rendered image
             File imageToSend = Objects.requireNonNull(render(topXP, message.getGuild().getName(), message.getGuild().getId()));

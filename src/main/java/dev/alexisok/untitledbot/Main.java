@@ -18,12 +18,11 @@ import org.jetbrains.annotations.Nullable;
 import javax.security.auth.login.LoginException;
 import java.io.*;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.*;
 
 import static dev.alexisok.untitledbot.logging.Logger.debug;
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;
-import static net.dv8tion.jda.api.utils.MemberCachePolicy.OWNER;
-import static net.dv8tion.jda.api.utils.MemberCachePolicy.VOICE;
 import static net.dv8tion.jda.api.utils.cache.CacheFlag.*;
 
 /**
@@ -43,7 +42,9 @@ public final class Main {
     public static final String PREFIX;
     public static final String OWNER_ID = "541763812676861952";
     
-    public static final int SHARD_COUNT = 8;
+    public static boolean HAS_MEMBERS_INTENT = false;
+    
+    public static final int SHARD_COUNT = 5;
     
     public static final boolean DEBUG;
     
@@ -53,7 +54,7 @@ public final class Main {
     
     public static DiscordBotListAPI API;
     
-    public static final ArrayList<String> CONTRIBUTORS = new ArrayList<>();
+    public static final ArrayList<Long> CONTRIBUTORS = new ArrayList<>();
     
     
     /**
@@ -82,18 +83,43 @@ public final class Main {
         try {
             for(int i = 0; i < SHARD_COUNT; i++) {
                 jda[i] = JDABuilder
-                        .create(GUILD_MESSAGE_REACTIONS, GUILD_MESSAGES, GUILD_EMOJIS, GUILD_MEMBERS, GUILD_VOICE_STATES, GUILD_BANS, DIRECT_MESSAGES)
+                        .create(GUILD_MESSAGE_REACTIONS, GUILD_MESSAGES, GUILD_EMOJIS, GUILD_VOICE_STATES, GUILD_BANS, DIRECT_MESSAGES)
                         .disableCache(ACTIVITY, CLIENT_STATUS) //bot does not need presence intents
                         .setToken(token)
                         .useSharding(i, SHARD_COUNT)
                         .enableCache(MEMBER_OVERRIDES, EMOTE)
-                        .setMemberCachePolicy(MemberCachePolicy.ONLINE.and(OWNER).and(VOICE))
+                        .setMemberCachePolicy(MemberCachePolicy.DEFAULT)
                         .addEventListeners(new ModHook(), new BotClass(), new Starboard())
                         .setAudioSendFactory(new NativeAudioSendFactory()) //mitigates packet loss according to JDA NAS.
                         .build();
                 jda[i].getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help"));
                 jda[i].awaitReady();
             }
+            
+            //top.gg stats
+            Thread t = new Thread(() -> {
+                
+                if(!TOP_GG_TOKEN.equals("none")) {
+                    API = new DiscordBotListAPI.Builder()
+                            .token(TOP_GG_TOKEN)
+                            .botId("730135989863055472")
+                            .build();
+                    
+                    TimerTask updateServerCountTask = new TimerTask() {
+                        @Override
+                        public void run() {
+                            Logger.log("Updating Top.GG stats...");
+                            API.setStats(getGuildCount());
+                            Logger.log("Done updating stats.");
+                        }
+                    };
+                    
+                    //delay the first schedule by 20 seconds and update every 20 minutes
+                    new Timer().schedule(updateServerCountTask, 20000L, 1200000L);
+                }
+            });
+            
+            t.start();
         } catch(LoginException e) {
             e.printStackTrace();
             Logger.critical("Could not login to Discord!");
@@ -172,7 +198,7 @@ public final class Main {
             Properties p = new Properties();
             try {
                 p.load(new FileInputStream("contributors.properties"));
-                p.forEach((o, o2) -> CONTRIBUTORS.add(o.toString()));
+                p.forEach((o, o2) -> CONTRIBUTORS.add(Long.valueOf(o.toString())));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -364,6 +390,7 @@ public final class Main {
             }
             DATA_PATH1 = p.getProperty("dataPath");
             DEFAULT_PREFIX1 = p.getProperty("prefix");
+            HAS_MEMBERS_INTENT = p.getProperty("members.intent", "false").equalsIgnoreCase("true");
             DEBUG1 = Boolean.parseBoolean(p.getProperty("debugMode"));
             if (!DATA_PATH1.endsWith("/")) DATA_PATH1 += "/";
             if(DEFAULT_PREFIX1.equals(""))
@@ -398,35 +425,12 @@ public final class Main {
         
         TOP_GG_TOKEN = secretsTemp;
         
-        Thread t = new Thread(() -> {
-            
-            if(!TOP_GG_TOKEN.equals("none")) {
-                API = new DiscordBotListAPI.Builder()
-                        .token(TOP_GG_TOKEN)
-                        .botId("730135989863055472")
-                        .build();
-                
-                TimerTask updateServerCountTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        Logger.log("Updating Top.GG stats...");
-                        API.setStats(getGuildCount());
-                        Logger.log("Done updating stats.");
-                    }
-                };
-                
-                //delay the first schedule by 20 seconds and update every 20 minutes
-                new Timer().schedule(updateServerCountTask, 20000L, 1200000L);
-            }
-        });
-        
-        t.start();
         
         if(new File("contributors.properties").exists()) {
             Properties p = new Properties();
             try {
                 p.load(new FileInputStream("contributors.properties"));
-                p.forEach((o, o2) -> CONTRIBUTORS.add(o.toString()));
+                p.forEach((o, o2) -> CONTRIBUTORS.add(Long.valueOf(o.toString())));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -441,5 +445,22 @@ public final class Main {
                 e.printStackTrace();
             }
         }
+        
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Arrays.stream(jda).forEach(j -> {
+                    j.getGuilds().forEach(g -> {
+                        //if this is false, the user does not have a data file.
+                        //noinspection ResultOfMethodCallIgnored
+                        new File(parsePropertiesLocation(null, g.getId())).setLastModified(Instant.now().getEpochSecond() * 1000);
+                        g.getMembers().forEach(m -> {
+                            //noinspection ResultOfMethodCallIgnored
+                            new File(parsePropertiesLocation(m.getId(), g.getId())).setLastModified(Instant.now().getEpochSecond() * 1000);
+                        });
+                    });
+                });
+            }
+        }, 600000L, 600000L);
     }
 }

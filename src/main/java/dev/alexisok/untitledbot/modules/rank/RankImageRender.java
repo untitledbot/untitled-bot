@@ -76,7 +76,7 @@ public final class RankImageRender {
     @Contract(pure = true)
     public static synchronized File render(String userID, String guildID, long uniqueID, boolean flip, Message m) throws UserDataCouldNotBeObtainedException, IOException {
         
-        User u = m.getJDA().getUserById(userID);
+//        User u = m.getJDA().getUserById(userID);
         
         //current and needed xp
         long current;
@@ -105,8 +105,8 @@ public final class RankImageRender {
             current = Long.parseLong(Objects.requireNonNull(Vault.getUserDataLocal(userID, guildID, "ranks-xp")));
             rank = Integer.parseInt(Objects.requireNonNull(Vault.getUserDataLocal(userID, guildID, "ranks-level")));
             maximum = Ranks.xpNeededForLevel(rank);
-            name = Objects.requireNonNull(u).getName();
-            discriminator = u.getDiscriminator();
+//            name = Objects.requireNonNull(u).getName();
+//            discriminator = u.getDiscriminator();
             String balStr = Vault.getUserDataLocalOrDefault(userID, guildID, Shop.CURRENCY_VAULT_NAME, "0");
             balance = Long.parseLong(balStr != null ? balStr : "0");
             balanceAsDisplay = Top.getBetterNameOtherThanJustWhateverIdk(balance);
@@ -147,7 +147,7 @@ public final class RankImageRender {
         String font = "Ubuntu";
         gtd.setFont(new Font(font, Font.PLAIN, 36));
         gtd.setColor(Color.WHITE);
-        gtd.drawString("" + name + "#" + discriminator, 30, 50);
+//        gtd.drawString("" + name + "#" + discriminator, 30, 50);
         
         //balance
         gtd.setFont(new Font(font, Font.PLAIN, 26));
@@ -172,11 +172,11 @@ public final class RankImageRender {
         gtd.setColor(Color.GREEN);
         gtd.fillRoundRect(30, 220, fillW < 20 ? 0 : fillW, 32, 32, 32);
         
-        new FileOutputStream("./tmp/" + u.getId() + ".png").getChannel().transferFrom(Channels.newChannel(new URL(u.getEffectiveAvatarUrl()).openStream()), 0, Long.MAX_VALUE);
+//        new FileOutputStream("./tmp/" + m.getId() + ".png").getChannel().transferFrom(Channels.newChannel(new URL(u.getEffectiveAvatarUrl()).openStream()), 0, Long.MAX_VALUE);
         
-        gtd.drawImage((ImageIO.read(new File("./tmp/" + u.getId() + ".png"))).getScaledInstance(128, 128, Image.SCALE_FAST), 660, 10, null);
+//        gtd.drawImage((ImageIO.read(new File("./tmp/" + m.getId() + ".png"))).getScaledInstance(128, 128, Image.SCALE_FAST), 660, 10, null);
         
-        new File("./tmp/" + u.getId() + ".png").delete();
+//        new File("./tmp/" + m.getId() + ".png").delete();
         
         //save the image.
         try {

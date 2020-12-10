@@ -44,7 +44,7 @@ public class MusicKernel {
     
     private static final long MAXIMUM_SONG_LENGTH_SECONDS = 18000; //5 hours
     
-    private static final HashMap<String, @Nullable Role> DJ_ROLE_CACHE;
+    private static final HashMap<Long, @Nullable Role> DJ_ROLE_CACHE;
     
     private static final String DJ_ROLE_VAULT_NAME = "dj.id";
     
@@ -73,15 +73,15 @@ public class MusicKernel {
      */
     @Nullable
     @Contract(pure = true)
-    public static synchronized Role getDJRole(@NotNull String guildID) {
+    public static synchronized Role getDJRole(long guildID) {
         if(!DJ_ROLE_CACHE.containsKey(guildID))
-            updateCache(guildID);
+            updateCache(String.valueOf(guildID));
         
         return DJ_ROLE_CACHE.getOrDefault(guildID, null);
     }
     
     public static synchronized void setDJRole(@NotNull String guildID, Role r) {
-        DJ_ROLE_CACHE.put(guildID, r);
+        DJ_ROLE_CACHE.put(Long.parseLong(guildID), r);
         Vault.storeUserDataLocal(null, guildID, DJ_ROLE_VAULT_NAME, r == null ? "null" : r.getId());
     }
     
@@ -94,7 +94,7 @@ public class MusicKernel {
         Logger.debug("Updating DJ cache to include " + roleID + " for " + guildID);
         
         //do not check for null
-        DJ_ROLE_CACHE.put(guildID, Main.getRoleById(roleID));
+        DJ_ROLE_CACHE.put(Long.parseLong(guildID), Main.getRoleById(roleID));
     }
     
     /**
@@ -102,7 +102,7 @@ public class MusicKernel {
      * @param guildID the id of the guild
      * @param track the track
      */
-    public synchronized void onNext(@NotNull String guildID, @NotNull AudioTrack track) {
+    public synchronized void onNext(long guildID, @NotNull AudioTrack track) {
         EmbedBuilder eb = new EmbedBuilder();
         
         Message data = track.getUserData(Message.class);
@@ -119,9 +119,9 @@ public class MusicKernel {
     private final AudioPlayerManager playerManager;
     
     //guild id, music manager
-    private final HashMap<String, MusicManager> musicManagers;
+    private final HashMap<Long, MusicManager> musicManagers;
     
-    private final HashMap<String, TextChannel> lastChannels;
+    private final HashMap<Long, TextChannel> lastChannels;
     
     private MusicKernel() {
         this.musicManagers = new HashMap<>();
@@ -150,7 +150,7 @@ public class MusicKernel {
                     channel.sendMessage(eb.build()).queue();
                     return;
                 }
-                if(musicManagers.get(channel.getGuild().getId()).scheduler.getQueue().size() >= 100) {
+                if(musicManagers.get(channel.getGuild().getIdLong()).scheduler.getQueue().size() >= 100) {
                     eb.addField("Play", "There are too many tracks in the queue!", false);
                     eb.setColor(Color.RED);
                     channel.sendMessage(eb.build()).queue();
@@ -175,7 +175,7 @@ public class MusicKernel {
                 eb.setColor(Color.GREEN);
                 AudioTrack first = playlist.getSelectedTrack();
                 
-                int queueSize = INSTANCE.musicManagers.get(channel.getGuild().getId()).scheduler.getQueue().size();
+                int queueSize = INSTANCE.musicManagers.get(channel.getGuild().getIdLong()).scheduler.getQueue().size();
                 
                 if(queueSize + playlist.getTracks().size() >= MAX_SONGS_PER_GUILD) {
                     eb.addField("Play", "Error loading playlist; playlist is either over 100 videos or " +
@@ -243,7 +243,7 @@ public class MusicKernel {
     @Nullable
     @Contract(pure = true)
     public synchronized AudioTrack[] queue(@NotNull Guild g) {
-        return this.musicManagers.get(g.getId()).scheduler.getQueue().toArray(new AudioTrack[0]);
+        return this.musicManagers.get(g.getIdLong()).scheduler.getQueue().toArray(new AudioTrack[0]);
     }
     
     /**
@@ -251,10 +251,10 @@ public class MusicKernel {
      * @param g the guild
      */
     public synchronized void stop(@NotNull Guild g) {
-        this.musicManagers.get(g.getId()).scheduler.clear();
-        this.musicManagers.get(g.getId()).player.destroy();
+        this.musicManagers.get(g.getIdLong()).scheduler.clear();
+        this.musicManagers.get(g.getIdLong()).player.destroy();
         g.getAudioManager().closeAudioConnection();
-        this.musicManagers.remove(g.getId());
+        this.musicManagers.remove(g.getIdLong());
     }
 
     /**
@@ -266,12 +266,12 @@ public class MusicKernel {
     @Contract
     @Nullable
     public synchronized AudioTrack skip(@NotNull Guild g, int n) {
-        AudioTrack currentTrack = this.musicManagers.get(g.getId()).player.getPlayingTrack();
+        AudioTrack currentTrack = this.musicManagers.get(g.getIdLong()).player.getPlayingTrack();
         
         if(n == 0)
-            this.musicManagers.get(g.getId()).scheduler.skip(0); //current track
+            this.musicManagers.get(g.getIdLong()).scheduler.skip(0); //current track
         else
-            return this.musicManagers.get(g.getId()).scheduler.skip(Math.min(n - 1, this.musicManagers.get(g.getId()).scheduler.getQueue().size())); //specified track
+            return this.musicManagers.get(g.getIdLong()).scheduler.skip(Math.min(n - 1, this.musicManagers.get(g.getIdLong()).scheduler.getQueue().size())); //specified track
         
         return currentTrack;
     }
@@ -283,7 +283,7 @@ public class MusicKernel {
      */
     public synchronized void pause(@NotNull Guild g, boolean state) {
         if(isPlaying(g))
-            this.musicManagers.get(g.getId()).player.setPaused(state);
+            this.musicManagers.get(g.getIdLong()).player.setPaused(state);
     }
 
     /**
@@ -293,7 +293,7 @@ public class MusicKernel {
      */
     @Contract(pure = true)
     public synchronized AudioTrack nowPlaying(@NotNull Guild g) {
-        return this.musicManagers.get(g.getId()).player.getPlayingTrack();
+        return this.musicManagers.get(g.getIdLong()).player.getPlayingTrack();
     }
     
     /**
@@ -304,7 +304,7 @@ public class MusicKernel {
     @Contract(pure = true)
     public synchronized boolean isPaused(@NotNull Guild g) {
         try {
-            return this.musicManagers.get(g.getId()).player.isPaused();
+            return this.musicManagers.get(g.getIdLong()).player.isPaused();
         } catch(RuntimeException ignored) {}
         return false;
     }
@@ -317,7 +317,7 @@ public class MusicKernel {
     @Contract(pure = true)
     public synchronized boolean isPlaying(@NotNull Guild g) {
         try {
-            return this.musicManagers.get(g.getId()).player.getPlayingTrack() != null;
+            return this.musicManagers.get(g.getIdLong()).player.getPlayingTrack() != null;
         } catch(RuntimeException ignored) {
             return false;
         }
@@ -331,11 +331,11 @@ public class MusicKernel {
     @NotNull
     @Contract(pure = true)
     protected synchronized MusicManager getAudioPlayer(@NotNull Guild guild, @NotNull VoiceChannel channel) {
-        MusicManager mm = this.musicManagers.get(guild.getId());
+        MusicManager mm = this.musicManagers.get(guild.getIdLong());
         
         if(mm == null) {
             mm = new MusicManager(this.playerManager, guild.getId(), channel);
-            this.musicManagers.put(guild.getId(), mm);
+            this.musicManagers.put(guild.getIdLong(), mm);
         }
         
         guild.getAudioManager().setSendingHandler(mm.getSendHandler());
@@ -353,7 +353,7 @@ public class MusicKernel {
     public synchronized void onUserLeaveVC(@NotNull VoiceChannel vc) {
         
         //don't check guilds the bot isn't playing music in
-        if(!this.musicManagers.containsKey(vc.getGuild().getId()))
+        if(!this.musicManagers.containsKey(vc.getGuild().getIdLong()))
             return;
         
         boolean user = false;
@@ -375,7 +375,7 @@ public class MusicKernel {
         if(!user && hasSelf) {
             this.disconnect(vc.getGuild());
             this.pause(vc.getGuild(), true);
-            this.lastChannels.get(vc.getGuild().getId()).sendMessage("The player has been paused as " +
+            this.lastChannels.get(vc.getGuild().getIdLong()).sendMessage("The player has been paused as " +
                     "all users have left the voice channel.").queue();
         }
     }
@@ -388,7 +388,7 @@ public class MusicKernel {
      * Run when the queue has ended.
      * @param guildID the ID of the guild.
      */
-    public void onQueueEnd(String guildID) {
+    public void onQueueEnd(long guildID) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("Music Player");
         eb.addField("Music Player", "The queue is empty, use the `play` command to play a song.", false);
@@ -403,7 +403,7 @@ public class MusicKernel {
      * @param guildID the ID of the guild.
      * @param tc the text channel to send to.
      */
-    public void setLast(@NotNull String guildID, @NotNull TextChannel tc) {
+    public void setLast(long guildID, @NotNull TextChannel tc) {
         this.lastChannels.put(guildID, tc);
     }
     
@@ -431,7 +431,7 @@ public class MusicKernel {
         vc.getGuild().getAudioManager().openAudioConnection(vc);
     }
     
-    public void setVolume(String id, int vol) {
+    public void setVolume(long id, int vol) {
         this.musicManagers.get(id).player.setVolume(vol);
     }
 
@@ -440,7 +440,7 @@ public class MusicKernel {
      * @param id the ID of the guild
      * @param l time to seek to in ms.
      */
-    public void seek(@NotNull String id, long l) {
+    public void seek(long id, long l) {
         this.musicManagers.get(id).seek(id, l);
     }
 
@@ -458,11 +458,11 @@ public class MusicKernel {
         return false;
     }
     
-    public boolean getRepeat(String guildID) {
+    public boolean getRepeat(long guildID) {
         return this.musicManagers.get(guildID).scheduler.isRepeat();
     }
     
-    public void setRepeat(String guildID, boolean state) {
+    public void setRepeat(long guildID, boolean state) {
         this.musicManagers.get(guildID).scheduler.setRepeat(state);
     }
 

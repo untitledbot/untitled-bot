@@ -30,7 +30,7 @@ public final class NoPrefix extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        if(BotClass.addToNoPrefix(message.getAuthor().getId())) {
+        if(BotClass.addToNoPrefix(message.getAuthor().getIdLong())) {
             eb.addField("NoPrefix:TM:", "You were added to the no-prefix mode!\nType `exit` at any time to leave this mode :)", false);
             eb.setColor(Color.GREEN);
         } else {

@@ -36,7 +36,7 @@ public final class ChessHandle extends UBPlugin {
                     "To move a piece, say something in chat such as `B1 to A3`.\n" +
                     "To stop the chess game, say `quit`.\n" +
                     "To see your stats, do `%schess stats`",
-                BotClass.getPrefixNice(message.getGuild().getId())),
+                BotClass.getPrefixNice(message.getGuild().getIdLong())),
                     false);
             return eb.build();
         }

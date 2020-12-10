@@ -122,10 +122,10 @@ public final class BotClass extends ListenerAdapter {
         }
     }
     
-    private static final ArrayList<String> NO_PREFIX = new ArrayList<>();
+    private static final ArrayList<Long> NO_PREFIX = new ArrayList<>();
     
     //message id, bot msg id reply
-    private static final HashMap<String, Message> DELETE_THIS_CACHE = new HashMap<>();
+    private static final HashMap<Long, Message> DELETE_THIS_CACHE = new HashMap<>();
     
     /**
      * For methods that do not send messages through traditional means.
@@ -133,6 +133,10 @@ public final class BotClass extends ListenerAdapter {
      * @param reply the bots reply to the message.
      */
     public static void addToDeleteCache(@NotNull String messageID, @NotNull Message reply) {
+        addToDeleteCache(Long.parseLong(messageID), reply);
+    }
+    
+    public static void addToDeleteCache(long messageID, @NotNull Message reply) {
         DELETE_THIS_CACHE.put(messageID, reply);
     }
     
@@ -153,13 +157,13 @@ public final class BotClass extends ListenerAdapter {
                     "official support server is [here](https://discord.gg/vSWgQ9a).", false).build();
     
     //cache for server prefixes
-    private static final HashMap<String, String> PREFIX_CACHE = new HashMap<>();
+    private static final HashMap<Long, String> PREFIX_CACHE = new HashMap<>();
     
     /**
      * Nullify the prefix cache for a specific guild.
      * @param guildID the ID of the guild.
      */
-    public static void nullifyPrefixCacheSpecific(@NotNull String guildID) {
+    public static void nullifyPrefixCacheSpecific(long guildID) {
         PREFIX_CACHE.remove(guildID);
     }
     
@@ -168,7 +172,7 @@ public final class BotClass extends ListenerAdapter {
      * @param guildID the ID of the guild as a String
      * @param prefix the prefix of that guild
      */
-    public static void updateGuildPrefix(@NotNull String guildID, @NotNull String prefix) {
+    public static void updateGuildPrefix(long guildID, @NotNull String prefix) {
         Logger.debug(String.format("Updating prefix cache to include %s for %s", prefix, guildID));
         PREFIX_CACHE.put(guildID, prefix);
         Logger.debug("Prefix cache updated.");
@@ -186,17 +190,17 @@ public final class BotClass extends ListenerAdapter {
      * 3. if the prefix does not exist, use ">"
      *
      * @param guildID the ID of the guild.
-     * @param userID the ID of the user.  (Make {@code null} to skip user prefix).
+     * @param userID the ID of the user.  (Make {@code -1} to skip user prefix).
      * @return the prefix.
      */
     @NotNull
     @Contract(pure = true)
-    public static String getPrefix(@NotNull String guildID, String userID) {
-        if(userID != null && NO_PREFIX.contains(userID))
+    public static String getPrefix(long guildID, long userID) {
+        if(userID != -1 && NO_PREFIX.contains(userID))
             return "";
         String prefix;
         if(!PREFIX_CACHE.containsKey(guildID)) {
-            prefix = Vault.getUserDataLocalOrDefault(null, guildID, "guild.prefix", ">");
+            prefix = Vault.getUserDataLocalOrDefault(null, String.valueOf(guildID), "guild.prefix", ">");
             updateGuildPrefix(guildID, prefix);
         } else {
             prefix = PREFIX_CACHE.get(guildID);
@@ -211,7 +215,7 @@ public final class BotClass extends ListenerAdapter {
      * @param userID the ID of the user as a String.
      * @return {@code true} if the user was added, {@code false} if they were already added.
      */
-    public static synchronized boolean addToNoPrefix(@NotNull String userID) {
+    public static synchronized boolean addToNoPrefix(long userID) {
         if(NO_PREFIX.contains(userID))
             return false;
         return NO_PREFIX.add(userID);
@@ -222,7 +226,7 @@ public final class BotClass extends ListenerAdapter {
      * @param userID the ID of the user as a String.
      * @return {@code true} if they were removed, {@code false} if they were not removed.
      */
-    public static synchronized boolean removeFromNoPrefix(@NotNull String userID) {
+    public static synchronized boolean removeFromNoPrefix(long userID) {
         return NO_PREFIX.remove(userID);
     }
     
@@ -237,8 +241,8 @@ public final class BotClass extends ListenerAdapter {
      */
     @NotNull
     @Contract(pure = true)
-    public static String getPrefixNice(String id) {
-        String prefix = getPrefix(id, null);
+    public static String getPrefixNice(long id) {
+        String prefix = getPrefix(id, -1);
         if((prefix.charAt(prefix.length() - 1) + "").matches("[A-Za-z0-9]"))
             prefix += " ";
         return prefix;
@@ -269,7 +273,7 @@ public final class BotClass extends ListenerAdapter {
             return;
         
         //get the prefix of the guild
-        String prefix = getPrefix(event.getGuild().getId(), event.getAuthor().getId());
+        String prefix = getPrefix(event.getGuild().getIdLong(), event.getAuthor().getIdLong());
         
         String message = event.getMessage().getContentRaw();
         
@@ -288,7 +292,7 @@ public final class BotClass extends ListenerAdapter {
                                     "For a full list of commands, use `%shelp` or `%s help`.%n" +
                                     "The default prefix is `>` and can be set by an administrator " +
                                     "on this server by using the `prefix` command.", prefix, prefix, prefix))
-                            .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r));
+                            .queue(r -> DELETE_THIS_CACHE.put(event.getMessageIdLong(), r));
                 return;
             }
         } catch(IndexOutOfBoundsException ignored) {}
@@ -318,7 +322,7 @@ public final class BotClass extends ListenerAdapter {
                     return;
                 event.getChannel()
                     .sendMessage((Objects.requireNonNull(embed)))
-                    .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r)); 
+                    .queue(r -> DELETE_THIS_CACHE.put(event.getMessageIdLong(), r)); 
             });
         } catch(NullPointerException e) { //this returns null if the command does not exist.
         } catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
@@ -375,9 +379,9 @@ public final class BotClass extends ListenerAdapter {
      */
     @Override
     public synchronized void onGuildMessageDelete(@NotNull GuildMessageDeleteEvent event) {
-        if(DELETE_THIS_CACHE.containsKey(event.getMessageId())) {
+        if(DELETE_THIS_CACHE.containsKey(event.getMessageIdLong())) {
             Logger.debug("Deleting message");
-            DELETE_THIS_CACHE.get(event.getMessageId()).delete().queue();
+            DELETE_THIS_CACHE.get(event.getMessageIdLong()).delete().queue();
         }
     }
 

@@ -92,7 +92,7 @@ public class Play extends UBPlugin implements MessageHook {
     @Override
     public MessageEmbed onCommand(String[] args, @NotNull Message message) {
         //set the last message to the channel so "now playing" messages send there.
-        MusicKernel.INSTANCE.setLast(message.getGuild().getId(), message.getTextChannel());
+        MusicKernel.INSTANCE.setLast(message.getGuild().getIdLong(), message.getTextChannel());
         
         //standard plugin stuff
         EmbedBuilder eb = new EmbedBuilder();
@@ -173,11 +173,11 @@ public class Play extends UBPlugin implements MessageHook {
                     message.getChannel().sendMessage(eb.build()).queue(r -> {
                         try {
                             RESULTS.put(message.getAuthor().getId(), new ResultsObject(track, message, r));
-                            r.addReaction("1\uFE0F\u20E3").queue((r2) -> {
-                                r.addReaction("2\uFE0F\u20E3").queue(r3 -> {
-                                    r.addReaction("3\uFE0F\u20E3").queue((r4) -> {
-                                        r.addReaction("4\uFE0F\u20E3").queue(r5 -> {
-                                            r.addReaction("5\uFE0f\u20E3").queue(owo -> {});
+                            r.addReaction("1\uFE0F\u20E3").onErrorMap(a->{return null;}).queue((r2) -> {
+                                r.addReaction("2\uFE0F\u20E3").onErrorMap(a->{return null;}).queue(r3 -> {
+                                    r.addReaction("3\uFE0F\u20E3").onErrorMap(a->{return null;}).queue((r4) -> {
+                                        r.addReaction("4\uFE0F\u20E3").onErrorMap(a->{return null;}).queue(r5 -> {
+                                            r.addReaction("5\uFE0f\u20E3").onErrorMap(a->{return null;}).queue(owo -> {});
                                         });
                                     });
                                 });

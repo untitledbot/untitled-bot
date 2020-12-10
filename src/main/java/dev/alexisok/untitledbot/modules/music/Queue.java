@@ -20,7 +20,7 @@ public final class Queue extends UBPlugin {
     
     @Override
     public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
-        MusicKernel.INSTANCE.setLast(message.getGuild().getId(), message.getTextChannel());
+        MusicKernel.INSTANCE.setLast(message.getGuild().getIdLong(), message.getTextChannel());
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         

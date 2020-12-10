@@ -24,7 +24,7 @@ public final class Manual {
 	 * @param page the page.
 	 * @return the help page specified or {@code null} if no such page exists.
 	 */
-	public static @Nullable String getHelpPages(String page, String guildID) {
+	public static @Nullable String getHelpPages(String page, long guildID) {
 		return MAN_PAGES.containsKey(page)
 				       ? "Help for " + page + ":\n\n" + MAN_PAGES.get(page).replace("%s", BotClass.getPrefixNice(guildID))
 				       : getCommandPermissionNode(page) != null ?

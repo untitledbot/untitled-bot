@@ -42,7 +42,7 @@ public final class Volume extends UBPlugin {
             if(vol < 0 || vol > 100)
                 return eb.addField("Volume", "The volume must be a value between 0 and 100.", false).setColor(Color.RED).build();
             
-            MusicKernel.INSTANCE.setVolume(message.getGuild().getId(), vol);
+            MusicKernel.INSTANCE.setVolume(message.getGuild().getIdLong(), vol);
             eb.addField("Volume", String.format("Volume has been set to %d.", vol), false);
             eb.setColor(Color.GREEN);
             

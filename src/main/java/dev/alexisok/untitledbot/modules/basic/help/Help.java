@@ -34,7 +34,7 @@ public final class Help extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         try {
-            String returnString = Manual.getHelpPages(args[1], message.getGuild().getId());
+            String returnString = Manual.getHelpPages(args[1], message.getGuild().getIdLong());
             String embedStr = returnString == null
                                       ? "Could not find the help page, did you make a typo?"
                                       : returnString;

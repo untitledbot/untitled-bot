@@ -42,8 +42,5 @@ public final class Source extends UBPlugin {
     
     @Override
     public void onRegister() {
-        CommandRegistrar.register("source", this);
-        Manual.setHelpPage("source", "Get the link to the source code of the bot.");
-        CommandRegistrar.registerAlias("source", "github", "git");
     }
 }

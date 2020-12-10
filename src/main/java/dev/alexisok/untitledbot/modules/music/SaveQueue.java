@@ -73,7 +73,7 @@ public final class SaveQueue implements ShutdownHook {
                 
                 sortedQueue.forEach((i, s) -> INSTANCE.loadAndPlay(tc, s, vc, null));
                 
-                INSTANCE.setLast(tc.getGuild().getId(), tc);
+                INSTANCE.setLast(tc.getGuild().getIdLong(), tc);
                 
             } catch(Exception e) {
                 e.printStackTrace();

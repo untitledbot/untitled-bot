@@ -30,16 +30,16 @@ public final class Exit extends UBPlugin {
         EmbedDefaults.setEmbedDefaults(eb, message);
         Logger.debug("Removing a user from the NoPrefix:TM: mode.");
         try {
-            if (BotClass.removeFromNoPrefix(message.getAuthor().getId())) {
+            if (BotClass.removeFromNoPrefix(message.getAuthor().getIdLong())) {
                 eb.addField("NoPrefix:TM:", "You have been removed from the no-prefix mode.\n" +
-                                                    "The prefix for this server is `" + BotClass.getPrefix(message.getGuild().getId(), null) + "`", false);
+                                                    "The prefix for this server is `" + BotClass.getPrefix(message.getGuild().getIdLong(), -1) + "`", false);
                 eb.setColor(Color.GREEN);
             } else {
                 eb.addField("NoPrefix:TM:", "You don't seem to be in the no-prefix mode as of now...", false);
                 eb.setColor(Color.RED);
             }
         } catch(Throwable ignored) {
-            BotClass.removeFromNoPrefix(message.getAuthor().getId());
+            BotClass.removeFromNoPrefix(message.getAuthor().getIdLong());
             eb.addField("Error!", "There was an error.  You have been removed from no-prefix mode (i think)", false);
         }
         return eb.build();
