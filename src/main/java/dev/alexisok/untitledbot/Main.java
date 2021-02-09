@@ -37,7 +37,7 @@ import static net.dv8tion.jda.api.utils.cache.CacheFlag.*;
  */
 public final class Main {
     
-    public static final String VERSION = "1.3.25";
+    public static final String VERSION = "1.3.27";
     public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
     public static final String DATA_PATH;
     public static final String PREFIX;
@@ -57,10 +57,6 @@ public final class Main {
     
     
     /**
-     *
-     * Arguments (NOT case sensitive):<br>
-     *      --version - print the version and then exit.<br>
-     *
      * @param args command line arguments, first one is for the token, any
      *             other arguments not listed in this methods JavaDoc will
      *             be ignored.
@@ -98,10 +94,10 @@ public final class Main {
             e.printStackTrace();
             Logger.critical("Could not login to Discord!");
         }
-
+        
         CoreCommands.registerCoreCommands();
         CoreCommands.registerModules();
-
+        
     }
     
     /**
