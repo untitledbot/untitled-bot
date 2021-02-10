@@ -28,6 +28,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -209,18 +210,24 @@ public final class Ranks extends UBPlugin implements MessageHook {
             }
         } else {
             try {
-                int size = message.getMentionedMembers().size();
-                User target = size == 1 ? message.getMentionedMembers().get(0).getUser() : null;
-                try {
-                    if(target == null)
-                        target = message.getGuild().getMembersByEffectiveName(args[1], true).get(0).getUser();
-                } catch(Throwable ignored) {}
-                if(target == null)
-                    target = message.getJDA().getUserById(args[1]);
+                int size = message.getMentionedMembers(message.getGuild()).size();
+                Member target = size == 1 ? message.getMentionedMembers().get(0) : null;
+                
+                if(target == null && args.length == 1) {
+                    throw new NullPointerException();
+                } else if(target == null) {
+                    //java: USE A LIST NOT AN ARRAY LIST
+                    //also java: haha unsupportedoperationexception go brr
+                    //ALSO JAVA: HAHA CAN'T CAST FROM ARRAYLIST TO ARRAYLIST
+                    ArrayList<String> tmpArgs = new ArrayList<>(Arrays.asList(args));
+                    tmpArgs.remove(0);
+                    target = message.getGuild().getMembersByEffectiveName(Arrays.toString(tmpArgs.toArray(new String[0])), true).get(0);
+                }
+                
                 File f = Objects.requireNonNull(RankImageRender.render(Objects.requireNonNull(target).getId(), message.getGuild().getId(), message.getIdLong(), message));
                 message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
                 return null;
-            } catch(InsufficientPermissionException | NullPointerException ignored2) {
+            } catch(InsufficientPermissionException | NullPointerException | IndexOutOfBoundsException ignored2) {
                 try {
                     eb.addField("Ranking",
                             "Stats for this user:\n" +

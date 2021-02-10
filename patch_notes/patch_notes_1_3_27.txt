@@ -25,6 +25,7 @@ Updated things:
 
 Bug fixes:
 * Some places in the bot suggested that YT search wasn't a thing when it has been for months.
-
+* YT error messages now display actual errors rather than nothing.TODO
+* `rank` will now correctly get users by their effective name.TODO
 
 Bot switching from .properties files to SQL never:tm:
