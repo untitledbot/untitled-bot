@@ -199,7 +199,7 @@ public class Play extends UBPlugin implements MessageHook {
     @Override
     public void onRegister() {
         CommandRegistrar.register("play", this);
-        Manual.setHelpPage("play", "Play a song from a YouTube URL (search coming soon!).");
+        Manual.setHelpPage("play", "Play a song from a YouTube URL.");
         CommandRegistrar.registerAlias("play", "pl", "p", "load");
         CommandRegistrar.registerHook(new Play());
     }

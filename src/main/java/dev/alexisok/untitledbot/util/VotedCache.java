@@ -36,7 +36,7 @@ public final class VotedCache implements VoteHook {
         TimerTask t = new TimerTask() {
             @Override
             public void run() {
-                Logger.log("Resetting vote cache.");
+                Logger.debug("Resetting vote cache.");
                 List<Long> toRemove = new ArrayList<>();
                 VOTED.forEach((user, time) -> {
                     if(time <= Instant.now().getEpochSecond() - 41400L)

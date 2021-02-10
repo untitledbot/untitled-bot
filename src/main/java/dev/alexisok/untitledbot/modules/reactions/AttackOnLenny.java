@@ -33,12 +33,12 @@ public final class AttackOnLenny extends UBPlugin {
             return null;
         }
         message.getChannel().sendMessage("HAHA I AM SUPER POWERFUL SPIDER LENNY CANNOT BE DEFEATED\n" +
-                "┬┴┬┴┤/╲/( ͡° ͡° ͜ʖ ͡° ͡°)/\\╱\\").queueAfter(0, MILLISECONDS, con1 -> {
+                "\u252C\u2534\u252C\u2534\u2524/\u2572/( \u0361\u00B0 \u0361\u00B0 \u035C\u0296 \u0361\u00B0 \u0361\u00B0)/\\\u2571\\").queueAfter(0, MILLISECONDS, con1 -> {
                     con1.editMessage("NOT IF I HAVE ANYTHING TO SAY ABOUT IT\n" +
-                            "(∩ ͡° ͜ʖ ͡°)⊃━炎炎炎炎炎炎炎炎").queueAfter(2500, MILLISECONDS, con2 -> {
-                                con2.editMessage("(∩ ͡° ͜ʖ ͡°)⊃━炎炎炎炎炎炎炎炎 /╲/( ͡° ͡° ͜ʖ ͡° ͡°)/\\╱\\").queueAfter(2500, MILLISECONDS, con3 -> {
+                            "(\u2229 \u0361\u00B0 \u035C\u0296 \u0361\u00B0)\u2283\u2501\u708E\u708E\u708E\u708E\u708E\u708E\u708E\u708E").queueAfter(2500, MILLISECONDS, con2 -> {
+                                con2.editMessage("(\u2229 \u0361\u00B0 \u035C\u0296 \u0361\u00B0)\u2283\u2501\u708E\u708E\u708E\u708E\u708E\u708E\u708E\u708E /\u2572/( \u0361\u00B0 \u0361\u00B0 \u035C\u0296 \u0361\u00B0 \u0361\u00B0)/\\\u2571\\").queueAfter(2500, MILLISECONDS, con3 -> {
                                     con3.editMessage("\\*\\*BANG SMASH EXPLOSION SOUND EFFECTS\\*\\*").queueAfter(3000, MILLISECONDS, con4 -> {
-                                        con4.editMessage("(͡° ͜ʖ ͡°) evil man has been defeated.  Use the `"
+                                        con4.editMessage("(\u0361\u00B0 \u035C\u0296 \u0361\u00B0) evil man has been defeated.  Use the `"
                                                 + BotClass.getPrefixNice(con4.getGuild().getId()) + "aol` command to watch again.")
                                                 .queueAfter(2000, MILLISECONDS, con5 -> {
                                             WATCHING.remove(con5.getGuild().getId());

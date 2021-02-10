@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.command.enums.UBPerm;
 import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.hook.WebhookPlugin;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.anime.AllEndpoints;
 import dev.alexisok.untitledbot.modules.basic.privacy.Privacy;
 import dev.alexisok.untitledbot.modules.basic.purge.Purge;
 import dev.alexisok.untitledbot.modules.basic.shardinfo.CalcShard;
@@ -111,17 +112,17 @@ public final class CoreCommands {
             
             String returnString = "```" +
                                           "\n" +
-                                          "      ╔╗─╔╗╔╗     ╔╗  ╔╗    ╔╗\n" +
-                                          "     ╔╝╚╦╝╚╣║     ║║  ║║   ╔╝╚╗\n" +
-                                          "╔╗╔╦═╬╗╔╬╗╔╣║╔══╦═╝║  ║╚═╦═╩╗╔╝\n" +
-                                          "║║║║╔╗╣║╠╣║║║║║═╣╔╗╠══╣╔╗║╔╗║║\n" +
-                                          "║╚╝║║║║╚╣║╚╣╚╣║═╣╚╝╠══╣╚╝║╚╝║╚╗\n" +
-                                          "╚══╩╝╚╩═╩╩═╩═╩══╩══╝  ╚══╩══╩═╝\n" +
+                    "      \u2554\u2557\u2500\u2554\u2557\u2554\u2557     \u2554\u2557  \u2554\u2557    \u2554\u2557\n" +
+                    "     \u2554\u255D\u255A\u2566\u255D\u255A\u2563\u2551     \u2551\u2551  \u2551\u2551   \u2554\u255D\u255A\u2557\n" +
+                    "\u2554\u2557\u2554\u2566\u2550\u256C\u2557\u2554\u256C\u2557\u2554\u2563\u2551\u2554\u2550\u2550\u2566\u2550\u255D\u2551  \u2551\u255A\u2550\u2566\u2550\u2569\u2557\u2554\u255D\n" +
+                    "\u2551\u2551\u2551\u2551\u2554\u2557\u2563\u2551\u2560\u2563\u2551\u2551\u2551\u2551\u2551\u2550\u2563\u2554\u2557\u2560\u2550\u2550\u2563\u2554\u2557\u2551\u2554\u2557\u2551\u2551\n" +
+                    "\u2551\u255A\u255D\u2551\u2551\u2551\u2551\u255A\u2563\u2551\u255A\u2563\u255A\u2563\u2551\u2550\u2563\u255A\u255D\u2560\u2550\u2550\u2563\u255A\u255D\u2551\u255A\u255D\u2551\u255A\u2557\n" +
+                    "\u255A\u2550\u2550\u2569\u255D\u255A\u2569\u2550\u2569\u2569\u2550\u2569\u2550\u2569\u2550\u2550\u2569\u2550\u2550\u255D  \u255A\u2550\u2550\u2569\u2550\u2550\u2569\u2550\u255D\n" +
                                           "```" +
                                           "Hello!  I am a bot made by AlexIsOK!  I do many things (you can see the full list with" +
                                           " the 'commands' command) and I am constantly improving as well!  If you have any suggestions," +
                                           " bugs to report, or just want a server where you can hang out, " + //these spaces are going to be the end of me
-                                          "you can do so in the [official Discord server](https://discord.gg/r5ndhyX)!\n" +
+                                          "you can do so in the [official Discord server](https://discord.alexisok.dev/)!\n" +
                                           "\n" +
                                           "For help with the bot, use the `commands` command or join the official server for " +
                                           "support (it's a small community but would grow with more users).";
@@ -300,6 +301,10 @@ public final class CoreCommands {
         new ShardInfo().onRegister();
         new CalcShard().onRegister();
         new Update().onRegister();
+        
+        //1.3.27
+        //registeres A LOT of commands.
+        AllEndpoints.addEndpoints();
         
         Logger.log("Modules have been registered.");
     }

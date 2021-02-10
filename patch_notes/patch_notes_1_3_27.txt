@@ -1,0 +1,30 @@
+After almost two months of doing literally nothing with this bot, I am working on it again... sort of.
+
+I am implementing Xignotic's API (shiro.gg), though the bot will NOT have any of the NSFW commands.
+
+I am also disabling the level up messages unless people specify that they want them.  Existing servers
+will have level up messages enabled.
+
+These servers that added the bot early are going to be called legacy servers, and they will have all vote-locked commands
+enabled for free for users in the server :D
+
+New things:
+* `tag` or `t` - make a "custom command" for the server that displays text.  Requires the "Manage Messages" permission.TODO
+* `rank-background` - change your rank background to an image.  NOTE: background images will be sent to the bot discord server
+    in a private channel to make sure that there is no NSFW or other explicit content.  You may be banned from uploading NSFW
+    backgrounds if this happens.TODO
+* PLEASE SEE `>help anime` FOR THE NEW SHIRO.GG COMMANDS.
+* `disable-category` - disable entire categories of commands.
+
+Updated things:
+* Level up messages are now disabled by default except for existing servers.TODO
+* Vote locked commands are given to any existing server without requiring their users to vote.TODO
+* Starboard will now star embeds properly.TODO
+* Write caching for levels and stuff has been implemented so I don't write to the disk every 3 picoseconds.TODO
+* `<` is NO LONGER allowed as a prefix.  thanks to a specific server for setting it to this and filling up my logs :angeryBOYE:.TODO
+
+Bug fixes:
+* Some places in the bot suggested that YT search wasn't a thing when it has been for months.
+
+
+Bot switching from .properties files to SQL never:tm:

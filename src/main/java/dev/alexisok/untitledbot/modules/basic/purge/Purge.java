@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.io.File;
@@ -21,21 +22,21 @@ import java.io.File;
 public final class Purge extends UBPlugin {
     
     @Override
-    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
+    public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
         if(!message.getGuild().getOwnerId().equals(message.getAuthor().getId())) {
             eb.addField("Error", "This command can only be used by the owner of the server.\n" +
-                    "NOTE: THIS COMMAND DOES NOT DELETE MESSAGES it deletes all data for this server then leaves.", false);
+                    "NOTE: this command deletes all user data for this server then leaves.", false);
             eb.setColor(Color.RED);
             return eb.build();
         }
         
         if(args.length == 1) {
-            eb.addField("WARNING", "ARE YOU SURE YOU WANT TO DO THIS?\n" +
-                    "ALL USER DATA FOR THIS SERVER WILL BE DELETED AND THE BOT WILL LEAVE THE SERVER.\n" +
-                    "USE `purge confirm` TO GO THROUGH WITH THIS.", false);
+            eb.addField("WARNING", "This command is not for purging messages!\n" +
+                    "This command deletes all user data and then leaves the server.\n" +
+                    "If this is what you want to do, use `purge confirm`", false);
             eb.setColor(Color.RED);
             return eb.build();
         }
@@ -49,7 +50,7 @@ public final class Purge extends UBPlugin {
                 }
             } catch(Throwable ignored) {}
             
-            eb.addField("Bye.", "If you want to add me back, [here's an invite link](https://discord.com/oauth2/authorize?client_id=730135989863055472&scope=bot&permissions=3460160).", false);
+            eb.addField("Done!", "If you want to add me back, [here's an invite link](https://discord.com/oauth2/authorize?client_id=730135989863055472&scope=bot&permissions=3460160).", false);
             eb.setColor(Color.GREEN);
             message.getChannel().sendMessage(eb.build()).queue(r -> r.getGuild().leave().queue());
             return null;

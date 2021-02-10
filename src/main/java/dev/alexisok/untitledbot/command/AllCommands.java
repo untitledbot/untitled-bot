@@ -124,6 +124,22 @@ public class AllCommands extends UBPlugin {
             "`%sdj` - set the DJ role for the server\n" +
             "`%sseek` - seek to a specific point in the song");
         
+        Manual.setHelpPage("anime", "\n" +
+            "Note: everything here returns anime.\n" +
+            "`%savatars` - get an anime avatar\n" +
+            "`%sblush` - blush images\n" +
+            "`%scry` - crying images :(\n" +
+            "`%shug` - hug images :)\n" +
+            "`%sneko` - do you really need help with this?\n" +
+            "`%snom` - om nom nom\n" +
+            "`%spat` - pat pet pot pat pot pet pat?!1\n" +
+            "`%spoke` - poke images\n" +
+            "`%spout` - pout images\n" +
+            "`%sslap` - ouch!\n" +
+            "`%ssmug` - smug images\n" +
+            "`%stickle` - ...\n" +
+            "`%swallpaper` - anime wallpapers");
+        
         eb.addField("All commands", "Please use one of the following commands for help:\n" +
             "`>help leveling` - leveling and rank commands.\n" +
             "`>help util` - utilities.\n" +
@@ -165,9 +181,10 @@ public class AllCommands extends UBPlugin {
                 "`%shelp reactions` - GIF or text reactions.\n" +
                 "`%shelp image` - image manipulation\n" +
                 "`%shelp meme` - meme generation.\n" +
-                "`%shelp music` - music commands.\n\n" +
+                "`%shelp music` - music commands.\n" +
+                "`%shelp anime` - anime gifs and images.\n\n" +
                 "To change the prefix of the bot, use `%sprefix`",
-                prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix), false);
+                prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix, prefix), false);
         eb.setColor(Color.GREEN);
         eb.addField("Need support?", String.format("**[Support Server](%s) | [GitHub](%s) | [Official Site](%s)**",
                 "https://alexisok.dev/ub/discord.html", //DO NOT CHANGE TO XYZ SITE

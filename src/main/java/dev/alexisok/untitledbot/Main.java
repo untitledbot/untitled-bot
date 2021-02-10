@@ -43,7 +43,7 @@ public final class Main {
     public static final String PREFIX;
     public static final String OWNER_ID = "541763812676861952";
     
-    public static final int SHARD_COUNT = 8;
+    public static final int SHARD_COUNT = 1;
     
     public static final boolean DEBUG;
     

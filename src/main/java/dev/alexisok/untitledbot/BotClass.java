@@ -468,7 +468,10 @@ public final class BotClass extends ListenerAdapter {
     
     @Override
     public void onGuildLeave(@NotNull GuildLeaveEvent e) {
-        Logger.debug("Guild left");
+        
+        Main.getTextChannelById("774205271282810911")
+                .sendMessage("I have left the guild " + e.getGuild().getName() + " (" + e.getGuild().getId() + ").")
+                .queue();
     }
     
     @Override
