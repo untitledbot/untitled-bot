@@ -19,7 +19,7 @@ public final class AllEndpoints {
         ENDPOINTS.add(new ShiroEndpoint("avatars", "/avatars", "Here is your avatar", null, "Get an anime avatar", false));
         ENDPOINTS.add(new ShiroEndpoint("blush", "/blush", ":flushed:", null, "Blush image/gif", false));
         ENDPOINTS.add(new ShiroEndpoint("cry", "/cry", ":(", null, "Cry image/gifs", false));
-        ENDPOINTS.add(new ShiroEndpoint("hug", "/hug", ":)", "%AUTHOR; hugs %MENTIONED; <3", "Hug image/gif", false));
+        ENDPOINTS.add(new ShiroEndpoint("hug", "/hug", ":)", "%AUTHOR; hugs %MENTIONED; <3", "Hug image/gif", true));
         ENDPOINTS.add(new ShiroEndpoint("neko", "/neko", "here is the neko image i guess", null, "uhm", false));
         ENDPOINTS.add(new ShiroEndpoint("nom", "/nom", "Om-nom-nom", null, "Eat foodstuffs", false));
         ENDPOINTS.add(new ShiroEndpoint("pat", "/pat", "Here come the pats", "%AUTHOR; pats %MENTIONED; :)", "Pat someone", true));
