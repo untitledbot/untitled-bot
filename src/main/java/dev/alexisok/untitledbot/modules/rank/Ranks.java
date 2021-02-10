@@ -8,14 +8,12 @@ import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
 import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.rank.xpcommands.Daily;
-import dev.alexisok.untitledbot.modules.rank.xpcommands.Shop;
 import dev.alexisok.untitledbot.util.vault.Vault;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
@@ -28,7 +26,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -42,13 +39,6 @@ public final class Ranks extends UBPlugin implements MessageHook {
     //0th element is level one
     //1664510 is max value because using this formula level 1024 goes over ((2^63) - 1)
     private static final long[] XP_REQUIRED_FOR_LEVEL_UP = new long[65535];
-//                                                                   {50, 100, 125, 150, 200, 250, 400, 500, 700, 900, 1000,
-//                                                                   1250, 1500, 2000, 2500, 3000, 3500, 4000, 5000, 6000,
-//                                                                   7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000,
-//                                                                   15000, 16000, 17000, 18000, 19000, 20000, 25000, 30000,
-//                                                                   35000, 40000, 45000, 50000, 55000, 60000, 65000, 70000,
-//                                                                   80000, 90000, 100000, 150000, 200000, 400000, 800000,
-//                                                                   1000000, 2000000, 3000000, 5000000, 8000000, 10000000};
     
     static {
         for(int i = 0; i < XP_REQUIRED_FOR_LEVEL_UP.length; i++) {
@@ -57,10 +47,17 @@ public final class Ranks extends UBPlugin implements MessageHook {
     }
     
     //since xp always starts at 0 and ends at 1 through 10, just store the max value here.
-    private static final HashMap<String, Integer> XP_PER_MESSAGE_CACHE = new HashMap<>();
-    
-    //multiplier per message, values are 0.5x, 0.75x, 1x, 1.25x, 1.5x, 1.75x, 2x, 2.25x, 2.5x, 2.75x, 3x.
-    private static final HashMap<String, Float> MULTIPLIER_CACHE = new HashMap<>();
+    private static final HashMap<Long, Integer> XP_PER_MESSAGE_CACHE = new HashMap<>();
+
+    /**
+     * Remove a guild from the per message cache so
+     * people won't yell at me for the bot being broken.
+     * 
+     * @param guildID the ID of the guild.
+     */
+    static void removeFromCache(long guildID) {
+        XP_PER_MESSAGE_CACHE.remove(guildID);
+    }
     
     @Override
     public void onStartup() {
@@ -74,8 +71,9 @@ public final class Ranks extends UBPlugin implements MessageHook {
         CommandRegistrar.register("rank-total", new Total());
         CommandRegistrar.register("rank-top", new Top());
         CommandRegistrar.register("rank-settings", UBPerm.MANAGE_MESSAGES, new RankSettings());
+        
         new Daily().onRegister();
-//        new Shop().onRegister();
+        
         Manual.setHelpPage("rank-top", "Get the top user ranks for the server.\n" +
                                                "Usage: `top`");
         Manual.setHelpPage("rank", "Get your (or another user's) rank.\nUsage: `rank [user @ | user ID]`");
@@ -84,7 +82,8 @@ public final class Ranks extends UBPlugin implements MessageHook {
         Manual.setHelpPage("rank-settings", "Set the rank settings.\n" +
                                                     "Usage: `rank-settings <setting> <value>`\n" +
                                                     "Current settings:\n" +
-                                                    "\tannounce-level-up <current | channel <channel #> | none>\n");
+                                                    "\t`announce-level-up <current | channel <channel #> | none>`\n" +
+                                                    "\t`max-xp <number>`");
         CommandRegistrar.registerAlias("rank-top", "ranktop", "leaderboard", "top", "ranklist", "bottom");
         CommandRegistrar.registerAlias("rank", "level");
         Vault.addDefault("ranks-xp", "0");
@@ -95,7 +94,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
     /**
      * Get the amount of xp needed for this level.
      * @param i the level.
-     * @return the xp needed or {@code -1} if you are level 100.
+     * @return the xp needed or {@code -1} if you are level 65535.
      */
     @CheckForSigned
     @CheckReturnValue
@@ -116,7 +115,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         long current = XP;
         int i = 1;
         try {
-            while (current >= XP_REQUIRED_FOR_LEVEL_UP[i]) {
+            while(current >= XP_REQUIRED_FOR_LEVEL_UP[i]) {
                 current -= XP_REQUIRED_FOR_LEVEL_UP[i];
                 i++;
             }
@@ -136,7 +135,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
         long current = XP;
         int i = 1;
         try {
-            while (current >= XP_REQUIRED_FOR_LEVEL_UP[i]) {
+            while(current >= XP_REQUIRED_FOR_LEVEL_UP[i]) {
                 current -= XP_REQUIRED_FOR_LEVEL_UP[i];
                 i++;
             }
@@ -260,6 +259,9 @@ public final class Ranks extends UBPlugin implements MessageHook {
         if(!m.isFromGuild())
             return;
         
+        if(!XP_PER_MESSAGE_CACHE.containsKey(mre.getGuild().getIdLong()))
+            XP_PER_MESSAGE_CACHE.put(mre.getGuild().getIdLong(), Integer.valueOf(Vault.getUserDataLocalOrDefault(null, mre.getGuild().getId(), "ranks.permsg", "5")));
+        
         //do not do rank stuffs if there is a command
         if(m.getContentRaw().startsWith(BotClass.getPrefix(mre.getGuild().getId(), null)))
             return;
@@ -270,7 +272,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
             randomAmount = ThreadLocalRandom.current().nextLong(0,
                     ((1 + Long.parseLong(Vault.getUserDataLocalOrDefault(m.getAuthor().getId(),
                             m.getGuild().getId(),
-                            "ranks-level", "1")) + 3L)));
+                            "ranks-level", "1")) + 3L + XP_PER_MESSAGE_CACHE.get(m.getGuild().getIdLong()))));
         } catch(Throwable ignored) {
             Logger.log("Error: there was an error with boost amount for user " + mre.getAuthor().getId() + " in guild " + mre.getGuild().getId());
         }
@@ -314,7 +316,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
                 }
                 String shouldSendPhase2 = Vault.getUserDataLocal(null, m.getGuild().getId(), "ranks-broadcast.rankup");
                 if(shouldSendPhase2 == null) {
-                    shouldSendPhase2 = "current";
+                    shouldSendPhase2 = "none";
                 }
                 
                 if(shouldSendPhase2.equalsIgnoreCase("current")) {

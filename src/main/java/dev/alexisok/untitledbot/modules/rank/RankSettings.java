@@ -75,14 +75,32 @@ public final class RankSettings extends UBPlugin {
                     eb.setColor(Color.RED);
                     return eb.build();
             }
+        } else if(args[1].equalsIgnoreCase("max-xp")) {
+            try {
+                int amount = Integer.parseInt(args[2]);
+                if(amount > 100 || amount <= 0)
+                    return eb.setColor(Color.RED).setDescription("Max XP must be between 1 and 100.").build();
+                Vault.storeUserDataLocal(null, message.getGuild().getId(), "ranks.permsg", String.valueOf(amount));
+                Ranks.removeFromCache(message.getGuild().getIdLong());
+                eb.setDescription("Maximum XP per message set to " + amount);
+                eb.setColor(Color.GREEN);
+                return eb.build();
+            } catch(Throwable ignored) {
+                eb.addField("Rank Settings", "Current max xp: " + Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "ranks.permsg", "5"), false);
+                eb.setColor(Color.GREEN);
+                return eb.build();
+            }
         }
         
         eb.setColor(Color.RED);
-        eb.addField("Ranking", "The only available option as of now is to change level up messages.\n" +
-                "Usage: `rank-settings announce-level-up <current | channel | none>`\n\n" +
+        eb.addField("Ranking", "Current rank settings are as follows:\n" +
+                "`rank-settings announce-level-up <current | channel | none>`\n\n" +
                 "`current` - the channel where the user levels up.\n" +
                 "`channel <channel #>` - a specific channel to send the level up message.\n" +
-                "`none` - do not do level up messages (does NOT stop the rank module, only disables level up messages).\n", false);
+                "`none` - do not do level up messages (does NOT stop the rank module, only disables level up messages).\n" +
+                "\n\n\n" +
+                "`rank-settings max-xp <number>`\n" +
+                "`number` - the amount of xp between 1 and 100 to give users on message.", false);
         
         return eb.build();
     }
