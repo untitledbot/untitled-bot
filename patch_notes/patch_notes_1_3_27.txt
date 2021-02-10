@@ -13,7 +13,7 @@ New things:
 * `rank-background` - change your rank background to an image.  NOTE: background images will be sent to the bot discord server
     in a private channel to make sure that there is no NSFW or other explicit content.  You may be banned from uploading NSFW
     backgrounds if this happens.TODO
-* PLEASE SEE `>help anime` FOR THE NEW SHIRO.GG COMMANDS.
+* PLEASE SEE `>help anime` FOR THE NEW SHIRO.GG COMMANDS.  there are 12 of them and i don't feel like copy/pasting them here.
 * `disable-category` - disable entire categories of commands.
 
 Updated things:
@@ -26,6 +26,6 @@ Updated things:
 Bug fixes:
 * Some places in the bot suggested that YT search wasn't a thing when it has been for months.
 * YT error messages now display actual errors rather than nothing.TODO
-* `rank` will now correctly get users by their effective name.TODO
+* `rank` will now correctly get users by their effective name.
 
 Bot switching from .properties files to SQL never:tm:

@@ -68,7 +68,7 @@ public final class AllEndpoints {
     }
     
     @AllArgsConstructor
-    private static class ShiroEndpoint {
+    private static final class ShiroEndpoint {
         
         //the name of the command
         private final String name;
