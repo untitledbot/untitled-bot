@@ -9,7 +9,7 @@ These servers that added the bot early are going to be called legacy servers, an
 enabled for free for users in the server :D
 
 New things:
-* `snipe-vc` - get the last person who left a voice chat.TODO
+* `snipe-vc` - get the last person who left a voice chat.
 * PLEASE SEE `>help anime` FOR THE NEW SHIRO.GG COMMANDS.  there are 12 of them and i don't feel like copy/pasting them here.
 * oh yeah I ADDDED A WEB DASHBOARD FINALLY took long enough.TODO
 
