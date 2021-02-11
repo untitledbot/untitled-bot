@@ -8,6 +8,7 @@ import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.modules.music.MusicKernel;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDAInfo;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
@@ -56,7 +57,7 @@ public final class Status extends UBPlugin {
         returnString.append("   Total messages: ").append(BotClass.getMessagesSentTotal()).append("\n");
         returnString.append("          Servers: ").append(guilds).append("\n");
         returnString.append("  OpenJDK Version: ").append(System.getProperty("java.version")).append("\n");
-        returnString.append("      JDA Version: 4.2.0_222\n");
+        returnString.append("      JDA Version: ").append(JDAInfo.VERSION).append("\n");
         returnString.append("Commands (+alias): ").append(CommandRegistrar.registrarSize()).append("\n");
         returnString.append("    Music Players: ").append(MusicKernel.INSTANCE.getPlayers()).append("\n");
         returnString.append("            Shard: ").append(message.getJDA().getShardInfo().getShardId()).append("\n");

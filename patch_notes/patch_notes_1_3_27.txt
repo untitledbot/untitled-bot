@@ -9,12 +9,8 @@ These servers that added the bot early are going to be called legacy servers, an
 enabled for free for users in the server :D
 
 New things:
-* `tag` or `t` - make a "custom command" for the server that displays text.  Requires the "Manage Server" permission.TODO
-* `rank-background` - change your rank background to an image.  NOTE: background images will be sent to the bot discord server
-    in a private channel to make sure that there is no NSFW or other explicit content.  You may be banned from uploading NSFW
-    backgrounds if this happens.TODO
+* `snipe-vc` - get the last person who left a voice chat.TODO
 * PLEASE SEE `>help anime` FOR THE NEW SHIRO.GG COMMANDS.  there are 12 of them and i don't feel like copy/pasting them here.
-* `disable-category` - disable entire categories of commands.TODO
 * oh yeah I ADDDED A WEB DASHBOARD FINALLY took long enough.TODO
 
 Updated things:
@@ -22,6 +18,7 @@ Updated things:
 * Vote locked commands are given to any existing server without requiring their users to vote.TODO
 * Starboard will now star embeds properly.TODO
 * `<` is NO LONGER allowed as a prefix.  thanks to a specific server for setting it to this and filling up my logs :angeryBOYE:.TODO
+* updated dependencies to newer versions, the bot is now using JDA 4.2.0_228.
 
 Bug fixes:
 * Some places in the bot suggested that YT search wasn't a thing when it has been for months.

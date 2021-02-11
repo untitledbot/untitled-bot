@@ -50,8 +50,9 @@ public final class Prefix extends UBPlugin {
             return eb.build();
         }
         
-        if(!prefix.matches("[\\x21-\\x7E]{1,10}"))
-            return eb.addField("Prefix", "Prefix cannot include special (unicode) characters or spaces.", false).setColor(Color.RED).build();
+        if(!prefix.matches("[\\x21-\\x7E]{1,64}") || prefix.startsWith("<") || prefix.contains("\\"))
+            return eb.addField("Prefix", "Prefix cannot include special (unicode) characters or spaces.\n" +
+                    "Prefix also cannot start with `<` or contain `\\`.", false).setColor(Color.RED).build();
         
         Vault.storeUserDataLocal(null, message.getGuild().getId(), "guild.prefix", prefix);
         
