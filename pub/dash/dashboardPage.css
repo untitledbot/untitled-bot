@@ -1,0 +1,17 @@
+body {
+    background-color: #2C2F33;
+    font-family: "Ubuntu", "Ubuntu Mono", Serif, serif;
+}
+
+.server > img {
+    background-position: 50%;
+    border-radius: 50%;
+}
+
+#serverHolder {
+    display: table-row;
+}
+
+.server {
+    display: table-cell;
+}

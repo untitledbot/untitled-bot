@@ -16,6 +16,7 @@ import dev.alexisok.untitledbot.util.vault.Vault;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -65,7 +66,74 @@ public class MusicKernel {
     {
         lastChannels = new HashMap<>();
     }
+    
+    /**
+     * See if a specific Member is a DJ in the Guild. 
+     * @param m the Member to check.
+     * @return {@code true} if the Member is a DJ, {@code false} if they or not or there was an error.
+     */
+    public static synchronized boolean isDJ(@NotNull Member m) {
+        return isDJ(m.getIdLong(), m.getGuild());
+    }
 
+    /**
+     * See if a user in a specific guild is a DJ.
+     * @param userID the ID of the {@link User}
+     * @param g the Guild the user is in.
+     * @return {@code true} if the user is a DJ, {@code false} if they or not or there was an error.
+     */
+    @Contract(pure = true)
+    public static synchronized boolean isDJ(long userID, @NotNull Guild g) {
+        return isDJ(String.valueOf(userID), g);
+    }
+    
+    /**
+     * See if a user in a specific guild is a DJ.
+     * @param userID the ID of the user.
+     * @param g the Guild the user is in.
+     * @return {@code true} if the user is a DJ, {@code false} if they or not or there was an error.
+     */
+    @Contract(pure = true)
+    public static synchronized boolean isDJ(@NotNull String userID, @NotNull Guild g) {
+        try {
+            
+            User u = Main.getUserById(userID);
+            
+            //make sure the user exists
+            if(u == null)
+                return false;
+            
+            return isDJ(u, g);
+        } catch(Exception ignored) {
+            return false;
+        }
+    }
+    
+    /**
+     * See if a user in a specific guild is a DJ.
+     * @param u the User to check.
+     * @param g the Guild the user is in.
+     * @return {@code true} if the user is a DJ, {@code false} if they or not or there was an error.
+     */
+    @Contract(pure = true)
+    public static synchronized boolean isDJ(@NotNull User u, @NotNull Guild g) {
+        
+        //check to make sure the guild even has a role
+        Role r = getDJRole(g.getId());
+        if(r == null)
+            return false;
+        
+        //don't bother fetching roles if the user isn't a member
+        if(!g.isMember(u)) {
+            return false;
+        }
+        
+        //this will not be null (shut up intellij)
+        Member m = g.getMember(u);
+        
+        return m.getRoles().contains(r) || m.hasPermission(Permission.MESSAGE_MANAGE) || m.hasPermission(Permission.MANAGE_SERVER);
+    }
+    
     /**
      * Get the DJ role for a specific guild
      * @param guildID the guild ID

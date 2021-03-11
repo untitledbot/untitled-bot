@@ -3,6 +3,7 @@ package dev.alexisok.untitledbot.modules.dash;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
+import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -15,7 +16,9 @@ public final class Dashboard extends UBPlugin {
     
     static {
         try {
+            Logger.log("Staring the dashboard...");
             DashHost.init();
+            Logger.log("Dashboard initialized.");
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);

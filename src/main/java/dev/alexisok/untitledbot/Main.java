@@ -19,6 +19,7 @@ import javax.security.auth.login.LoginException;
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static dev.alexisok.untitledbot.logging.Logger.debug;
 import static net.dv8tion.jda.api.requests.GatewayIntent.*;
@@ -66,7 +67,7 @@ public final class Main {
         Logger.log("Starting untitled bot " + VERSION + ".");
         Logger.log("Starting in location " + System.getProperty("user.dir"));
         
-        String token;
+        String token = null;
         
         try {
             token = args[0];
@@ -324,6 +325,20 @@ public final class Main {
     }
     
     /**
+     * Gets a {@link User} by ID from the User cache.
+     *
+     * Note: this iterates over all shards.
+     *
+     * @param userID the ID of the User.
+     * @return the {@link User} or {@code null} if it wasn't found.
+     */
+    @Nullable
+    @Contract(pure = true)
+    public static User getUserById(@NotNull String userID) {
+        return getUserById(Long.parseLong(userID));
+    }
+    
+    /**
      * Check {@link Main#SHARD_COUNT} to see the total amount of shards.
      * 
      * Note: shards start at 0.
@@ -341,6 +356,46 @@ public final class Main {
         return jda[i];
     }
     
+    /**
+     * Get a {@link Guild} by ID.
+     * @param ID the ID of the guild.
+     * @return the {@link Guild}, or {@code null} if the guild is not present.
+     */
+    @Nullable
+    @Contract(pure = true)
+    public static Guild getGuildFromID(long ID) {
+        return getGuildFromID(String.valueOf(ID));
+    }
+
+    /**
+     * Get a {@link Guild} by ID.
+     * @param ID the ID of the guild.
+     * @return the {@link Guild}, or {@code null} if the guild is not present.
+     */
+    @Nullable
+    @Contract(pure = true)
+    public static Guild getGuildFromID(String ID) {
+        Guild found = null;
+        for(JDA j : jda) {
+            if(found != null)
+                break;
+            for(Guild g : j.getGuilds()) {
+                if (g.getId().equals(ID)) {
+                    found = g;
+                    break;
+                }
+            }
+        }
+        return found;
+    }
+    
+    public static boolean hasGuild(String guildID) {
+        return getGuildFromID(guildID) != null;
+    }
+    
+    public static boolean hasGuild(long guildID) {
+        return hasGuild(String.valueOf(guildID));
+    }
     
     static {
         String DEFAULT_PREFIX1;

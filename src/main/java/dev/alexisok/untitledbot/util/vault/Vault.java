@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.util.vault;
 
+import com.google.errorprone.annotations.MustBeClosed;
 import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
@@ -49,6 +50,18 @@ public final class Vault {
      */
     public static void addDefault(String key, String data) {
         DEFAULT_DATA.put(key, data);
+    }
+
+    /**
+     * Load a file to ram to enable super fast access.
+     * @param userID the ID of the user.
+     * @param guildID the ID of the guild.
+     */
+    @NotNull
+    @MustBeClosed
+    @Contract(pure = true)
+    public static LoadedVaultObject loadIn(String userID, String guildID) throws IOException {
+        return new LoadedVaultObject(userID, guildID);
     }
     
     /**

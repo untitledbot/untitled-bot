@@ -13,6 +13,7 @@ import dev.alexisok.untitledbot.modules.basic.sleep.Sleep;
 import dev.alexisok.untitledbot.modules.basic.update.Update;
 import dev.alexisok.untitledbot.modules.basic.vcsnipe.SnipeVC;
 import dev.alexisok.untitledbot.modules.basic.version.Version;
+import dev.alexisok.untitledbot.modules.dash.Dashboard;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.*;
 import dev.alexisok.untitledbot.modules.images.apiflipnote.filter.*;
 import dev.alexisok.untitledbot.modules.images.apiuseless.*;
@@ -307,6 +308,7 @@ public final class CoreCommands {
         //registeres A LOT of commands.
         AllEndpoints.addEndpoints();
         new SnipeVC().onRegister();
+        new Dashboard().onRegister();
         
         Logger.log("Modules have been registered.");
     }

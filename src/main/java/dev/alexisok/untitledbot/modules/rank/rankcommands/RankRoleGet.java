@@ -14,12 +14,13 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 
 /**
- * 
  * Get a list of all Rank Roles
  * 
  * @author AlexIsOK
  * @since 1.3
+ * @deprecated this has been replaced by the dashboard.
  */
+@Deprecated(since="1.3.27")
 public final class RankRoleGet extends UBPlugin {
     
     @NotNull
@@ -28,6 +29,12 @@ public final class RankRoleGet extends UBPlugin {
     public MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
+        
+        if(true) {
+            eb.addField("Rank Roles", "Please see the new [web dashboard](https://dash.untitled-bot.xyz) to use this command.", false);
+            eb.setColor(Color.GREEN);
+            return eb.build();
+        }
         
         //[0] is level 1, there are 65536 levels in total
         String[] levels = new String[65536];

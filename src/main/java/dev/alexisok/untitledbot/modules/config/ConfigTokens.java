@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.config;
 
+import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,17 +78,24 @@ public final class ConfigTokens {
         VAULT_KEYS.put(key, vaultKey);
     }
     
+    @RegExp
+    private static final String PREFIX_REGEX = "[^<]?[\\x21-\\x7E]{1,5}";
+    
+    @RegExp
+    private static final String LEVEL_UP_MESSAGE = ".{1,512}";
+    
     static {
         addValue("announceXPBoost", "true", "ranks-broadcast.boost", "true", "false");
         addValue("announceLevelUp", "current", "ranks-broadcast.rankup", "current", "none");
         addValue("workMin", "100", "work.limit.minimum", "REGEX", "[0-9]{1,4}");
         addValue("workMax", "500", "work.limit.maximum", "REGEX", "[0-9]{1,4}");
         addValue("workTimeout", "86400", "work.cooldown", "REGEX", "[0-9]{2,5}");
-        addValue("prefix", ">", "guild.prefix", "REGEX", "[\\x21-\\x7E]{1,5}");
+        addValue("prefix", ">", "guild.prefix", "REGEX", PREFIX_REGEX);
         addValue("stealMin", "50", "steal.limit.minimum", "REGEX", "[0-9]{1,5}");
         addValue("stealMax", "300", "steal.limit.maximum", "REGEX", "[0-9]{1,5}");
         addValue("stealChance", "50", "steal.chance", "REGEX", "[0-9]{1,2}");
         addValue("stealTimeout", "86400", "steal.cooldown", "REGEX", "[0-9]{2,5}");
+        addValue("levelUpMessage", "Congrats [user], you have leveled up to level [level]!!", "levelup-message", "REGEX", LEVEL_UP_MESSAGE);
         TRANSFORM.put("prefix", new String[] {COLON, ":", SEMI_COLON, ";"});
     }
     

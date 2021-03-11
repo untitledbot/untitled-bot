@@ -34,10 +34,9 @@ public final class ConfigHandle extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
-        if(args.length == 1) {
-            eb.addField("Easy Config", "Hello!  The config command allows for easy bot setup.\n" +
-                                               "You can generate a config command [here](" + CONFIG_GENERATOR_URL + ").\n" +
-                                               "", false);
+        if(true) {
+            eb.addField("Config", "The config command has been deprecated, please [use the new dashboard](https://dash.untitled-bot.xyz) " +
+                    "rather than this command :D", false);
             eb.setColor(Color.GREEN);
             return eb.build();
         }

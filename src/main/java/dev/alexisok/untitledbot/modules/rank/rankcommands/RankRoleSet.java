@@ -29,6 +29,13 @@ public class RankRoleSet extends UBPlugin {
     public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
+        
+        if(true) {
+            eb.addField("Rank Roles", "Please see the new [web dashboard](https://dash.untitled-bot.xyz) to use this command.", false);
+            eb.setColor(Color.GREEN);
+            return eb.build();
+        }
+        
         if(args.length < 3) {
             eb.addField("Rank Roles", "Usage: `rank-role <level> <role @ | role ID | role name | none>`", false);
             eb.setColor(Color.RED);

@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.JDAInfo;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.Timer;
@@ -46,6 +47,19 @@ public final class Status extends UBPlugin {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
         
+        eb.setColor(Color.GREEN);
+        eb.setTitle("Status");
+        eb.setDescription(getStats(message));
+        return eb.build();
+    }
+    
+    /**
+     * Get the status of the bot.
+     * @param message the Message this originated from, or {@code null} if there wasn't one.
+     * @return the stats.
+     */
+    public static String getStats(@Nullable Message message) {
+        
         long guilds = Main.getGuildCount();
         StringBuilder returnString = new StringBuilder("```\n");
         returnString.append(" Available memory: ").append(Runtime.getRuntime().freeMemory() / 1024 / 1024).append(" MB\n");
@@ -60,15 +74,13 @@ public final class Status extends UBPlugin {
         returnString.append("      JDA Version: ").append(JDAInfo.VERSION).append("\n");
         returnString.append("Commands (+alias): ").append(CommandRegistrar.registrarSize()).append("\n");
         returnString.append("    Music Players: ").append(MusicKernel.INSTANCE.getPlayers()).append("\n");
-        returnString.append("            Shard: ").append(message.getJDA().getShardInfo().getShardId()).append("\n");
         returnString.append("     Total shards: ").append(Main.SHARD_COUNT).append("\n");
-        returnString.append(" Servers on shard: ").append(message.getJDA().getGuilds().size()).append("\n");
+        if(message != null) {
+            returnString.append("            Shard: ").append(message.getJDA().getShardInfo().getShardId()).append("\n");
+            returnString.append(" Servers on shard: ").append(message.getJDA().getGuilds().size()).append("\n");
+        }
         returnString.append("```");
-
-        eb.setColor(Color.GREEN);
-        eb.setTitle("Status");
-        eb.setDescription(returnString);
-        return eb.build();
+        return returnString.toString();
     }
     
     @Override

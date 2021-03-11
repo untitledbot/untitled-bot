@@ -1,11 +1,14 @@
 package dev.alexisok.untitledbot.modules.music;
 
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import dev.alexisok.untitledbot.Main;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.jetbrains.annotations.Contract;
@@ -49,7 +52,65 @@ public final class NowPlaying extends UBPlugin {
         eb.setColor(Color.GREEN);
         return eb.build();
     }
+    
+    public static synchronized String current(@NotNull Guild g) {
+        long current = MusicKernel.INSTANCE.nowPlaying(g).getPosition() / 1000;
 
+        return ((current % 60) + "").length() == 1 ? "0" + (current % 60) : String.valueOf((current % 60)); //change things like 1:2 to 1:02;
+    }
+    
+    public static synchronized String max(@NotNull Guild g) {
+        long current = MusicKernel.INSTANCE.nowPlaying(g).getDuration() / 1000;
+        
+        return ((current % 60) + "").length() == 1 ? "0" + (current % 60) : String.valueOf((current % 60)); //change things like 1:2 to 1:02;
+    }
+    
+    /**
+     * Get the progress as a number of the given song provided the Guild.
+     * @param g the Guild to get.
+     * @return the progress as an integer between 0 and 100 (inclusive), or {@code -1} if there is nothing playing.
+     */
+    public static synchronized int getProgress(@NotNull Guild g) {
+        if(!MusicKernel.INSTANCE.isPlaying(g))
+            return -1;
+        
+        AudioTrack track;
+        try {
+            track = MusicKernel.INSTANCE.nowPlaying(g);
+            if(track == null)
+                return -1;
+        } catch(Exception ignored) {
+            return -1;
+        }
+        
+        double progress = (track.getPosition() / 1000.0) / (track.getDuration() / 1000.0);
+        
+        return (int) progress * 100;
+    }
+    
+    /**
+     * Get the progress as a number of the given song provided the Guild.
+     * @param guildID the ID of the guild to get.
+     * @return the progress as an integer between 0 and 100 (inclusive), or {@code -1} if there is nothing playing or the guild does not exist.
+     */
+    public static synchronized int getProgress(@NotNull String guildID) {
+        Guild g = Main.getGuildFromID(guildID);
+        
+        if(g == null)
+            return -1;
+        
+        return getProgress(g);
+    }
+    
+    /**
+     * Get the progress as a number of the given song provided the Guild.
+     * @param guildID the ID of the guild to get.
+     * @return the progress as an integer between 0 and 100 (inclusive), or {@code -1} if there is nothing playing or the guild does not exist.
+     */
+    public static synchronized int getProgress(long guildID) {
+        return getProgress(String.valueOf(guildID));
+    }
+    
     /**
      * Make a nice little progress bar from a double
      * @param progress the progress as a value between 0 and 1

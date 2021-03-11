@@ -31,7 +31,7 @@ public final class Steal extends UBPlugin {
         int min = Integer.parseInt(Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "steal.limit.minimum", "50"));
         int max = Integer.parseInt(Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "steal.limit.maximum", "300"));
         int chance = Integer.parseInt(Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "steal.chance", "50"));
-        int timeout = Integer.parseInt(Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "steal.cooldown", "86400"));
+        int timeout = Integer.parseInt(Vault.getUserDataLocalOrDefault(null, message.getGuild().getId(), "steal.cooldown", "300"));
         
         if(isRateLimit(message.getAuthor().getId(), message.getGuild().getId(), timeout)) {
             eb.addField("Steal", String.format("You are being rate limited!\n" +
