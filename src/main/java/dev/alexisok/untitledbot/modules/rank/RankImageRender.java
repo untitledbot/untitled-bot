@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.CheckReturnValue;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -72,7 +71,6 @@ public final class RankImageRender {
      * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
      */
     @Nullable
-    @CheckReturnValue
     @Contract(pure = true)
     public static synchronized File render(String userID, String guildID, long uniqueID, boolean flip, Message m) throws UserDataCouldNotBeObtainedException, IOException {
         
@@ -139,15 +137,25 @@ public final class RankImageRender {
             //if the user is a contributor, add their image here.
             gtd.drawImage((ImageIO.read(new File("rs/" + userID + ".png"))), 0, 0, null);
         } catch(Exception ignored) {
-            //non-contributors get a default background
-            gtd.drawImage((ImageIO.read(new File("rs/default.png"))), 0, 0, null);
+            
+            //see if the user has a custom background
+            try {
+                gtd.drawImage((ImageIO.read(new File(String.format("./backgrounds/%s/%s.png", guildID, userID)))), 0, 0, null);
+            } catch(Exception ignored2) {
+                gtd.drawImage((ImageIO.read(new File("rs/default.png"))), 0, 0, null);
+            }
+            
         }
+        
+        String customColor = Vault.getUserDataLocalOrDefault(userID, guildID, "rank-bg.color", "#FFFFFF");
+        
+        Color textColor = Color.decode(customColor);
         
         //username and discriminator
         String font = "Ubuntu";
         gtd.setFont(new Font(font, Font.PLAIN, 36));
-        gtd.setColor(Color.WHITE);
-        gtd.drawString("" + name + "#" + discriminator, 30, 50);
+        gtd.setColor(textColor);
+        gtd.drawString("" + name, 30, 50);
         
         //balance
         gtd.setFont(new Font(font, Font.PLAIN, 26));

@@ -1,5 +1,6 @@
 package dev.alexisok.untitledbot.modules.basic.snipe;
 
+import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.command.MessageHook;
@@ -7,17 +8,24 @@ import dev.alexisok.untitledbot.command.enums.UBPerm;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.components.Button;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
+
+import static net.dv8tion.jda.api.entities.Message.MentionType.CHANNEL;
+import static net.dv8tion.jda.api.entities.Message.MentionType.EMOTE;
 
 /**
  * @author AlexIsOK
@@ -33,7 +41,7 @@ public final class Snipe extends UBPlugin implements MessageHook {
     }
     
     @Override
-    public @NotNull MessageEmbed onCommand(String[] args, @NotNull Message message) {
+    public MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
 
         TextChannel target = message.getMentionedChannels().size() == 1 ? message.getMentionedChannels().get(0) : message.getTextChannel();
@@ -71,7 +79,13 @@ public final class Snipe extends UBPlugin implements MessageHook {
                 sniped.getAuthor().getAsMention(), sniped.getAuthor().getAsTag(),
                 sniped.getAuthor().getId()), false);
         eb.setColor(Color.RED);
-        return eb.build();
+        
+        message.reply(eb.build())
+                .mentionRepliedUser(false)
+                .allowedMentions(Arrays.asList(CHANNEL, EMOTE))
+                .queue(m -> BotClass.addToDeleteCache(message.getId(), m));
+        
+        return null;
     }
     
     @Override

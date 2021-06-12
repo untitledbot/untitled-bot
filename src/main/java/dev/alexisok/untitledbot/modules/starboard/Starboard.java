@@ -15,7 +15,6 @@ import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -72,7 +71,7 @@ public final class Starboard extends ListenerAdapter {
     }
     
     @Override
-    public synchronized void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent e) {
+    public synchronized void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent e) {
         boolean shouldRun;
         if(!STARBOARD_ENABLED_CACHE.containsKey(e.getGuild().getId())) {
             shouldRun = Vault.getUserDataLocalOrDefault(null, e.getGuild().getId(), "starboard", "false").equals("true");
@@ -219,7 +218,7 @@ public final class Starboard extends ListenerAdapter {
     }
     
     @Override
-    public void onGuildMessageReactionRemove(@Nonnull GuildMessageReactionRemoveEvent e) {
+    public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent e) {
         
     }
 }

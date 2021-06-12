@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.interactions.components.Button;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -162,7 +163,9 @@ public class MusicKernel {
                     eb.addField("Play", String.format("▶ The track **%s** has been added to the queue!",
                             NowPlaying.escapeDiscordMarkdown(track.getInfo().title)), false);
                     eb.setColor(Color.GREEN);
-                    channel.sendMessage(eb.build()).queue();
+                    channel.sendMessage(eb.build()).setActionRow(
+                            Button.link(track.getInfo().uri, "View on YT")
+                    ).queue();
                 }
                 track.setUserData(m);
                 play(channel.getGuild(),requestedVC, mm, track);
@@ -243,7 +246,11 @@ public class MusicKernel {
     @Nullable
     @Contract(pure = true)
     public synchronized AudioTrack[] queue(@NotNull Guild g) {
-        return this.musicManagers.get(g.getId()).scheduler.getQueue().toArray(new AudioTrack[0]);
+        try {
+            return this.musicManagers.get(g.getId()).scheduler.getQueue().toArray(new AudioTrack[0]);
+        } catch(NullPointerException ignored) {
+            return new AudioTrack[0];
+        }
     }
     
     /**
@@ -391,7 +398,7 @@ public class MusicKernel {
     public void onQueueEnd(String guildID) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("Music Player");
-        eb.addField("Music Player", "The queue is empty, use the `play` command to play a song.", false);
+        eb.setDescription("The queue is empty, use the `play` command to play a song.");
         this.lastChannels.get(guildID).sendMessage(eb.build()).queueAfter(200, TimeUnit.MILLISECONDS);
     }
 

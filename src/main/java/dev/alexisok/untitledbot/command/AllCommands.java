@@ -31,7 +31,9 @@ public class AllCommands extends UBPlugin {
             "`%srank-total` - get the total amount of xp of yourself or another user.\n" +
             "`%srank-settings` - configure level up messages.(adm)\n" +
             "`%srank-role` - assign rank roles for users when they level up. (adm)\n" +
-            "`%srank-roles` - get a list of current rank roles.");
+            "`%srank-roles` - get a list of current rank roles.\n" +
+            "`%srank-bg` - set your rank background image.\n" +
+            "`%srank-color` - set your rank text color.\n");
         Manual.setHelpPage("util", "\n" +
             "`%shelp [command]` - get help for a specific command.\n" +
             "`%sprefix <prefix>` - set this guilds prefix. (adm)\n" +

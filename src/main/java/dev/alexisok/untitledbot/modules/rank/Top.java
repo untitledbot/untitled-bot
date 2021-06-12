@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.CheckReturnValue;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -43,8 +42,8 @@ public final class Top extends UBPlugin {
     
     private static final transient DateFormat df = new SimpleDateFormat("MM/dd' at 'HH:mm:ss");
     
-    //10 minutes due to high cpu usage
-    private static final long TIME_BETWEEN_COMMAND_IN_SECONDS = 600;
+    //2 minutes due to high cpu usage
+    private static final long TIME_BETWEEN_COMMAND_IN_SECONDS = 120;
     
     @Override
     public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
@@ -58,10 +57,6 @@ public final class Top extends UBPlugin {
         }
         
         setRateLimiter(message.getGuild().getId());
-        
-        if(message.getGuild().getMemberCache().size() > 500) {
-            message.getChannel().sendMessage("This server is literally gigantic.  It may take anywhere from 3 seconds to 2 minutes to run this command.").queue();
-        }
         
         LinkedHashMap<String, Long> topXP = new LinkedHashMap<>(new LinkedHashMap<>());
         
@@ -135,7 +130,6 @@ public final class Top extends UBPlugin {
     }
     
     @Nullable
-    @CheckReturnValue
     @Contract(pure = true)
     public static File render(@NotNull LinkedHashMap<String, Long> map, @NotNull String guildName, @NotNull String guildID) throws UserDataCouldNotBeObtainedException, IOException {
         
@@ -152,7 +146,7 @@ public final class Top extends UBPlugin {
         String font = "Ubuntu";
         gtd.setFont(new Font(font, Font.BOLD, 36));
         gtd.setColor(Color.WHITE);
-        guildName = "===" + guildName + "===";
+        
         int length = gtd.getFontMetrics(new Font(font, Font.PLAIN, 36)).stringWidth(guildName);
         //draw the guild name centered
         gtd.drawString(guildName, IMAGE_WIDTH - (length / 2) - (IMAGE_WIDTH / 2), 50);
@@ -202,11 +196,6 @@ public final class Top extends UBPlugin {
             } catch(Exception ignored) {}
         });
         
-        String lu = "Last updated " + df.format(new Date());
-        int length1 = gtd.getFontMetrics(new Font(font, Font.PLAIN, 36)).stringWidth(lu);
-        //draw the guild name centered
-        gtd.setColor(new Color(255, 255, 255, 255));
-        gtd.drawString(lu, IMAGE_WIDTH - (length1 / 2) - (IMAGE_WIDTH / 2), 1150);
         gtd.dispose();
         
         //save the image.

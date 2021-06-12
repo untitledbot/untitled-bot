@@ -3,11 +3,10 @@ package dev.alexisok.untitledbot;
 import dev.alexisok.untitledbot.command.CommandRegistrar;
 import dev.alexisok.untitledbot.data.UserDataFileCouldNotBeCreatedException;
 import dev.alexisok.untitledbot.logging.Logger;
-import dev.alexisok.untitledbot.modules.basic.vote.OnVoteHook;
 import dev.alexisok.untitledbot.modules.music.MusicKernel;
+import dev.alexisok.untitledbot.util.ShutdownHook;
 import dev.alexisok.untitledbot.util.hook.VoteHook;
 import dev.alexisok.untitledbot.util.vault.Vault;
-import dev.alexisok.untitledbot.util.ShutdownHook;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.GenericEvent;
@@ -15,20 +14,25 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.Button;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import static net.dv8tion.jda.api.entities.Message.MentionType.CHANNEL;
+import static net.dv8tion.jda.api.entities.Message.MentionType.EMOTE;
 
 /**
  * This class handles communicating with Discord.
@@ -47,7 +51,7 @@ public final class BotClass extends ListenerAdapter {
     BotClass() {}
     
     {
-        Logger.log("new instance of BotClass created:  " + this.toString());
+        Logger.log("new instance of BotClass created:  " + this);
     }
     
     private static long messagesSentTotal = 0L;
@@ -243,17 +247,27 @@ public final class BotClass extends ListenerAdapter {
             prefix += " ";
         return prefix;
     }
-
+    
     public static void registerVoteHook(VoteHook onVoteHook) {
         VOTE_HOOKS.add(onVoteHook);
     }
-
+    
+    @Override
+    public void onButtonClick(@NotNull ButtonClickEvent e) {
+        if(DELETE_THIS_CACHE.containsKey(e.getButton().getId())) {
+            String msgID = e.getMessageId();
+            Message m = DELETE_THIS_CACHE.get(msgID);
+            if(m != null)
+                m.delete().queue();
+        }
+    }
+    
     /**
      * This is messy...
      * @param event the mre
      */
     @Override
-    public final synchronized void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
+    public final synchronized void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
         
         messagesSentTotal++;
         
@@ -316,9 +330,10 @@ public final class BotClass extends ListenerAdapter {
             CommandRegistrar.runCommand(args[0], args, event.getMessage(), (embed) -> {
                 if(embed == null)
                     return;
-                event.getChannel()
-                    .sendMessage((Objects.requireNonNull(embed)))
-                    .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r)); 
+                event.getMessage()
+                        .reply((Objects.requireNonNull(embed)))
+                        .mentionRepliedUser(false)
+                        .queue(r -> DELETE_THIS_CACHE.put(event.getMessageId(), r)); 
             });
         } catch(NullPointerException e) { //this returns null if the command does not exist.
         } catch(InsufficientPermissionException ignored) { //if the bot can't send messages (filled up logs before).
@@ -332,9 +347,13 @@ public final class BotClass extends ListenerAdapter {
     }
     
     private static synchronized void updateRL(GuildMessageReceivedEvent event) {
-
+        
         long authorID = event.getAuthor().getIdLong();
-
+        
+        //ignore myself
+        if(authorID == 541763812676861952L)
+            return;
+        
         if(RATE_LIMIT.containsKey(authorID)) {
             int amount = RATE_LIMIT.get(authorID);
             amount++;
@@ -393,7 +412,7 @@ public final class BotClass extends ListenerAdapter {
     }
     
     @Override
-    public final synchronized void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent e) {
+    public final synchronized void onPrivateMessageReceived(@NotNull PrivateMessageReceivedEvent e) {
         if(!e.getAuthor().getId().equals("730135989863055472") && !e.getAuthor().getId().equals("716035864123408404")) {
             e.getAuthor().openPrivateChannel().queue(a -> a.sendMessage(onPrivateMessage).queue(
                     r -> BotClass.addToDeleteCache(e.getMessage().getId(), r)
@@ -403,7 +422,7 @@ public final class BotClass extends ListenerAdapter {
     }
     
     @Override
-    public synchronized void onGenericEvent(@Nonnull GenericEvent event) {
+    public synchronized void onGenericEvent(@NotNull GenericEvent event) {
         CommandRegistrar.runGenericListeners(event);
     }
 
@@ -432,7 +451,7 @@ public final class BotClass extends ListenerAdapter {
                         "Members: %s%n" +
                         "Owner tag: %s%n" +
                         "Owner ID: %s%n",
-                        g.getName(), g.getTimeCreated().toString(),
+                        g.getName(), g.getTimeCreated(),
                         g.getId(), g.getMembers().size(),
                         ownerTag,
                         ownerID), false)
@@ -441,7 +460,7 @@ public final class BotClass extends ListenerAdapter {
     }
     
     @Override
-    public void onGuildJoin(@Nonnull GuildJoinEvent e) {
+    public void onGuildJoin(@NotNull GuildJoinEvent e) {
         onJoin(e.getGuild());
         List<TextChannel> ch = e.getGuild().getTextChannels();
         

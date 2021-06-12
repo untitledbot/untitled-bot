@@ -22,8 +22,6 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.CheckForSigned;
-import javax.annotation.CheckReturnValue;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -96,8 +94,6 @@ public final class Ranks extends UBPlugin implements MessageHook {
      * @param i the level.
      * @return the xp needed or {@code -1} if you are level 100.
      */
-    @CheckForSigned
-    @CheckReturnValue
     public static long xpNeededForLevel(int i) {
         if(i == 0 || i > 65535)
             throw new IllegalArgumentException("\"i\" must be between 1 and 65535 (inclusive)");
@@ -188,7 +184,9 @@ public final class Ranks extends UBPlugin implements MessageHook {
         if(!other) {
             try {
                 File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong(), message));
-                message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
+                message.reply(f)
+                        .mentionRepliedUser(false)
+                        .queue(done -> Logger.log("Deleting file: " + f.delete()));
                 return null;
             } catch(InsufficientPermissionException | NullPointerException | IOException e) {
                 e.printStackTrace();
@@ -218,7 +216,7 @@ public final class Ranks extends UBPlugin implements MessageHook {
                 if(target == null)
                     target = message.getJDA().getUserById(args[1]);
                 File f = Objects.requireNonNull(RankImageRender.render(Objects.requireNonNull(target).getId(), message.getGuild().getId(), message.getIdLong(), message));
-                message.getChannel().sendFile(f).queue(done -> Logger.log("Deleting file: " + f.delete()));
+                message.reply(f).mentionRepliedUser(false).queue(done -> Logger.log("Deleting file: " + f.delete()));
                 return null;
             } catch(InsufficientPermissionException | NullPointerException ignored2) {
                 try {

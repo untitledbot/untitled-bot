@@ -29,7 +29,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.awt.*;
 import java.time.Instant;
 import java.util.*;
@@ -124,7 +123,7 @@ public final class ModHook extends ListenerAdapter {
             
             if(tc == null) return false;
             
-            String[] policies = new String[0];
+            String[] policies;
             
             try {
                 policies = Vault.getUserDataLocal(null, guildID, "log.policies").split(",");
@@ -280,7 +279,7 @@ public final class ModHook extends ListenerAdapter {
     }
     
     @Override
-    public void onGuildMemberUpdateNickname(@Nonnull GuildMemberUpdateNicknameEvent e) {
+    public void onGuildMemberUpdateNickname(@NotNull GuildMemberUpdateNicknameEvent e) {
         
         String guildID = e.getGuild().getId();
         
@@ -299,7 +298,7 @@ public final class ModHook extends ListenerAdapter {
     }
     
     @Override
-    public void onGuildMemberRoleAdd(@Nonnull GuildMemberRoleAddEvent e) {
+    public void onGuildMemberRoleAdd(@NotNull GuildMemberRoleAddEvent e) {
         
         String guildID = e.getGuild().getId();
         
@@ -323,7 +322,7 @@ public final class ModHook extends ListenerAdapter {
     }
     
     @Override
-    public void onGuildMemberRoleRemove(@Nonnull GuildMemberRoleRemoveEvent e) {
+    public void onGuildMemberRoleRemove(@NotNull GuildMemberRoleRemoveEvent e) {
         String guildID = e.getGuild().getId();
     
         if(!ch(guildID, LogTypes.USER_ROLE_UPDATE))
@@ -346,7 +345,7 @@ public final class ModHook extends ListenerAdapter {
     }
     
     @Override
-    public void onRoleCreate(@Nonnull RoleCreateEvent e) {
+    public void onRoleCreate(@NotNull RoleCreateEvent e) {
         String guildID = e.getGuild().getId();
         
         if(!ch(guildID, LogTypes.ROLE_ADD))
@@ -364,7 +363,7 @@ public final class ModHook extends ListenerAdapter {
     }
     
     @Override
-    public void onRoleDelete(@Nonnull RoleDeleteEvent e) {
+    public void onRoleDelete(@NotNull RoleDeleteEvent e) {
         String guildID = e.getGuild().getId();
     
         if(!ch(guildID, LogTypes.ROLE_DELETE))
@@ -382,7 +381,7 @@ public final class ModHook extends ListenerAdapter {
     }
     
     @Override
-    public void onRoleUpdateMentionable(@Nonnull RoleUpdateMentionableEvent e) {
+    public void onRoleUpdateMentionable(@NotNull RoleUpdateMentionableEvent e) {
         String guildID = e.getGuild().getId();
         
         if(!ch(guildID, LogTypes.ROLE_UPDATE))
@@ -400,7 +399,7 @@ public final class ModHook extends ListenerAdapter {
     }
     
     @Override
-    public void onRoleUpdateName(@Nonnull RoleUpdateNameEvent e) {
+    public void onRoleUpdateName(@NotNull RoleUpdateNameEvent e) {
         String guildID = e.getGuild().getId();
     
         if(!ch(guildID, LogTypes.ROLE_UPDATE))
@@ -455,7 +454,7 @@ public final class ModHook extends ListenerAdapter {
     }
     
     @Override
-    public void onRoleUpdatePermissions(@Nonnull RoleUpdatePermissionsEvent e) {
+    public void onRoleUpdatePermissions(@NotNull RoleUpdatePermissionsEvent e) {
         String guildID = e.getGuild().getId();
         
         if(!ch(guildID, LogTypes.ROLE_UPDATE))
@@ -489,7 +488,7 @@ public final class ModHook extends ListenerAdapter {
     }
     
     @Override
-    public void onGuildVoiceJoin(@Nonnull GuildVoiceJoinEvent e) {
+    public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent e) {
         String guildID = e.getGuild().getId();
         
         if(!ch(guildID, LogTypes.VOICE_CHANNEL_JOIN))
@@ -506,7 +505,7 @@ public final class ModHook extends ListenerAdapter {
     }
     
     @Override
-    public void onGuildVoiceMove(@Nonnull GuildVoiceMoveEvent e) {
+    public void onGuildVoiceMove(@NotNull GuildVoiceMoveEvent e) {
         String guildID = e.getGuild().getId();
     
         if(!ch(guildID, LogTypes.VOICE_CHANNEL_SWITCH))
@@ -524,7 +523,7 @@ public final class ModHook extends ListenerAdapter {
     }
     
     @Override
-    public void onGuildVoiceLeave(@Nonnull GuildVoiceLeaveEvent e) {
+    public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent e) {
         String guildID = e.getGuild().getId();
     
         if(!ch(guildID, LogTypes.VOICE_CHANNEL_LEAVE))
@@ -541,7 +540,7 @@ public final class ModHook extends ListenerAdapter {
     }
     
     @Override
-    public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent e) {
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent e) {
         String guildID = e.getGuild().getId();
         
         if(!ch(guildID, LogTypes.GUILD_MEMBER_JOIN))
@@ -559,7 +558,7 @@ public final class ModHook extends ListenerAdapter {
     }
     
     @Override
-    public void onGuildMemberRemove(@Nonnull GuildMemberRemoveEvent e) {
+    public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent e) {
         String guildID = e.getGuild().getId();
         
         if(!ch(guildID, LogTypes.GUILD_MEMBER_LEAVE))

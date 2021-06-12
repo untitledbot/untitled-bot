@@ -4,7 +4,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.CheckReturnValue;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Properties;
@@ -116,6 +115,7 @@ public final class ConfigTokens {
     public static HashMap<String, String[]> getTransform() {
         return new HashMap<>(TRANSFORM);
     }
+    
     /**
      * Checks to see if a token is legal or not.
      * 
@@ -131,7 +131,6 @@ public final class ConfigTokens {
      * @see ConfigTokens#TOKENS
      * @see ConfigTokenNotPresentException
      */
-    @CheckReturnValue
     @Contract(pure = true)
     protected static boolean isLegal(@NotNull String token, @NotNull String value) throws ConfigTokenNotPresentException, ArrayIndexOutOfBoundsException {
         if(!TOKENS.containsKey(token))

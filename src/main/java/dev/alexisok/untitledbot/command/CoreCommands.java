@@ -4,6 +4,7 @@ import dev.alexisok.untitledbot.command.enums.UBPerm;
 import dev.alexisok.untitledbot.data.GetUserData;
 import dev.alexisok.untitledbot.hook.WebhookPlugin;
 import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.modules.basic.leaveguild.LeaveGuild;
 import dev.alexisok.untitledbot.modules.basic.privacy.Privacy;
 import dev.alexisok.untitledbot.modules.basic.purge.Purge;
 import dev.alexisok.untitledbot.modules.basic.shardinfo.CalcShard;
@@ -56,6 +57,8 @@ import dev.alexisok.untitledbot.modules.music.*;
 import dev.alexisok.untitledbot.modules.basic.noprefix.Exit;
 import dev.alexisok.untitledbot.modules.basic.noprefix.NoPrefix;
 import dev.alexisok.untitledbot.modules.basic.profile.Profile;
+import dev.alexisok.untitledbot.modules.rank.RankBackground;
+import dev.alexisok.untitledbot.modules.rank.RankColor;
 import dev.alexisok.untitledbot.modules.rank.Ranks;
 import dev.alexisok.untitledbot.modules.rank.Rnak;
 import dev.alexisok.untitledbot.modules.rank.rankcommands.RankRoleGet;
@@ -300,6 +303,11 @@ public final class CoreCommands {
         new ShardInfo().onRegister();
         new CalcShard().onRegister();
         new Update().onRegister();
+        
+        //1.4.0
+        new RankBackground().onRegister();
+        new RankColor().onRegister();
+        new LeaveGuild().onRegister();
         
         Logger.log("Modules have been registered.");
     }

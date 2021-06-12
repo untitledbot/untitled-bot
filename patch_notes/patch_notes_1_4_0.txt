@@ -1,11 +1,21 @@
-ONE OF THE BIGGEST UPDATES FOR UNTITLED-BOT!
+Quality of life changes, as well as updates.
 
-new things:
-* `rpg` - the rpg.  please read the documentation for this because it is quite long.TODO
+Haven't touched this bot in almost half a year (last update was December 3rd of last year!), but I feel like a few small updates are going to be easier than one big update, especially when I feel like working on the dashboard for the bot (it's coming soon:tm:)
 
+Since JDA 4.3.0 came out recently, I have added buttons to untitled-bot!  You may see them on command responses, especially music commands.
 
+New things:
+* `rank-bg` - change your rank card background.
+* `rank-color` - change your rank card color.
 
-TODO add to README
-TODO add to site
-TODO add to dbl
-TODO add to other things i guess
+Updates:
+* Added buttons to `play` and some other commands.
+* Prefix can no longer start with `<` or contain `\`
+* `top` no longer has a "last updated" message on the bottom and doesn't display discriminator.
+* `top` also has a reduced cooldown (2 minutes instead of 10).
+* updated `now-playing` to make it look nicer on some devices.
+* `si` now lists `members` instead of `users`
+
+Bug fixes:
+* `queue` no longer errors if there are no upcoming songs.
+* Queue empty message no longer displays "Music Player" twice.

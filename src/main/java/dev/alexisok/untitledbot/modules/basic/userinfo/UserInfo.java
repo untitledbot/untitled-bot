@@ -73,7 +73,7 @@ public final class UserInfo extends UBPlugin {
             eb.setThumbnail(g.getIconUrl());
             
             eb.addField("Basic info",
-                    String.format("Name: `%s`%n" +
+                    String.format("Name: %s%n" +
                                           "Users: %d%n" +
                                           "Roles: %d%n" +
                                           "Emojis: %d%n" +
@@ -152,7 +152,7 @@ public final class UserInfo extends UBPlugin {
             ), false);
             
             eb.addField("**User**", String.format("Name: %s%nCreation date: %s%nBot: %s%nID: %s%n",
-                    u.getUser().getName() + "#" + u.getUser().getDiscriminator(), u.getUser().getTimeCreated().toString(), u.getUser().isBot(),
+                    u.getUser().getName() + "#" + u.getUser().getDiscriminator(), u.getUser().getTimeCreated(), u.getUser().isBot(),
                     u.getId()), false);
     
             String boostingSince = "Not boosting";
@@ -170,21 +170,6 @@ public final class UserInfo extends UBPlugin {
             return eb.build();
         }
         
-    }
-    
-    /**
-     * Checks if a number is of a Long value.
-     * 
-     * @param toParse the String to parse.
-     * @return {@code true} if the String can be converted to a Long, {@code false} otherwise.
-     */
-    private static synchronized boolean isLong(@NotNull String toParse) {
-        try {
-            Long.parseLong(toParse);
-            return true;
-        } catch(NumberFormatException ignored) {
-            return false;
-        }
     }
     
     @Override

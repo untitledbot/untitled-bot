@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.CheckForNull;
 import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -329,7 +328,6 @@ public class CommandRegistrar {
 	 * @return the Class
 	 */
 	@Nullable
-	@CheckForNull
 	@Contract(pure = true)
 	public static Class<? extends Command> getClassOfCommand(String command) {
 		return REGISTRAR.get(command).getClass();

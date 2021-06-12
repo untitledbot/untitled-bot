@@ -37,13 +37,13 @@ import static net.dv8tion.jda.api.utils.cache.CacheFlag.*;
  */
 public final class Main {
     
-    public static final String VERSION = "1.3.25";
+    public static final String VERSION = "1.4.0";
     public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
     public static final String DATA_PATH;
     public static final String PREFIX;
     public static final String OWNER_ID = "541763812676861952";
     
-    public static final int SHARD_COUNT = 8;
+    public static final int SHARD_COUNT = 4;
     
     public static final boolean DEBUG;
     
@@ -91,7 +91,7 @@ public final class Main {
                         .addEventListeners(new ModHook(), new BotClass(), new Starboard())
                         .setAudioSendFactory(new NativeAudioSendFactory()) //mitigates packet loss according to JDA NAS.
                         .build();
-                jda[i].getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help"));
+                jda[i].getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help | now with buttons!"));
                 jda[i].awaitReady();
             }
         } catch(LoginException e) {
@@ -441,5 +441,20 @@ public final class Main {
                 e.printStackTrace();
             }
         }
+    }
+    
+    /**
+     * Get a specific Guild by its ID.
+     * @param id the ID of the guild.
+     */
+    @Nullable
+    @Contract(pure = true)
+    public static Guild getGuildById(String id) {
+        for(JDA j : jda) {
+            Guild g = j.getGuildById(id);
+            if(g != null)
+                return g;
+        }
+        return null;
     }
 }

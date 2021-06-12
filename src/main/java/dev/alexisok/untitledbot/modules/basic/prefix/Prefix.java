@@ -50,9 +50,16 @@ public final class Prefix extends UBPlugin {
             return eb.build();
         }
         
+        //if the prefix doesn't match the regex, don't allow it
         if(!prefix.matches("[\\x21-\\x7E]{1,10}"))
             return eb.addField("Prefix", "Prefix cannot include special (unicode) characters or spaces.", false).setColor(Color.RED).build();
         
+        //if the prefix starts with < or contains \ then don't allow it (bc annoying servers)
+        if(prefix.startsWith("<") || prefix.contains("\\")) {
+            return eb.addField("Prefix", "Prefix cannot start with `<` or contain `\\`.", false).setColor(Color.RED).build();
+        }
+        
+        //store the prefix
         Vault.storeUserDataLocal(null, message.getGuild().getId(), "guild.prefix", prefix);
         
         eb.setColor(Color.GREEN);

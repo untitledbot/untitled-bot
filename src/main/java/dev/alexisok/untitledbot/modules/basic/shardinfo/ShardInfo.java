@@ -47,7 +47,7 @@ public final class ShardInfo extends UBPlugin {
             eb.setTitle("Shard Info");
             StringBuilder description = new StringBuilder("```\n");
             
-            description.append("shard | servers | users     | ping | rest\n");
+            description.append("shard | servers | members   | ping | rest\n");
             description.append("------+---------+-----------+------+------\n");
             
             for(JDA j : Main.jda) {

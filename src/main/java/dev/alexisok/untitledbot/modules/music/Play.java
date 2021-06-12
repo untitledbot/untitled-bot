@@ -16,15 +16,17 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.exceptions.ContextException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
+import net.dv8tion.jda.api.interactions.components.Button;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSearchProvider;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -169,21 +171,17 @@ public class Play extends UBPlugin implements MessageHook {
                         e.printStackTrace();
                     }
                     
-                    //send the message, add reactions 1-5, then add it to the queue to be listened to
-                    message.getChannel().sendMessage(eb.build()).queue(r -> {
-                        try {
-                            RESULTS.put(message.getAuthor().getId(), new ResultsObject(track, message, r));
-                            r.addReaction("1\uFE0F\u20E3").queue((r2) -> {
-                                r.addReaction("2\uFE0F\u20E3").queue(r3 -> {
-                                    r.addReaction("3\uFE0F\u20E3").queue((r4) -> {
-                                        r.addReaction("4\uFE0F\u20E3").queue(r5 -> {
-                                            r.addReaction("5\uFE0f\u20E3").queue(owo -> {});
-                                        });
-                                    });
-                                });
-                            });
-                        } catch(InsufficientPermissionException ignored) {} //bot might not be able to add reactions?
-                    });
+                    //send the message, add buttons 1-5, then add it to the queue to be listened to
+                    message.getChannel().sendMessage(eb.build()).setActionRow(
+                            Button.primary("1", "1"),
+                            Button.primary("2", "2"),
+                            Button.primary("3", "3"),
+                            Button.primary("4", "4"),
+                            Button.primary("5", "5")
+                        ).queue(r -> {
+                            RESULTS.put(message.getAuthor().getId(), new ResultsObject(track, message, r)); 
+                        }
+                    );
                     return null;
                 }
                 MusicKernel.INSTANCE.loadAndPlay(message.getTextChannel(), args[1], vc, message);
@@ -220,37 +218,25 @@ public class Play extends UBPlugin implements MessageHook {
      */
     @Override
     public void onAnyEvent(GenericEvent e) {
-        if(e instanceof GuildMessageReactionAddEvent) {
-            if(((GuildMessageReactionAddEvent) e).getMember().getId().equals(e.getJDA().getSelfUser().getId()))
+        if(e instanceof ButtonClickEvent) {
+            if(((ButtonClickEvent) e).getMember().getId().equals(e.getJDA().getSelfUser().getId()))
                 return;
-            if(!RESULTS.containsKey(((GuildMessageReactionAddEvent) e).getMember().getId()))
-                return;
-            ResultsObject info = RESULTS.get(((GuildMessageReactionAddEvent) e).getMember().getId());
-            if(!info.userMessage.getAuthor().getId().equals(((GuildMessageReactionAddEvent) e).getUserId()))
-                return;
-            MessageReaction reaction = ((GuildMessageReactionAddEvent) e).getReaction();
-            if(!reaction.getReactionEmote().isEmoji())
-                return;
-            if(!((GuildMessageReactionAddEvent) e).getMessageId().equals(info.botMessage.getId()))
-                return;
-            int toPlay = 0;
-            if(reaction.getReactionEmote().getEmoji().equals("1️⃣"))
-                toPlay = 1;
-            else if(reaction.getReactionEmote().getEmoji().equals("2️⃣"))
-                toPlay = 2;
-            else if(reaction.getReactionEmote().getEmoji().equals("3️⃣"))
-                toPlay = 3;
-            else if(reaction.getReactionEmote().getEmoji().equals("4️⃣"))
-                toPlay = 4;
-            else if(reaction.getReactionEmote().getEmoji().equals("5️⃣"))
-                toPlay = 5;
             
-            if(toPlay == 0)
+            if(!RESULTS.containsKey(((ButtonClickEvent) e).getMember().getId()))
                 return;
+            
+            ResultsObject info = RESULTS.get(((ButtonClickEvent) e).getMember().getId());
+            
+            if(!info.userMessage.getAuthor().getId().equals(((ButtonClickEvent) e).getMember().getId()))
+                return;
+            
+            if(!((ButtonClickEvent) e).getMessageId().equals(info.botMessage.getId()))
+                return;
+            int label = Integer.parseInt(((ButtonClickEvent) e).getButton().getLabel());
             
             Message message = info.userMessage;
             
-            virtualClick(toPlay, info, message);
+            virtualClick(label, info, message);
         }
     }
 
