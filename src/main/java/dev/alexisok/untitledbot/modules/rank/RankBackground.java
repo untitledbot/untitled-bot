@@ -106,7 +106,7 @@ public final class RankBackground extends UBPlugin {
                     .build();
             
         } else {
-            if(args[1].equalsIgnoreCase("agree")) {
+            if(args.length == 2 && args[1].equalsIgnoreCase("agree")) {
                 Vault.storeUserDataLocal(message.getAuthor().getId(), null, "rank-bg.agreed", "true");
                 return eb.setTitle("Rank Background")
                         .setDescription("Thank you for agreeing.  You may now upload a custom background.")
