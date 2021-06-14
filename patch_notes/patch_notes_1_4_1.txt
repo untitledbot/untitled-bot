@@ -1,0 +1,22 @@
+
+Time for part 2/4 of the 1.4 update series.  In this update, the music section got a big improvement!
+
+Changes:
+* `play` now supports Spotify, SoundCloud, and Bandcamp, Vimeo, and Twitch.
+* `play` no longer filters content based on safe search in NSFW channels.
+* servers now have a bigger buffer for music (less stuttering, less lag, more smoothieness:tm:).
+* the bot now self-deafens when it plays music in a voice channel (because some people like that)
+* prepared the music module for the dashboard on update 4/4.
+* owner only commands no longer give any reply if you are not me.
+* `permissions` command was re-written to be much cleaner (the old one was practically unusable)
+
+Small changes:
+* Updated most dependencies to their latest versions (including Lavaplayer)
+
+Next update:
+* Expect some major revisions to economy, specifically more ways to use UB$ and interact with other users.
+* `tag` command.
+* xp multiplier slider and custom xp per message
+
+See you for update 3/4 in a few days or so!
+

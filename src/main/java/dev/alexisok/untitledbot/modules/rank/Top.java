@@ -77,7 +77,9 @@ public final class Top extends UBPlugin {
             //the rendered image
             File imageToSend = Objects.requireNonNull(render(topXP, message.getGuild().getName(), message.getGuild().getId()));
             //send and then delete the image when it has sent
-            message.getChannel().sendFile(imageToSend).queue();
+            message.reply(imageToSend)
+                    .mentionRepliedUser(false)
+                    .queue();
         } catch(IOException | NullPointerException ignored) {
             message.getChannel().sendMessage("Could not send the rank top!").queue(r -> BotClass.addToDeleteCache(message.getId(), r));
         }

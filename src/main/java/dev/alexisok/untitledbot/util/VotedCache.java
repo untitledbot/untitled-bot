@@ -2,12 +2,12 @@ package dev.alexisok.untitledbot.util;
 
 import dev.alexisok.untitledbot.BotClass;
 import dev.alexisok.untitledbot.Main;
-import dev.alexisok.untitledbot.logging.Logger;
+import dev.alexisok.untitledbot.command.CommandRegistrar;
+import dev.alexisok.untitledbot.command.enums.UBPerm;
 import dev.alexisok.untitledbot.util.hook.VoteHook;
 import lombok.SneakyThrows;
 
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.time.Instant;
 import java.util.*;
 
@@ -25,8 +25,8 @@ public final class VotedCache implements VoteHook {
     
     static {
         
-        Properties p = new Properties();
         try {
+            Properties p = new Properties();
             p.load(new FileReader("./exempt.properties"));
             p.forEach((o1, o2) -> EXEMPT_GUILDS.add(Long.valueOf(o1.toString())));
         } catch(IOException e) {
@@ -47,6 +47,25 @@ public final class VotedCache implements VoteHook {
         };
         
         new Timer().schedule(t, 10000L, 60000L);
+        
+        CommandRegistrar.register("novote", UBPerm.OWNER, (args, message) -> {
+            if(args.length == 1) {
+                message.reply("https://cdn.discordapp.com/emojis/712506651520925698.png?v=1&size=64").mentionRepliedUser(false).queue();
+                return null;
+            }
+            message.reply("adding guild " + args[1] + " to the list of vote-exempt guilds").mentionRepliedUser(false).queue();
+            try {
+                EXEMPT_GUILDS.add(Long.valueOf(args[1]));
+                Properties p = new Properties();
+                p.load(new FileInputStream("./exempt.properties"));
+                p.setProperty(args[1], "0");
+                p.store(new FileOutputStream("./exempt.properties"), "stored");
+                message.reply("done").mentionRepliedUser(false).queue();
+            } catch (Exception e) {
+                message.reply("error " + e).mentionRepliedUser(false).queue();
+            }
+            return null;
+        });
     }
     
     @SneakyThrows

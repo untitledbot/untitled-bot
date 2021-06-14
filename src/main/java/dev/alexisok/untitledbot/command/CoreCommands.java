@@ -309,6 +309,9 @@ public final class CoreCommands {
         new RankColor().onRegister();
         new LeaveGuild().onRegister();
         
+        //1.4.1
+        new ForcePlay().onRegister();
+        
         Logger.log("Modules have been registered.");
     }
     

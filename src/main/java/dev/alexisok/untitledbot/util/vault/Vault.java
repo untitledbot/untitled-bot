@@ -5,6 +5,7 @@ import dev.alexisok.untitledbot.data.UserData;
 import dev.alexisok.untitledbot.data.UserDataCouldNotBeObtainedException;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.*;
@@ -71,6 +72,28 @@ public final class Vault {
             } catch (IOException e) {
                 e.printStackTrace();
                 //to be caught and reported to the end user over Discord.
+                throw new UserDataCouldNotBeObtainedException();
+            }
+        }
+    }
+
+    /**
+     * Get the raw data from the file.
+     * @param userID the ID of the user.
+     * @param guildID the ID of the guild.
+     * @return the raw Properties file.
+     * @throws UserDataCouldNotBeObtainedException if the user data could not be obtained.
+     */
+    @NotNull
+    @Contract(pure = true)
+    public static Properties getRawData(String userID, String guildID) throws UserDataCouldNotBeObtainedException{
+        synchronized(TIMER) {
+            try {
+                Properties p = new Properties();
+                p.load(new FileInputStream(Main.parsePropertiesLocation(userID, guildID)));
+                return p;
+            } catch(IOException e) {
+                e.printStackTrace();
                 throw new UserDataCouldNotBeObtainedException();
             }
         }

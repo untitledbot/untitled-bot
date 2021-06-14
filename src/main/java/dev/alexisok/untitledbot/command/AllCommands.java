@@ -115,7 +115,7 @@ public class AllCommands extends UBPlugin {
             "`%scall` - generate a meme where tom calls someone\n");
         
         Manual.setHelpPage("music", "\n" +
-            "`%splay` - play or search for a YouTube video\n" +
+            "`%splay` - play/search for a YouTube or Spotify song\n" +
             "`%sstop` - stop the player and clear the queue\n" +
             "`%sskip` - skip the currently playing song\n" +
             "`%squeue` - list the queue of upcoming songs\n" +

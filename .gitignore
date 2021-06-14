@@ -13,4 +13,5 @@ blacklist.properties
 .shutdown
 ./shutdown
 live.jar
-
+local_audio.mp3
+exempt.properties

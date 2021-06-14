@@ -58,7 +58,6 @@ public final class Status extends UBPlugin {
         returnString.append("          Servers: ").append(guilds).append("\n");
         returnString.append("  OpenJDK Version: ").append(System.getProperty("java.version")).append("\n");
         returnString.append("      JDA Version: ").append(JDAInfo.VERSION).append("\n");
-        returnString.append("Commands (+alias): ").append(CommandRegistrar.registrarSize()).append("\n");
         returnString.append("    Music Players: ").append(MusicKernel.INSTANCE.getPlayers()).append("\n");
         returnString.append("            Shard: ").append(message.getJDA().getShardInfo().getShardId()).append("\n");
         returnString.append("     Total shards: ").append(Main.SHARD_COUNT).append("\n");

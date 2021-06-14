@@ -21,6 +21,7 @@ import java.util.Objects;
 public final class UserInfo extends UBPlugin {
     
     @Override
+    @SuppressWarnings("deprecation")
     public @NotNull MessageEmbed onCommand(@NotNull String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);

@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.validation.constraints.Null;
 
 /**
  * ಠ_ಠ
@@ -24,7 +23,6 @@ public final class Dis extends UBPlugin {
     
     private static final String FACE = "ಠ_ಠ";
     
-    @Null
     @Nullable
     @Override
     @Contract(pure = true)

@@ -1,10 +1,13 @@
 package dev.alexisok.untitledbot;
 
 import com.sedmelluq.discord.lavaplayer.jdaudp.NativeAudioSendFactory;
+import com.wrapper.spotify.SpotifyApi;
 import dev.alexisok.untitledbot.command.CoreCommands;
 import dev.alexisok.untitledbot.logging.Logger;
 import dev.alexisok.untitledbot.modules.moderation.ModHook;
+import dev.alexisok.untitledbot.modules.music.Play;
 import dev.alexisok.untitledbot.modules.starboard.Starboard;
+import lombok.SneakyThrows;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -37,13 +40,13 @@ import static net.dv8tion.jda.api.utils.cache.CacheFlag.*;
  */
 public final class Main {
     
-    public static final String VERSION = "1.4.0";
+    public static final String VERSION = "1.4.1";
     public static final String CONFIG_PATH = Paths.get("").toAbsolutePath().toString();
     public static final String DATA_PATH;
     public static final String PREFIX;
     public static final String OWNER_ID = "541763812676861952";
     
-    public static final int SHARD_COUNT = 4;
+    public static final int SHARD_COUNT = 1;
     
     public static final boolean DEBUG;
     
@@ -87,11 +90,11 @@ public final class Main {
                         .setToken(token)
                         .useSharding(i, SHARD_COUNT)
                         .enableCache(MEMBER_OVERRIDES, EMOTE)
-                        .setMemberCachePolicy(MemberCachePolicy.ONLINE.and(OWNER).and(VOICE))
+                        .setMemberCachePolicy(MemberCachePolicy.ALL)
                         .addEventListeners(new ModHook(), new BotClass(), new Starboard())
                         .setAudioSendFactory(new NativeAudioSendFactory()) //mitigates packet loss according to JDA NAS.
                         .build();
-                jda[i].getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help | now with buttons!"));
+                jda[i].getPresence().setPresence(OnlineStatus.ONLINE, Activity.of(Activity.ActivityType.DEFAULT, ">help | now with Spotify music playback!"));
                 jda[i].awaitReady();
             }
         } catch(LoginException e) {
@@ -356,7 +359,7 @@ public final class Main {
             
             Properties p = new Properties();
             try {
-                p.load(new FileInputStream(new File(CONFIG_PATH + "/bot.properties")));
+                p.load(new FileInputStream(CONFIG_PATH + "/bot.properties"));
             } catch (FileNotFoundException ignored) {
                 setDefaultProps(p);
                 p.store(new FileOutputStream(CONFIG_PATH + "/bot.properties"), null);
@@ -397,6 +400,22 @@ public final class Main {
         }
         
         TOP_GG_TOKEN = secretsTemp;
+        
+        String spotifyToken = secrets.getProperty("spotify.token");
+        
+        if(spotifyToken != null) {
+            TimerTask t = new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        Play.refreshSpotifyToken(spotifyToken);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            new Timer("spotify_token_refresher").schedule(t, 20000L, 1200000L);
+        }
         
         Thread t = new Thread(() -> {
             

@@ -203,10 +203,9 @@ public class CommandRegistrar {
 				}
 				EmbedBuilder eb = new EmbedBuilder();
 				EmbedDefaults.setEmbedDefaults(eb, m);
+				
+				//don't say anything if the command is owner only
 				if(permissionNode.equals(UBPerm.OWNER)) {
-					eb.setDescription("This command can only be run by the owner of the bot.");
-					eb.setColor(Color.RED);
-					r.onReturn(eb.build());
 					return;
 				}
 				

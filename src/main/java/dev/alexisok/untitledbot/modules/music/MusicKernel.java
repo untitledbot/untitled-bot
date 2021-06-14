@@ -18,6 +18,7 @@ import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.interactions.components.Button;
+import org.intellij.lang.annotations.Language;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -135,6 +136,10 @@ public class MusicKernel {
     }
     
     protected void loadAndPlay(TextChannel channel, @NotNull String trackURL, @NotNull VoiceChannel requestedVC, @Nullable Message m) {
+        loadAndPlay(channel, trackURL, requestedVC, m, true);
+    }
+    
+    protected void loadAndPlay(TextChannel channel, @NotNull String trackURL, @NotNull VoiceChannel requestedVC, @Nullable Message m, boolean announceNewTrack) {
         MusicManager mm = getAudioPlayer(requestedVC.getGuild(), requestedVC);
         
         this.playerManager.loadItemOrdered(mm, trackURL, new AudioLoadResultHandler() {
@@ -163,12 +168,11 @@ public class MusicKernel {
                     eb.addField("Play", String.format("▶ The track **%s** has been added to the queue!",
                             NowPlaying.escapeDiscordMarkdown(track.getInfo().title)), false);
                     eb.setColor(Color.GREEN);
-                    channel.sendMessage(eb.build()).setActionRow(
-                            Button.link(track.getInfo().uri, "View on YT")
-                    ).queue();
+                    if(announceNewTrack)
+                        channel.sendMessage(eb.build()).setActionRow(Button.link(track.getInfo().uri, "Open in Browser")).queue();
                 }
                 track.setUserData(m);
-                play(channel.getGuild(),requestedVC, mm, track);
+                play(channel.getGuild(), requestedVC, mm, track);
             }
             
             @Override
@@ -235,6 +239,7 @@ public class MusicKernel {
         manager.scheduler.queue(track);
         if(g.getAudioManager().isConnected())
             return;
+        g.getAudioManager().setSelfDeafened(true);
         g.getAudioManager().openAudioConnection(vc);
     }
 
@@ -435,6 +440,7 @@ public class MusicKernel {
      * @param vc the voice channel to join.
      */
     public void join(@NotNull VoiceChannel vc) {
+        vc.getGuild().getAudioManager().setSelfDeafened(true);
         vc.getGuild().getAudioManager().openAudioConnection(vc);
     }
     

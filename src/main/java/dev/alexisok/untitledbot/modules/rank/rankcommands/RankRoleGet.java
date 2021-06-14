@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.util.Properties;
 
 /**
  * 
@@ -37,8 +38,10 @@ public final class RankRoleGet extends UBPlugin {
         if(args.length == 2 && args[1].matches("^[123456789]$"))
             level = Integer.parseInt(args[1]);
         
+        Properties data = Vault.getRawData(null, message.getGuild().getId()); 
+        
         for(int i = 1; i <= 65535; i++) {
-            String role = Vault.getUserDataLocal(null, message.getGuild().getId(), "role.reward." + i);
+            String role = data.getProperty("role.reward." + i);
             if(role == null || role.equals("none"))
                 continue;
             levels[i] = String.format("<@&%s>", role);
