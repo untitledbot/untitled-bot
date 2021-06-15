@@ -1,0 +1,7 @@
+The economy update, as promised in 1.4.1, is here!
+
+
+New things:
+* `tag` - give the bot a tag which can be used to display an image or text.TODO
+* `join-message` - send a message to a specific channel when a user joins the server.TODO
+* 

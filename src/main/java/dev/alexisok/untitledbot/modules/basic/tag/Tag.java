@@ -5,8 +5,11 @@ import dev.alexisok.untitledbot.command.EmbedDefaults;
 import dev.alexisok.untitledbot.command.Manual;
 import dev.alexisok.untitledbot.plugin.UBPlugin;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.intellij.lang.annotations.RegExp;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,34 +17,54 @@ import java.awt.*;
 
 /**
  * @author AlexIsOK
- * @since 1.3.23
+ * @since 1.4.2
  */
 public class Tag extends UBPlugin {
+    
+    @RegExp
+    private static final String TAG_REGEX = "^[a-z0-9_-]";
+    
     @Override
     public @Nullable MessageEmbed onCommand(String[] args, @NotNull Message message) {
         EmbedBuilder eb = new EmbedBuilder();
         EmbedDefaults.setEmbedDefaults(eb, message);
+        
         if(args.length == 1) {
-            eb.addField("Tag", "Usage: `tag <tag>`", false);
-            eb.setColor(Color.RED);
-            return eb.build();
+            return eb.setTitle("Tag")
+                    .setDescription("Usage:\n" +
+                            "```" +
+                            "tag create <tagname> <tag description>\n" +
+                            "tag delete <tagname>\n" +
+                            "tag <tagname>\n" +
+                            "```")
+                    .setColor(Color.RED)
+                    .build();
         }
         
-        if(args[1].startsWith("#"))
-            args[1] = args[1].replaceFirst("#", "");
-        
-        if(!args[1].matches("[0-9]{4}"))
-            return eb.addField("Tag", "Usage: `tag <tag>`", false).setColor(Color.RED).build();
-        
-        
+        switch(args[1].toLowerCase()) {
+            case "create": {
+                if(!message.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+                    return noPerms(eb);
+                }
+                
+            }
+        }
         return null;
     }
-
+    
+    @Contract(mutates = "param1")
+    private static MessageEmbed noPerms(@NotNull EmbedBuilder eb) {
+        return eb.setTitle("Tag")
+                .setDescription("You must have the permission \"Manage Messages\" to create or delete tags.")
+                .setColor(Color.RED)
+                .build();
+    }
+    
     @Override
     public void onRegister() {
         CommandRegistrar.register("tag", this);
-        Manual.setHelpPage("tag", "Get the amount of users in the current server with a specific tag.\n" +
-                "Usage: `tag <#0000>`");
-        CommandRegistrar.registerAlias("tag", "tags", "discriminator");
+        Manual.setHelpPage("tag", "\n" +
+                "Usage: `tag `");
+        CommandRegistrar.registerAlias("tag", "t");
     }
 }
