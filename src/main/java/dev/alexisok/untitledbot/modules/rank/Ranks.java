@@ -184,6 +184,16 @@ public final class Ranks extends UBPlugin implements MessageHook {
         if(!other) {
             try {
                 File f = Objects.requireNonNull(RankImageRender.render(message.getAuthor().getId(), message.getGuild().getId(), message.getIdLong(), message));
+                boolean noticed = Boolean.parseBoolean(Vault.getUserDataLocalOrDefault(message.getAuthor().getId(), null, "ranks-bg-notice", "false"));
+                if(!noticed) {
+                    Vault.storeUserDataLocal(message.getAuthor().getId(), null, "ranks-bg-notice", "true");
+                    message.reply(String.format("You can now change your rank background with the `%srank-bg` command!", BotClass.getPrefixNice(message.getGuild().getId())))
+                            .mentionRepliedUser(false)
+                            .addFile(f)
+                            .queue();
+                    
+                    return null;
+                }
                 message.reply(f)
                         .mentionRepliedUser(false)
                         .queue(done -> Logger.log("Deleting file: " + f.delete()));
@@ -192,14 +202,14 @@ public final class Ranks extends UBPlugin implements MessageHook {
                 e.printStackTrace();
                 try {
                     eb.addField("Ranking",
-                            "Could not send image, falling back to text.\n" +
+                            "Could not send image, do I have add attachment permissions?\n" +
                                     "Level: " + lv + "\n" +
                                     "Exp:   " + xp + "/" + XP_REQUIRED_FOR_LEVEL_UP[Integer.parseInt(lv) - 1] + "\n",
                             false);
                 } catch (ArrayIndexOutOfBoundsException | NumberFormatException ignored) {
                     //THIS SHOULD ONLY BE CAUGHT IF THE USER IS THE HIGHEST LEVEL
                     eb.addField("Ranking",
-                            "Could not send image, falling back to text.\n" +
+                            "Could not send image, do I have add attachment permissions?\n" +
                                     "Level: " + lv + "\n" +
                                     "Exp:   " + xp + "\n",
                             false);

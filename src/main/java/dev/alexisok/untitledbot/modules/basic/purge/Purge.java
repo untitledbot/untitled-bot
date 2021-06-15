@@ -26,16 +26,15 @@ public final class Purge extends UBPlugin {
         EmbedDefaults.setEmbedDefaults(eb, message);
         
         if(!message.getGuild().getOwnerId().equals(message.getAuthor().getId())) {
-            eb.addField("Error", "This command can only be used by the owner of the server.\n" +
-                    "NOTE: THIS COMMAND DOES NOT DELETE MESSAGES it deletes all data for this server then leaves.", false);
+            eb.addField("Error", "This command can only be used by the owner of the server.", false);
             eb.setColor(Color.RED);
             return eb.build();
         }
         
         if(args.length == 1) {
-            eb.addField("WARNING", "ARE YOU SURE YOU WANT TO DO THIS?\n" +
-                    "ALL USER DATA FOR THIS SERVER WILL BE DELETED AND THE BOT WILL LEAVE THE SERVER.\n" +
-                    "USE `purge confirm` TO GO THROUGH WITH THIS.", false);
+            eb.addField("The purge command does not delete messages.", "Are you sure you want to do this?\n" +
+                    "The bot will erase all of its user data (such as level, xp, and other configuration).\n" +
+                    "Use `purge confirm` if you really want to go through with this.", false);
             eb.setColor(Color.RED);
             return eb.build();
         }
@@ -49,7 +48,7 @@ public final class Purge extends UBPlugin {
                 }
             } catch(Throwable ignored) {}
             
-            eb.addField("Bye.", "If you want to add me back, [here's an invite link](https://discord.com/oauth2/authorize?client_id=730135989863055472&scope=bot&permissions=3460160).", false);
+            eb.addField(":(", "If you want to add me back, [here's an invite link](https://discord.com/oauth2/authorize?client_id=730135989863055472&scope=bot&permissions=3460160).", false);
             eb.setColor(Color.GREEN);
             message.getChannel().sendMessage(eb.build()).queue(r -> r.getGuild().leave().queue());
             return null;
@@ -63,6 +62,6 @@ public final class Purge extends UBPlugin {
     public void onRegister() {
         CommandRegistrar.register("purge", UBPerm.ADMIN, this);
         Manual.setHelpPage("purge", "The purge command does NOT delete messages.\n" +
-                "It is an owner-only command that deletes all user data for this server then leaves.");
+                "It is a server-owner only command that deletes all of the bot data and leaves.");
     }
 }
