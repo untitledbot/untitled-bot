@@ -5,3 +5,6 @@ New things:
 * `tag` - give the bot a tag which can be used to display an image or text.TODO
 * `join-message` - send a message to a specific channel when a user joins the server.TODO
 * 
+
+Changes:
+* `rank-color` now supports named colors.
